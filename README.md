@@ -49,6 +49,11 @@ nvim +PlugInstall +qa
 * Learn how to use cmus better then commit a cmus config file
 * Learn how to use mutt email client better
 
+# Screenshots
+
+This is what my environment looks like:
+![Screenshot](./Screenshot.png)
+
 # Credits
 Big thanks to Nick Nisi as I learned a lot from [his dotfiles repo][NickNisiDotfiles] and made some of it my own!
 
