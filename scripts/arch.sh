@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+echo -e "\nRunning Arch Linux Installation"
+echo "================================="
+
 # Downloads and extracts a package from the AUR.
 # Example usage: download_aur "dropbox"
 function download_aur {
@@ -36,6 +39,7 @@ sudo pacman -S --noconfirm i3-wm i3status i3lock dmenu
 sudo pacman -S --noconfirm rxvt-unicode
 
 # Install the Ubuntu font family (Powerline derivative)
+sudo pacman -S --noconfirm bdf-unifont
 download_aur "ttf-ubuntu-mono-derivative-powerline-git"
 
 # Install ZSH
@@ -73,6 +77,8 @@ sudo pacman -S --noconfirm elixir
 
 # NodeJS/NPM
 sudo pacman -S --noconfirm nodejs npm
+mkdir -p ~/.npm-global
+npm config set prefix '~/.npm-global'
 
 # Cmus
 sudo pacman -S --noconfirm cmus
@@ -83,5 +89,7 @@ sudo pacman -S --noconfirm firefox
 # Ack
 sudo pacman -S --noconfirm ack
 
-# TODO: Install diff-so-fancy
+# Install diff-so-fancy
+npm install -g diff-so-fancy
+
 

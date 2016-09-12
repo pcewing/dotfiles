@@ -19,9 +19,11 @@ Other software that I use:
 * Mutt - Text based email client
 
 ## Initial Setup and Installation (Arch Linux)
-First things first, install a base image of Arch Linux. I can't automate this for you but the [Arch Wiki][ArchWikiInstall] will walk you through it.
+First things first, install a base image of Arch Linux. I can't automate this for you but the [Arch Wiki][ArchWikiInstall] will walk you through it. If you aren't on Arch Linux, you're out of luck and will have to install everything manually.
 
-Once you have an Arch install, the install and link scripts will do most of the work for you. CAUTION: The install script installs the graphics drivers that match my graphics card at home; remove/edit those lines if your card requires a different driver!
+Once you have an Arch install, the install and link scripts will do most of the work for you. The install script is what I use when I'm imaging a system and thus it will install additional packages I need that you may not want. Use it at your own discretion.
+
+CAUTION: The install script installs the graphics drivers that match my graphics card at home; remove/edit those lines if your card requires a different driver!
 ```bash
 sudo pacman -S git
 git clone https://github.com/pcewing/dotfiles.git ~/.dotfiles
@@ -29,12 +31,9 @@ cd ~/.dotfiles
 scripts/install.sh
 ```
 
-A few things it won't do that you should do on your own:
-#### Install [diff-so-fancy][DiffSoFancy]
-I usually have to [fix my NPM global permissions][NpmGlobal] so I chose not to automate this.
-```bash
-npm install -g diff-so-fancy
-```
+### Manual Steps
+I can't (gracefully) automate everything, so the following steps should be performed manually.
+
 #### Install Neovim Plugins
 This can be done after launching Neovim by executing the command:
 ```

@@ -170,7 +170,6 @@ export EDITOR='nvim'
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
-# TODO: Make sure we are installing fuzzy file.
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Alias git to hub; see https://github.com/github/hub
