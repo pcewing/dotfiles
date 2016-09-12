@@ -187,6 +187,8 @@ if [ -z ${ZSH_PLUGINS_LOADED+x} ]; then
     source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 fi
 
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
+
 ZSH_PLUGINS_LOADED=1
 ###############################################################################
 
