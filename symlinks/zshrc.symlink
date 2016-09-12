@@ -375,6 +375,8 @@ if [[ -e ~/.profile ]]; then
 fi
 ###############################################################################
 
+[[ -z $TMUX ]] && tmux
+
 ###############################################################################
 # Other stuff from Nick's original file. I'm going to comment these out for now
 # while I set up my own configuration, but leave them here so that I can come 
