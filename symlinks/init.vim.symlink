@@ -60,6 +60,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'flazz/vim-colorschemes'
 Plug 'elixir-lang/vim-elixir'
+Plug 'JamshedVesuna/vim-markdown-preview'
 
 call plug#end()
 
@@ -70,17 +71,12 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
 
 " 1.1.2.1 NERDTree
-" Automatically load NERDTree when nvim starts.
-autocmd vimenter * NERDTree
-autocmd vimenter * wincmd l
-
 " If all buffers are closed except for the NERDTree buffer, quit.
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " 1.2 Colors and Theme
 silent! colorscheme solarized
 set background=dark
-
 
 " 1.3 Custom Controls
 " Set the Leader key. I leave the leader key as '\' and remap ' ' to it
@@ -150,6 +146,9 @@ nnoremap <Leader>cc :cclose<CR>
 " General Controls
 "  - n : Write current buffer
 nnoremap <Leader>w :w<CR>
+
+" Open NERDTree
+nnoremap <Leader>e :NERDTree<CR>
 
 " Leader Copy/Paste Controls
 " These haven't been working as expected so I'm excluding for now.
