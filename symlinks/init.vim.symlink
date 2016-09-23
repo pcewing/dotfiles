@@ -49,17 +49,29 @@ autocmd VimEnter * call s:SetCursorLine()
 " 1.1.1 Load Plugins
 call plug#begin('~/.config/nvim/plugged')
 
-" Fuzzy File Finder is awesome
+" Fuzzy File Finder is awesome for opening files by name.
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
-" Nerd Tree is also cool
+" Nerd Tree is better than the built in explorer.
 Plug 'scrooloose/nerdtree'
 
+" Vim Airline is cool but I mostly just use it to make buffers act and appear
+" like tabs conceptually.
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'flazz/vim-colorschemes'
+
+" Solarized > all.
+Plug 'altercation/vim-colors-solarized'
+
+" Code Completion
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+
+" Language support.
 Plug 'elixir-lang/vim-elixir'
+Plug 'slashmili/alchemist.vim'
+
+
 Plug 'JamshedVesuna/vim-markdown-preview'
 
 call plug#end()
@@ -73,6 +85,10 @@ let g:airline_powerline_fonts = 1
 " 1.1.2.1 NERDTree
 " If all buffers are closed except for the NERDTree buffer, quit.
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+" 1.1.2.2 Deoplete
+" Use deoplete.
+let g:deoplete#enable_at_startup = 1
 
 " 1.2 Colors and Theme
 silent! colorscheme solarized
@@ -149,6 +165,9 @@ nnoremap <Leader>w :w<CR>
 
 " Open NERDTree
 nnoremap <Leader>e :NERDTree<CR>
+
+" Open FZF
+nnoremap <Leader>o :FZF<CR>
 
 " Leader Copy/Paste Controls
 " These haven't been working as expected so I'm excluding for now.
