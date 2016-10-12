@@ -17,5 +17,4 @@ remove_link ~/.inputrc
 remove_link ~/.tmux.conf
 remove_link ~/.Xdefaults
 remove_link ~/.xinitrc
-remove_link ~/.Xmodmap
 remove_link ~/.zshrc

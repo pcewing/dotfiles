@@ -26,5 +26,4 @@ link $DOTFILES/symlinks/inputrc.symlink          ~/.inputrc
 link $DOTFILES/symlinks/tmux.conf.symlink        ~/.tmux.conf
 link $DOTFILES/symlinks/Xdefaults.symlink        ~/.Xdefaults
 link $DOTFILES/symlinks/xinitrc.symlink          ~/.xinitrc
-link $DOTFILES/symlinks/Xmodmap.symlink          ~/.Xmodmap
 link $DOTFILES/symlinks/zshrc.symlink            ~/.zshrc
