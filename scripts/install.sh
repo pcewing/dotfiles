@@ -1,10 +1,28 @@
 #!/usr/bin/env bash
 
-echo -e "\nInstalling dotfiles"
-echo "=============================="
+DOTFILE_DIR="$HOME/.dotfiles"
 
-source ~/.dotfiles/scripts/link.sh
-source ~/.dotfiles/scripts/arch.sh
+print_section_header(){
+  echo -en '\n'
+  echo "$1"
+  echo "==============================================================="
+}
+
+print_section_header "Installing dotfiles"
+
+source $DOTFILE_DIR/scripts/link.sh
+
+case "$1" in
+  arch)
+    source $DOTFILE_DIR/scripts/arch.sh
+    ;;
+  ubuntu)
+    source $DOTFILE_DIR/scripts/ubuntu.sh
+    ;;
+  *)
+    echo "Usage: ./install.sh {arch|ubuntu}"
+    ;;
+esac
 
 echo "Configuring zsh as default shell"
 chsh -s $(which zsh)
