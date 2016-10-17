@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+
+DOTFILES="$HOME/.dotfiles"
+
+print_usage(){
+  echo "Usage: ./setup [OPTIONS]"
+  echo -en '\n'
+
+  echo "Options:"
+
+  echo "  -c            Clean; remove symbolic links"
+  echo "  -d DISTRO     Distrobution; sets the distrobution to provision for; supported distrobutions are \"ubuntu\" and \"arch\""
+  echo "  -h            Help; displays usage dialog"
+  echo "  -l            Link; create symbolic links"
+  echo "  -p            Provision; provision necessary software/packages (Distrobution option must also be set)"
+  echo "  -r            Remote; indicates the script is running on a remote machine so GUI applications such as urxvt are not installed or configured"
+  echo -en '\n'
+}
+
+print_section_header(){
+  echo -en '\n'
+  echo "$1"
+  echo "==============================================================="
+}
+
+clean(){
+  print_section_header "Clean"
+
+  if [[ $remote = true ]]; then
+    echo "Cleaning remote configuration dotfiles..."
+  else
+    echo "Cleaning local configuration dotfiles..."
+  fi
+
+  source "$DOTFILES/scripts/clean.sh" $remote
+}
+
+link(){
+  print_section_header "Link"
+
+  if [[ $remote = true ]]; then
+    echo "Linking remote configuration dotfiles..."
+  else
+    echo "Linking local configuration dotfiles..."
+  fi
+
+  source "$DOTFILES/scripts/link.sh" $remote
+}
+
+provision(){
+  print_section_header "Provision"
+
+  if [[ $distro = ubuntu ]] || [[ $distro = arch ]]; then
+    if [[ $remote = true ]]; then
+      echo "Provisioning $distro for remote use..."
+    else
+      echo "Provisioning $distro for local use..."
+    fi
+  else
+    echo "Distro option was either not set or invalid. Supported distros are \"ubuntu\" and \"arch\"." 
+    exit 1
+  fi
+
+  source "$DOTFILES/scripts/provision/$distro.sh" $remote
+}
+
+clean=false
+distro=""
+provision=false
+link=false
+remote=false
+
+while getopts "cd:hlpr" flag
+do
+  case "$flag" in
+    "c")
+      clean=true
+      ;;
+    "d")
+      distro=$OPTARG
+      ;;
+    "h")
+      print_usage
+      exit 0
+      ;;
+    "l")
+      link=true
+      ;;
+    "p")
+      provision=true
+      ;;
+    "r")
+      remote=true
+      ;;
+    *)
+      print_usage
+      exit 1
+      ;;
+  esac
+done
+
+if [[ $clean = true ]]; then
+  clean
+fi
+
+if [[ $link = true ]]; then
+  link
+fi
+
+if [[ $provision = true ]]; then
+  provision
+fi

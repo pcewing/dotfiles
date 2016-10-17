@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+DOTFILES="$HOME/.dotfiles"
+remote=$1
+
 echo -e "\nRunning Arch Linux Installation"
 echo "================================="
 

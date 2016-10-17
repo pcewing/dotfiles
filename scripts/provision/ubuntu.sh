@@ -1,7 +1,7 @@
 #!/bin/bash
 
-DB_USER="postgres"
-DB_PASS="postgres"
+DOTFILES="$HOME/.dotfiles"
+remote=$1
 
 try()
 {
@@ -30,14 +30,6 @@ section(){
   echo "==============================================================="
 }
 
-add_env_var(){
-  var="$1"
-  val="$2"
-
-  echo "Adding the $1 environment variable to ~/.profile"
-  source ~/.profile && [ -z "$var" ] && echo "export $var=$val" >> ~/.profile
-}
-
 # Update and install basic tools
 section "Installing the Basics"
 update
@@ -59,39 +51,45 @@ install python-pip
 install python3-dev
 install python3-pip
 
-section "Installing Pure Prompt for ZSH"
-echo "Cloning sindresorhus/pure to ~/.dotfiles/pure... "
+if [[ $remote != true ]]; then
+  install rxvt-unicode
+  install rxvt-unicode-256color
+  install i3
+fi
+
 #TODO: We shouldn't exit if this fails.
-try git clone https://github.com/sindresorhus/pure ~/.dotfiles/pure
+section "Installing Pure Prompt for ZSH"
+echo "Cloning sindresorhus/pure to $DOTFILES/pure... "
+try git clone https://github.com/sindresorhus/pure $DOTFILES/pure
 echo "Creating the $HOME/.zfunctions directory if it doesn't exist...  "
 try sudo mkdir -p $HOME/.zfunctions
-echo "Linking $HOME/.zfunctions/prompt_pure_setup to ~/.dotfiles/pure/pure.zsh...  "
-try sudo ln -s ~/.dotfiles/pure/pure.zsh $HOME/.zfunctions/prompt_pure_setup
-echo "Linking $HOME/.zfunctions/async to ~/.dotfiles/pure/async.zsh...  "
-try sudo ln -s ~/.dotfiles/pure/async.zsh $HOME/.zfunctions/async
+echo "Linking $HOME/.zfunctions/prompt_pure_setup to $DOTFILES/pure/pure.zsh...  "
+try sudo ln -s $DOTFILES/pure/pure.zsh $HOME/.zfunctions/prompt_pure_setup
+echo "Linking $HOME/.zfunctions/async to $DOTFILES/pure/async.zsh...  "
+try sudo ln -s $DOTFILES/pure/async.zsh $HOME/.zfunctions/async
 
 section "Installing ZSH Plugins"
-echo "Creating the ~/.zsh directory if it doesn't exist...  "
-try mkdir -p ~/.zsh
-echo "Cloning zsh-users/zsh-syntax-highlighting to ~/.zsh/zsh-syntax-highlighting... "
-try git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting
-echo "Cloning zsh-users/zsh-autosuggestions to ~/.zsh/zsh-autosuggestions... "
-try git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.zsh/zsh-autosuggestions
+echo "Creating the $HOME/.zsh directory if it doesn't exist...  "
+try mkdir -p $HOME/.zsh
+echo "Cloning zsh-users/zsh-syntax-highlighting to $HOME/.zsh/zsh-syntax-highlighting... "
+try git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.zsh/zsh-syntax-highlighting
+echo "Cloning zsh-users/zsh-autosuggestions to $HOME/.zsh/zsh-autosuggestions... "
+try git clone https://github.com/zsh-users/zsh-autosuggestions.git $HOME/.zsh/zsh-autosuggestions
 
 section "Installing Vim-Plug"
-echo "Creating the ~/.config/nvim/autoload directory if it doesn't exist...  "
-try mkdir -p ~/.config/nvim/autoload
+echo "Creating the $HOME/.config/nvim/autoload directory if it doesn't exist...  "
+try mkdir -p $HOME/.config/nvim/autoload
 echo "Downloading vim-plug from https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim...  "
-try curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+try curl -fLo $HOME/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 section "Installing NodeJS"
 echo "Adding NodeJS repository... "
 try sudo bash -c "curl --silent --location https://deb.nodesource.com/setup_6.x | bash -"
 install nodejs
-echo "Creating the ~/.npm-global directory if it doesn't exist...  "
-try mkdir -p ~/.npm-global
-echo "Setting npm global directory to ~/.npm-global to avoid permissions issues when globally installing packages...  "
-try npm config set prefix '~/.npm-global'
+echo "Creating the $HOME/.npm-global directory if it doesn't exist...  "
+try mkdir -p $HOME/.npm-global
+echo "Setting npm global directory to $HOME/.npm-global to avoid permissions issues when globally installing packages...  "
+try npm config set prefix '$HOME/.npm-global'
 
 section "Installing Global NPM Packages"
 echo "Installing diff-so-fancy... "
