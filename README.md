@@ -18,7 +18,9 @@ cd ~/.dotfiles
 This will link the configuration files and provision all necessary software/packages for an Arch system.
 
 ### Supported Platforms
-Currently only Arch Linux and Ubuntu are supported. Given that Debian uses the same package manager, you may be able to use the Ubuntu script on Debian systems; however, I have not tested this nor do I currently have any plans for supporting that platform.
+Currently only Arch Linux and Ubuntu are supported, although I wouldn't recommend using the Arch script yourself (At least not without grooming it first). Given that Debian uses the same package manager, you may be able to use the Ubuntu script on Debian systems; however, I have not tested this nor do I currently have any plans for supporting that platform.
+
+The Arch provisioning script installs some packages specific to the hardware on my home PC such as the Nvidia graphics driver as well as some additional packages that may not be necessary for everyone.
 
 ### Remote Systems
 The majority of the development tools I use are terminal based, which is awesome given that I commonly work on remote systems via SSH. However, there are a pieces of software that are unnecessary on remote systems such as *urxvt* and *i3wm*.
