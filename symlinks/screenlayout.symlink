@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Don't link this file without understanding what it does! Look in the README under manual configuration
+# steps for more information.
+exec_always xrandr --output VIRTUAL1 --off --output DP3 --off --output DP2 --off --output DP1 --off --output DVI-D-1 --mode 1920x1080 --pos 2048x0 --rotate left --output HDMI3 --off --output HDMI2 --off --output HDMI1 --off --output HDMI-4 --off --output DP-4 --off --output DVI-I-1 --mode 2048x1152 --pos 0x448 --rotate normal --output VGA1 --off

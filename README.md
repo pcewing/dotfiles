@@ -36,16 +36,21 @@ cd ~/.dotfiles
 ```
 
 ### Manual Steps
-I can't (gracefully) automate everything and certain steps require user input, so the following should be performed manually.
+I can't (gracefully) automate everything and certain steps require user input or are machine-specific, so the following should be performed manually.
 
 #### Set Default Shell
 ```bash
 chsh -s $(which zsh)
 ```
 
-#### Set Default Terminal (Ubuntu)
+#### Set Default Terminal
 ```bash
 sudo update-alternatives --config x-terminal-emulator
+```
+
+#### Set up Neovim Python Support
+```bash
+pip install neovim
 ```
 
 #### Install Neovim Plugins
@@ -56,6 +61,15 @@ This can be done after launching Neovim by executing the command:
 ...or from the command line via:
 ```bash
 nvim +PlugInstall +qa
+```
+
+#### Setup Screen Configuration
+**WARNING**: The screen layout file in this repo is catered to my home machine! This file is hardware-specific.
+
+To generate your own, download the arandr package (A front-end for xrandr), run it, and save the desired configuration to `~/.screenlayout/config`. If that file exists, it will be sourced in the *i3* config.
+```bash
+mkdir -p ~/.screenlayout
+ln -s ~/.dotfiles/symlinks/screenlayout.symlink ~/.screenlayout/config.sh
 ```
 
 # Screenshots

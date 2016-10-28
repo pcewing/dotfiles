@@ -155,8 +155,5 @@ bar {
         status_command i3status
 }
 
-# Comment this line when not on home PC.
-# 
-# To generate this, install the arandr package, a front-end for xrandr. Use it to configure monitor set up
-# and save the configuration in a shell script. Then, copy the command here.
-exec_always xrandr --output VIRTUAL1 --off --output DP3 --off --output DP2 --off --output DP1 --off --output DVI-D-1 --mode 1920x1080 --pos 2048x0 --rotate left --output HDMI3 --off --output HDMI2 --off --output HDMI1 --off --output HDMI-4 --off --output DP-4 --off --output DVI-I-1 --mode 2048x1152 --pos 0x448 --rotate normal --output VGA1 --off
+# Source the machine-specific screen layout.
+exec_always "[ -L ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
