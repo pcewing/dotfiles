@@ -35,10 +35,10 @@
 *.color7:       #eee8d5
 *.color15:      #fdf6e3
 
-URxvt.font: xft:Ubuntu Mono:pixelsize=16
-URxvt.boldFont: xft:Ubuntu Mono:pixelsize=16:bold
-URxvt.italicFont: xft:Ubuntu Mono:pixelsize=16:italic
-URxvt.boldItalicFont: xft:Ubuntu Mono:pixelsize=16:bold:italic
+URxvt.font: xft:Ubuntu Mono derivative Powerline:pixelsize=16
+URxvt.boldFont: xft:Ubuntu Mono derivative Powerline:pixelsize=16:bold
+URxvt.italicFont: xft:Ubuntu Mono derivative Powerline:pixelsize=16:italic
+URxvt.boldItalicFont: xft:Ubuntu Mono derivative Powerline:pixelsize=16:bold:italic
 
 ! This is important when using solarized dark colors. The terminal emulator
 ! will display bold font using the "bright" color variants. This is visible in

@@ -55,6 +55,14 @@ if [[ $remote != true ]]; then
   install rxvt-unicode
   install rxvt-unicode-256color
   install i3
+
+  section "Installing Powerline Derivative Fonts"
+  echo "Cloning powerline/fonts to ~/powerline_fonts... "
+  try git clone https://github.com/powerline/fonts ~/powerline_fonts
+  echo "Executing ~/powerline_fonts/install.sh..."
+  try ~/powerline_fonts/install.sh
+  echo "Cleaning up ~/powerline_fonts directory... "
+  try rm -rf ~/powerline_fonts
 fi
 
 section "Installing Pure Prompt for ZSH"
@@ -107,4 +115,3 @@ try npm config set prefix "$HOME/.npm-global"
 section "Installing Global NPM Packages"
 echo "Installing diff-so-fancy... "
 try npm install -g diff-so-fancy
-
