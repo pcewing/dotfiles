@@ -2,6 +2,7 @@
 
 DOTFILES=$HOME/.dotfiles
 remote=$1
+antigen_version=1.2.1
 
 try()
 {
@@ -65,37 +66,11 @@ if [[ $remote != true ]]; then
   try rm -rf ~/powerline_fonts
 fi
 
-section "Installing Pure Prompt for ZSH"
-if [[ ! -d "$DOTFILES/pure" ]]; then
-  echo "Cloning sindresorhus/pure to $DOTFILES/pure... "
-  try git clone https://github.com/sindresorhus/pure $DOTFILES/pure
-  echo "Creating the $HOME/.zfunctions directory if it doesn't exist...  "
-  try sudo mkdir -p $HOME/.zfunctions
-  echo "Linking $HOME/.zfunctions/prompt_pure_setup to $DOTFILES/pure/pure.zsh...  "
-  try sudo ln -s $DOTFILES/pure/pure.zsh $HOME/.zfunctions/prompt_pure_setup
-  echo "Linking $HOME/.zfunctions/async to $DOTFILES/pure/async.zsh...  "
-  try sudo ln -s $DOTFILES/pure/async.zsh $HOME/.zfunctions/async
-else
-  echo "Pure Prompt for ZSH already installed"
-fi
-
-section "Installing ZSH Plugins"
+section "Installing Antigen"
 echo "Creating the $HOME/.zsh directory if it doesn't exist...  "
 try mkdir -p $HOME/.zsh
-
-if [[ ! -d "$HOME/.zsh/zsh-syntax-highlighting" ]]; then
-  echo "Cloning zsh-users/zsh-syntax-highlighting to $HOME/.zsh/zsh-syntax-highlighting... "
-  try git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.zsh/zsh-syntax-highlighting
-else
-  echo "zsh-syntax-highlighting plugin already installed"
-fi
-
-if [[ ! -d "$HOME/.zsh/zsh-autosuggestions" ]]; then
-  echo "Cloning zsh-users/zsh-autosuggestions to $HOME/.zsh/zsh-autosuggestions... "
-  try git clone https://github.com/zsh-users/zsh-autosuggestions.git $HOME/.zsh/zsh-autosuggestions
-else
-  echo "zsh-autosuggestions plugin already installed"
-fi
+echo "Downloading antigen version ${antigen_version}..."
+try curl https://cdn.rawgit.com/zsh-users/antigen/v${antigen_version}/bin/antigen.zsh > $HOME/.zsh/antigen.zsh
 
 section "Installing Vim-Plug"
 echo "Creating the $HOME/.config/nvim/autoload directory if it doesn't exist...  "

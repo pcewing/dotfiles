@@ -180,27 +180,25 @@ fi
 
 
 ### 1.4 Plugins ###############################################################
-if [ -z ${ZSH_PLUGINS_LOADED+x} ]; then
-    # zsh-syntax-highlighting
-    source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-    # zsh-autosuggestions
-    source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
-fi
+source $HOME/.zsh/antigen.zsh
 
+# Plugins
+antigen bundle zsh-users/zsh-syntax-highlighting
+antigen bundle zsh-users/zsh-autosuggestions
+
+# Themes
+antigen theme bhilburn/powerlevel9k powerlevel9k
+
+antigen apply
+
+# Plugin configuration
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
 
-ZSH_PLUGINS_LOADED=1
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time dir vcs)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status background_jobs)
+POWERLEVEL9K_SHORTEN_STRATEGY="truncate_middle"
+POWERLEVEL9K_SHORTEN_DIR_LENGTH=2
 ###############################################################################
-
-### 1.5 Prompt Settings #######################################################
-# https://github.com/sindresorhus/pure
-
-fpath=( "$HOME/.zfunctions" $fpath )
-autoload -U promptinit; promptinit
-prompt pure
-
-###############################################################################
-
 
 ### 1.6 Spectrum Settings #####################################################
 # A script to make using 256 colors in zsh less painful.
@@ -385,4 +383,3 @@ fi
 # initialize autocomplete
 #autoload -U compinit add-zsh-hook
 #compinit
-
