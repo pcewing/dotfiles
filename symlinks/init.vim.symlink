@@ -85,6 +85,8 @@ let g:airline_powerline_fonts = 1
 " 1.1.2.1 NERDTree
 " If all buffers are closed except for the NERDTree buffer, quit.
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+let g:NERDTreeDirArrowExpandable = '+'
+let g:NERDTreeDirArrowCollapsible = '~'
 
 " 1.1.2.2 Deoplete
 " Use deoplete.

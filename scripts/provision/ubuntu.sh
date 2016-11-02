@@ -70,7 +70,7 @@ section "Installing Antigen"
 echo "Creating the $HOME/.zsh directory if it doesn't exist...  "
 try mkdir -p $HOME/.zsh
 echo "Downloading antigen version ${antigen_version}..."
-try curl https://cdn.rawgit.com/zsh-users/antigen/v${antigen_version}/bin/antigen.zsh > $HOME/.zsh/antigen.zsh
+try eval $(curl https://cdn.rawgit.com/zsh-users/antigen/v${antigen_version}/bin/antigen.zsh > $HOME/.zsh/antigen.zsh)
 
 section "Installing Vim-Plug"
 echo "Creating the $HOME/.config/nvim/autoload directory if it doesn't exist...  "
