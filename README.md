@@ -13,17 +13,15 @@ The most common use of the script will look as follows:
 ```bash
 git clone https://github.com/pcewing/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
-./setup -lpd arch
+./setup -lpd ubuntu
 ```
-This will link the configuration files and provision all necessary software/packages for an Arch system.
+This will link the configuration files and provision all necessary software/packages for an Ubuntu system.
 
 ### Supported Platforms
-Currently only Arch Linux and Ubuntu are supported, although I wouldn't recommend using the Arch script yourself (At least not without grooming it first). Given that Debian uses the same package manager, you may be able to use the Ubuntu script on Debian systems; however, I have not tested this nor do I currently have any plans for supporting that platform.
-
-The Arch provisioning script installs some packages specific to the hardware on my home PC such as the Nvidia graphics driver as well as some additional packages that may not be necessary for everyone.
+Currently Ubuntu is the only Linux distro supported by a provision script. I didn't want to maintain scripts for Arch as they would be specific to my hardware and very seldom used.
 
 ### Remote Systems
-The majority of the development tools I use are terminal based, which is awesome given that I commonly work on remote systems via SSH. However, there are a pieces of software that are unnecessary on remote systems such as *urxvt* and *i3wm*.
+The majority of the development tools I use are terminal based, which is awesome given that I commonly work on remote systems or Vagrant VMs via SSH. However, there are a pieces of software that are unnecessary on remote systems such as *urxvt* and *i3wm*.
 
 The *setup* script supports configuring and provisioning systems that do not need any of the graphical components by specifying the `-r` option.
 
