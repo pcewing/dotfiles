@@ -72,6 +72,28 @@ mkdir -p ~/.screenlayout
 ln -s ~/.dotfiles/symlinks/screenlayout.symlink ~/.screenlayout/config.sh
 ```
 
+### WSL (Windows Subsystem for Linux)
+A bit of extra setup is necessary for working with Ubuntu on Windows.
+
+1. Get a better terminal because the built in one sucks.
+
+Mintty (For WSL) should be installed from https://github.com/mintty/wsltty
+
+2. Set up solarized colors.
+
+The minttyrc.symlink file in this repo should be copied to %LOCALAPPDATA%\wsltty\home\%USERNAME%\.minttyrc
+
+3. Set the correct terminal type and automatically start *zsh*.
+
+The following lines should be added to ~/.bashrc:
+```bash
+# Add this at the beginning
+export TERM=xterm-256color
+
+# Add this at the very end
+$(which zsh)
+```
+
 # Screenshots
 
 This is what my environment looks like:
