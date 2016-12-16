@@ -51,6 +51,10 @@ install python-dev
 install python-pip
 install python3-dev
 install python3-pip
+echo "Setting up neovim python support..."
+try pip install --upgrade neovim
+echo "Setting up neovim python3 support..."
+try pip3 install --upgrade neovim
 
 if [[ $remote != true ]]; then
   install rxvt-unicode
