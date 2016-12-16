@@ -39,6 +39,3 @@ fi
 # Run i3 window manager when x starts.
 exec i3
 
-#setxkbmap -option caps:swapescape
-
-xmodmap ~/.Xmodmap
