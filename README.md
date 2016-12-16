@@ -1,5 +1,13 @@
 # Dotfiles
-My dotfiles.
+This repository contains my dotfiles.
+
+My environment looks like:
+![Screenshot](./Screenshot.png)
+
+## Software
+For a complete list of the software configured it is best to just look in the **scripts/provision/ubuntu.sh** provisioning script as the list in the README would likely become outdated. That being said, my primary development stack isn't likely to change and it looks like:  
+
+`i3wm` -> `urxvt` -> `tmux` -> `zsh` -> `neovim`
 
 ## Setup
 The *setup* script in the root directory is designed to help clean existing configuration files, create symbolic links to the configuration files in this repository, and provision necessary software/packages. For usage information:
@@ -21,7 +29,7 @@ This will link the configuration files and provision all necessary software/pack
 Currently Ubuntu is the only Linux distro supported by a provision script. I didn't want to maintain scripts for Arch as they would be specific to my hardware and very seldom used.
 
 ### Remote Systems
-The majority of the development tools I use are terminal based, which is awesome given that I commonly work on remote systems or Vagrant VMs via SSH. However, there are a pieces of software that are unnecessary on remote systems such as *urxvt* and *i3wm*.
+The majority of the development tools I use are terminal based, which is awesome given that I commonly work on remote systems or Vagrant VMs via SSH. However, there are a few pieces of software that are unnecessary on remote systems such as *urxvt* and *i3wm*.
 
 The *setup* script supports configuring and provisioning systems that do not need any of the graphical components by specifying the `-r` option.
 
@@ -46,11 +54,6 @@ chsh -s $(which zsh)
 sudo update-alternatives --config x-terminal-emulator
 ```
 
-#### Set up Neovim Python Support
-```bash
-pip install neovim
-```
-
 #### Install Neovim Plugins
 This can be done after launching Neovim by executing the command:
 ```
@@ -73,15 +76,15 @@ ln -s ~/.dotfiles/symlinks/screenlayout.symlink ~/.screenlayout/config.sh
 ### WSL (Windows Subsystem for Linux)
 A bit of extra setup is necessary for working with Ubuntu on Windows.
 
-1. Get a better terminal because the built in one sucks.
+#### 1. Get a better terminal window because the built in one sucks.
 
 Mintty (For WSL) should be installed from https://github.com/mintty/wsltty
 
-2. Set up solarized colors.
+#### 2. Set up solarized colors.
 
-The minttyrc.symlink file in this repo should be copied to %LOCALAPPDATA%\wsltty\home\%USERNAME%\.minttyrc
+The minttyrc.symlink file in this repo should be copied to %LOCALAPPDATA%\\wsltty\\home\\%USERNAME%\\.minttyrc
 
-3. Set the correct terminal type and automatically start *zsh*.
+#### 3. Set the correct terminal type and automatically start *zsh*.
 
 The following lines should be added to ~/.bashrc:
 ```bash
@@ -92,7 +95,3 @@ export TERM=xterm-256color
 $(which zsh)
 ```
 
-# Screenshots
-
-This is what my environment looks like:
-![Screenshot](./Screenshot.png)
