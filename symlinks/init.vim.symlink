@@ -71,6 +71,8 @@ Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'elixir-lang/vim-elixir'
 Plug 'slashmili/alchemist.vim'
 
+Plug 'OmniSharp/omnisharp-vim'
+Plug 'OrangeT/vim-csharp'
 
 Plug 'JamshedVesuna/vim-markdown-preview'
 
