@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 DOTFILES="$HOME/.dotfiles"
+provision_script="$DOTFILES/scripts/provision.sh"
 
 print_usage(){
   echo "Usage: ./setup [OPTIONS]"
@@ -9,7 +10,7 @@ print_usage(){
   echo "Options:"
 
   echo "  -c            Clean; remove symbolic links"
-  echo "  -d DISTRO     Distrobution; sets the distrobution to provision for; currently, the only supported distrobutions are \"ubuntu\" and \"arch\""
+  echo "  -d DISTRO     Distrobution; sets the distrobution to provision for"
   echo "  -h            Help; displays usage dialog"
   echo "  -l            Link; create symbolic links"
   echo "  -p            Provision; provision necessary software/packages (Distrobution option must also be set)"
@@ -50,24 +51,19 @@ link(){
 provision(){
   print_section_header "Provision"
 
-  if [[ $distro = ubuntu ]]; then
-    if [[ $remote = true ]]; then
-      echo "Provisioning $distro for remote use..."
-    else
-      echo "Provisioning $distro for local use..."
-    fi
-  elif [[ $distro = arch ]]; then
+  provision_impl="$DOTFILES/scripts/provision/$distro.sh"
+  if [[ -e $provision_impl ]]; then
     if [[ $remote = true ]]; then
       echo "Provisioning $distro for remote use..."
     else
       echo "Provisioning $distro for local use..."
     fi
   else
-    echo "Distro option was either not set or invalid. The only distro that currently supports provisioning is \"ubuntu\"." 
+    echo "Distro option was either not set or invalid. Look in the $DOTFILES/scripts/provision directory for supported distros." 
     exit 1
   fi
 
-  source "$DOTFILES/scripts/provision/$distro.sh" $remote
+  source $provision_script $distro $remote
 }
 
 clean=false
