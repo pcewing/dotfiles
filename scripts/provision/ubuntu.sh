@@ -93,23 +93,46 @@ install_npm_packages()
   try npm install -g diff-so-fancy
 }
 
-install_terminal_emulator()
+install_elixir()
 {
-  install rxvt-unicode
-  install rxvt-unicode-256color
+  echo "Downloading the Erlang/Elixir package"
+  try wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && sudo dpkg -i erlang-solutions_1.0_all.deb
+  update
+  install esl-erlang
+  install elixir
+  echo "Removing the Erlang/Elixir package"
+  rm erlang-solutions_1.0_all.deb
 }
 
-install_graphical_environment()
+install_dotnet()
 {
-  install i3
+  echo "Adding .NET core to package lists... "
+  try sudo sh -c 'echo "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ xenial main" > /etc/apt/sources.list.d/dotnetdev.list'
+  echo "Adding .NET core gpg key... "
+  try sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 417A0893
+  update
+  install dotnet-dev-1.0.0-preview2.1-003177
 }
 
-install_fonts()
-{
-  echo "Cloning powerline/fonts to ~/powerline_fonts... "
-  try git clone https://github.com/powerline/fonts ~/powerline_fonts
-  echo "Executing ~/powerline_fonts/install.sh..."
-  try ~/powerline_fonts/install.sh
-  echo "Cleaning up ~/powerline_fonts directory... "
-  try rm -rf ~/powerline_fonts
-}
+if [[ $remote != true ]]; then
+  install_terminal_emulator()
+  {
+    install rxvt-unicode
+    install rxvt-unicode-256color
+  }
+
+  install_graphical_environment()
+  {
+    install i3
+  }
+
+  install_fonts()
+  {
+    echo "Cloning powerline/fonts to ~/powerline_fonts... "
+    try git clone https://github.com/powerline/fonts ~/powerline_fonts
+    echo "Executing ~/powerline_fonts/install.sh..."
+    try ~/powerline_fonts/install.sh
+    echo "Cleaning up ~/powerline_fonts directory... "
+    try rm -rf ~/powerline_fonts
+  }
+fi
