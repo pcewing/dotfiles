@@ -71,6 +71,8 @@ Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'elixir-lang/vim-elixir'
 Plug 'slashmili/alchemist.vim'
 
+Plug 'OmniSharp/omnisharp-vim'
+Plug 'OrangeT/vim-csharp'
 
 Plug 'JamshedVesuna/vim-markdown-preview'
 
@@ -87,6 +89,7 @@ let g:airline_powerline_fonts = 1
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 let g:NERDTreeDirArrowExpandable = '+'
 let g:NERDTreeDirArrowCollapsible = '~'
+let NERDTreeIgnore = ['\.pyc$']
 
 " 1.1.2.2 Deoplete
 " Use deoplete.

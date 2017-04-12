@@ -1,3 +1,4 @@
+# For WSL, this file should go in \Users\%USERNAME&\AppData\Local\wsltty\home\%USERNAME%\
 BackgroundColour=0,43,54
 ForegroundColour=131,148,150
 CursorColour=131,148,150
@@ -18,8 +19,12 @@ BoldCyan=147,161,161
 White=238,232,213
 BoldWhite=253,246,227
 
-BoldAsFont=-1
+BoldAsFont=no
 CursorType=block
 Font=Inconsolata for Powerline
 FontHeight=12
 FontWeight=500
+RightClickAction=paste
+BoldAsColour=no
+Locale=en_US
+Term=xterm-256color
