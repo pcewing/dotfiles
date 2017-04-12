@@ -70,6 +70,9 @@ mkdir -p ~/.screenlayout
 ln -s ~/.dotfiles/symlinks/screenlayout.symlink ~/.screenlayout/config.sh
 ```
 
+#### Setup Wallpaper
+Use the `nitrogen` package, which is basically just a GUI frontend for `feh`.
+
 ### WSL (Windows Subsystem for Linux)
 A bit of extra setup is necessary for working with Ubuntu on Windows.
 
