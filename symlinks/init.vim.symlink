@@ -1,19 +1,4 @@
-" =========================
-" +++ Table of Contents +++
-" =========================
-" 1.0 - General Config
-" 1.1.0 - Basic Settings
-" 1.1.1 - Indentation
-" 1.1.2 - Cursor Indicator
-" 1.1 - Plugins
-" 1.1.1 - Load Plugins
-" 1.1.2 - Configure Plugins
-" 1.2 - Colors and Theme
-" 1.3 - Custom Controls
-" =========================
-
-" 1.0 General Config
-" 1.0.1 Basic Settings
+" General Config
 set nocompatible
 set number                      "Line numbers are good
 set backspace=indent,eol,start  "Allow backspace in insert mode
@@ -29,7 +14,7 @@ set pastetoggle=<F2>            "Paste without being smart
 set splitbelow
 set splitright
 
-" 1.0.2 Indentation
+" Indentation
 set autoindent
 set smartindent
 set smarttab
@@ -38,6 +23,8 @@ set softtabstop=2
 set tabstop=2
 set expandtab
 
+set ruler
+
 " Add a visual indicator to the line the cursor is on.
 function s:SetCursorLine()
   set cursorline
@@ -45,21 +32,12 @@ function s:SetCursorLine()
 endfunction
 autocmd VimEnter * call s:SetCursorLine()
 
-" 1.1 Plugins
-" 1.1.1 Load Plugins
+" Load Plugins
 call plug#begin('~/.config/nvim/plugged')
 
 " Fuzzy File Finder is awesome for opening files by name.
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-
-" Nerd Tree is better than the built in explorer.
-Plug 'scrooloose/nerdtree'
-
-" Vim Airline is cool but I mostly just use it to make buffers act and appear
-" like tabs conceptually.
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 
 " Solarized > all.
 Plug 'altercation/vim-colors-solarized'
@@ -73,33 +51,26 @@ Plug 'slashmili/alchemist.vim'
 
 Plug 'OmniSharp/omnisharp-vim'
 Plug 'OrangeT/vim-csharp'
+Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-vinegar'
+Plug 'editorconfig/editorconfig-vim'
 
-Plug 'JamshedVesuna/vim-markdown-preview'
+Plug 'nvie/vim-flake8'
 
 call plug#end()
 
-" 1.1.2 Configure Plugins
-" 1.1.2.0 Vim Airline
-" Display buffers like tabs when only one tab is open.
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_powerline_fonts = 1
+" Configure Plugins
 
-" 1.1.2.1 NERDTree
-" If all buffers are closed except for the NERDTree buffer, quit.
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-let g:NERDTreeDirArrowExpandable = '+'
-let g:NERDTreeDirArrowCollapsible = '~'
-let NERDTreeIgnore = ['\.pyc$']
-
-" 1.1.2.2 Deoplete
+" Deoplete
 " Use deoplete.
 let g:deoplete#enable_at_startup = 1
 
-" 1.2 Colors and Theme
+" Colors and Theme
 silent! colorscheme solarized
 set background=dark
 
-" 1.3 Custom Controls
+" Custom Controls
+
 " Set the Leader key. I leave the leader key as '\' and remap ' ' to it
 " instead of setting ' ' as the leader. This is so that showcmd is actually
 " useful.
@@ -132,6 +103,8 @@ nnoremap <Leader>wh <C-w>h
 nnoremap <Leader>wj <C-w>j
 nnoremap <Leader>wk <C-w>k
 nnoremap <Leader>wl <C-w>l
+nnoremap <Leader>wsh :sp<CR>
+nnoremap <Leader>wsv :vsp<CR>
 nnoremap <Leader>wnh :Sex<CR>
 nnoremap <Leader>wnv :Sex!<CR>
 nnoremap <Leader>wrh :resize<Space>
@@ -168,9 +141,6 @@ nnoremap <Leader>cc :cclose<CR>
 "  - n : Write current buffer
 nnoremap <Leader>w :w<CR>
 
-" Open NERDTree
-nnoremap <Leader>e :NERDTree<CR>
-
 " Open FZF
 nnoremap <Leader>o :FZF<CR>
 
@@ -183,3 +153,4 @@ nnoremap <Leader>o :FZF<CR>
 "nmap <Leader>p "+p
 "nmap <Leader>P "+P
 
+nmap <leader>ls :ls<cr>:buffer<space>
