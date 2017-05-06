@@ -31,6 +31,12 @@ install_nodejs
 section "Installing Global NPM Packages"
 install_npm_packages
 
+section "Installing Elixir"
+install_elixir
+
+section "Installing .NET Core"
+install_dotnet
+
 if [[ $remote != true ]]; then
   section "Installing Terminal Emulator"
   install_terminal_emulator

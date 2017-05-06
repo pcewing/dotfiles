@@ -92,6 +92,7 @@
     # check out a local copy of a PR. https://gist.github.com/gnarf/5406589
     pr  = "!f() { git fetch -fu ${2:-origin} refs/pull/$1/head:pr/$1 && git checkout pr/$1; }; f"
     pr-clean = "!git for-each-ref refs/heads/pr/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
+	d = difftool
 
 [color]
     ui = auto
@@ -124,12 +125,6 @@
 [branch]
     # set up 'git pull' to rebase instead of merge
     autosetuprebase = always
-[diff]
-    renames = copies
-    mnemonicprefix = true
-    compactionHeuristic = true
-[difftool]
-    prompt = false
 [apply]
     # do not warn about missing whitespace at EOF
     whitespace = nowarn
@@ -150,3 +145,18 @@
 [pager]
     diff = "diff-so-fancy | less --tabs=4 -RFX"
     show = "diff-so-fancy | less --tabs=4 -RFX"
+[diff]
+    renames = copies
+    mnemonicprefix = true
+    compactionHeuristic = true
+	  tool = vimdiff
+[difftool]
+  prompt = true
+[diftool "vimdiff"]
+  cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+[merge]
+  tool = vimdiff
+[mergetool]
+  prompt = true
+[mergetool "vimdiff"]
+  cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
