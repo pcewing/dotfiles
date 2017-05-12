@@ -73,6 +73,7 @@ alias reload!='source ~/.zshrc'
 
 # Forget about vim.
 alias vim="nvim"
+alias nvimf="nvim \$(fzf)"
 
 # Filesystem aliases
 alias ..='cd ..'
@@ -198,6 +199,9 @@ antigen apply
 # Plugin configuration
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
 
+# Sometimes turning off version control is useful because it can slow down
+# the shell significantly
+#POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time dir)
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time dir vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status background_jobs)
 POWERLEVEL9K_SHORTEN_STRATEGY="truncate_middle"

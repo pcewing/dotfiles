@@ -25,6 +25,8 @@ set expandtab
 
 set ruler
 
+filetype plugin on
+
 " Add a visual indicator to the line the cursor is on.
 function s:SetCursorLine()
   set cursorline
@@ -49,12 +51,16 @@ Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'elixir-lang/vim-elixir'
 Plug 'slashmili/alchemist.vim'
 
-Plug 'OmniSharp/omnisharp-vim'
-Plug 'OrangeT/vim-csharp'
+" Omnisharp and its dependencies
 Plug 'tpope/vim-dispatch'
+Plug 'vim-syntastic/syntastic'
+Plug 'OmniSharp/omnisharp-vim'
+
+Plug 'OrangeT/vim-csharp'
 Plug 'tpope/vim-vinegar'
 Plug 'editorconfig/editorconfig-vim'
 
+" PEP8 Linter
 Plug 'nvie/vim-flake8'
 
 call plug#end()
@@ -65,11 +71,12 @@ call plug#end()
 " Use deoplete.
 let g:deoplete#enable_at_startup = 1
 
+" OmniSharp Setup
+let g:OmniSharp_selector_ui = 'fzf'
+
 " Colors and Theme
 silent! colorscheme solarized
 set background=dark
-
-" Custom Controls
 
 " Set the Leader key. I leave the leader key as '\' and remap ' ' to it
 " instead of setting ' ' as the leader. This is so that showcmd is actually
@@ -88,36 +95,6 @@ nnoremap <Leader>bp :bp<CR>
 nnoremap <Leader>be :Ex<CR>
 nnoremap <Leader>bf :n<Space>
 nnoremap <Leader>bd :bd<CR>
-
-" Window Controls
-" All window controls begin with <Leader>w
-"  - l : Move to the window on the left
-"  - j : Move to the window on the bottom
-"  - k : Move to the window on the top
-"  - l : Move to the window on the right
-"  - nh : Open a file from the explorer in a horizontal split
-"  - nv : Open a file from the explorer in a vertical split
-"  - rh : Resize the window horizontally (Width)
-"  - rv : Resize the window vertically (Height)
-nnoremap <Leader>wh <C-w>h
-nnoremap <Leader>wj <C-w>j
-nnoremap <Leader>wk <C-w>k
-nnoremap <Leader>wl <C-w>l
-nnoremap <Leader>wsh :sp<CR>
-nnoremap <Leader>wsv :vsp<CR>
-nnoremap <Leader>wnh :Sex<CR>
-nnoremap <Leader>wnv :Sex!<CR>
-nnoremap <Leader>wrh :resize<Space>
-nnoremap <Leader>wrv :vertical<Space>resize<Space>
-
-" Tab Controls
-" All tab controls begin with <Leader>t
-"  - n : Move to the next tab
-"  - p : Move to the previous tab
-"  - e : Open explorer in a new tab
-nnoremap <Leader>tn :tabnext<CR>
-nnoremap <Leader>tp :tabprevious<CR>
-nnoremap <Leader>te :Te<CR>
 
 " Grep Controls
 " All grep controls begin with <Leader>g
@@ -154,3 +131,6 @@ nnoremap <Leader>o :FZF<CR>
 "nmap <Leader>P "+P
 
 nmap <leader>ls :ls<cr>:buffer<space>
+
+nnoremap <leader>ssx :set syntax=
+nnoremap <leader>ssg :set syntax=groovy<cr>
