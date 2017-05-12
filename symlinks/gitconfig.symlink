@@ -23,37 +23,8 @@
 
     l = log --graph --pretty=format:'%Cred%h%Creset %C(bold blue)%an%C(reset) - %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
 
-    # show what I did today
-    day = "!sh -c 'git log --reverse --no-merges --branches=* --date=local --after=\"yesterday 11:59PM\" --author=\"`git config --get user.name`\"'"
-
-    # order files by number of commits, ascending
-    # Written by Corey Haines
-    # Scriptified by Gary Bernhardt
-    # Show churn for a time range:
-    #   $ git churn --since='1 month ago'
-    churn = "!f() { git log --all -M -C --name-only --format='format:' \"$@\" | sort | grep -v '^$' | uniq -c | sort | awk 'BEGIN {print \"count\tfile\"} {print $1 \"\t\" $2}' | sort -g; }; f"
-
-    # show all deleted files in the repo
-    deleted = "!git log --diff-filter=D --summary | grep delete"
-
-    # create an empty commit
-    empty = commit --allow-empty
-
     # current branch
     cbr = rev-parse --abbrev-ref HEAD
-
-    # submodule shortcuts
-    si = submodule init
-    su = submodule update
-    sub = "!git submodule sync && git submodule update"
-
-    # show number of commits per contributer, sorted
-    count = shortlog -sn
-
-    undo = reset --soft HEAD~1
-    amend = commit -a --amend
-
-    cleanup = "!git remote prune origin && git gc && git clean -df && git stash clear"
 
     # rebase the current branch with changes from upstream remote
     update = !git fetch upstream && git rebase upstream/`git rev-parse --abbrev-ref HEAD`
@@ -62,37 +33,7 @@
     # show the last tag
     lt = describe --tags --abbrev=0
 
-    # assume aliases
-    assume = update-index --assume-unchanged
-    unassume = update-index --no-assume-unchanged
-    assumed = "!git ls-files -v | grep ^h | cut -c 3-"
-    unassumeall = "!git assumed | xargs git update-index --no-assume-unchanged"
-
-    # show the most recently touched branches
-    recent = "!git for-each-ref --sort='-committerdate' --format='%(color:red)%(refname)%(color:reset)%09%(committerdate)' refs/heads | sed -e 's-refs/heads/--' | less -XFR"
-    latest = "!git for-each-ref --sort='-committerdate' --format='%(color:red)%(refname)%(color:reset)%09%(committerdate)' refs/remotes | sed -e 's-refs/remotes/origin/--' | less -XFR"
-
-    # grep commands
-
-    # 'diff grep'
-    dg = "!sh -c 'git ls-files -m | grep $1 | xargs git diff' -"
-    # diff grep changes between two commits
-    dgc = "!sh -c 'git ls-files | grep $1 | xargs git diff $2 $3 -- ' -"
-    # 'checkout grep'
-    cg = "!sh -c 'git ls-files -m | grep $1 | xargs git checkout ' -"
-    # add grep
-    ag = "!sh -c 'git ls-files -m -o --exclude-standard | grep $1 | xargs git add --all' -"
-    # add all
-    aa = !git ls-files -d | xargs git rm && git ls-files -m -o --exclude-standard | xargs git add
-    # remove grep - Remove found files that are NOT under version control
-    rg = "!sh -c 'git ls-files --others --exclude-standard | grep $1 | xargs rm' -"
-
     remotes = remote -v
-
-    # check out a local copy of a PR. https://gist.github.com/gnarf/5406589
-    pr  = "!f() { git fetch -fu ${2:-origin} refs/pull/$1/head:pr/$1 && git checkout pr/$1; }; f"
-    pr-clean = "!git for-each-ref refs/heads/pr/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
-	d = difftool
 
 [color]
     ui = auto
@@ -141,7 +82,7 @@
     extendRegexp = true
     lineNumber = true
 [rebase]
-	  instructionFormat = "[%an - %ar] %s"
+	instructionFormat = "[%an - %ar] %s"
 [pager]
     diff = "diff-so-fancy | less --tabs=4 -RFX"
     show = "diff-so-fancy | less --tabs=4 -RFX"
@@ -149,14 +90,14 @@
     renames = copies
     mnemonicprefix = true
     compactionHeuristic = true
-	  tool = vimdiff
+	tool = vimdiff
 [difftool]
-  prompt = true
+    prompt = true
 [diftool "vimdiff"]
-  cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+    cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
 [merge]
-  tool = vimdiff
+    tool = vimdiff
 [mergetool]
-  prompt = true
+    prompt = true
 [mergetool "vimdiff"]
-  cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+    cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
