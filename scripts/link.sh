@@ -7,26 +7,26 @@ function link {
     if [ -e $2 ]; then
         echo "~${2#$HOME} already exists... Skipping."
     else
-        echo "Creating symlink for $1"
+        echo "Creating for $1"
         ln -s $1 $2
     fi
 }
 
-echo -e "\nCreating symlinks"
+echo -e "\nCreatings"
 echo "=============================="
 
 [[ ! -d ~/.config/nvim ]] && mkdir -p ~/.config/nvim
 [[ ! -d ~/.config/i3 ]] && mkdir -p ~/.config/i3
 
-link $DOTFILES/symlinks/gitconfig.symlink        ~/.gitconfig
-link $DOTFILES/symlinks/gitignore_global.symlink ~/.gitignore_global
-link $DOTFILES/symlinks/init.vim.symlink         ~/.config/nvim/init.vim
-link $DOTFILES/symlinks/inputrc.symlink          ~/.inputrc
-link $DOTFILES/symlinks/tmux.conf.symlink        ~/.tmux.conf
-link $DOTFILES/symlinks/zshrc.symlink            ~/.zshrc
+link $DOTFILES/config/gitconfig        ~/.gitconfig
+link $DOTFILES/config/gitignore_global ~/.gitignore_global
+link $DOTFILES/config/init.vim         ~/.config/nvim/init.vim
+link $DOTFILES/config/inputrc          ~/.inputrc
+link $DOTFILES/config/tmux.conf        ~/.tmux.conf
+link $DOTFILES/config/zshrc            ~/.zshrc
 
 if [[ $remote != true ]]; then
-  link $DOTFILES/symlinks/i3config.symlink         ~/.config/i3/config
-  link $DOTFILES/symlinks/Xdefaults.symlink        ~/.Xdefaults
-  link $DOTFILES/symlinks/xinitrc.symlink          ~/.xinitrc
+  link $DOTFILES/config/i3config       ~/.config/i3/config
+  link $DOTFILES/config/Xdefaults      ~/.Xdefaults
+  link $DOTFILES/config/xinitrc        ~/.xinitrc
 fi

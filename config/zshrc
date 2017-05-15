@@ -1,0 +1,33 @@
+export DOTFILES=$HOME/.dotfiles
+export EDITOR='nvim'
+
+# Add the following directories to PATH if they exist:
+[[ -d /usr/local/bin ]]    && export PATH=/usr/local/bin:$PATH
+[[ -d /usr/local/sbin ]]   && export PATH=/usr/local/sbin:$PATH
+[[ -d $DOTFILES/bin ]]     && export PATH=$DOTFILES/bin:$PATH
+[[ -d ~/bin ]]             && export PATH=~/bin:$PATH
+[[ -d ~/.rvm ]]            && export PATH=$HOME/.rvm/bin:$PATH
+[[ -d ~/.npm-global/bin ]] && export PATH=$HOME/.npm-global/bin:$PATH
+
+# Load config files
+for config ($DOTFILES/config/zsh/**/*.zsh) source $config
+
+# Set up Node Version Manager.
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Alias git to hub; see https://github.com/github/hub
+if hash hub 2>/dev/null; then
+    eval "$(hub alias -s)"
+fi
+
+if [[ -e ~/.localrc ]]; then
+    source ~/.localrc
+fi
+
+if [[ -e ~/.profile ]]; then
+    source ~/.profile
+fi
+

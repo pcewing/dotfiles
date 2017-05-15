@@ -70,7 +70,7 @@ nvim +PlugInstall +qa
 To generate your own, download the arandr package (A front-end for xrandr), run it, and save the desired configuration to `~/.screenlayout/config`. If that file exists, it will be sourced in the *i3* config.
 ```bash
 mkdir -p ~/.screenlayout
-ln -s ~/.dotfiles/symlinks/screenlayout.symlink ~/.screenlayout/config.sh
+ln -s ~/.dotfiles/config/screenlayout ~/.screenlayout/config.sh
 ```
 
 #### Setup Wallpaper
@@ -85,7 +85,7 @@ Mintty (For WSL) should be installed from https://github.com/mintty/wsltty
 
 #### 2. Set up solarized colors.
 
-The minttyrc.symlink file in this repo should be copied to %LOCALAPPDATA%\\wsltty\\home\\%USERNAME%\\.minttyrc
+The *WSL/minttyrc* file in this repo should be copied to %LOCALAPPDATA%\\wsltty\\home\\%USERNAME%\\.minttyrc
 
 #### 3. Set the correct terminal type and automatically start *zsh*.
 
