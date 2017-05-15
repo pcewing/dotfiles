@@ -134,3 +134,8 @@ nmap <leader>ls :ls<cr>:buffer<space>
 
 nnoremap <leader>ssx :set syntax=
 nnoremap <leader>ssg :set syntax=groovy<cr>
+
+nnoremap <silent> <leader><Up> :resize +5<cr>
+nnoremap <silent> <leader><Down> :resize -5<cr>
+nnoremap <silent> <leader><Right> :vertical resize +5<cr>
+nnoremap <silent> <leader><Left> :vertical resize -5<cr>
