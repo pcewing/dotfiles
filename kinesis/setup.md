@@ -1,4 +1,11 @@
 # Kinesis Advantage2 Setup
+## Hard Reset the Board
+
+A “hard reset” is more complete. It will return the keyboard to its default configuration for both QWERTY and Dvorak layouts and returns to the “win” thumb key setting. To perform a hard reset, press and briefly hold the right Ctrl plus F9 while plugging the keyboard into a USB port. As soon as the LEDs start flashing, release the keys. See details in User’s Manual. Rarely the ctrl key may become “stuck” after this process. If you notice odd behavior from your keyboard after a hard reset, just tap one or both control keys.
+
+Tl;dr, while plugging the board in, hold:
+rctrl + F9
+
 
 ## Turn off sounds
 Turn off the clicks by pressing:
