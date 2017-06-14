@@ -39,3 +39,5 @@
 [kp-pup]>[lalt]
 [pdown]>[lctrl]
 [kp-pdown]>[lctrl]
+[kp1]>[menu]
+[kp8]>[kp-insert]
