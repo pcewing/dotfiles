@@ -157,3 +157,6 @@ bar {
 
 # Source the machine-specific screen layout.
 exec_always "[ -L ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
+
+# Restore background
+exec_always "nitrogen --restore"

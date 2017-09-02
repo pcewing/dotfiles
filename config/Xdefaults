@@ -46,6 +46,16 @@ URxvt.boldItalicFont: xft:Ubuntu Mono derivative Powerline:pixelsize=16:bold:ita
 ! light gray.
 URxvt.intensityStyles: false
 
+! This adds "real" transparency, but it requires a composite manager to be running.
+! URxvt*depth:      32
+! URxvt*background: rgba:0000/0000/0200/c800
+
+! This adds "fake" transparency. If a composite manager isn't running, this
+! simulates transparency by capturing what's behind the window and drawing
+! it as the background.
+URxvt*transparent: true
+URxvt*shading:     10
+
 URxvt*urlLauncher:     firefox
 URxvt*scrollBar:       false
 URxvt*scrollBar_right: true

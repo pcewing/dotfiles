@@ -78,6 +78,8 @@ let g:OmniSharp_selector_ui = 'fzf'
 silent! colorscheme solarized
 set background=dark
 
+hi Normal guibg=NONE ctermbg=NONE
+
 " Set the Leader key. I leave the leader key as '\' and remap ' ' to it
 " instead of setting ' ' as the leader. This is so that showcmd is actually
 " useful.
