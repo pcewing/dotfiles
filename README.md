@@ -7,7 +7,11 @@ My environment looks like:
 ## Software
 For a complete list of the software configured it is best to just look in the **scripts/provision/ubuntu.sh** provisioning script as the list in the README would likely become outdated. That being said, my primary development stack isn't likely to change and it looks like:  
 
-`i3wm` -> `urxvt` -> `tmux` -> `zsh` -> `neovim`
+**Local (Graphical) Environment**
+`i3wm` -> `urxvt` -> `zsh` -> `neovim`
+
+**Remote Environment**
+`ssh`-> `tmux` -> `urxvt` -> `zsh` -> `neovim`
 
 ## Setup
 The *setup* script in the root directory is designed to help clean existing configuration files, create symbolic links to the configuration files in this repository, and provision necessary software/packages. For usage information:
