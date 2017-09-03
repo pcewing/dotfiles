@@ -49,11 +49,11 @@ set color_win_cur=4
 
 #Background color of the selected row which is also the currently playing track in active window.
 #color_win_cur_sel_bg (blue) [Color]
-set color_win_cur_sel_bg=0
+set color_win_cur_sel_bg=6
 
 #Foreground color of the selected row which is also the currently playing track in active window.
 #color_win_cur_sel_fg (lightyellow) [Color]
-set color_win_cur_sel_fg=4
+set color_win_cur_sel_fg=0
 
 #Attributes of the selected row which is also the currently playing track in active window.
 #color_win_cur_sel_attr (default) [Attributes]
@@ -93,11 +93,11 @@ set color_win_inactive_sel_fg=-1
 
 #Background color of selected row in active window.
 #color_win_sel_bg (blue) [Color]
-set color_win_sel_bg=0
+set color_win_sel_bg=6
 
 #Foreground color of selected row in active window.
 #color_win_sel_fg (white) [Color]
-set color_win_sel_fg=-1
+set color_win_sel_fg=0
 
 #Attributes of selected row in active window.
 #color_win_sel_attr (default) [Attributes]
