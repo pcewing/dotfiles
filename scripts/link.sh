@@ -24,6 +24,8 @@ link $DOTFILES/config/init.vim         ~/.config/nvim/init.vim
 link $DOTFILES/config/inputrc          ~/.inputrc
 link $DOTFILES/config/tmux.conf        ~/.tmux.conf
 link $DOTFILES/config/zshrc            ~/.zshrc
+link $DOTFILES/config/cmusrc           ~/.config/cmus/rc
+link $DOTFILES/config/rangerrc         ~/.config/ranger/rc.conf
 
 if [[ $remote != true ]]; then
   link $DOTFILES/config/i3config       ~/.config/i3/config
