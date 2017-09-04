@@ -110,10 +110,13 @@ bindsym $mod+Shift+0 move container to workspace 10
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
+
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
+
 # exit i3 (logs you out of your X session)
-bindsym $mod+x exec "i3-msg exit"
+# Upon exiting i3, kill the wallpaper rotator application if it's running
+bindsym $mod+x exec "i3-msg exit; (pidof wpr) && killall wpr"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -154,7 +157,8 @@ exec_always "[ -L ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
 
 # Restore background
 #exec_always "nitrogen --restore"
-exec_always "killall wpr && $DOTFILES/tools/wpr/wpr --wallpaperDir=$HOME/Dropbox/Pictures/Wallpapers/Blizzard --displayCount=2 --interval=300 &"
+# If the wallpaper rotator is not already running, launch it.
+exec_always "(pidof wpr) || $HOME/.dotfiles/tools/wpr/wpr --wallpaperDir=$HOME/Dropbox/Pictures/Wallpapers/Blizzard --displayCount=2 --interval=300 &"
 
 # gaps
 gaps inner 20
