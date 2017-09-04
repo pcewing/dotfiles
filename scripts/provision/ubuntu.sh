@@ -123,12 +123,51 @@ if [[ $remote != true ]]; then
 
   install_graphical_environment()
   {
-    # The officially supported i3 is usually pretty out of date, so use the repository instead.
-    sudo /usr/lib/apt/apt-helper download-file http://debian.sur5r.net/i3/pool/main/s/sur5r-keyring/sur5r-keyring_2017.01.02_all.deb keyring.deb SHA256:4c3c6685b1181d83efe3a479c5ae38a2a44e23add55e16a328b8c8560bf05e5f
-    sudo dpkg -i ./keyring.deb
-    sudo sh -c 'echo "deb http://debian.sur5r.net/i3/ $(grep '^DISTRIB_CODENAME=' /etc/lsb-release | cut -f2 -d=) universe" >> /etc/apt/sources.list.d/sur5r-i3.list'
-    sudo apt update
-    sudo apt install i3
+    # This will install the following:
+    # https://github.com/Airblader/i3
+    # It is a fork from the official i3wm but it has some neat features 
+    # I configure in my i3config such as gaps
+
+    sudo apt-get -y install libxcb1-dev
+    sudo apt-get -y install libxcb-keysyms1-dev
+    sudo apt-get -y install libpango1.0-dev
+    sudo apt-get -y install libxcb-util0-dev
+    sudo apt-get -y install libxcb-icccm4-dev
+    sudo apt-get -y install libyajl-dev
+    sudo apt-get -y install libstartup-notification0-dev
+    sudo apt-get -y install libxcb-randr0-dev
+    sudo apt-get -y install libev-dev
+    sudo apt-get -y install libxcb-cursor-dev
+    sudo apt-get -y install libxcb-xinerama0-dev
+    sudo apt-get -y install libxcb-xkb-dev
+    sudo apt-get -y install libxkbcommon-dev
+    sudo apt-get -y install libxkbcommon-x11-dev
+    sudo apt-get -y install autoconf
+    sudo apt-get -y install libxcb-xrm0
+    sudo apt-get -y install libxcb-xrm-dev
+    sudo apt-get -y install automake
+
+    sudo add-apt-repository ppa:aguignard/ppa
+    sudo apt-get update
+    sudo apt-get install libxcb-xrm-dev
+
+    mkdir -p ~/src
+    cd ~/src
+
+    # clone the repository
+    git clone https://www.github.com/Airblader/i3 i3-gaps
+    cd i3-gaps
+
+    # compile & install
+    autoreconf --force --install
+    rm -rf build/
+    mkdir -p build && cd build/
+
+    # Disabling sanitizers is important for release versions!
+    # The prefix and sysconfdir are, obviously, dependent on the distribution.
+    ../configure --prefix=/usr --sysconfdir=/etc --disable-sanitizers
+    make
+    sudo make install
   }
 
   install_fonts()

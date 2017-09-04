@@ -16,6 +16,10 @@ font pango:Ubuntu Mono derivative Powerline 10
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
+for_window [class="^.*"] border pixel 2
+
+client.focused          #ff0000 #285577 #ffffff #2e9ef4   #00ffff
+
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
 
@@ -149,5 +153,8 @@ bar {
 exec_always "[ -L ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
 
 # Restore background
-exec_always "nitrogen --restore"
+#exec_always "nitrogen --restore"
+exec_always "killall wpr && $DOTFILES/tools/wpr/wpr --wallpaperDir=$HOME/Dropbox/Pictures/Wallpapers/Blizzard --displayCount=2 --interval=300 &"
 
+# gaps
+gaps inner 20
