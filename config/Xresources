@@ -67,3 +67,4 @@ urxvt*fade:            1
 urxvt.visualBell:      false
 urxvt.urgentOnBell:    true
 
+Xcursor.size: 10

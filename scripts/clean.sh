@@ -16,9 +16,12 @@ remove_link ~/.config/nvim/init.vim
 remove_link ~/.inputrc
 remove_link ~/.tmux.conf
 remove_link ~/.zshrc
+remove_link ~/.config/ranger/rc.conf
 
 if [[ $remote != true ]]; then
-  remove_link ~/.config/i3/config
-  remove_link ~/.Xdefaults
-  remove_link ~/.xinitrc
+    remove_link ~/.config/i3/config
+    remove_link ~/.config/i3status/config
+    remove_link ~/.Xresources
+    remove_link ~/.xinitrc
+    remove_link ~/.config/cmus/rc
 fi

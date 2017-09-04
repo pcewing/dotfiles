@@ -24,13 +24,16 @@ link $DOTFILES/config/init.vim         ~/.config/nvim/init.vim
 link $DOTFILES/config/inputrc          ~/.inputrc
 link $DOTFILES/config/tmux.conf        ~/.tmux.conf
 link $DOTFILES/config/zshrc            ~/.zshrc
-link $DOTFILES/config/cmusrc           ~/.config/cmus/rc
 link $DOTFILES/config/rangerrc         ~/.config/ranger/rc.conf
 
 if [[ $remote != true ]]; then
-  link $DOTFILES/config/i3config       ~/.config/i3/config
-  mkdir -p ~/.config/i3status
-  link $DOTFILES/config/i3status       ~/.config/i3status/config
-  link $DOTFILES/config/Xdefaults      ~/.Xdefaults
-  link $DOTFILES/config/xinitrc        ~/.xinitrc
+    link $DOTFILES/config/i3config       ~/.config/i3/config
+    mkdir -p ~/.config/i3status
+    link $DOTFILES/config/i3status       ~/.config/i3status/config
+    link $DOTFILES/config/Xresources     ~/.Xresources
+    link $DOTFILES/config/xinitrc        ~/.xinitrc
+
+    # Even though this is technically a console application, I'll never
+    # be listening to music on a remote machine.
+    link $DOTFILES/config/cmusrc         ~/.config/cmus/rc
 fi
