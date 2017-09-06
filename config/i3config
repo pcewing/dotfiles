@@ -157,7 +157,7 @@ exec_always "[ -e ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
 
 # Restore background
 # If the wallpaper rotator is not already running, launch it.
-exec_always "(pidof wpr) || [ -e $HOME/Dropbox/Pictures/Wallpapers/Blizzard ] && $HOME/.dotfiles/tools/wpr/wpr --wallpaperDir=$HOME/Dropbox/Pictures/Wallpapers/Blizzard --displayCount=2 --interval=300 &"
+exec_always "$HOME/.dotfiles/tools/WallpaperRotator/WallpaperRotator --wallpaperDir=$HOME/Dropbox/Pictures/Wallpapers/Blizzard --displayCount=2 --interval=300 &"
 
 # gaps
 gaps inner 20
