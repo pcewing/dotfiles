@@ -33,6 +33,9 @@ if [[ $remote != true ]]; then
     link $DOTFILES/config/Xresources     ~/.Xresources
     link $DOTFILES/config/xinitrc        ~/.xinitrc
 
+    mkdir -p ~/.config/wpr
+    link $DOTFILES/config/wprrc.json     ~/.config/wpr/wprrc.json
+
     # Even though this is technically a console application, I'll never
     # be listening to music on a remote machine.
     link $DOTFILES/config/cmusrc         ~/.config/cmus/rc

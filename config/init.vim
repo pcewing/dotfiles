@@ -50,6 +50,7 @@ Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 " Language support.
 Plug 'elixir-lang/vim-elixir'
 Plug 'slashmili/alchemist.vim'
+Plug 'fatih/vim-go'
 
 " Omnisharp and its dependencies
 Plug 'tpope/vim-dispatch'

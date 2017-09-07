@@ -5,9 +5,12 @@ export EDITOR='nvim'
 [[ -d /usr/local/bin ]]    && export PATH=/usr/local/bin:$PATH
 [[ -d /usr/local/sbin ]]   && export PATH=/usr/local/sbin:$PATH
 [[ -d $DOTFILES/bin ]]     && export PATH=$DOTFILES/bin:$PATH
-[[ -d ~/bin ]]             && export PATH=~/bin:$PATH
+[[ -d ~/bin ]]             && export PATH=$HOME/bin:$PATH
 [[ -d ~/.rvm ]]            && export PATH=$HOME/.rvm/bin:$PATH
 [[ -d ~/.npm-global/bin ]] && export PATH=$HOME/.npm-global/bin:$PATH
+[[ -d /usr/local/go/bin ]] && export PATH=/usr/local/go/bin:$PATH
+[[ -d ~/go/bin ]]          && export PATH=$HOME/go/bin:$PATH
+[[ -d ~/go ]]              && export PATH=$HOME/go:$PATH
 
 # Load config files
 for config ($DOTFILES/config/zsh/**/*.zsh) source $config

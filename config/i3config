@@ -115,8 +115,7 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 
 # exit i3 (logs you out of your X session)
-# Upon exiting i3, kill the wallpaper rotator application if it's running
-bindsym $mod+x exec "i3-msg exit; (pidof wpr) && killall wpr"
+bindsym $mod+x exec "i3-msg exit"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -157,7 +156,7 @@ exec_always "[ -e ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
 
 # Restore background
 # If the wallpaper rotator is not already running, launch it.
-exec_always "$HOME/.dotfiles/tools/WallpaperRotator/WallpaperRotator --wallpaperDir=$HOME/Dropbox/Pictures/Wallpapers/Blizzard --displayCount=2 --interval=300 &"
+exec_always "sh $HOME/.dotfiles/tools/wpr.sh"
 
 # gaps
 gaps inner 20
