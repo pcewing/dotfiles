@@ -1,9 +1,6 @@
 # gitconfig
-[user]
-    name = Paul Ewing
-    email = pcewing00@gmail.com
-[github]
-    user = pcewing
+[include]
+    path = .gitconfig_local
 [alias]
     # list all aliases
     la = "!git config -l | grep alias | cut -c 7-"

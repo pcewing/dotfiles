@@ -82,6 +82,13 @@ This can be done after launching Neovim by executing the command:
 nvim +PlugInstall +qa
 ```
 
+### Setup gitconfig
+Since I have different credentials at work, the user settings are in a
+different file so that it is easy to switch them.
+```bash
+ln -s ~/.dotfiles/config/gitconfig_local ~/.gitconfig_local
+```
+
 #### Setup Screen Configuration
 The `xrandr` application can be used to save screen configuration and load it
 everytime i3 starts up. To do this, download the arandr package which is a GUI
