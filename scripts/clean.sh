@@ -25,4 +25,5 @@ if [[ $remote != true ]]; then
     remove_link ~/.xinitrc
     remove_link ~/.config/cmus/rc
     remove_link ~/.config/wpr/wprrc.json
+    remove_link ~/.config/polybar/config
 fi
