@@ -29,7 +29,7 @@ link $DOTFILES/config/rangerrc         ~/.config/ranger/rc.conf
 if [[ $remote != true ]]; then
     link $DOTFILES/config/i3config       ~/.config/i3/config
     mkdir -p ~/.config/i3status
-    link $DOTFILES/config/i3status       ~/.config/i3status/config
+    link $DOTFILES/config/i3status.conf  ~/.config/i3status/i3status.conf
     link $DOTFILES/config/Xresources     ~/.Xresources
     link $DOTFILES/config/xinitrc        ~/.xinitrc
 

@@ -123,40 +123,45 @@ if [[ $remote != true ]]; then
 
   install_graphical_environment()
   {
+    # This is used for taking screenshots instead of gnome-screenshot; it is
+    # mapped to hotkeys in the i3config
+    install scrot
+
     # This will install the following:
     # https://github.com/Airblader/i3
-    # It is a fork from the official i3wm but it has some neat features 
-    # I configure in my i3config such as gaps
+    install libxcb1-dev
+    install libxcb-keysyms1-dev
+    install libpango1.0-dev
+    install libxcb-util0-dev
+    install libxcb-icccm4-dev
+    install libyajl-dev
+    install libstartup-notification0-dev
+    install libxcb-randr0-dev
+    install libev-dev
+    install libxcb-cursor-dev
+    install libxcb-xinerama0-dev
+    install libxcb-xkb-dev
+    install libxkbcommon-dev
+    install libxkbcommon-x11-dev
+    install autoconf
+    install libxcb-xrm0
+    install libxcb-xrm-dev
+    install automake
 
-    sudo apt-get -y install libxcb1-dev
-    sudo apt-get -y install libxcb-keysyms1-dev
-    sudo apt-get -y install libpango1.0-dev
-    sudo apt-get -y install libxcb-util0-dev
-    sudo apt-get -y install libxcb-icccm4-dev
-    sudo apt-get -y install libyajl-dev
-    sudo apt-get -y install libstartup-notification0-dev
-    sudo apt-get -y install libxcb-randr0-dev
-    sudo apt-get -y install libev-dev
-    sudo apt-get -y install libxcb-cursor-dev
-    sudo apt-get -y install libxcb-xinerama0-dev
-    sudo apt-get -y install libxcb-xkb-dev
-    sudo apt-get -y install libxkbcommon-dev
-    sudo apt-get -y install libxkbcommon-x11-dev
-    sudo apt-get -y install autoconf
-    sudo apt-get -y install libxcb-xrm0
-    sudo apt-get -y install libxcb-xrm-dev
-    sudo apt-get -y install automake
+    # Install py3status (Alternative to i3status)
+    try sudo pip install py3status
 
     sudo add-apt-repository ppa:aguignard/ppa
-    sudo apt-get update
-    sudo apt-get install libxcb-xrm-dev
+    update
+    install libxcb-xrm-dev
 
     mkdir -p ~/src
-    cd ~/src
 
     # clone the repository
-    git clone https://www.github.com/Airblader/i3 i3-gaps
-    cd i3-gaps
+    i3dir=~/src/i3-gaps
+    [ ! -e $i3dir ] || rm -rf $i3dir
+    git clone https://www.github.com/Airblader/i3 $i3dir
+    cd $i3dir
 
     # compile & install
     autoreconf --force --install

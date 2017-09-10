@@ -20,7 +20,7 @@ remove_link ~/.config/ranger/rc.conf
 
 if [[ $remote != true ]]; then
     remove_link ~/.config/i3/config
-    remove_link ~/.config/i3status/config
+    remove_link ~/.config/i3status/i3status.conf
     remove_link ~/.Xresources
     remove_link ~/.xinitrc
     remove_link ~/.config/cmus/rc
