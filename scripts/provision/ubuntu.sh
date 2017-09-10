@@ -29,6 +29,7 @@ install_basics()
 {
   update
   install git
+  install vim
   install wget
   install curl
   install make
@@ -151,7 +152,7 @@ if [[ $remote != true ]]; then
     # Install py3status (Alternative to i3status)
     try sudo pip install py3status
 
-    sudo add-apt-repository ppa:aguignard/ppa
+    add-apt-repository ppa:aguignard/ppa
     update
     install libxcb-xrm-dev
 
@@ -164,15 +165,15 @@ if [[ $remote != true ]]; then
     cd $i3dir
 
     # compile & install
-    autoreconf --force --install
+    try autoreconf --force --install
     rm -rf build/
     mkdir -p build && cd build/
 
     # Disabling sanitizers is important for release versions!
     # The prefix and sysconfdir are, obviously, dependent on the distribution.
-    ../configure --prefix=/usr --sysconfdir=/etc --disable-sanitizers
-    make
-    sudo make install
+    try ../configure --prefix=/usr --sysconfdir=/etc --disable-sanitizers
+    try make
+    try sudo make install
   }
 
   install_fonts()
