@@ -51,6 +51,10 @@ bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
+# move workspace
+bindsym $mod+Shift+comma move workspace to output left
+bindsym $mod+Shift+period move workspace to output right
+
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
@@ -172,7 +176,7 @@ bar {
 
     status_command py3status -c ~/.config/i3status/i3status.conf
     tray_output primary
-    separator_symbol " "
+    separator_symbol "•"
 }
 
 # Source the machine-specific screen layout.
