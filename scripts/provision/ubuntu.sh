@@ -3,6 +3,8 @@
 DOTFILES=$HOME/.dotfiles
 remote=$1
 antigen_version=1.2.1
+golang_version=1.9
+dotnet_version=2.0.0
 
 try()
 {
@@ -20,37 +22,37 @@ try()
   fi
 }
 
-update(){ echo "Updating package lists... "; try sudo apt-get -y update; }
-upgrade(){ echo "Upgrading packages... "; try sudo apt-get -y upgrade; }
-install(){ echo "Installing $1... "; try sudo apt-get -y install $1; }
-add-apt-repository(){ echo "Adding $1 repository... "; try sudo add-apt-repository -y ppa:$1; }
+apt_update(){ echo "Updating package lists... "; try sudo apt-get -y update; }
+apt_upgrade(){ echo "Upgrading packages... "; try sudo apt-get -y upgrade; }
+apt_install(){ echo "Installing $1... "; try sudo apt-get -y install $1; }
+apt_add_repo(){ echo "Adding $1 repository... "; try sudo add-apt-repository -y ppa:$1; }
 
 install_basics()
 {
-  update
-  install git
-  install vim
-  install wget
-  install curl
-  install make
-  install xclip
-  install ack-grep
-  install build-essential
-  install tmux
-  install inotify-tools
+  apt_update
+  apt_install git
+  apt_install vim
+  apt_install wget
+  apt_install curl
+  apt_install make
+  apt_install xclip
+  apt_install ack-grep
+  apt_install build-essential
+  apt_install tmux
+  apt_install inotify-tools
 }
 
 install_python()
 {
-  install python-dev
-  install python-pip
-  install python3-dev
-  install python3-pip
+  apt_install python-dev
+  apt_install python-pip
+  apt_install python3-dev
+  apt_install python3-pip
 }
 
 install_shell()
 {
-  install zsh
+  apt_install zsh
 
   echo "Creating the $HOME/.zsh directory if it doesn't exist...  "
   try mkdir -p $HOME/.zsh
@@ -58,11 +60,28 @@ install_shell()
   try eval $(curl https://cdn.rawgit.com/zsh-users/antigen/v${antigen_version}/bin/antigen.zsh > $HOME/.zsh/antigen.zsh)
 }
 
+install_golang()
+{
+  echo "Downloading golang v$golang_version tarball"
+  try wget "https://storage.googleapis.com/golang/go$golang_version.linux-amd64.tar.gz"
+
+  echo "Extracting the golang tarball"
+  try sudo tar -C /usr/local -xzf go$golang_version.linux-amd64.tar.gz
+
+  echo "Removing golang tarball"
+  try rm go$golang_version.linux-amd64.tar.gz
+
+  echo "Setting up golang directory structure"
+  try mkdir -p $HOME/go/bin
+  try mkdir -p $HOME/go/pkg
+  try mkdir -p $HOME/go/src/github.com/pcewing
+}
+
 install_neovim()
 {
-  add-apt-repository neovim-ppa/unstable
-  update
-  install neovim
+  apt_add_repo neovim-ppa/unstable
+  apt_update
+  apt_install neovim
 
   echo "Setting up neovim python support..."
   try pip install --upgrade neovim
@@ -75,13 +94,16 @@ install_neovim()
   try mkdir -p $HOME/.config/nvim/autoload
   echo "Downloading vim-plug from https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim...  "
   try curl -fLo $HOME/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+  echo "Installing Neovim plugins"
+  try nvim +PlugInstall +qa
 }
 
 install_nodejs()
 {
   echo "Adding NodeJS repository... "
   try sudo bash -c "curl --silent --location https://deb.nodesource.com/setup_6.x | bash -"
-  install nodejs
+  apt_install nodejs
   echo "Creating the $HOME/.npm-global directory if it doesn't exist...  "
   try mkdir -p $HOME/.npm-global
   echo "Setting npm global directory to $HOME/.npm-global to avoid permissions issues when globally installing packages...  "
@@ -100,57 +122,60 @@ install_elixir()
   try wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
   echo "Installing the Erlang/Elixir package"
   try sudo dpkg -i erlang-solutions_1.0_all.deb
-  update
-  install esl-erlang
-  install elixir
+  apt_update
+  apt_install esl-erlang
+  apt_install elixir
   echo "Removing the Erlang/Elixir package"
   rm erlang-solutions_1.0_all.deb
 }
 
 install_dotnet()
 {
-  echo "Adding .NET core to package lists... "
-  try sudo sh -c 'echo "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ xenial main" > /etc/apt/sources.list.d/dotnetdev.list'
-  echo "Adding .NET core gpg key... "
-  try sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 417A0893
-  update
-  install dotnet-dev-1.0.0-preview2.1-003177
+  echo "Downloading the Microsoft GPG key"
+  try sudo sh -c 'curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg'
+  echo "Registering the Microsoft GPG key"
+  try sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+  echo "Registering the package source"
+  try sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-xenial-prod xenial main" > /etc/apt/sources.list.d/dotnetdev.list'
+
+  apt_update
+  apt_install dotnet-sdk-$dotnet_version
 }
 
 if [[ $remote != true ]]; then
   install_terminal_emulator()
   {
-    install rxvt-unicode
-    install rxvt-unicode-256color
+    apt_install rxvt-unicode
+    apt_install rxvt-unicode-256color
   }
 
   install_graphical_environment()
   {
     # This is used for taking screenshots instead of gnome-screenshot; it is
     # mapped to hotkeys in the i3config
-    install scrot
+    apt_install scrot
 
     # This will install the following:
     # https://github.com/Airblader/i3
-    install libxcb1-dev
-    install libxcb-keysyms1-dev
-    install libpango1.0-dev
-    install libxcb-util0-dev
-    install libxcb-icccm4-dev
-    install libyajl-dev
-    install libstartup-notification0-dev
-    install libxcb-randr0-dev
-    install libev-dev
-    install libxcb-cursor-dev
-    install libxcb-xinerama0-dev
-    install libxcb-xkb-dev
-    install libxkbcommon-dev
-    install libxkbcommon-x11-dev
-    install autoconf
+    apt_install libxcb1-dev
+    apt_install libxcb-keysyms1-dev
+    apt_install libpango1.0-dev
+    apt_install libxcb-util0-dev
+    apt_install libxcb-icccm4-dev
+    apt_install libyajl-dev
+    apt_install libstartup-notification0-dev
+    apt_install libxcb-randr0-dev
+    apt_install libev-dev
+    apt_install libxcb-cursor-dev
+    apt_install libxcb-xinerama0-dev
+    apt_install libxcb-xkb-dev
+    apt_install libxkbcommon-dev
+    apt_install libxkbcommon-x11-dev
+    apt_install autoconf
 
-    add-apt-repository aguignard/ppa
-    update
-    install libxcb-xrm-dev
+    apt_add_repo aguignard/ppa
+    apt_update
+    apt_install libxcb-xrm-dev
 
     mkdir -p ~/src
 
@@ -172,7 +197,34 @@ if [[ $remote != true ]]; then
     try sudo make install
 
     # Install py3status (Alternative to i3status)
+    apt_install i3status
+    echo "Installing py3status"
     try sudo pip install py3status
+
+    # Install wallpaper rotator
+    wprdir=$HOME/go/src/github.com/pcewing/wpr
+    if [[ ! -e $wprdir ]]; then
+      echo "Downloading wallpaper rotator repo"
+      try git clone https://github.com/pcewing/wpr $wprdir
+    fi
+
+    echo "Installing the wallpaper rotator app"
+    try go install github.com/pcewing/wpr
+
+    # TODO: I should probably split these apps into their own function
+    apt_install cmus
+  }
+
+  install_dropbox()
+  {
+    echo "Adding dropbox to apt sources list"
+    try sudo sh -c 'echo "deb [arch=i386,amd64] http://linux.dropbox.com/ubuntu wily main" > /etc/apt/sources.list'
+
+    echo "Adding .NET core gpg key... "
+    try sudo apt-key adv --keyserver pgp.mit.edu --recv-keys 1C61A2656FB57B7E4DE0F4C1FC918B335044912E
+
+    apt_update
+    apt_install dropbox
   }
 
   install_fonts()

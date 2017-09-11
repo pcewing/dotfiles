@@ -19,6 +19,9 @@ install_basics
 section "Installing Python 2 and 3"
 install_python
 
+section "Installing Golang"
+install_golang
+
 section "Installing ZSH with Antigen"
 install_shell
 
@@ -36,6 +39,9 @@ install_elixir
 
 section "Installing .NET Core"
 install_dotnet
+
+section "Installing Dropbox"
+install_dropbox
 
 if [[ $remote != true ]]; then
   section "Installing Terminal Emulator"

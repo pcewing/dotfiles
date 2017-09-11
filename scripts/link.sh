@@ -34,9 +34,6 @@ if [[ $remote != true ]]; then
     link $DOTFILES/config/Xresources     ~/.Xresources
     link $DOTFILES/config/xinitrc        ~/.xinitrc
 
-    mkdir -p ~/.config/wpr
-    link $DOTFILES/config/wprrc.json     ~/.config/wpr/wprrc.json
-
     mkdir -p ~/.config/polybar
     link $DOTFILES/config/polybar     ~/.config/polybar/config
 
