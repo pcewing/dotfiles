@@ -24,6 +24,7 @@ link $DOTFILES/config/init.vim         ~/.config/nvim/init.vim
 link $DOTFILES/config/inputrc          ~/.inputrc
 link $DOTFILES/config/tmux.conf        ~/.tmux.conf
 link $DOTFILES/config/zshrc            ~/.zshrc
+mkdir -p ~/.config/ranger
 link $DOTFILES/config/rangerrc         ~/.config/ranger/rc.conf
 
 if [[ $remote != true ]]; then
@@ -41,5 +42,6 @@ if [[ $remote != true ]]; then
 
     # Even though this is technically a console application, I'll never
     # be listening to music on a remote machine.
+    mkdir -p ~/.config/cmus
     link $DOTFILES/config/cmusrc         ~/.config/cmus/rc
 fi

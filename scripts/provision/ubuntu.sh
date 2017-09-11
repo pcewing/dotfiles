@@ -148,7 +148,7 @@ if [[ $remote != true ]]; then
     install libxkbcommon-x11-dev
     install autoconf
 
-    add-apt-repository ppa:aguignard/ppa
+    add-apt-repository aguignard/ppa
     update
     install libxcb-xrm-dev
 
