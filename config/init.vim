@@ -8,6 +8,7 @@ set showmode                    "Show current mode down the bottom
 set gcr=a:blinkon0              "Disable cursor blink
 set visualbell                  "No sounds
 set autoread                    "Reload files changed outside vim
+set autowrite                   "Write the file on :make
 set laststatus=2                "Always display the status line
 set hidden                      "Hide buffer instead of closing it
 set pastetoggle=<F2>            "Paste without being smart
@@ -71,6 +72,10 @@ call plug#end()
 " Deoplete
 " Use deoplete.
 let g:deoplete#enable_at_startup = 1
+
+" Setup vim-go mappings
+autocmd FileType go nmap <Leader>gor :GoRun<CR>
+autocmd FileType go nmap <Leader>gob :GoBuild<CR>
 
 " OmniSharp Setup
 let g:OmniSharp_selector_ui = 'fzf'
