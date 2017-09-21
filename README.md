@@ -73,6 +73,14 @@ chsh -s $(which zsh)
 sudo update-alternatives --config x-terminal-emulator
 ```
 
+#### Install Nvidia Driver
+I left this as a manual step because not every machine will have an Nvidia card (I.E. Virtual machines).
+```bash
+# Check if this is still the latest available driver via:
+# sudo apt search nvidia
+sudo apt-get -y install nvidia-375
+```
+
 ### Setup gitconfig
 Since I have different credentials at work, the user settings are in a
 different file so that it is easy to switch them.

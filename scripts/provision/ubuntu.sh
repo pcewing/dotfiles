@@ -187,7 +187,8 @@ install_graphical_environment()
     apt_install libxkbcommon-x11-dev
     apt_install autoconf
 
-    apt_install wicd
+    # This pulls up an installer TUI that halts the script
+    #apt_install wicd
     apt_install ubuntu-drivers-common
     apt_install mesa-utils
     apt_install mesa-utils-extra
@@ -202,6 +203,7 @@ install_graphical_environment()
     mkdir -p ~/src
 
     # clone the repository
+    dir=$(pwd)
     i3dir=~/src/i3-gaps
     [ ! -e $i3dir ] || rm -rf $i3dir
     git clone https://www.github.com/Airblader/i3 $i3dir
@@ -217,6 +219,8 @@ install_graphical_environment()
     try ../configure --prefix=/usr --sysconfdir=/etc --disable-sanitizers
     try make
     try sudo make install
+
+    cd $dir
 
     # Install py3status (Alternative to i3status)
     apt_install i3status
@@ -284,16 +288,11 @@ install_all()
     install_npm_packages
     install_elixir
     install_dotnet
-    install_terminal_emulator
-    install_graphical_environment
     install_dropbox
-    install_fonts
-
 
     if [[ $1 != true ]]; then
         install_terminal_emulator
         install_graphical_environment
-        install_dropbox
         install_fonts
     fi
 }
