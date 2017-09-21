@@ -68,18 +68,9 @@ chsh -s $(which zsh)
 ```
 
 #### Set Default Terminal
+**This only necessary if more than one terminal emulator is installed.**
 ```bash
 sudo update-alternatives --config x-terminal-emulator
-```
-
-#### Install Neovim Plugins
-This can be done after launching Neovim by executing the command:
-```
-:PlugInstall
-```
-...or from the command line via:
-```bash
-nvim +PlugInstall +qa
 ```
 
 ### Setup gitconfig
@@ -88,6 +79,10 @@ different file so that it is easy to switch them.
 ```bash
 ln -s ~/.dotfiles/config/gitconfig_local ~/.gitconfig_local
 ```
+
+### Install Chromium Extensions
+This can probably be automated but the easiest way is to just log into Chromium
+and let it sync up the extensions automatically.
 
 #### Setup Screen Configuration
 The `xrandr` application can be used to save screen configuration and load it
@@ -123,29 +118,17 @@ xrandr \
 ```
 
 #### Wallpapers
-**Static**
-To set the wallpaper with a simple GUI tool, install the  `nitrogen` package. It
-will let you set the wallpaper for each display independently and save the
-setup. You can restore the previously saved setup at any time with the `nitrogen
---restore` command.
-
-**Rotating**
-I recently implemented rotating wallpapers so I could take advantage of all of
-the cool Blizzard artwork I have saved on my machine. In the *i3config*, if the
-*$HOME/Dropbox/Pictures/Wallpapers/Blizzard* directory exists, my wallpaper
-rotator tool gets launched with the following command:
-```bash
-$HOME/.dotfiles/tools/wpr/wpr \
-    --wallpaperDir=$HOME/Dropbox/Pictures/Wallpapers/Blizzard \
-    --displayCount=2 \
-    --interval=300 &
+The provision script will install my [wpr](https://github.com/pcewing/wpr) app
+and it is executed in the `i3` config. It expects the `~/.config/wpr/wprrc.json`
+file to exist and look as follows:
+```json
+{
+  "WallpaperDir":"$HOME/Pictures/Wallpapers",
+  "DisplayCount":2,
+  "Interval":120
+}
 ```
-
-That tool lives on Github [here](https://github.com/pcewing/wpr). It is a very
-simple .NET core app that just selects random wallpapers from the specified
-directory and sets the backgrounds for each display on a specified interval.
-
-## Notes for Myself
-* 09/03/2017: Discovered `shotwell`, which is now my favorite photo management
-  software on Linux.
+* *WallpaperDir*: Directory containing wallpapers (Or sub-directories)
+* *DisplayCount*: The number of displays (Monitors)
+* *Interval*: How many seconds to wait in between rotating the wallpapers
 
