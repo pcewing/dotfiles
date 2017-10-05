@@ -10,10 +10,12 @@ error() {
 }
 
 ensure_installed() {
-  path=$(which $1)
-  if [[ $path == "" ]]; then
-      error "$path is not installed..."
-  fi
+    which $1 >/dev/null
+    local ret_val=$?
+  
+    if [[ ! $ret_val -eq 0 ]]; then
+        error "$1 is not installed..."
+    fi
 }
 
 filename=$screenshot_dir/$(date +%Y%m%d_%H%M%S).png
@@ -21,6 +23,8 @@ filename=$screenshot_dir/$(date +%Y%m%d_%H%M%S).png
 ensure_installed scrot
 scrot -s $filename
 
-ensure_installed feh
-feh $filename
+if [[ -e $filename ]]; then
+    ensure_installed feh
+    feh $filename
+fi
 
