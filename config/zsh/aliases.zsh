@@ -1,6 +1,9 @@
 # Reload zsh config.
 alias reload!='source ~/.zshrc'
 
+alias lv="locate --regex"
+alias lV="locate"
+
 # Forget about vim.
 alias vim="nvim"
 alias nvimf="nvim \$(fzf)"
