@@ -34,3 +34,8 @@ if [[ -e ~/.profile ]]; then
     source ~/.profile
 fi
 
+ubuntu_provision_script=$DOTFILES/scripts/provision/ubuntu.sh
+if [[ -e $ubuntu_provision_script ]]; then
+    source $ubuntu_provision_script
+fi
+

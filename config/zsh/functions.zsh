@@ -13,6 +13,15 @@ function download_aur {
   )
 }
 
+function cdl {
+    cd $1 && echo "$(pwd)" && ls
+}
+
+# Clone the running terminal
+function term {
+    urxvt -cd $(pwd) &
+}
+
 # print available colors and their numbers
 function colours() {
     for i in {0..255}; do

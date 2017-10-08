@@ -154,8 +154,24 @@ mode "apps" {
     bindsym Escape mode "default"
 }
 
+
+for_window [class="^feh$"] floating enable
+
+mode "cheatsheets" {
+    bindsym l exec "exec feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/LinuxCheatSheet.png"; mode "default"
+    bindsym e exec "exec feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/EmacsCheatSheet.png"; mode "default"
+    bindsym v exec "exec feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/VimCheatSheet.png"; mode "default"
+    bindsym r exec "exec feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/RegexCheatSheet.png"; mode "default"
+    bindsym f exec "exec feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/LinuxFileSystemCheatSheet.png"; mode "default"
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
 bindsym $mod+r mode "resize"
 bindsym $mod+a mode "apps"
+bindsym $mod+c mode "cheatsheets"
 
 bindsym --release Print exec "scrot -m $HOME/Pictures/screenshots/%s_%H%M_%d.%m.%Y_$wx$h.png"
 # Selection (snipping tool)
