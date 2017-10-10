@@ -147,25 +147,24 @@ mode "resize" {
 
 mode "apps" {
     # These bindings trigger as soon as you enter the apps mode
-    bindsym p exec "shotwell"; mode "default"
-    bindsym s exec "steam"; mode "default"
-    bindsym d exec "discord"; mode "default"
-    bindsym c exec "chromium-browser"; mode "default"
+    bindsym p exec "shotwell"; exec "app_cheatsheet -k"; mode "default"
+    bindsym s exec "steam"; exec "app_cheatsheet -k"; mode "default"
+    bindsym d exec "discord"; exec "app_cheatsheet -k"; mode "default"
+    bindsym c exec "chromium-browser"; exec "app_cheatsheet -k"; mode "default"
 
     # back to normal: Enter or Escape
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
+    bindsym Return mode "default"; exec "app_cheatsheet -k"
+    bindsym Escape mode "default"; exec "app_cheatsheet -k"
 }
-
 
 for_window [class="^feh$"] floating enable
 
 mode "cheatsheets" {
-    bindsym l exec "exec feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/LinuxCheatSheet.png"; mode "default"
-    bindsym e exec "exec feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/EmacsCheatSheet.png"; mode "default"
-    bindsym v exec "exec feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/VimCheatSheet.png"; mode "default"
-    bindsym r exec "exec feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/RegexCheatSheet.png"; mode "default"
-    bindsym f exec "exec feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/LinuxFileSystemCheatSheet.png"; mode "default"
+    bindsym l exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/LinuxCheatSheet.png"; mode "default"
+    bindsym e exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/EmacsCheatSheet.png"; mode "default"
+    bindsym v exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/VimCheatSheet.png"; mode "default"
+    bindsym r exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/RegexCheatSheet.png"; mode "default"
+    bindsym f exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/LinuxFileSystemCheatSheet.png"; mode "default"
 
     # back to normal: Enter or Escape
     bindsym Return mode "default"
@@ -173,7 +172,7 @@ mode "cheatsheets" {
 }
 
 bindsym $mod+r mode "resize"
-bindsym $mod+a mode "apps"
+bindsym $mod+a exec "app_cheatsheet"; mode "apps"
 bindsym $mod+c mode "cheatsheets"
 
 bindsym --release Print exec "scrot -m $HOME/Pictures/screenshots/%s_%H%M_%d.%m.%Y_$wx$h.png"
