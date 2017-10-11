@@ -2,15 +2,15 @@
 
 screenshot_dir=$HOME/Pictures/screenshots
 
-mkdir -p $screenshot_dir
+mkdir -p "$screenshot_dir"
 
 error() {
-    >&2 echo $1
+    >&2 echo "$1"
     exit 1
 }
 
 ensure_installed() {
-    which $1 >/dev/null
+    which "$1" >/dev/null
     local ret_val=$?
   
     if [[ ! $ret_val -eq 0 ]]; then
@@ -21,10 +21,10 @@ ensure_installed() {
 filename=$screenshot_dir/$(date +%Y%m%d_%H%M%S).png
 
 ensure_installed scrot
-scrot -s $filename
+scrot -s "$filename"
 
 if [[ -e $filename ]]; then
     ensure_installed feh
-    feh $filename
+    feh "$filename"
 fi
 

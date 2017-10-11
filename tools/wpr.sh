@@ -5,5 +5,5 @@ if pidof wpr; then
     killall wpr
 fi
 
-$HOME/go/bin/wpr &
+"$HOME/go/bin/wpr" &
 

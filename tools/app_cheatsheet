@@ -34,15 +34,15 @@ done
 
 if [[ "$hide" = true ]]; then
     if [[ -e $pid_file ]]; then
-        feh_pid=$(cat $pid_file)
-        rm $pid_file
-        kill $feh_pid
+        feh_pid=$(cat "$pid_file")
+        rm "$pid_file"
+        kill "$feh_pid"
     fi
 
     exit 0
 fi
 
-mkdir -p $HOME/.tmp
-feh --scale-down $cheatsheet_path &
-echo "$!" > $pid_file
+mkdir -p "$HOME/.tmp"
+feh --scale-down "$cheatsheet_path" &
+echo "$!" > "$pid_file"
 
