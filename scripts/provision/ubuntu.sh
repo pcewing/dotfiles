@@ -229,7 +229,7 @@ install_graphical_environment()
     try sudo pip install py3status
 
     # Other graphical applications
-    apt_install dmenu
+    apt_install rofi
     apt_install nautilus
     apt_install feh
     apt_install arandr
