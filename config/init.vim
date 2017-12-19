@@ -62,6 +62,8 @@ Plug 'OrangeT/vim-csharp'
 Plug 'tpope/vim-vinegar'
 Plug 'editorconfig/editorconfig-vim'
 
+Plug 'mattn/emmet-vim'
+
 " PEP8 Linter
 Plug 'nvie/vim-flake8'
 
