@@ -41,7 +41,6 @@ install_basics()
     apt_install curl
     apt_install make
     apt_install xclip
-    apt_install ack-grep
     apt_install build-essential
     apt_install tmux
     apt_install ranger
