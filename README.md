@@ -85,6 +85,9 @@ sudo apt-get -y install nvidia-375
 Since I have different credentials at work, the user settings are in a
 different file so that it is easy to switch them.
 ```bash
+echo '[user]' >> ~/.gitconfig_local
+echo -e '\tname = Paul Ewing' >> ~/.gitconfig_local
+echo -e '\temail = paul@aol.com' >> ~/.gitconfig_local
 ln -s ~/.dotfiles/config/gitconfig_local ~/.gitconfig_local
 ```
 
