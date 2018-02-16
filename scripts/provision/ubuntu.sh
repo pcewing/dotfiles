@@ -3,7 +3,7 @@
 DOTFILES=$HOME/.dotfiles
 antigen_version=1.2.1
 golang_version=1.9
-dotnet_version=2.0.0
+dotnet_version=2.1.4
 
 try()
 {
@@ -149,7 +149,7 @@ install_dotnet()
     echo "Registering the Microsoft GPG key"
     try sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
     echo "Registering the package source"
-    try sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-xenial-prod xenial main" > /etc/apt/sources.list.d/dotnetdev.list'
+    try sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-artful-prod artful main" > /etc/apt/sources.list.d/dotnetdev.list'
 
     apt_update
     apt_install dotnet-sdk-$dotnet_version
@@ -253,10 +253,11 @@ install_dropbox()
 {
     section "Installing Dropbox"
 
+    apt_install python-gpgme
     apt_install libxslt1-dev
 
     echo "Adding dropbox to apt sources list"
-    try sudo sh -c 'echo "deb [arch=i386,amd64] http://linux.dropbox.com/ubuntu wily main" >> /etc/apt/sources.list'
+    try sudo sh -c 'echo "deb [arch=i386,amd64] http://linux.dropbox.com/ubuntu xenial main" >> /etc/apt/sources.list'
 
     echo "Adding gpg key... "
     try sudo apt-key adv --keyserver pgp.mit.edu --recv-keys 1C61A2656FB57B7E4DE0F4C1FC918B335044912E
