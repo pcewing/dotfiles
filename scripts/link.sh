@@ -1,44 +1,40 @@
 #!/usr/bin/env bash
 
-DOTFILES=$HOME/.dotfiles
 remote=$1
 
 function link {
-    if [ -e $2 ]; then
-        echo "~${2#$HOME} already exists... Skipping."
-    else
-        echo "Creating for $1"
-        ln -s $1 $2
-    fi
+    echo "Creating for $1"
+    ln -sf "$1" "$2"
 }
 
-echo -e "\nCreatings"
+echo -e "\\nCreating symlinks"
 echo "=============================="
 
-[[ ! -d ~/.config/nvim ]] && mkdir -p ~/.config/nvim
-[[ ! -d ~/.config/i3 ]] && mkdir -p ~/.config/i3
+link "$DOTFILES/config/gitconfig"        "$HOME/.gitconfig"
+link "$DOTFILES/config/gitignore_global" "$HOME/.gitignore_global"
+link "$DOTFILES/config/inputrc"          "$HOME/.inputrc"
+link "$DOTFILES/config/tmux.conf"        "$HOME/.tmux.conf"
+link "$DOTFILES/config/zshrc"            "$HOME/.zshrc"
 
-link $DOTFILES/config/gitconfig        ~/.gitconfig
-link $DOTFILES/config/gitignore_global ~/.gitignore_global
-link $DOTFILES/config/init.vim         ~/.config/nvim/init.vim
-link $DOTFILES/config/inputrc          ~/.inputrc
-link $DOTFILES/config/tmux.conf        ~/.tmux.conf
-link $DOTFILES/config/zshrc            ~/.zshrc
-mkdir -p ~/.config/ranger
-link $DOTFILES/config/rangerrc         ~/.config/ranger/rc.conf
+mkdir -p "$HOME/.config/nvim"
+link "$DOTFILES/config/init.vim"         "$HOME/.config/nvim/init.vim"
+
+mkdir -p "$HOME/.config/ranger"
+link "$DOTFILES/config/rangerrc"         "$HOME/.config/ranger/rc.conf"
 
 if [[ $remote != true ]]; then
-    link $DOTFILES/config/i3config       ~/.config/i3/config
-    mkdir -p ~/.config/i3status
-    link $DOTFILES/config/i3status.conf  ~/.config/i3status/i3status.conf
-    link $DOTFILES/config/Xresources     ~/.Xresources
-    link $DOTFILES/config/xinitrc        ~/.xinitrc
+    link "$DOTFILES/config/Xresources"     "$HOME/.Xresources"
+    link "$DOTFILES/config/xinitrc"        "$HOME/.xinitrc"
 
-    mkdir -p ~/.config/polybar
-    link $DOTFILES/config/polybar     ~/.config/polybar/config
+    mkdir -p "$HOME/.config/i3"
+    link "$DOTFILES/config/i3config"       "$HOME/.config/i3/config"
 
-    # Even though this is technically a console application, I'll never
-    # be listening to music on a remote machine.
-    mkdir -p ~/.config/cmus
-    link $DOTFILES/config/cmusrc         ~/.config/cmus/rc
+    mkdir -p "$HOME/.config/i3status"
+    link "$DOTFILES/config/i3status.conf"  "$HOME/.config/i3status/i3status.conf"
+
+    mkdir -p "$HOME/.config/polybar"
+    link "$DOTFILES/config/polybar"     "$HOME/.config/polybar/config"
+
+    mkdir -p "$HOME/.config/cmus"
+    link "$DOTFILES/config/cmusrc"         "$HOME/.config/cmus/rc"
 fi

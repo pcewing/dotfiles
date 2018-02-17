@@ -14,11 +14,6 @@ alias ...='cd ../..'
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias ls="ls --color"
-alias l="ls -lah --color"
-alias la="ls -AF --color"
-alias ll="ls -lFh --color"
-alias lld="ls -l | grep ^d"
-alias rmf="rm -rf"
 
 # Helpers
 alias grep='grep --color=auto'

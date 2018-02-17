@@ -3,7 +3,7 @@
 DOTFILES="$HOME/.dotfiles"
 provision_script="$DOTFILES/scripts/provision.sh"
 
-print_usage(){
+print_usage() {
   echo "Usage: ./setup [OPTIONS]"
   echo -en '\n'
 
@@ -18,13 +18,13 @@ print_usage(){
   echo -en '\n'
 }
 
-print_section_header(){
+print_section_header() {
   echo -en '\n'
   echo "$1"
   echo "==============================================================="
 }
 
-clean(){
+clean() {
   print_section_header "Clean"
 
   if [[ $remote = true ]]; then
@@ -33,10 +33,10 @@ clean(){
     echo "Cleaning local configuration dotfiles..."
   fi
 
-  source "$DOTFILES/scripts/clean.sh" $remote
+  source "$DOTFILES/scripts/clean.sh" "$remote"
 }
 
-link(){
+link() {
   print_section_header "Link"
 
   if [[ $remote = true ]]; then
@@ -45,10 +45,10 @@ link(){
     echo "Linking local configuration dotfiles..."
   fi
 
-  source "$DOTFILES/scripts/link.sh" $remote
+  source "$DOTFILES/scripts/link.sh" "$remote"
 }
 
-provision(){
+provision() {
   print_section_header "Provision"
 
   provision_impl="$DOTFILES/scripts/provision/$distro.sh"
@@ -63,7 +63,7 @@ provision(){
     exit 1
   fi
 
-  source $provision_script $distro $remote
+  source "$provision_script" "$distro" "$remote"
 }
 
 clean=false

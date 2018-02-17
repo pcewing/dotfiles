@@ -3,7 +3,7 @@
 distro=$1
 remote=$2
 
-source $DOTFILES/scripts/provision/$distro.sh
+source "$DOTFILES/scripts/provision/$distro.sh"
 
-install_all $remote
+install_all "$remote"
 
