@@ -25,23 +25,12 @@ for config ($DOTFILES/config/zsh/**/*.zsh) source $config
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+src_if_exists() {
+   [[ -e "$1" ]] && source "$1"
+}
 
-# Alias git to hub; see https://github.com/github/hub
-if hash hub 2>/dev/null; then
-    eval "$(hub alias -s)"
-fi
-
-if [[ -e ~/.localrc ]]; then
-    source ~/.localrc
-fi
-
-if [[ -e ~/.profile ]]; then
-    source ~/.profile
-fi
-
-ubuntu_provision_script=$DOTFILES/scripts/provision/ubuntu.sh
-if [[ -e $ubuntu_provision_script ]]; then
-    source $ubuntu_provision_script
-fi
+src_if_exists "$HOME/.fzf.zsh"
+src_if_exists "$HOME/.localrc"
+src_if_exists "$HOME/.profile"
+src_if_exists "$DOTFILES/scripts/provision/ubuntu.sh"
 

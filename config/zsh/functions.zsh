@@ -1,9 +1,11 @@
 function cdl {
-    cd $1 && echo "$(pwd)" && ls
+    cd $1 && echo "Now in: $(pwd)\nContents:\n" && ls
 }
 
 # Clone the running terminal
 function term {
+    # TODO: The cloned terminal will close when the parent closes; find a
+    # better way to implement this
     urxvt -cd $(pwd) &
 }
 

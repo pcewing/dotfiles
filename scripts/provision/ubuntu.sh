@@ -1,8 +1,21 @@
 #!/bin/bash
 
+ubuntu_version=17.10
 antigen_version=1.2.1
 golang_version=1.9
 dotnet_version=2.1.4
+
+
+verify_ubuntu_version()
+{
+    current_ubuntu_version=$(lsb_release -r | grep -o '[0-9]\{2\}.[0-9]\{2\}')
+
+    if [[ ! "$ubuntu_version" = "$current_ubuntu_version" ]]; then
+        echo "FAILURE"
+        echo "The current Ubuntu version ($current_ubuntu_version) doesn't match the one in the provision script ($ubuntu_version)"
+        exit 1
+    fi
+}
 
 try()
 {
@@ -278,6 +291,8 @@ install_fonts()
 
 install_all()
 {
+    verify_ubuntu_version
+
     apt_update
     install_basics
     install_python

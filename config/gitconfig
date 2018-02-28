@@ -2,35 +2,20 @@
 [include]
     path = .gitconfig_local
 [alias]
-    # list all aliases
-    la = "!git config -l | grep alias | cut -c 7-"
-    delete-merged-branches = "!f() { git checkout --quiet master && git branch --merged | grep --invert-match '\\*' | xargs -n 1 git branch --delete; git checkout --quiet @{-1}; }; f"
-    diff = diff --ignore-space-at-eol -b -w --ignore-blank-lines
-    cnv = commit --no-verify
-    pnv = push --no-verify
-    co = checkout
-    cob = checkout -b
     s = status --short
     ss  = status
+    co = checkout
+    cob = checkout -b
     br = branch -v
-
-    # rebase commands
     cont = rebase --continue
-    conf = "!git s | grep ^U"
-
-    l = log --graph --pretty=format:'%Cred%h%Creset %C(bold blue)%an%C(reset) - %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
 
     # current branch
     cbr = rev-parse --abbrev-ref HEAD
 
-    # rebase the current branch with changes from upstream remote
-    update = !git fetch upstream && git rebase upstream/`git rev-parse --abbrev-ref HEAD`
+    diff = diff --ignore-space-at-eol -b -w --ignore-blank-lines
 
-    # tag aliases
-    # show the last tag
-    lt = describe --tags --abbrev=0
-
-    remotes = remote -v
+    # list all aliases
+    la = "!git config -l | grep alias | cut -c 7-"
 
 [color]
     ui = auto
