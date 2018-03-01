@@ -8,7 +8,6 @@ exec_always compton --no-fading-openclose
 # use windows key as i3 modifier
 set $mod Mod4
 
-# use Ubuntu Mono font in i3bar
 font pango:Ubuntu Mono derivative Powerline 10
 
 # use Mouse+$mod to drag floating windows to their wanted position
@@ -26,14 +25,23 @@ client.focused          #2e9ef4 #002b36 #839496 #00388e   #00ffff
 # by default, float feh windows
 for_window [class="^feh$"] floating enable
 
+# launch rofi
+bindsym $mod+space exec "rofi -show run"
+
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
 
-# kill focused window
-bindsym $mod+q kill
+# reload the configuration file
+bindsym $mod+ctrl+Return reload
 
-# launch rofi
-bindsym $mod+space exec "rofi -show run"
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+shift+Return restart
+
+# kill focused window
+bindsym $mod+minus kill
+
+# enter fullscreen mode for the focused container
+bindsym $mod+ctrl+space fullscreen toggle
 
 # change focus
 bindsym $mod+h focus left
@@ -53,39 +61,25 @@ bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
-# move workspace
-bindsym $mod+Ctrl+h move workspace to output left
-bindsym $mod+Ctrl+l move workspace to output right
-
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
-# split in horizontal orientation
-bindsym $mod+Shift+backslash split h
+# move workspace
+bindsym $mod+Ctrl+h move workspace to output left
+bindsym $mod+Ctrl+l move workspace to output right
 
-# split in vertical orientation
-bindsym $mod+minus split v
-bindsym $mod+t split toggle
-
-# enter fullscreen mode for the focused container
-bindsym $mod+f fullscreen toggle
-
-# change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
+#bindsym $mod+Shift+backslash split h
+#bindsym $mod+minus split v
+bindsym $mod+colon split toggle
 
 # toggle tiling / floating
-bindsym $mod+Shift+space floating toggle
+bindsym $mod+apostrophe floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+d focus mode_toggle
-
-bindsym $mod+Tab focus parent
-bindsym $mod+Shift+Tab focus child
+bindsym $mod+shift+apostrophe focus mode_toggle
 
 # switch to workspace
 bindsym $mod+n workspace 1
@@ -111,16 +105,20 @@ bindsym $mod+Shift+i move container to workspace 8
 bindsym $mod+Shift+o move container to workspace 9
 bindsym $mod+Shift+p move container to workspace 10
 
+# TODO: I've been moving all of my bindings to the right hand; can we figure
+# out a sane way to do that for these? Perhaps use lower/raise layers?
 
-# reload the configuration file
-bindsym $mod+Shift+c reload
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
 
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+r restart
+bindsym $mod+Tab focus parent
+bindsym $mod+Shift+Tab focus child
 
 # the exit mode is a better way to implement confirmation before terminating
 # the X session
-bindsym $mod+x mode "exit"
+bindsym $mod+ctrl+minus mode "exit"
 mode "exit" {
     bindsym y exec "i3-msg exit"
 
@@ -175,8 +173,7 @@ mode "cheatsheets" {
     bindsym l exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/LinuxCheatSheet.png"; mode "default"
     bindsym e exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/EmacsCheatSheet.png"; mode "default"
     bindsym v exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/VimCheatSheet.png"; mode "default"
-    bindsym r exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/RegexCheatSheet.png"; mode "default"
-    bindsym f exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/LinuxFileSystemCheatSheet.png"; mode "default"
+    bindsym r exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/RegexCheatSheet.png"; mode "default" bindsym f exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/LinuxFileSystemCheatSheet.png"; mode "default"
 
     # back to normal: Enter or Escape
     bindsym Return mode "default"
