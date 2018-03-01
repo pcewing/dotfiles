@@ -6,6 +6,14 @@ alias lV="locate"
 
 alias nvimf="nvim \$(fzf)"
 
+# Git aliases
+alias gs='git status --short'
+alias gd='git diff'
+
+# Svn aliases
+alias ss='svn status'
+alias sd='svn diff --diff-cmd=bcompare_svn'
+
 # Filesystem aliases
 alias ..='cd ..'
 alias ...='cd ../..'
