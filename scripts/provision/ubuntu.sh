@@ -3,7 +3,7 @@
 DOTFILES=$HOME/.dotfiles
 antigen_version=1.2.1
 golang_version=1.9
-dotnet_version=2.0.0
+dotnet_version=2.1.3
 
 try()
 {
@@ -104,9 +104,6 @@ install_neovim()
     try mkdir -p $HOME/.config/nvim/autoload
     echo "Downloading vim-plug from https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim...  "
     try curl -fLo $HOME/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
-    echo "Installing Neovim plugins"
-    try nvim +PlugInstall +qa
 }
 
 install_nodejs()
@@ -195,7 +192,7 @@ install_graphical_environment()
     apt_install mesa-utils-extra
     apt_install compton
     apt_install xorg
-    apt_install xserver-xorg
+    #apt_install xserver-xorg
 
     apt_add_repo aguignard/ppa
     apt_update
