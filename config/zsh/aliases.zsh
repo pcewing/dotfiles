@@ -8,6 +8,7 @@ alias nvimf="nvim \$(fzf)"
 
 # Git aliases
 alias gs='git status --short'
+alias gc='git commit'
 alias gd='git diff'
 alias gaa='git add --all'
 alias gaad='git add --all --dry-run'
