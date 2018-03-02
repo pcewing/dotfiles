@@ -1,9 +1,20 @@
 #!/bin/bash
 
-DOTFILES=$HOME/.dotfiles
+ubuntu_version=17.10
 antigen_version=1.2.1
 golang_version=1.9
-dotnet_version=2.1.3
+dotnet_version=2.1.4
+
+verify_ubuntu_version()
+{
+    current_ubuntu_version=$(lsb_release -r | grep -o '[0-9]\{2\}.[0-9]\{2\}')
+
+    if [[ ! "$ubuntu_version" = "$current_ubuntu_version" ]]; then
+        echo "FAILURE"
+        echo "The current Ubuntu version ($current_ubuntu_version) doesn't match the one in the provision script ($ubuntu_version)"
+        exit 1
+    fi
+}
 
 try()
 {
@@ -14,7 +25,7 @@ try()
         echo "SUCCESS"
     else
         echo "FAILURE"
-        echo "Command: $@"
+        echo "Command: $*"
         echo "Output:"
         cat ~/.command_log
         exit 1
@@ -23,8 +34,8 @@ try()
 
 apt_update(){ echo "Updating package lists... "; try sudo apt-get -y update; }
 apt_upgrade(){ echo "Upgrading packages... "; try sudo apt-get -y upgrade; }
-apt_install(){ echo "Installing $1... "; try sudo apt-get -y install $1; }
-apt_add_repo(){ echo "Adding $1 repository... "; try sudo add-apt-repository -y ppa:$1; }
+apt_install(){ echo "Installing $1... "; try sudo apt-get -y install "$1"; }
+apt_add_repo(){ echo "Adding $1 repository... "; try sudo add-apt-repository -y "ppa:$1"; }
 
 section(){
     echo -en '\n'
@@ -41,7 +52,6 @@ install_basics()
     apt_install curl
     apt_install make
     apt_install xclip
-    apt_install ack-grep
     apt_install build-essential
     apt_install tmux
     apt_install ranger
@@ -63,9 +73,9 @@ install_shell()
     apt_install zsh
 
     echo "Creating the $HOME/.zsh directory if it doesn't exist...  "
-    try mkdir -p $HOME/.zsh
+    try mkdir -p "$HOME/.zsh"
     echo "Downloading antigen version ${antigen_version}..."
-    try eval $(curl https://cdn.rawgit.com/zsh-users/antigen/v${antigen_version}/bin/antigen.zsh > $HOME/.zsh/antigen.zsh)
+    try eval $(curl https://cdn.rawgit.com/zsh-users/antigen/v${antigen_version}/bin/antigen.zsh > "$HOME/.zsh/antigen.zsh")
 }
 
 install_golang()
@@ -81,9 +91,9 @@ install_golang()
     try rm go$golang_version.linux-amd64.tar.gz
 
     echo "Setting up golang directory structure"
-    try mkdir -p $HOME/go/bin
-    try mkdir -p $HOME/go/pkg
-    try mkdir -p $HOME/go/src/github.com/pcewing
+    try mkdir -p "$HOME/go/bin"
+    try mkdir -p "$HOME/go/pkg"
+    try mkdir -p "$HOME/go/src/github.com/pcewing"
 }
 
 install_neovim()
@@ -101,9 +111,9 @@ install_neovim()
     try pip3 install --upgrade neovim
 
     echo "Creating the $HOME/.config/nvim/autoload directory if it doesn't exist...  "
-    try mkdir -p $HOME/.config/nvim/autoload
+    try mkdir -p "$HOME/.config/nvim/autoload"
     echo "Downloading vim-plug from https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim...  "
-    try curl -fLo $HOME/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    try curl -fLo "$HOME/.config/nvim/autoload/plug.vim" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 }
 
 install_nodejs()
@@ -113,7 +123,7 @@ install_nodejs()
     try sudo bash -c "curl --silent --location https://deb.nodesource.com/setup_6.x | bash -"
     apt_install nodejs
     echo "Creating the $HOME/.npm-global directory if it doesn't exist...  "
-    try mkdir -p $HOME/.npm-global
+    try mkdir -p "$HOME/.npm-global"
     echo "Setting npm global directory to $HOME/.npm-global to avoid permissions issues when globally installing packages...  "
     try npm config set prefix "$HOME/.npm-global"
 }
@@ -147,7 +157,7 @@ install_dotnet()
     echo "Registering the Microsoft GPG key"
     try sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
     echo "Registering the package source"
-    try sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-xenial-prod xenial main" > /etc/apt/sources.list.d/dotnetdev.list'
+    try sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-artful-prod artful main" > /etc/apt/sources.list.d/dotnetdev.list'
 
     apt_update
     apt_install dotnet-sdk-$dotnet_version
@@ -202,10 +212,10 @@ install_graphical_environment()
 
     # clone the repository
     dir=$(pwd)
-    i3dir=~/src/i3-gaps
-    [ ! -e $i3dir ] || rm -rf $i3dir
-    git clone https://www.github.com/Airblader/i3 $i3dir
-    cd $i3dir
+    i3dir="$HOME/src/i3-gaps"
+    [ ! -e "$i3dir" ] || rm -rf "$i3dir"
+    git clone https://www.github.com/Airblader/i3 "$i3dir"
+    cd "$i3dir"
 
     # compile & install
     try autoreconf --force --install
@@ -218,7 +228,7 @@ install_graphical_environment()
     try make
     try sudo make install
 
-    cd $dir
+    cd "$dir"
 
     # Install py3status (Alternative to i3status)
     apt_install i3status
@@ -237,7 +247,7 @@ install_graphical_environment()
     wprdir=$HOME/go/src/github.com/pcewing/wpr
     if [[ ! -e $wprdir ]]; then
         echo "Downloading wallpaper rotator repo"
-        try git clone https://github.com/pcewing/wpr $wprdir
+        try git clone https://github.com/pcewing/wpr "$wprdir"
     fi
 
     echo "Installing the wallpaper rotator app"
@@ -251,10 +261,11 @@ install_dropbox()
 {
     section "Installing Dropbox"
 
+    apt_install python-gpgme
     apt_install libxslt1-dev
 
     echo "Adding dropbox to apt sources list"
-    try sudo sh -c 'echo "deb [arch=i386,amd64] http://linux.dropbox.com/ubuntu wily main" >> /etc/apt/sources.list'
+    try sudo sh -c 'echo "deb [arch=i386,amd64] http://linux.dropbox.com/ubuntu xenial main" >> /etc/apt/sources.list'
 
     echo "Adding gpg key... "
     try sudo apt-key adv --keyserver pgp.mit.edu --recv-keys 1C61A2656FB57B7E4DE0F4C1FC918B335044912E
@@ -276,6 +287,8 @@ install_fonts()
 
 install_all()
 {
+    verify_ubuntu_version
+
     apt_update
     install_basics
     install_python
@@ -286,11 +299,11 @@ install_all()
     install_npm_packages
     install_elixir
     install_dotnet
-    install_dropbox
 
     if [[ $1 != true ]]; then
         install_terminal_emulator
         install_graphical_environment
         install_fonts
+        install_dropbox
     fi
 }

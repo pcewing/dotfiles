@@ -10,29 +10,40 @@ exec_always compton --no-fading-openclose
 # use windows key as i3 modifier
 set $mod Mod4
 
-# use Ubuntu Mono font in i3bar
 font pango:Ubuntu Mono derivative Powerline 10
 
 # use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
-# change border settings for all windows; this is necessary to use i3-gaps
+# change border settings for all windows; this is necessary to use gaps
 for_window [class="^.*"] border pixel 2
 
+# gaps
+gaps inner 20
+
 # configure color settings for the focused window
-client.focused          #ff0000 #285577 #ffffff #2e9ef4   #00ffff
+client.focused          #2e9ef4 #002b36 #839496 #00388e   #00ffff
 
 # by default, float feh windows
 for_window [class="^feh$"] floating enable
 
+# launch rofi
+bindsym $mod+space exec "rofi -show run"
+
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
 
-# kill focused window
-bindsym $mod+q kill
+# reload the configuration file
+bindsym $mod+ctrl+Return reload
 
-# launch rofi
-bindsym $mod+space exec "rofi -show run"
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+shift+Return restart
+
+# kill focused window
+bindsym $mod+minus kill
+
+# enter fullscreen mode for the focused container
+bindsym $mod+ctrl+space fullscreen toggle
 
 # change focus
 bindsym $mod+h focus left
@@ -52,73 +63,64 @@ bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
-# move workspace
-bindsym $mod+Shift+comma move workspace to output left
-bindsym $mod+Shift+period move workspace to output right
-
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
-# split in horizontal orientation
-bindsym $mod+Shift+backslash split h
+# move workspace
+bindsym $mod+Ctrl+h move workspace to output left
+bindsym $mod+Ctrl+l move workspace to output right
 
-# split in vertical orientation
-bindsym $mod+minus split v
-bindsym $mod+t split toggle
+#bindsym $mod+Shift+backslash split h
+#bindsym $mod+minus split v
+bindsym $mod+colon split toggle
 
-# enter fullscreen mode for the focused container
-bindsym $mod+f fullscreen toggle
+# toggle tiling / floating
+bindsym $mod+apostrophe floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+shift+apostrophe focus mode_toggle
+
+# switch to workspace
+bindsym $mod+n workspace 1
+bindsym $mod+m workspace 2
+bindsym $mod+comma workspace 3
+bindsym $mod+period workspace 4
+bindsym $mod+slash workspace 5
+bindsym $mod+y workspace 6
+bindsym $mod+u workspace 7
+bindsym $mod+i workspace 8
+bindsym $mod+o workspace 9
+bindsym $mod+p workspace 10
+
+# move focused container to workspace
+bindsym $mod+Shift+n move container to workspace 1
+bindsym $mod+Shift+m move container to workspace 2
+bindsym $mod+Shift+comma move container to workspace 3
+bindsym $mod+Shift+period move container to workspace 4
+bindsym $mod+Shift+slash move container to workspace 5
+bindsym $mod+Shift+y move container to workspace 6
+bindsym $mod+Shift+u move container to workspace 7
+bindsym $mod+Shift+i move container to workspace 8
+bindsym $mod+Shift+o move container to workspace 9
+bindsym $mod+Shift+p move container to workspace 10
+
+# TODO: I've been moving all of my bindings to the right hand; can we figure
+# out a sane way to do that for these? Perhaps use lower/raise layers?
 
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
-# toggle tiling / floating
-bindsym $mod+Shift+space floating toggle
-
-# change focus between tiling / floating windows
-bindsym $mod+d focus mode_toggle
-
 bindsym $mod+Tab focus parent
 bindsym $mod+Shift+Tab focus child
 
-# switch to workspace
-bindsym $mod+1 workspace 1
-bindsym $mod+2 workspace 2
-bindsym $mod+3 workspace 3
-bindsym $mod+4 workspace 4
-bindsym $mod+5 workspace 5
-bindsym $mod+6 workspace 6
-bindsym $mod+7 workspace 7
-bindsym $mod+8 workspace 8
-bindsym $mod+9 workspace 9
-bindsym $mod+0 workspace 10
-
-# move focused container to workspace
-bindsym $mod+Shift+1 move container to workspace 1
-bindsym $mod+Shift+2 move container to workspace 2
-bindsym $mod+Shift+3 move container to workspace 3
-bindsym $mod+Shift+4 move container to workspace 4
-bindsym $mod+Shift+5 move container to workspace 5
-bindsym $mod+Shift+6 move container to workspace 6
-bindsym $mod+Shift+7 move container to workspace 7
-bindsym $mod+Shift+8 move container to workspace 8
-bindsym $mod+Shift+9 move container to workspace 9
-bindsym $mod+Shift+0 move container to workspace 10
-
-# reload the configuration file
-bindsym $mod+Shift+c reload
-
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+r restart
-
 # the exit mode is a better way to implement confirmation before terminating
 # the X session
-bindsym $mod+x mode "exit"
+bindsym $mod+ctrl+minus mode "exit"
 mode "exit" {
     bindsym y exec "i3-msg exit"
 
@@ -173,8 +175,7 @@ mode "cheatsheets" {
     bindsym l exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/LinuxCheatSheet.png"; mode "default"
     bindsym e exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/EmacsCheatSheet.png"; mode "default"
     bindsym v exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/VimCheatSheet.png"; mode "default"
-    bindsym r exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/RegexCheatSheet.png"; mode "default"
-    bindsym f exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/LinuxFileSystemCheatSheet.png"; mode "default"
+    bindsym r exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/RegexCheatSheet.png"; mode "default" bindsym f exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/LinuxFileSystemCheatSheet.png"; mode "default"
 
     # back to normal: Enter or Escape
     bindsym Return mode "default"
@@ -211,7 +212,4 @@ exec_always "[ -e ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
 
 # this script will execute the wallpaper rotator if it's not already running
 exec_always "sh $HOME/.dotfiles/tools/wpr.sh"
-
-# gaps
-gaps inner 20
 

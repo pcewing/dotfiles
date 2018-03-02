@@ -1,21 +1,6 @@
 # Dotfiles
 This repository contains my dotfiles.
 
-My environment looks like:
-![Screenshot](./Screenshot.png)
-
-## Software
-For a complete list of the software configured it is best to just look in the
-**scripts/provision/ubuntu.sh** provisioning script as the list in the README
-would likely become outdated. That being said, my primary development stack
-isn't likely to change and it looks like:  
-
-**Local (Graphical) Environment**  
-`i3wm` -> `urxvt` -> `zsh` -> `neovim`
-
-**Remote Environment**  
-`ssh`-> `tmux` -> `zsh` -> `neovim`
-
 ## Setup
 The *setup* script in the root directory is designed to help clean existing
 configuration files, create symbolic links to the configuration files in this
@@ -36,21 +21,13 @@ This will link the configuration files and provision all necessary
 software/packages for an Ubuntu system.
 
 ### Supported Platforms
-Currently Ubuntu is the only Linux distro supported by a provision script. I
-don't want to maintain a script for Arch as it would be specific to my hardware
-and very seldom used.
+Ubuntu is the only Linux distro supported by a provision script.
 
 ### Remote Systems
-The majority of the development tools I use are terminal based, which is awesome
-given that I commonly work on remote systems or Vagrant VMs via SSH. However,
-there are a few pieces of software that are unnecessary on remote systems such
-as *urxvt* and *i3wm*.
-
 The *setup* script supports configuring and provisioning systems that do not
 need any of the graphical components by specifying the `-r` option.
 
-For example, to configure and provision an Ubuntu system intended for remote
-use:
+To configure and provision an Ubuntu system intended for remote use:
 ```bash
 ssh user@remote.com
 git clone https://github.com/pcewing/dotfiles.git ~/.dotfiles
@@ -59,8 +36,7 @@ cd ~/.dotfiles
 ```
 
 ### Manual Steps
-I can't (gracefully) automate everything and certain steps require user input or
-are machine-specific, so the following should be performed manually.
+Some things require user input so I left them out of the provision script.
 
 #### Set Default Shell
 ```bash
@@ -73,24 +49,27 @@ chsh -s $(which zsh)
 sudo update-alternatives --config x-terminal-emulator
 ```
 
-#### Install Nvidia Driver
-I left this as a manual step because not every machine will have an Nvidia card (I.E. Virtual machines).
+#### Install Proprietary Graphics Driver
+This isn't always necessary but some games (Like Minecraft) run like shit with
+open source drivers.
+
 ```bash
 # Check if this is still the latest available driver via:
 # sudo apt search nvidia
 sudo apt-get -y install nvidia-375
 ```
 
-### Setup gitconfig
-Since I have different credentials at work, the user settings are in a
-different file so that it is easy to switch them.
+### Setup gitconfig_local
+To avoid putting email address in a publicly visible file:
 ```bash
+echo '[user]' >> ~/.gitconfig_local
+echo -e '\tname = Paul Ewing' >> ~/.gitconfig_local
+echo -e '\temail = paul@aol.com' >> ~/.gitconfig_local
 ln -s ~/.dotfiles/config/gitconfig_local ~/.gitconfig_local
 ```
 
 ### Install Chromium Extensions
-This can probably be automated but the easiest way is to just log into Chromium
-and let it sync up the extensions automatically.
+Just open up Chrome/Chromium log in.
 
 #### Setup Screen Configuration
 The `xrandr` application can be used to save screen configuration and load it
