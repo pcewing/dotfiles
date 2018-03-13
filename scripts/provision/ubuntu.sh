@@ -237,11 +237,13 @@ install_graphical_environment()
 
     # Other graphical applications
     apt_install rofi
-    apt_install nautilus
     apt_install feh
     apt_install arandr
     apt_install chromium-browser
     apt_install shotwell
+
+    apt_install nautilus
+    gsettings set org.gnome.desktop.background show-desktop-icons false
 
     # Install wallpaper rotator
     wprdir=$HOME/go/src/github.com/pcewing/wpr

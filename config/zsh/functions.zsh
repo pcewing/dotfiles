@@ -21,3 +21,15 @@ function colours() {
     done
 }
 
+function nvims() {
+    script_name="$1"
+
+    if [[ -e "$script_name" ]]; then
+        return 1
+    else
+        echo "#!/usr/bin/env bash" >> "$script_name"
+        chmod +x "$script_name"
+        nvim "$script_name"
+    fi
+}
+

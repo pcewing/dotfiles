@@ -25,7 +25,8 @@ gaps inner 20
 client.focused          #2e9ef4 #002b36 #839496 #00388e   #00ffff
 
 # by default, float feh windows
-for_window [class="^feh$"] floating enable
+for_window [class="^feh$"] floating enable, border normal
+for_window [class="Pavucontrol"] floating enable, border normal
 
 # launch rofi
 bindsym $mod+space exec "rofi -show run"
