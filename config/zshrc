@@ -34,3 +34,5 @@ src_if_exists "$HOME/.localrc"
 src_if_exists "$HOME/.profile"
 src_if_exists "$DOTFILES/scripts/provision/ubuntu.sh"
 
+[[ "$TMUX" = "" ]] && tmux
+
