@@ -53,3 +53,5 @@ set expandtab
 
 set ruler
 
+set clipboard=unnamed,unnamedplus
+
