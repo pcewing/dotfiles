@@ -1,6 +1,8 @@
 # Reload zsh config
 alias reload!='source ~/.zshrc'
 
+alias cl='clear'
+
 alias lv="locate --regex"
 alias lV="locate"
 
