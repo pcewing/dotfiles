@@ -11,7 +11,6 @@ echo -e "\\nCreating symlinks"
 echo "=============================="
 
 link "$DOTFILES/config/gitconfig"        "$HOME/.gitconfig"
-link "$DOTFILES/config/gitignore_global" "$HOME/.gitignore_global"
 link "$DOTFILES/config/inputrc"          "$HOME/.inputrc"
 link "$DOTFILES/config/tmux.conf"        "$HOME/.tmux.conf"
 link "$DOTFILES/config/zshrc"            "$HOME/.zshrc"

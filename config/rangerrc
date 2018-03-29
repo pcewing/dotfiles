@@ -1,8 +1,3 @@
-set show_hidden false
 
-# For mapping functions, see:
-# map, cmap, tmap, pmap
-# copymap, copycmap, copytmap, copypmap
-
-map I set show_hidden!
+# There is nothing here yet!
 

@@ -33,3 +33,15 @@ function nvims() {
     fi
 }
 
+function vman() {
+    key="$1"
+
+    rand=$[${RANDOM}%10000]
+    tmp_file="/tmp/man_$rand.txt"
+
+    man "$key" >> "$tmp_file"
+    nvim "$tmp_file"
+
+    rm "$tmp_file"
+}
+

@@ -11,7 +11,6 @@ echo -e "\\nRemoving symlinks"
 echo "=============================="
 
 remove_link "$HOME/.gitconfig"
-remove_link "$HOME/.gitignore_global"
 remove_link "$HOME/.config/nvim/init.vim"
 remove_link "$HOME/.inputrc"
 remove_link "$HOME/.tmux.conf"

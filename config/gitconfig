@@ -1,6 +1,6 @@
 # gitconfig
 [include]
-    path = .gitconfig_local
+    path = ~/.gitconfig_local
 [alias]
     s = status --short
     ss  = status
@@ -13,73 +13,3 @@
     cbr = rev-parse --abbrev-ref HEAD
 
     diff = diff --ignore-space-at-eol -b -w --ignore-blank-lines
-
-    # list all aliases
-    la = "!git config -l | grep alias | cut -c 7-"
-
-[color]
-    ui = auto
-[color "diff"]
-    meta = yellow bold
-    commit = green bold
-    frag = magenta bold
-    old = red bold
-    new = green bold
-    whitespace = red reverse
-[color "diff-highlight"]
-    oldNormal = red bold
-    oldHighlight = "red 52"
-    newNormal = green bold
-    newHighlight = "green bold 22"
-[color "branch"]
-    current = yellow reverse
-    local = yellow
-    remote = green
-[color "status"]
-    added = yellow
-    changed = green
-    untracked = cyan
-[color "sh"]
-    branch = yellow
-
-[push]
-    # push will only do the current branch, not all branches
-    default = current
-[branch]
-    # set up 'git pull' to rebase instead of merge
-    autosetuprebase = always
-[apply]
-    # do not warn about missing whitespace at EOF
-    whitespace = nowarn
-[core]
-    excludesfile = ~/.gitignore_global
-    pager = less -FXRS -x2
-    editor = vim
-    whitespace = cr-at-eol
-[rerere]
-    enabled = true
-[gitsh]
-    defaultCommand = s
-[grep]
-    extendRegexp = true
-    lineNumber = true
-[rebase]
-	instructionFormat = "[%an - %ar] %s"
-[pager]
-    diff = "diff-so-fancy | less --tabs=4 -RFX"
-    show = "diff-so-fancy | less --tabs=4 -RFX"
-[diff]
-    renames = copies
-    mnemonicprefix = true
-    compactionHeuristic = true
-	tool = vimdiff
-[difftool]
-    prompt = true
-[diftool "vimdiff"]
-    cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
-[merge]
-    tool = vimdiff
-[mergetool]
-    prompt = true
-[mergetool "vimdiff"]
-    cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
