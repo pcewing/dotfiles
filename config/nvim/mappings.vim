@@ -60,3 +60,5 @@ nnoremap <silent> <leader><Up> :resize +5<cr>
 nnoremap <silent> <leader><Down> :resize -5<cr>
 nnoremap <silent> <leader><Right> :vertical resize +5<cr>
 nnoremap <silent> <leader><Left> :vertical resize -5<cr>
+
+nnoremap <silent> <leader>t :Tags<cr>
