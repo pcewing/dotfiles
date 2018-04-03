@@ -16,13 +16,19 @@ font pango:Ubuntu Mono derivative Powerline 14
 floating_modifier $mod
 
 # change border settings for all windows; this is necessary to use gaps
-for_window [class="^.*"] border pixel 2
+#for_window [class="^.*"] border pixel 2
 
 # gaps
-gaps inner 20
+#gaps inner 20
 
-# configure color settings for the focused window
-client.focused          #2e9ef4 #002b36 #839496 #00388e   #00ffff
+# color settings
+# class                  border  backgr. text    indicator child_border
+client.focused           #268bd2 #268bd2 #002b36 #00388e   #00ffff
+client.focused_inactive  #073642 #073642 #888888 #292d2e   #222222
+client.unfocused         #073642 #073642 #888888 #292d2e   #222222
+#client.urgent           #2f343a #900000 #ffffff #900000   #900000
+#client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+#client.background       #ffffff
 
 # by default, float feh windows
 for_window [class="^feh$"] floating enable, border normal
