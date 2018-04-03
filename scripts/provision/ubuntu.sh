@@ -116,25 +116,6 @@ install_neovim()
     try curl -fLo "$HOME/.config/nvim/autoload/plug.vim" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 }
 
-install_nodejs()
-{
-    section "Installing NodeJS"
-    echo "Adding NodeJS repository... "
-    try sudo bash -c "curl --silent --location https://deb.nodesource.com/setup_6.x | bash -"
-    apt_install nodejs
-    echo "Creating the $HOME/.npm-global directory if it doesn't exist...  "
-    try mkdir -p "$HOME/.npm-global"
-    echo "Setting npm global directory to $HOME/.npm-global to avoid permissions issues when globally installing packages...  "
-    try npm config set prefix "$HOME/.npm-global"
-}
-
-install_npm_packages()
-{
-    section "Installing Global NPM Packages"
-    echo "Installing diff-so-fancy... "
-    try npm install -g diff-so-fancy
-}
-
 install_elixir()
 {
     section "Installing Elixir"
@@ -297,8 +278,6 @@ install_all()
     install_shell
     install_golang
     install_neovim
-    install_nodejs
-    install_npm_packages
     install_elixir
     install_dotnet
 

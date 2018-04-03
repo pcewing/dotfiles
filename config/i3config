@@ -10,7 +10,7 @@ exec_always compton --no-fading-openclose
 # use windows key as i3 modifier
 set $mod Mod4
 
-font pango:Ubuntu Mono derivative Powerline 10
+font pango:Ubuntu Mono derivative Powerline 14
 
 # use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -190,6 +190,7 @@ bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/Pictures/screenshot
 
 # i3bar config
 bar {
+    position top
     colors {
         background #002b36
         statusline #ffffff
