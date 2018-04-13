@@ -1,47 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-ubuntu_version=17.10
-antigen_version=1.2.1
-golang_version=1.9
-dotnet_version=2.1.4
-
-verify_ubuntu_version()
-{
-    current_ubuntu_version=$(lsb_release -r | grep -o '[0-9]\{2\}.[0-9]\{2\}')
-
-    if [[ ! "$ubuntu_version" = "$current_ubuntu_version" ]]; then
-        echo "FAILURE"
-        echo "The current Ubuntu version ($current_ubuntu_version) doesn't match the one in the provision script ($ubuntu_version)"
-        exit 1
-    fi
-}
-
-try()
-{
-    "$@" > ~/.command_log 2>&1
-    local ret_val=$?
-  
-    if [ $ret_val -eq 0 ]; then
-        echo "SUCCESS"
-    else
-        echo "FAILURE"
-        echo "Command: $*"
-        echo "Output:"
-        cat ~/.command_log
-        exit 1
-    fi
-}
-
-apt_update(){ echo "Updating package lists... "; try sudo apt-get -y update; }
-apt_upgrade(){ echo "Upgrading packages... "; try sudo apt-get -y upgrade; }
-apt_install(){ echo "Installing $1... "; try sudo apt-get -y install "$1"; }
-apt_add_repo(){ echo "Adding $1 repository... "; try sudo add-apt-repository -y "ppa:$1"; }
-
-section(){
-    echo -en '\n'
-    echo "$1"
-    echo "==============================================================="
-}
+source "$DOTFILES/scripts/provision/ubuntu/utils.sh"
 
 install_basics()
 {
@@ -74,26 +33,11 @@ install_shell()
 
     echo "Creating the $HOME/.zsh directory if it doesn't exist...  "
     try mkdir -p "$HOME/.zsh"
+
+
+    antigen_version=1.2.1
     echo "Downloading antigen version ${antigen_version}..."
     try eval $(curl https://cdn.rawgit.com/zsh-users/antigen/v${antigen_version}/bin/antigen.zsh > "$HOME/.zsh/antigen.zsh")
-}
-
-install_golang()
-{
-    section "Installing Golang"
-    echo "Downloading golang v$golang_version tarball"
-    try wget "https://storage.googleapis.com/golang/go$golang_version.linux-amd64.tar.gz"
-
-    echo "Extracting the golang tarball"
-    try sudo tar -C /usr/local -xzf go$golang_version.linux-amd64.tar.gz
-
-    echo "Removing golang tarball"
-    try rm go$golang_version.linux-amd64.tar.gz
-
-    echo "Setting up golang directory structure"
-    try mkdir -p "$HOME/go/bin"
-    try mkdir -p "$HOME/go/pkg"
-    try mkdir -p "$HOME/go/src/github.com/pcewing"
 }
 
 install_neovim()
@@ -116,34 +60,6 @@ install_neovim()
     try curl -fLo "$HOME/.config/nvim/autoload/plug.vim" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 }
 
-install_elixir()
-{
-    section "Installing Elixir"
-    echo "Downloading the Erlang/Elixir package"
-    try wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
-    echo "Installing the Erlang/Elixir package"
-    try sudo dpkg -i erlang-solutions_1.0_all.deb
-    apt_update
-    apt_install esl-erlang
-    apt_install elixir
-    echo "Removing the Erlang/Elixir package"
-    rm erlang-solutions_1.0_all.deb
-}
-
-install_dotnet()
-{
-    section "Installing .NET Core"
-    echo "Downloading the Microsoft GPG key"
-    try sudo sh -c 'curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg'
-    echo "Registering the Microsoft GPG key"
-    try sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
-    echo "Registering the package source"
-    try sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-artful-prod artful main" > /etc/apt/sources.list.d/dotnetdev.list'
-
-    apt_update
-    apt_install dotnet-sdk-$dotnet_version
-}
-
 install_terminal_emulator()
 {
     section "Installing Terminal Emulator"
@@ -154,9 +70,6 @@ install_terminal_emulator()
 install_graphical_environment()
 {
     section "Installing Graphical Environment"
-    # This is used for taking screenshots instead of gnome-screenshot; it is
-    # mapped to hotkeys in the i3config
-    apt_install scrot
 
     # This will install the following:
     # https://github.com/Airblader/i3
@@ -215,6 +128,16 @@ install_graphical_environment()
     apt_install i3status
     echo "Installing py3status"
     try sudo pip install py3status
+}
+
+install_gui_tools()
+{
+    # This technically isn't a GUI tool but I only use it in graphical environments
+    apt_install cmus
+
+    # This is used for taking screenshots instead of gnome-screenshot; it is
+    # mapped to hotkeys in the i3config
+    apt_install scrot
 
     # Other graphical applications
     apt_install rofi
@@ -225,6 +148,10 @@ install_graphical_environment()
 
     apt_install nautilus
     gsettings set org.gnome.desktop.background show-desktop-icons false
+}
+
+install_wpr() {
+    # TODO: We should just put wpr in the $DOTFILES/tools/ directory
 
     # Install wallpaper rotator
     wprdir=$HOME/go/src/github.com/pcewing/wpr
@@ -235,56 +162,19 @@ install_graphical_environment()
 
     echo "Installing the wallpaper rotator app"
     try /usr/local/go/bin/go install github.com/pcewing/wpr
-
-    # TODO: I should probably split these apps into their own function
-    apt_install cmus
-}
-
-install_dropbox()
-{
-    section "Installing Dropbox"
-
-    apt_install python-gpgme
-    apt_install libxslt1-dev
-
-    echo "Adding dropbox to apt sources list"
-    try sudo sh -c 'echo "deb [arch=i386,amd64] http://linux.dropbox.com/ubuntu xenial main" >> /etc/apt/sources.list'
-
-    echo "Adding gpg key... "
-    try sudo apt-key adv --keyserver pgp.mit.edu --recv-keys 1C61A2656FB57B7E4DE0F4C1FC918B335044912E
-
-    apt_update
-    apt_install dropbox
-}
-
-install_fonts()
-{
-    section "Installing Fonts"
-    echo "Cloning powerline/fonts to ~/powerline_fonts... "
-    try git clone https://github.com/powerline/fonts ~/powerline_fonts
-    echo "Executing ~/powerline_fonts/install.sh..."
-    try ~/powerline_fonts/install.sh
-    echo "Cleaning up ~/powerline_fonts directory... "
-    try rm -rf ~/powerline_fonts
 }
 
 install_all()
 {
-    verify_ubuntu_version
-
     apt_update
     install_basics
     install_python
     install_shell
-    install_golang
     install_neovim
-    install_elixir
-    install_dotnet
 
     if [[ $1 != true ]]; then
         install_terminal_emulator
         install_graphical_environment
-        install_fonts
-        install_dropbox
+        install_wpr
     fi
 }
