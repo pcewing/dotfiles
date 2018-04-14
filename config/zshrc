@@ -36,3 +36,5 @@ src_if_exists "$DOTFILES/scripts/provision/ubuntu.sh"
 
 [[ "$TMUX" = "" ]] && tmux
 
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

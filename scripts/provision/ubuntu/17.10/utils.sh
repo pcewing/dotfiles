@@ -21,3 +21,9 @@ apt_upgrade(){ echo "Upgrading packages... "; try sudo apt-get -y upgrade; }
 apt_install(){ echo "Installing $1... "; try sudo apt-get -y install "$1"; }
 apt_add_repo(){ echo "Adding $1 repository... "; try sudo add-apt-repository -y "ppa:$1"; }
 
+print_header()
+{
+    echo -en '\n'
+    echo "$1"
+    echo "==============================================================="
+}
