@@ -14,6 +14,7 @@ Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-vinegar'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'nvie/vim-flake8'
+Plug 'martinda/Jenkinsfile-vim-syntax'
 
 call plug#end()
 

@@ -14,6 +14,15 @@ nnoremap <Leader>cp :cp<CR>
 nnoremap <Leader>co :copen<CR>
 nnoremap <Leader>cc :cclose<CR>
 
+nnoremap <leader><tab>h  :tabfirst<CR>
+nnoremap <leader><tab>j  :tabnext<CR>
+nnoremap <leader><tab>k  :tabprev<CR>
+nnoremap <leader><tab>l  :tablast<CR>
+nnoremap <leader><tab>e  :tabedit<Space>
+nnoremap <leader><tab>n  :tabnext<Space>
+nnoremap <leader><tab>m  :tabm<Space>
+nnoremap <leader><tab>d  :tabclose<CR>
+
 nmap <leader>ls :ls<cr>:buffer<space>
 
 nnoremap <leader>ssx :set syntax=
