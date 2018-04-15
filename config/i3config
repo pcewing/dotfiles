@@ -218,6 +218,6 @@ bar {
 # source the machine-specific screen layout if it exists
 exec_always "[ -e ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
 
-# this script will execute the wallpaper rotator if it's not already running
 exec_always "sh $HOME/.dotfiles/tools/wpr.sh"
+exec_always "sh $HOME/.dotfiles/tools/start_dropbox.sh"
 
