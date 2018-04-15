@@ -2,5 +2,7 @@
 silent! colorscheme solarized
 set background=dark
 
-hi Normal guibg=NONE ctermbg=NONE
+if !has('win32')
+    hi Normal guibg=NONE ctermbg=NONE
+endif
 

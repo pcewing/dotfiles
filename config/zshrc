@@ -19,7 +19,7 @@ add_to_path "$HOME/go"
 add_to_path "$HOME/.local/bin"
 
 # Load config files
-for config ($DOTFILES/config/zsh/**/*.zsh) source $config
+for config ($DOTFILES/config/zsh/**/*.*sh) source $config
 
 # Set up Node Version Manager.
 export NVM_DIR="$HOME/.nvm"

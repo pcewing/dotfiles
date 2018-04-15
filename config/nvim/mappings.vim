@@ -27,6 +27,8 @@ nnoremap <silent> <leader><Down> :resize -5<cr>
 nnoremap <silent> <leader><Right> :vertical resize +5<cr>
 nnoremap <silent> <leader><Left> :vertical resize -5<cr>
 
+vnoremap <Leader>n :normal<Space>
+
 " FZF
 nnoremap <Leader>o :FZF<CR>
 nnoremap <silent> <leader>t :Tags<cr>
