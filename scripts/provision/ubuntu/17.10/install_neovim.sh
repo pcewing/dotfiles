@@ -8,6 +8,8 @@ apt_add_repo neovim-ppa/unstable
 apt_update
 apt_install neovim
 
+apt_install exuberant-ctags
+
 echo "Setting up neovim python support..."
 try pip install --upgrade neovim
 echo "Setting up neovim python2 support..."

@@ -34,6 +34,9 @@ client.unfocused         #073642 #073642 #888888 #292d2e   #222222
 for_window [class="^feh$"] floating enable, border normal
 for_window [class="Pavucontrol"] floating enable, border normal
 
+# lock
+bindsym $mod+Escape exec "$HOME/.dotfiles/tools/lock"
+
 # launch rofi
 bindsym $mod+space exec "rofi -show run"
 

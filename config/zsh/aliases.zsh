@@ -19,6 +19,7 @@ alias gaad='git add --all --dry-run'
 # Svn aliases
 alias ss='svn status'
 alias sd='svn diff --diff-cmd=bcompare_svn'
+alias sl='svn log -l'
 
 # Filesystem aliases
 alias ..='cd ..'

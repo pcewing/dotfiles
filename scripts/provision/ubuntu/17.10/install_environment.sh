@@ -41,6 +41,7 @@ apt_install feh
 apt_install arandr
 apt_install chromium-browser
 apt_install shotwell
+apt_install pavucontrol
 
 apt_install nautilus
 echo "Updating Gnome settings to fix an issue with Nautilus and i3 "
