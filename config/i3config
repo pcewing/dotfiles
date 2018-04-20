@@ -10,7 +10,7 @@ exec_always compton --no-fading-openclose
 # use windows key as i3 modifier
 set $mod Mod4
 
-font pango:Ubuntu Mono derivative Powerline 14
+font pango:Ubuntu Mono 14
 
 # use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -33,6 +33,9 @@ client.unfocused         #073642 #073642 #888888 #292d2e   #222222
 # by default, float feh windows
 for_window [class="^feh$"] floating enable, border normal
 for_window [class="Pavucontrol"] floating enable, border normal
+
+# lock
+bindsym $mod+Escape exec "$HOME/.dotfiles/tools/lock"
 
 # launch rofi
 bindsym $mod+space exec "rofi -show run"
@@ -156,33 +159,6 @@ mode "resize" {
     bindsym Down resize grow height 10 px or 10 ppt
     bindsym Up resize shrink height 10 px or 10 ppt
     bindsym Right resize grow width 10 px or 10 ppt
-
-    # back to normal: Enter or Escape
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-}
-
-# this mode provides a quicker way to execute my most used applications
-bindsym $mod+a exec "app_cheatsheet"; mode "apps"
-mode "apps" {
-    # These bindings trigger as soon as you enter the apps mode
-    bindsym p exec "shotwell"; exec "app_cheatsheet -k"; mode "default"
-    bindsym s exec "steam"; exec "app_cheatsheet -k"; mode "default"
-    bindsym d exec "discord"; exec "app_cheatsheet -k"; mode "default"
-    bindsym c exec "chromium-browser"; exec "app_cheatsheet -k"; mode "default"
-
-    # back to normal: Enter or Escape
-    bindsym Return mode "default"; exec "app_cheatsheet -k"
-    bindsym Escape mode "default"; exec "app_cheatsheet -k"
-}
-
-# these bindings will display useful cheatsheets
-bindsym $mod+c mode "cheatsheets"
-mode "cheatsheets" {
-    bindsym l exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/LinuxCheatSheet.png"; mode "default"
-    bindsym e exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/EmacsCheatSheet.png"; mode "default"
-    bindsym v exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/VimCheatSheet.png"; mode "default"
-    bindsym r exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/RegexCheatSheet.png"; mode "default" bindsym f exec "feh --scale-down $HOME/Dropbox/Pictures/CheatSheets/LinuxFileSystemCheatSheet.png"; mode "default"
 
     # back to normal: Enter or Escape
     bindsym Return mode "default"
