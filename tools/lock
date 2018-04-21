@@ -4,5 +4,5 @@
 # * Multiple monitors
 # * Monitors that don't match the image resolution
 lockscreen_image="$HOME/Pictures/LockScreen.png"
-[[ -e "$lockscreen_image" ]] && i3lock -i "$lockscreen_image"
+[[ -e "$lockscreen_image" ]] && i3lock --tiling --image "$lockscreen_image"
 
