@@ -197,3 +197,9 @@ exec_always "[ -e ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
 exec_always "sh $HOME/.dotfiles/tools/wpr.sh"
 exec_always "sh $HOME/.dotfiles/tools/start_dropbox.sh"
 
+assign [class="discord"] 8
+assign [class="Steam"] 9
+
+# TODO: Remove this once done with vulkan tutorial
+for_window [class="HelloTriangle"] floating enable, border normal
+
