@@ -1,0 +1,130 @@
+set nocompatible
+
+set number                        " Show line numbers
+set backspace=indent,eol,start    " Make backspace behave as expected in insert mode
+set history=1000                  " Increase :cmdline history
+set showcmd                       " Show incomplete commands
+set showmode                      " Show current mode
+set gcr=a:blinkon0                " Disable cursor blink
+set visualbell                    " No sounds
+set autoread                      " Reload files changed outside vim
+set autowrite                     " Write the file on :make
+set laststatus=2                  " Always display the status line
+set nohidden                      " Hide buffer instead of closing it
+set splitright                    " When splitting vertically, the new pane should be on the right
+set splitbelow                    " When splitting horizontally, the new pane should be on the bottom
+set ruler                         " Show the line & column number at cursor
+set pastetoggle=<F2>              " See: http://vim.wikia.com/wiki/Toggle_auto-indenting_for_code_paste
+set clipboard=unnamed,unnamedplus " Use system clipboard if possible
+
+" Indentation
+set autoindent
+set smartindent
+set smarttab
+set shiftwidth=4
+set softtabstop=4
+set tabstop=4
+set expandtab
+
+filetype plugin on
+
+" Load Plugins
+call plug#begin('~/.config/nvim/plugged')
+
+Plug 'altercation/vim-colors-solarized'
+Plug 'joshdick/onedark.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'elixir-lang/vim-elixir'
+Plug 'slashmili/alchemist.vim'
+Plug 'fatih/vim-go'
+Plug 'OrangeT/vim-csharp'
+Plug 'mattn/emmet-vim'
+Plug 'tpope/vim-vinegar'
+Plug 'editorconfig/editorconfig-vim'
+Plug 'nvie/vim-flake8'
+Plug 'tikhomirov/vim-glsl'
+
+call plug#end()
+
+" FZF
+nnoremap <Leader>o :FZF<CR>
+nnoremap <silent> <leader>t :Tags<cr>
+
+" Setup vim-go mappings
+autocmd FileType go nmap <Leader>gor :GoRun<CR>
+autocmd FileType go nmap <Leader>gob :GoBuild<CR>
+
+" Set the Leader key. I leave the leader key as '\' and remap ' ' to it
+" instead of setting ' ' as the leader. This is so that showcmd is actually
+" useful.
+map <Space> <Leader>
+
+nnoremap <Leader>bn :bn<CR>
+nnoremap <Leader>bp :bp<CR>
+nnoremap <Leader>be :Ex<CR>
+nnoremap <Leader>bf :n<Space>
+nnoremap <Leader>bd :bd<CR>
+
+nnoremap <Leader>cn :cn<CR>
+nnoremap <Leader>cp :cp<CR>
+nnoremap <Leader>co :copen<CR>
+nnoremap <Leader>cc :cclose<CR>
+
+nnoremap <leader><tab>h  :tabfirst<CR>
+nnoremap <leader><tab>j  :tabnext<CR>
+nnoremap <leader><tab>k  :tabprev<CR>
+nnoremap <leader><tab>l  :tablast<CR>
+nnoremap <leader><tab>t  :tabedit<Space>
+nnoremap <leader><tab>n  :tabnext<Space>
+nnoremap <leader><tab>m  :tabm<Space>
+nnoremap <leader><tab>d  :tabclose<CR>
+
+nmap <leader>ls :ls<cr>:buffer<space>
+
+nnoremap <leader>ssx :set syntax=
+nnoremap <leader>ssg :set syntax=groovy<cr>
+
+nnoremap <Leader>gl :grep<Space>-F<Space>-R<space>'
+nnoremap <Leader>gr :grep<Space>-R<Space>'
+
+nnoremap <silent> <leader><Up> :resize +5<cr>
+nnoremap <silent> <leader><Down> :resize -5<cr>
+nnoremap <silent> <leader><Right> :vertical resize +5<cr>
+nnoremap <silent> <leader><Left> :vertical resize -5<cr>
+
+nnoremap tn :tabnew<CR>
+nnoremap tt :tabedit<Space>
+nnoremap td :tabclose<CR>
+nnoremap th :tabfirst<CR>
+nnoremap tj :tabnext<CR>
+nnoremap tk :tabprev<CR>
+nnoremap tl :tablast<CR>
+nnoremap tm :tabm<Space>
+nnoremap <A-F1> 1gt
+nnoremap <A-F2> 2gt
+nnoremap <A-F3> 3gt
+nnoremap <A-F4> 4gt
+nnoremap <A-F5> 5gt
+nnoremap <A-F6> 6gt
+nnoremap <A-F7> 7gt
+nnoremap <A-F8> 8gt
+nnoremap <A-F9> 9gt
+nnoremap <A-F0> 10gt
+
+" This color scheme is downloaded as a plugin in plugins.vim
+silent! colorscheme onedark
+set background=dark
+
+" Make the background transparent on non-Windows OSes
+if !has('win32')
+    hi Normal guibg=NONE ctermbg=NONE
+endif
+
+" Add a visual indicator to the line the cursor is on.
+function! s:SetCursorLine()
+  set cursorline
+  hi CursorLine cterm=NONE ctermbg=black
+endfunction
+autocmd VimEnter * call s:SetCursorLine()
+

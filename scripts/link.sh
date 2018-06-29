@@ -15,8 +15,10 @@ link "$DOTFILES/config/inputrc"          "$HOME/.inputrc"
 link "$DOTFILES/config/tmux.conf"        "$HOME/.tmux.conf"
 link "$DOTFILES/config/zshrc"            "$HOME/.zshrc"
 
+link "$DOTFILES/config/vimrc"            "$HOME/.vimrc"
+
 mkdir -p "$HOME/.config/nvim"
-link "$DOTFILES/config/init.vim"         "$HOME/.config/nvim/init.vim"
+link "$DOTFILES/config/vimrc"            "$HOME/.config/nvim/init.vim"
 
 mkdir -p "$HOME/.config/ranger"
 link "$DOTFILES/config/rangerrc"         "$HOME/.config/ranger/rc.conf"
