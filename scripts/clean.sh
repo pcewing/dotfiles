@@ -12,7 +12,7 @@ echo "=============================="
 
 remove_link "$HOME/.gitconfig"
 remove_link "$HOME/.config/nvim/init.vim"
-remove_link "$HOME/.config/.vimrc"
+remove_link "$HOME/.vimrc"
 remove_link "$HOME/.inputrc"
 remove_link "$HOME/.tmux.conf"
 remove_link "$HOME/.zshrc"
