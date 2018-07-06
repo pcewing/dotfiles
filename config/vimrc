@@ -118,6 +118,8 @@ set background=dark
 
 " Make the background transparent on non-Windows OSes
 if !has('win32')
+    " Solarized looks nicer with a transparent background
+    silent! colorscheme solarized
     hi Normal guibg=NONE ctermbg=NONE
 endif
 
