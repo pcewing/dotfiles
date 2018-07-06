@@ -49,7 +49,9 @@ date_string="$day_string $month/$day/$year"
 
 mkdir -p "$filedir"
 
-append "$filename" "# TODO: $date_string"
+append "$filename" "# $date_string"
+append "$filename" ""
+append "$filename" "## TODO:"
 append "$filename" "- [ ] "
 
 nvim "$filename"
