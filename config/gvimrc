@@ -1,0 +1,12 @@
+set gfn=Ubuntu_Mono_derivative_Powerlin:h14:cANSI:qDRAFT
+
+" Use ~x on an English Windows version or ~n for French.
+au GUIEnter * simalt ~x
+
+set guioptions-=m  "remove menu bar
+set guioptions-=T  "remove toolbar
+set guioptions-=r  "remove right-hand scroll bar
+set guioptions-=L  "remove left-hand scroll bar
+
+set guitablabel=\[%N\]\ %t\ %M "better tab titles
+

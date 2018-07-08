@@ -7,7 +7,8 @@ month=$(date +"%m")
 year=$(date +"%Y")
 day_of_week=$(date +"%w")
 
-filename=$notebook_dir/$year$month$day.md
+filedir=$notebook_dir/$year/$month
+filename=$filedir/$year\_$month\_$day.md
 
 append() {
   echo "$2" >> "$1"
@@ -46,9 +47,11 @@ esac
 
 date_string="$day_string $month/$day/$year"
 
-mkdir -p "$notebook_dir"
+mkdir -p "$filedir"
 
-append "$filename" "# TODO: $date_string"
+append "$filename" "# $date_string"
+append "$filename" ""
+append "$filename" "## TODO:"
 append "$filename" "- [ ] "
 
 nvim "$filename"
