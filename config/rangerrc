@@ -1,3 +1,8 @@
 
 # There is nothing here yet!
 
+# Make the find hotkey a little more intuitive
+# - Don't automatically open even on unambiguous match
+# - Filter the visible directory contents
+map f console scout -ftse%space
+
