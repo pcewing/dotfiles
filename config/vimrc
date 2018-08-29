@@ -44,6 +44,7 @@ Plug 'tpope/vim-vinegar'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'nvie/vim-flake8'
 Plug 'tikhomirov/vim-glsl'
+Plug 'martinda/Jenkinsfile-vim-syntax'
 
 call plug#end()
 
