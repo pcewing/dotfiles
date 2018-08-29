@@ -6,3 +6,4 @@
 # - Filter the visible directory contents
 map f console scout -ftse%space
 
+map R console rename%space
