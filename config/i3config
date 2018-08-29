@@ -10,16 +10,16 @@ exec_always compton --no-fading-openclose
 # use windows key as i3 modifier
 set $mod Mod4
 
-font pango:Ubuntu Mono 14
+font pango:Inconsolata 14
 
 # use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
 # change border settings for all windows; this is necessary to use gaps
-#for_window [class="^.*"] border pixel 2
+for_window [class="^.*"] border pixel 1
 
 # gaps
-#gaps inner 20
+gaps inner 20
 
 # color settings
 # class                  border  backgr. text    indicator child_border
