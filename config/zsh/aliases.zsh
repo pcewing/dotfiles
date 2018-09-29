@@ -28,6 +28,8 @@ alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias ls="ls --color"
 
+alias n='nautilus . >/dev/null 2>&1 & disown'
+
 # Helpers
 alias grep='grep --color=auto'
 alias df='df -h' # disk free, in Gigabytes, not bytes
