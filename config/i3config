@@ -20,10 +20,13 @@ for_window [class="^.*"] border pixel 1
 
 # gaps
 gaps inner 20
+smart_borders on
+
+#6d5782
 
 # color settings
 # class                  border  backgr. text    indicator child_border
-client.focused           #268bd2 #268bd2 #002b36 #00388e   #00ffff
+client.focused           #6D5782 #268bd2 #002b36 #00388e   #6d8257
 client.focused_inactive  #073642 #073642 #888888 #292d2e   #222222
 client.unfocused         #073642 #073642 #888888 #292d2e   #222222
 #client.urgent           #2f343a #900000 #ffffff #900000   #900000

@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-# TODO: This is a very naive approach that doesn't take into account:
-# * Multiple monitors
-# * Monitors that don't match the image resolution
-lockscreen_image="$HOME/Pictures/LockScreen.png"
-[[ -e "$lockscreen_image" ]] && i3lock --tiling --image "$lockscreen_image"
-

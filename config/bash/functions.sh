@@ -1,13 +1,23 @@
-function cdl {
-    cd $1 && echo "Now in: $(pwd)\nContents:\n" && ls
+try()
+{
+    "$@" > ~/.command_log 2>&1
+    local ret_val=$?
+  
+    if [ $ret_val -eq 0 ]; then
+        echo "SUCCESS"
+    else
+        echo "FAILURE"
+        echo "Command: $*"
+        echo "Output:"
+        cat ~/.command_log
+        exit 1
+    fi
 }
 
-# Clone the running terminal
-function term {
-    # TODO: The cloned terminal will close when the parent closes; find a
-    # better way to implement this
-    urxvt -cd $(pwd) &
-}
+apt_update(){ echo "Updating package lists... "; try sudo apt-get -y update; }
+apt_upgrade(){ echo "Upgrading packages... "; try sudo apt-get -y upgrade; }
+apt_install(){ echo "Installing $1... "; try sudo apt-get -y install "$1"; }
+apt_add_repo(){ echo "Adding $1 repository... "; try sudo add-apt-repository -y "ppa:$1"; }
 
 # print available colors and their numbers
 function colours() {
@@ -45,21 +55,3 @@ function vman() {
     rm "$tmp_file"
 }
 
-function sdr() {
-    r1="$1"
-    r2="$2"
-
-    if [[ ! "$r1" = "" ]] && [[ ! "$r2" = "" ]]; then
-        tmp_dir="$HOME/tmp"
-        tmp_file="$tmp_dir/diff.patch"
-
-        mkdir -p "$tmp_dir"
-        rm -f "$tmp_file"
-
-        svn diff --readonly --diff-cmd=bcompare_svnrev -r "$1:$2"
-    else
-        echo "Usage: sdr <rev1> <rev2>"
-        echo ""
-        echo "Example: sdr 1837 1839"
-    fi
-}

@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+export DOTFILES=$HOME/.dotfiles
+export EDITOR='nvim'
+
+# Load config files
+for config in $DOTFILES/config/bash/*.sh; do source $config; done
+
+# Set up Node Version Manager.
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+src_if_exists() {
+   [[ -e "$1" ]] && source "$1"
+}
+
+declare -a sources=(
+    "$HOME/.fzf.bash"
+    "$HOME/.localrc"
+    "$DOTFILES/scripts/provision/ubuntu.sh"
+)
+
+for i in "${sources[@]}"
+do
+    src_if_exists  "$i"
+done
+
+# Minimalist prompt
+PS1="[34m[\W][00m "
+

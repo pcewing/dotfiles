@@ -1,12 +1,10 @@
-# Reload zsh config
-alias reload!='source ~/.zshrc'
-
 alias cl='clear'
 
 alias lv="locate --regex"
 alias lV="locate"
 
 alias nvimf="nvim \$(fzf)"
+alias tm="tmux"
 
 # Git aliases
 alias gs='git status --short'
@@ -44,3 +42,5 @@ alias tns='tmux new-session -s'
 # Other
 alias sx="startx"
 alias notes='ranger ~/notebook'
+
+alias tmux="tmux -f $HOME/.config/tmux/config"
