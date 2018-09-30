@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-. ~/.profile
-. ~/.bashrc
+. "$HOME/.profile"
+. "$HOME/.bashrc"

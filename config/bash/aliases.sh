@@ -4,7 +4,6 @@ alias lv="locate --regex"
 alias lV="locate"
 
 alias nvimf="nvim \$(fzf)"
-alias tm="tmux"
 
 # Git aliases
 alias gs='git status --short'
@@ -34,6 +33,7 @@ alias df='df -h' # disk free, in Gigabytes, not bytes
 alias du='du -h -c' # calculate disk usage for a folder
 
 # Tmux aliases
+alias tm="tmux"
 alias ta='tmux attach'
 alias tls='tmux ls'
 alias tat='tmux attach -t'
@@ -43,4 +43,3 @@ alias tns='tmux new-session -s'
 alias sx="startx"
 alias notes='ranger ~/notebook'
 
-alias tmux="tmux -f $HOME/.config/tmux/config"

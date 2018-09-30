@@ -1,25 +1,6 @@
 #!/usr/bin/env bash
 
-add_to_path() {
-    [[ -d "$1" ]] && export PATH="$1:$PATH"
-}
-
-declare -a paths=(
-    "/usr/local/bin"
-    "/usr/local/sbin"
-    "$DOTFILES/bin"
-    "$DOTFILES/tools"
-    "$HOME/bin"
-    "$HOME/.rvm/bin"
-    "$HOME/.npm-global/bin"
-    "/usr/local/go/bin"
-    "$HOME/go/bin"
-    "$HOME/go"
-    "$HOME/.local/bin"
-)
-
-for i in "${paths[@]}"
-do
-    add_to_path "$i"
-done
+if [[ "$ENV_LOADED" = "" ]]; then
+    [[ -f "$HOME/.env" ]] && . "$HOME/.env"
+fi
 

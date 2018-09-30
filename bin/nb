@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+notebook_dir=$HOME/notebook
+
+day=$(date +"%d")
+month=$(date +"%m")
+year=$(date +"%Y")
+day_of_week=$(date +"%w")
+
+filedir=$notebook_dir/$year/$month
+filename=$filedir/$year\_$month\_$day.md
+
+append() {
+  echo "$2" >> "$1"
+}
+
+if [[ -e $filename ]]; then
+  nvim "$filename"
+  exit 0
+fi
+
+day_string=""
+
+case "$day_of_week" in
+  "0")
+    day_string="Sunday"
+    ;;
+  "1")
+    day_string="Monday"
+    ;;
+  "2")
+    day_string="Tuesday"
+    ;;
+  "3")
+    day_string="Wednesday"
+    ;;
+  "4")
+    day_string="Thursday"
+    ;;
+  "5")
+    day_string="Friday"
+    ;;
+  "6")
+    day_string="Saturday"
+    ;;
+esac
+
+date_string="$day_string $month/$day/$year"
+
+mkdir -p "$filedir"
+
+append "$filename" "# $date_string"
+append "$filename" ""
+append "$filename" "## TODO:"
+append "$filename" "- [ ] "
+
+nvim "$filename"

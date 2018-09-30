@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+export DOTFILES="$HOME/.dotfiles"
+
+add_to_path() {
+    [[ -d "$1" ]] && export PATH="$1:$PATH"
+}
+
+declare -a paths=(
+    "/usr/local/bin"
+    "/usr/local/sbin"
+    "$HOME/bin"
+    "$HOME/.local/bin"
+    "$DOTFILES/bin"
+    "$HOME/.rvm/bin"
+    "$HOME/.npm-global/bin"
+    "/usr/local/go/bin"
+    "$HOME/go/bin"
+    "$HOME/go"
+)
+
+for i in "${paths[@]}"
+do
+    add_to_path "$i"
+done
+
+export ENV_LOADED="1"
+

@@ -5,7 +5,7 @@ This repository contains my dotfiles.
 ## Installation & Cleanup
 
 To make setup easy, scripts are provided to create/remove symlinks. These can
-be found in the scripts directory and should be self-explanatory.
+be found in the root directory and should be self-explanatory.
 
 ## Manual Setup Steps
 

@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-export DOTFILES=$HOME/.dotfiles
+if [[ "$ENV_LOADED" = "" ]]; then
+    [[ -f "$HOME/.env" ]] && . "$HOME/.env"
+fi
+
 export EDITOR='nvim'
 
 # Load config files

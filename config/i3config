@@ -37,8 +37,21 @@ client.unfocused         #073642 #073642 #888888 #292d2e   #222222
 for_window [class="^feh$"] floating enable, border normal
 for_window [class="Pavucontrol"] floating enable, border normal
 
-# lock
-bindsym $mod+Escape exec "$HOME/.dotfiles/tools/lock"
+bindsym $mod+Escape mode "$mode_system"
+set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
+mode "$mode_system" {
+    bindsym l exec --no-startup-id i3exit lock, mode "default"
+    bindsym s exec --no-startup-id i3exit suspend, mode "default"
+    bindsym u exec --no-startup-id i3exit switch_user, mode "default"
+    bindsym e exec --no-startup-id i3exit logout, mode "default"
+    bindsym h exec --no-startup-id i3exit hibernate, mode "default"
+    bindsym r exec --no-startup-id i3exit reboot, mode "default"
+    bindsym Shift+s exec --no-startup-id i3exit shutdown, mode "default"
+
+    # exit system mode: "Enter" or "Escape"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
 
 # launch rofi
 bindsym $mod+space exec "rofi -show run"
@@ -173,36 +186,21 @@ bindsym --release Print exec "scrot -m $HOME/Pictures/screenshots/%s_%H%M_%d.%m.
 bindsym --release Shift+Print exec "scrot -s $HOME/Pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
 bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/Pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
 
-# i3bar config
-bar {
-    position top
-    colors {
-        background #002b36
-        statusline #ffffff
-        separator #666666
-
-        # <colorclass> <border> <background> <text>
-        focused_workspace   #073642 #073642 #fdf6e3
-        active_workspace    #073642 #002b36 #839496
-        inactive_workspace  #073642 #002b36 #839496
-        urgent_workspace    #2f343a #900000 #ffffff
-        binding_mode        #2f343a #900000 #ffffff
-    }
-
-    status_command py3status -c ~/.config/i3status/i3status.conf
-    tray_output primary
-    separator_symbol "•"
-}
+exec_always --no-startup-id polybar.sh &
 
 # source the machine-specific screen layout if it exists
 exec_always "[ -e ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
 
-exec_always "sh $HOME/.dotfiles/tools/wpr.sh"
-exec_always "sh $HOME/.dotfiles/tools/start_dropbox.sh"
-
 assign [class="discord"] 8
 assign [class="Steam"] 9
 
+# Float specific apps by default
+for_window [class="Nitrogen"] floating enable, border normal
+for_window [class="Ps2"] floating enable, border normal
+
 # TODO: Remove this once done with vulkan tutorial
 for_window [class="HelloTriangle"] floating enable, border normal
+
+exec_always "wpr.sh"
+exec_always "dropbox.sh"
 
