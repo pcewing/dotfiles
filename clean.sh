@@ -19,6 +19,8 @@ remove_link "$HOME/.inputrc"
 remove_link "$HOME/.config/i3/config"
 remove_link "$HOME/.config/i3status/i3status.conf"
 remove_link "$HOME/.config/mpd/mpd.conf"
+remove_link "$HOME/.config/ncmpcpp/bindings"
+remove_link "$HOME/.config/ncmpcpp/config"
 remove_link "$HOME/.config/polybar/config"
 remove_link "$HOME/.profile"
 remove_link "$HOME/.config/ranger/rc.conf"
@@ -26,3 +28,8 @@ remove_link "$HOME/.tmux.conf"
 remove_link "$HOME/.vimrc"
 remove_link "$HOME/.config/nvim/init.vim"
 remove_link "$HOME/.xinitrc"
+
+# TODO: This is a temporary fix to https://github.com/arybczak/ncmpcpp/issues/91
+# because the version of ncmpcpp in the apt repositories doesn't have the real
+# fix yet
+remove_link "$HOME/.ncmpcpp/bindings"
