@@ -13,13 +13,20 @@ function link {
     ln -sf "$src" "$dst"
 }
 
+if [[ "$DOTFILES" = "" ]]; then
+    echo "ERROR: The DOTFILES environment variable is not set!"
+    exit 1
+fi
+
 echo -e "\\nEnsuring XDG folders exist"
 echo "=========================="
 
 create_folder "$HOME/.config/cmus"
+create_folder "$HOME/.config/dunst"
 create_folder "$HOME/.config/i3"
 create_folder "$HOME/.config/i3status"
 create_folder "$HOME/.config/mpd"
+create_folder "$HOME/.config/ncmpcpp"
 create_folder "$HOME/.config/ranger"
 create_folder "$HOME/.config/nvim"
 create_folder "$HOME/.config/polybar"
@@ -30,6 +37,7 @@ echo "================="
 link "$DOTFILES/config/bash_profile"     "$HOME/.bash_profile"
 link "$DOTFILES/config/bashrc"           "$HOME/.bashrc"
 link "$DOTFILES/config/cmusrc"           "$HOME/.config/cmus/rc"
+link "$DOTFILES/config/dunstrc"          "$HOME/.config/dunst/dunstrc"
 link "$DOTFILES/config/env"              "$HOME/.env"
 link "$DOTFILES/config/gitconfig"        "$HOME/.gitconfig"
 link "$DOTFILES/config/gvimrc"           "$HOME/.gvimrc"
@@ -50,4 +58,6 @@ link "$DOTFILES/config/xinitrc"          "$HOME/.xinitrc"
 # TODO: This is a temporary fix to https://github.com/arybczak/ncmpcpp/issues/91
 # because the version of ncmpcpp in the apt repositories doesn't have the real
 # fix yet
+create_folder "$HOME/.ncmpcpp"
 link "$DOTFILES/config/ncmpcpp/bindings" "$HOME/.ncmpcpp/bindings"
+
