@@ -55,3 +55,22 @@ function vman() {
     rm "$tmp_file"
 }
 
+function sdr() {
+    r1="$1"
+    r2="$2"
+
+    if [[ ! "$r1" = "" ]] && [[ ! "$r2" = "" ]]; then
+        tmp_dir="$HOME/tmp"
+        tmp_file="$tmp_dir/diff.patch"
+
+        mkdir -p "$tmp_dir"
+        rm -f "$tmp_file"
+
+        svn diff --readonly --diff-cmd=bcompare_svnrev -r "$1:$2"
+    else
+        echo "Usage: sdr <rev1> <rev2>"
+        echo ""
+        echo "Example: sdr 1837 1839"
+    fi
+}
+
