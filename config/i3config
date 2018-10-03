@@ -195,8 +195,9 @@ assign [class="discord"] 8
 assign [class="Steam"] 9
 
 # Float specific apps by default
-for_window [class="Nitrogen"] floating enable, border normal
-for_window [class="Ps2"] floating enable, border normal
+for_window [class="Nitrogen"] floating enable
+for_window [class="Ps2"] floating enable
+for_window [class="Conky"] floating enable
 
 # TODO: Remove this once done with vulkan tutorial
 for_window [class="HelloTriangle"] floating enable, border normal
