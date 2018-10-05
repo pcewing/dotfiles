@@ -176,6 +176,21 @@ function install_i3gaps() {
     try sudo make install
 }
 
+function install_youtube-dl() {
+    print_header "Installing youtube-dl"
+
+    local bin_dir="$HOME/bin"
+    local youtube_dl="$bin_dir/youtube-dl"
+
+    mkdir -p "$bin_dir"
+
+    echo "Downloading youtube-dl"
+    try curl -L https://yt-dl.org/downloads/latest/youtube-dl -o "$youtube_dl"
+
+    echo "Setting up youtube-dl"
+    try chmod a+rx "$youtube_dl"
+}
+
 ########
 # Main #
 ########
@@ -183,4 +198,6 @@ function install_i3gaps() {
 install_cava
 install_polybar
 install_i3gaps
+install_youtube-dl
 
+apt_install id3v2
