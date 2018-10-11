@@ -191,6 +191,7 @@ exec_always --no-startup-id polybar.sh &
 exec_always "[ -e ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
 
 # Force certain apps to specific workspaces
+assign [class="Bcompare"] 7
 assign [class="discord"] 8
 assign [class="Steam"] 9
 
@@ -200,6 +201,8 @@ for_window [class="Pavucontrol"] floating enable
 for_window [class="Nitrogen"] floating enable
 for_window [class="Ps2"] floating enable
 for_window [class="Conky"] floating enable
+for_window [class="Nautilus"] floating enable
+for_window [instance="RabbitVCS"] floating enable
 
 # TODO: Remove this once done with vulkan tutorial
 for_window [class="HelloTriangle"] floating enable, border normal
