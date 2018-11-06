@@ -84,6 +84,16 @@ function youtube_mp3() {
         "$url"
 }
 
+function youtube_playlist_mp3() {
+    local url="$1"
+
+    youtube-dl \
+        --extract-audio \
+        --audio-format mp3 \
+        -o "%(title)s.%(ext)s" \
+        "$url"
+}
+
 function git_diff_bc3() {
     git diff --name-only "$@" | while read filename; do
         git difftool "$@" --no-prompt "$filename" -t "bc3" &
