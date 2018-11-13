@@ -56,6 +56,7 @@ link "$DOTFILES/config/tmux.conf"        "$HOME/.tmux.conf"
 link "$DOTFILES/config/vimrc"            "$HOME/.vimrc"
 link "$DOTFILES/config/vimrc"            "$HOME/.config/nvim/init.vim"
 link "$DOTFILES/config/xinitrc"          "$HOME/.xinitrc"
+link "$DOTFILES/config/Xresources"       "$HOME/.Xresources"
 
 # TODO: This is a temporary fix to https://github.com/arybczak/ncmpcpp/issues/91
 # because the version of ncmpcpp in the apt repositories doesn't have the real

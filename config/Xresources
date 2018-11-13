@@ -1,0 +1,72 @@
+! special
+*.foreground:   #a39a90
+*.background:   #16130f
+*.cursorColor:  #a39a90
+
+! black
+*.color0:       #16130f
+*.color8:       #5a5047
+
+! red
+*.color1:       #826d57
+*.color9:       #826d57
+
+! green
+*.color2:       #57826d
+*.color10:      #57826d
+
+! yellow
+*.color3:       #6d8257
+*.color11:      #6d8257
+
+! blue
+*.color4:       #6d5782
+*.color12:      #6d5782
+
+! magenta
+*.color5:       #82576d
+*.color13:      #82576d
+
+! cyan
+*.color6:       #576d82
+*.color14:      #576d82
+
+! white
+*.color7:       #a39a90
+*.color15:      #dbd6d1
+
+URxvt.font: xft:Liberation Mono:pixelsize=16
+URxvt.boldFont: xft:Liberation Mono:pixelsize=16:bold
+URxvt.italicFont: xft:Liberation Mono:pixelsize=16:italic
+URxvt.boldItalicFont: xft:Liberation Mono:pixelsize=16:bold:italic
+
+URxvt.internalBorder: 4
+
+! This is important when using solarized dark colors. The terminal emulator
+! will display bold font using the "bright" color variants. This is visible in
+! git diffs where the additions which should be green show up as a non-descript
+! light gray.
+URxvt.intensityStyles: false
+
+! This adds "real" transparency, but it requires a composite manager to be running.
+URxvt*depth:      32
+URxvt*background: rgba:0000/0000/0200/e000
+
+! This adds "fake" transparency. If a composite manager isn't running, this
+! simulates transparency by capturing what's behind the window and drawing
+! it as the background.
+!URxvt*transparent: true
+!URxvt*shading:     10
+
+URxvt*urlLauncher:     firefox
+URxvt*scrollBar:       false
+URxvt*scrollBar_right: true
+URxvt*scrollColor:     #606060
+URxvt*scrollTtyOutput:      false
+URxvt*scrollWithBuffer:     true
+URxvt*scrollTtyKeypress:    true
+urxvt*fade:            1
+urxvt.visualBell:      false
+urxvt.urgentOnBell:    true
+
+Xcursor.size: 10
