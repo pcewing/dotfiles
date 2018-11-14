@@ -191,19 +191,6 @@ function install_youtube-dl() {
     try chmod a+rx "$youtube_dl"
 }
 
-function install_dotnet() {
-    print_header "Installing .NET Core SDK"
-
-    echo "Setting up Microsoft key and feed"
-    wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
-    sudo dpkg -i packages-microsoft-prod.deb
-
-    echo "Installing .NET Core SDK"
-    sudo apt-get install apt-transport-https
-    sudo apt-get update
-    sudo apt-get install dotnet-sdk-2.1
-}
-
 ########
 # Main #
 ########
@@ -212,6 +199,9 @@ install_cava
 install_polybar
 install_i3gaps
 install_youtube-dl
-install_dotnet
 
 apt_install id3v2
+
+apt_install rxvt-unicode
+sudo update-alternatives --set x-terminal-emulator "$(which urxvt)"
+
