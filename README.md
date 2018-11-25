@@ -11,12 +11,6 @@ be found in the root directory and should be self-explanatory.
 
 Some things require interactive user input and thus I didn't bother scripting.
 
-### Set Default Terminal
-
-Because `st` is built from source it won't be registered as an available
-x-terminal-emulator alternative. Install `galternatives` and just do this
-through the GUI.
-
 ### Setup gitconfig_local
 
 To avoid putting email address in a publicly visible file

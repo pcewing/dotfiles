@@ -81,58 +81,6 @@ function install_cava() {
     try sudo make install
 }
 
-function install_polybar() {
-    print_header "Installing polybar"
-
-    # Required dependencies
-    apt_install cmake 
-    apt_install cmake-data 
-    apt_install pkg-config
-    apt_install libcairo2-dev	
-    apt_install libxcb1-dev 
-    apt_install libxcb-util0-dev 
-    apt_install libxcb-randr0-dev 
-    apt_install libxcb-composite0-dev	
-    apt_install python-xcbgen 
-    apt_install xcb-proto	
-    apt_install libxcb-image0-dev	
-    apt_install libxcb-ewmh-dev 
-    apt_install libxcb-icccm4-dev	
-
-    # Optional dependencies
-    apt_install libxcb-xkb-dev	
-    apt_install libxcb-xrm-dev	
-    apt_install libxcb-cursor-dev	
-    apt_install libasound2-dev	
-    apt_install libpulse-dev
-    # This installs vanilla i3wm which we will overwrite with i3-gaps
-    apt_install i3-wm
-    apt_install libjsoncpp-dev	
-    apt_install libmpdclient-dev	
-    apt_install libcurl4-openssl-dev 
-    apt_install libiw-dev	
-    apt_install libnl-3-dev	
-
-    # This is necessary to use Font Awesome icons
-    apt_install fonts-font-awesome	
-
-    local polybar_src_dir="$temp_src_dir/polybar"
-    local polybar_build_dir="$temp_src_dir/polybar/build"
-
-    echo "Removing pre-existing source directory if necessary"
-    try rm -rf "$polybar_src_dir"
-
-    echo "Cloning the polybar repository"
-    try git clone --branch 3.2 --recursive https://github.com/jaagr/polybar \
-        "$polybar_src_dir"
-
-    echo "Building and installing polybar"
-    try mkdir -p "$polybar_build_dir"
-    try cd "$polybar_build_dir"
-    try cmake ..
-    try sudo make install
-}
-
 function install_i3gaps() {
     print_header "Installing i3-gaps"
 
@@ -176,6 +124,58 @@ function install_i3gaps() {
     try sudo make install
 }
 
+function install_polybar() {
+    print_header "Installing polybar"
+
+    # Required dependencies
+    apt_install cmake 
+    apt_install cmake-data 
+    apt_install pkg-config
+    apt_install libcairo2-dev	
+    apt_install libxcb1-dev 
+    apt_install libxcb-util0-dev 
+    apt_install libxcb-randr0-dev 
+    apt_install libxcb-composite0-dev	
+    apt_install python-xcbgen 
+    apt_install xcb-proto	
+    apt_install libxcb-image0-dev	
+    apt_install libxcb-ewmh-dev 
+    apt_install libxcb-icccm4-dev	
+
+    # Optional dependencies
+    apt_install libxcb-xkb-dev	
+    apt_install libxcb-xrm-dev	
+    apt_install libxcb-cursor-dev	
+    apt_install libasound2-dev	
+    apt_install libpulse-dev
+    # This is necessary if not installing i3-gaps from source
+    #apt_install i3-wm
+    apt_install libjsoncpp-dev	
+    apt_install libmpdclient-dev	
+    apt_install libcurl4-openssl-dev 
+    apt_install libiw-dev	
+    apt_install libnl-3-dev	
+
+    # This is necessary to use Font Awesome icons
+    apt_install fonts-font-awesome	
+
+    local polybar_src_dir="$temp_src_dir/polybar"
+    local polybar_build_dir="$temp_src_dir/polybar/build"
+
+    echo "Removing pre-existing source directory if necessary"
+    try rm -rf "$polybar_src_dir"
+
+    echo "Cloning the polybar repository"
+    try git clone --branch 3.2 --recursive https://github.com/jaagr/polybar \
+        "$polybar_src_dir"
+
+    echo "Building and installing polybar"
+    try mkdir -p "$polybar_build_dir"
+    try cd "$polybar_build_dir"
+    try cmake ..
+    try sudo make install
+}
+
 function install_youtube-dl() {
     print_header "Installing youtube-dl"
 
@@ -195,9 +195,10 @@ function install_youtube-dl() {
 # Main #
 ########
 
-install_cava
-install_polybar
 install_i3gaps
+install_polybar
+
+install_cava
 install_youtube-dl
 
 apt_install id3v2
