@@ -2,8 +2,6 @@
 #
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
-exec_always $PATH=$HOME/.dotfiles/tools:$PATH
-
 # Start the compositor (Without fading because it's annoying and slow)
 exec_always compton --no-fading-openclose
 
@@ -181,9 +179,9 @@ mode "resize" {
 }
 
 # print screen bindings
-bindsym --release Print exec "scrot -m $HOME/Pictures/screenshots/%s_%H%M_%d.%m.%Y_$wx$h.png"
-bindsym --release Shift+Print exec "scrot -s $HOME/Pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
-bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/Pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
+bindsym --release Print exec "scrot -m $HOME/pictures/screenshots/%s_%H%M_%d.%m.%Y_$wx$h.png"
+bindsym --release Shift+Print exec "scrot -s $HOME/pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
+bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
 
 exec_always --no-startup-id polybar.sh &
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-lockscreen_image="$HOME/Pictures/Lock.png"
+lockscreen_image="$HOME/pictures/lock.png"
 [[ -e "$lockscreen_image" ]] && i3lock --tiling --image "$lockscreen_image"
 
