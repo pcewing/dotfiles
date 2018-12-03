@@ -43,4 +43,4 @@ alias tns='tmux new-session -s'
 # Other
 alias sx="startx"
 alias notes='ranger ~/notebook'
-
+alias reload_xresources="xrdb -merge ~/.Xresources"

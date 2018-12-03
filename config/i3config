@@ -2,8 +2,6 @@
 #
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
-exec_always $PATH=$HOME/.dotfiles/tools:$PATH
-
 # Start the compositor (Without fading because it's annoying and slow)
 exec_always compton --no-fading-openclose
 

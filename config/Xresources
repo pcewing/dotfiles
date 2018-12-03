@@ -35,10 +35,10 @@
 *.color7:       #a39a90
 *.color15:      #dbd6d1
 
-URxvt.font: xft:Liberation Mono:pixelsize=16
-URxvt.boldFont: xft:Liberation Mono:pixelsize=16:bold
-URxvt.italicFont: xft:Liberation Mono:pixelsize=16:italic
-URxvt.boldItalicFont: xft:Liberation Mono:pixelsize=16:bold:italic
+URxvt.font:           xft:Ubuntu Mono:pixelsize=20
+URxvt.boldFont:       xft:Ubuntu Mono:pixelsize=20:bold
+URxvt.italicFont:     xft:Ubuntu Mono:pixelsize=20:italic
+URxvt.boldItalicFont: xft:Ubuntu Mono:pixelsize=20:bold:italic
 
 URxvt.internalBorder: 8
 
