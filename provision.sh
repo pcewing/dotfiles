@@ -76,6 +76,49 @@ function setup_dirs() {
 # Application Installation Functions #
 ######################################
 
+function install_neovim() {
+    print_header "Installing neovim"
+
+    # Necessary to use add-apt-repository
+    apt_install software-properties-common
+
+    apt_add_repo ppa:neovim-ppa/stable
+    apt_update
+    apt_install neovim
+
+    # Prerequisites for the Python modules
+    echo "Installing python module prerequisites..."
+    apt_install python-dev
+    apt_install python-pip
+    apt_install python3-dev
+    apt_install python3-pip
+
+    # Install python modules
+    echo "Installing python modules..."
+    try sudo pip2 install --upgrade neovim
+    try sudo pip3 install --upgrade neovim
+
+    echo "Updating alternatives to use nvim..."
+    nvim_path="$(which nvim)"
+    try sudo update-alternatives --install /usr/bin/vi vi "$nvim_path" 60
+    try sudo update-alternatives --set vi "$nvim_path"
+    try sudo update-alternatives --install /usr/bin/vim vim "$nvim_path" 60
+    try sudo update-alternatives --set vim "$nvim_path"
+    try sudo update-alternatives --install /usr/bin/editor editor "$nvim_path" 60
+    try sudo update-alternatives --set editor "$nvim_path"
+
+    echo "Downloading plug.vim..."
+    try curl -fLo "~/.vim/autoload/plug.vim" --create-dirs \
+        "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+    try mkdir -p "~/.local/share/nvim/site/autoload"
+    try cp "~/.vim/autoload/plug.vim" "~/.local/share/nvim/site/autoload/plug.vim"
+
+    echo "Installing plugins..."
+    try nvim +PlugInstall +qa
+
+
+}
+
 function install_cava() {
     print_header "Installing cava"
 
@@ -122,6 +165,8 @@ function install_i3gaps() {
     apt_install autoconf
     apt_install libxcb-xrm0
     apt_install libxcb-xrm-dev
+    apt_install libxcb-shape0
+    apt_install libxcb-shape0-dev
     apt_install automake
 
     local i3gaps_src_dir="$temp_src_dir/i3-gaps"
@@ -216,16 +261,20 @@ function install_youtube-dl() {
 # Main #
 ########
 
-setup_dirs
+#setup_dirs
 
-install_i3gaps
-install_polybar
+#apt_install curl
 
-install_cava
-install_youtube-dl
+install_neovim
 
-apt_install id3v2
+#install_i3gaps
+#install_polybar
 
-apt_install rxvt-unicode
-sudo update-alternatives --set x-terminal-emulator "$(which urxvt)"
+#install_cava
+#install_youtube-dl
+
+#apt_install id3v2
+
+#apt_install rxvt-unicode
+#sudo update-alternatives --set x-terminal-emulator "$(which urxvt)"
 

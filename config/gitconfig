@@ -13,3 +13,4 @@
     cbr = rev-parse --abbrev-ref HEAD
 
     diff = diff --ignore-space-at-eol -b -w --ignore-blank-lines
+
