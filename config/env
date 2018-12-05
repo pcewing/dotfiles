@@ -10,6 +10,7 @@ declare -a paths=(
     "/usr/local/bin"
     "/usr/local/sbin"
     "$HOME/bin"
+    "$HOME/.flatpak_aliases"
     "$HOME/.local/bin"
     "$DOTFILES/bin"
     "$HOME/.rvm/bin"
