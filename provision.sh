@@ -134,7 +134,7 @@ function install_cava() {
     echo "Removing pre-existing source directory if necessary"
     try rm -rf "$cava_src_dir"
 
-    echo "Cloning the polybar repository"
+    echo "Cloning the cava repository"
     try git clone https://github.com/karlstav/cava "$cava_src_dir"
 
     echo "Building and installing cava"
@@ -265,12 +265,12 @@ function install_youtube-dl() {
 
 #apt_install curl
 
-install_neovim
+#install_neovim
 
 #install_i3gaps
 #install_polybar
 
-#install_cava
+install_cava
 #install_youtube-dl
 
 #apt_install id3v2
