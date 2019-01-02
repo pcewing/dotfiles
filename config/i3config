@@ -204,6 +204,8 @@ for_window [instance="RabbitVCS"] floating enable
 for_window [class="insync.py"] floating enable
 for_window [class="keepassxc"] floating enable
 for_window [class="VirtualBox Machine"] floating enable
+for_window [class="net-runelite-launcher-Launcher"] floating enable
+for_window [class="net-runelite-client-RuneLite"] floating enable
 
 for_window [class=ShadowOfMordor] floating enable, resize set 1920 1080
 
@@ -212,4 +214,3 @@ for_window [class="HelloTriangle"] floating enable, border normal
 
 exec_always "wpr.sh"
 exec_always "dropbox.sh"
-
