@@ -55,23 +55,6 @@ apt_add_repo() {
     try sudo add-apt-repository -y "$1"
 }
 
-#######################################
-# General Environment Setup Functions #
-#######################################
-
-function setup_dirs() {
-    source "$DOTFILES/config/user-dirs.dirs"
-
-    mkdir -p "$XDG_DESKTOP_DIR"
-    mkdir -p "$XDG_DOWNLOAD_DIR"
-    mkdir -p "$XDG_TEMPLATES_DIR"
-    mkdir -p "$XDG_PUBLICSHARE_DIR"
-    mkdir -p "$XDG_DOCUMENTS_DIR"
-    mkdir -p "$XDG_MUSIC_DIR"
-    mkdir -p "$XDG_PICTURES_DIR"
-    mkdir -p "$XDG_VIDEOS_DIR"
-}
-
 ######################################
 # Application Installation Functions #
 ######################################
@@ -260,8 +243,6 @@ function install_youtube-dl() {
 ########
 # Main #
 ########
-
-#setup_dirs
 
 #apt_install curl
 
