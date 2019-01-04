@@ -183,8 +183,6 @@ bindsym --release Print exec "scrot -m $HOME/pictures/screenshots/%s_%H%M_%d.%m.
 bindsym --release Shift+Print exec "scrot -s $HOME/pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
 bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
 
-exec_always --no-startup-id polybar.sh &
-
 # source the machine-specific screen layout if it exists
 exec_always "[ -e ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
 
@@ -212,5 +210,5 @@ for_window [class=ShadowOfMordor] floating enable, resize set 1920 1080
 # TODO: Remove this once done with vulkan tutorial
 for_window [class="HelloTriangle"] floating enable, border normal
 
-exec_always "wpr.sh"
-exec_always "dropbox.sh"
+exec_always "startup.sh"
+
