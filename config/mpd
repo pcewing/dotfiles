@@ -1,7 +1,7 @@
 bind_to_address "127.0.0.1"
 
-music_directory     "~/music"
-playlist_directory  "~/.local/share/mpd/playlists"
+music_directory     "~/box/mus/library"
+playlist_directory  "~/box/mus/playlists"
 db_file             "~/.local/share/mpd/mpd.db"
 log_file            "~/.local/share/mpd/mpd.log"
 pid_file            "~/.local/share/mpd/mpd.pid"
