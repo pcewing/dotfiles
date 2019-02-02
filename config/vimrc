@@ -31,8 +31,10 @@ filetype plugin on
 " Load Plugins
 call plug#begin('~/.config/nvim/plugged')
 
-Plug 'altercation/vim-colors-solarized'
+" Colorschemes
+Plug 'https://gitlab.com/pcewing/vim-16color.git'
 Plug 'joshdick/onedark.vim'
+
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'elixir-lang/vim-elixir'
@@ -46,7 +48,6 @@ Plug 'nvie/vim-flake8'
 Plug 'tikhomirov/vim-glsl'
 Plug 'martinda/Jenkinsfile-vim-syntax'
 Plug 'aklt/plantuml-syntax'
-
 Plug 'Valloric/YouCompleteMe'
 
 call plug#end()
@@ -116,14 +117,13 @@ nnoremap <A-F8> 8gt
 nnoremap <A-F9> 9gt
 nnoremap <A-F0> 10gt
 
-" This color scheme is downloaded as a plugin in plugins.vim
-silent! colorscheme onedark
-set background=dark
 
-" Make the background transparent on non-Windows OSes
-if !has('win32')
-    " Solarized looks nicer with a transparent background
-    silent! colorscheme solarized
+if has('win32')
+    silent! colorscheme onedark
+    set background=dark
+else
+    " Make the background transparent on non-Windows OSes
+    silent! colorscheme 16color
     hi Normal guibg=NONE ctermbg=NONE
 endif
 

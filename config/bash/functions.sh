@@ -19,6 +19,14 @@ apt_upgrade(){ echo "Upgrading packages... "; try sudo apt-get -y upgrade; }
 apt_install(){ echo "Installing $1... "; try sudo apt-get -y install "$1"; }
 apt_add_repo(){ echo "Adding $1 repository... "; try sudo add-apt-repository -y "ppa:$1"; }
 
+function base16() {
+    for i in {0..7}; do
+        let j=$i+8
+        printf "\x1b[38;5;${i}m colour${i}\t\x1b[38;5;${j}m colour${j}\n"
+    done
+}
+
+
 # print available colors and their numbers
 function colours() {
     for i in {0..255}; do
@@ -74,24 +82,14 @@ function sdr() {
     fi
 }
 
-# Download a video from YouTube and rip the audio to an MP3
-function youtube_mp3() {
-    local url="$1"
-
-    youtube-dl \
-        -x \
-        --audio-format "mp3" \
-        "$url"
+# Download just the audio from a YouTube video as an MP3 file
+function yt-mp3() {
+    youtube-dl -x --audio-format "mp3" "$1"
 }
 
-function youtube_playlist_mp3() {
-    local url="$1"
-
-    youtube-dl \
-        --extract-audio \
-        --audio-format mp3 \
-        -o "%(title)s.%(ext)s" \
-        "$url"
+# Download a playlist from YouTube as a set of MP3 files
+function ytpl-mp3() {
+    youtube-dl --extract-audio --audio-format mp3 -o "%(title)s.%(ext)s" "$1"
 }
 
 function git_diff_bc3() {
