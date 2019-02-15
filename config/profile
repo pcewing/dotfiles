@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
 
-if [[ "$ENV_LOADED" = "" ]]; then
-    [[ -f "$HOME/.env" ]] && . "$HOME/.env"
-fi
+[[ -f "$HOME/.env" ]] && . "$HOME/.env"
 

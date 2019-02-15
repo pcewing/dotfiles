@@ -3,13 +3,18 @@
 export DOTFILES="$HOME/.dotfiles"
 
 add_to_path() {
-    [[ -d "$1" ]] && export PATH="$1:$PATH"
+    local path="$("$DOTFILES/bin/add_to_path.py" "$1")"
+
+    if [[ ! "$path" = "" ]]; then
+        export PATH="$path"
+    fi
 }
 
 declare -a paths=(
     "/usr/local/bin"
     "/usr/local/sbin"
     "$HOME/bin"
+    "$HOME/.dotfiles/bin"
     "$HOME/.flatpak_aliases"
     "$HOME/.local/bin"
     "$DOTFILES/bin"

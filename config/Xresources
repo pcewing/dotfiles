@@ -52,9 +52,9 @@ URxvt.intensityStyles: false
 URxvt*depth:      32
 URxvt*background: rgba:0000/0000/0200/e000
 
-! This adds "fake" transparency. If a composite manager isn't running, this
-! simulates transparency by capturing what's behind the window and drawing
-! it as the background.
+! This adds "fake" transparency. If a composite manager is not running, this
+! simulates transparency by capturing what is behind the window and drawing it
+! as the background.
 !URxvt*transparent: true
 !URxvt*shading:     10
 

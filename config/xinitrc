@@ -36,13 +36,5 @@ fi
 # Everything above this line is the default behaviour; it is likely best to
 # leave it alone.
 
-if [[ "$ENV_LOADED" = "" ]]; then
-    [[ -f "$HOME/.env" ]] && . "$HOME/.env"
-fi
-
-xset +fp /home/paul/.fonts
-xset fp rehash
-
-# Run i3 window manager when x starts.
-exec i3
+exec "$HOME/.xsession"
 
