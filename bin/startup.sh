@@ -8,11 +8,13 @@ logfile="$logdir/startup.log"
 start_process() {
     local procname="$1"
     local procargs="$2"
+    local kill="$3"
 
     if [[ ! "$(which $procname)" = "" ]]; then
-        killall -q "$procname"
-
-        while pgrep -x "$procname" >/dev/null; do sleep 0.1; done
+        if [[ "$kill" = "1" ]]; then
+            killall -q "$procname"
+            while pgrep -x "$procname" >/dev/null; do sleep 0.1; done
+        fi
 
         $procname $procargs >> "$logfile" 2>&1 &
     else
@@ -25,7 +27,7 @@ start_process() {
 }
 
 echo "Starting up user processes $(date)" >> "$logfile" 2>&1
-start_process "polybar" "top"
-start_process "insync" "start"
-start_process "wpr" ""
+start_process "polybar" "top" "1"
+start_process "insync" "start" "1"
+start_process "wpr" "" "1"
 
