@@ -1,19 +1,5 @@
 #!/usr/bin/env bash
 
-# This script will install everything that I expect in an Ubuntu 18.04
-# environment 
-
-if [[ "$DOTFILES" = "" ]]; then
-    DOTFILES="$HOME/.dotfiles"
-fi
-
-# Save this off so we can return later
-initial_dir="$(pwd)"
-
-# For applications that need to be built from source, we will put them here
-temp_src_dir="$HOME/src/temp"
-mkdir -p "$temp_src_dir"
-
 #############################
 # General Utility Functions #
 #############################
@@ -37,7 +23,20 @@ print_header() {
     echo -e "\n"
     echo "$header"
     echo "========================================"
+}
 
+sudo_file_write() {
+    local file="$1"
+    local content="$2"
+
+    try sudo sh -c "echo \"$content\" > \"$file\""
+}
+
+sudo_file_append() {
+    local file="$1"
+    local content="$2"
+
+    try sudo sh -c "echo \"$content\" >> \"$file\""
 }
 
 apt_update() {
@@ -45,9 +44,16 @@ apt_update() {
     try sudo apt-get -y update
 }
 
+apt_dist_upgrade() {
+    echo "Upgrading packages... "
+    try sudo apt-get -y dist-upgrade
+}
+
 apt_install() {
-    echo "Installing $1... "
-    try sudo apt-get -y install "$1"
+    local packages="$@"
+
+    echo "Installing $packages... "
+    try sudo apt-get -y install $packages
 }
 
 apt_add_repo() {
@@ -55,11 +61,134 @@ apt_add_repo() {
     try sudo add-apt-repository -y "$1"
 }
 
+verify_distribution() {
+    source "/etc/lsb-release"
+
+    local expected_id="$1"
+    local expected_release="$2"
+    local expected_codename="$3"
+
+    local mismatch="0"
+
+    [[ ! "$DISTRIB_ID" = "$expected_id" ]]                   && mismatch="1"
+    [[ ! "$DISTRIB_RELEASE" = "$expected_release" ]]         && mismatch="1"
+    [[ ! "$DISTRIB_CODENAME" = "$expected_codename" ]]       && mismatch="1"
+
+    if [[ "$mismatch" = "1" ]]; then
+        echo "WARNING: Current Linux distribution doesn't match expectations"
+        echo "Expected = $expected_id $expected_release ($expected_codename)"
+        echo "Actual = $DISTRIB_ID $DISTRIB_RELEASE ($DISTRIB_CODENAME)"
+    fi
+}
+
 ######################################
 # Application Installation Functions #
 ######################################
 
-function install_neovim() {
+configure_apt_repositories() {
+    local dist="$1"
+
+    local archive_url="http://us.archive.ubuntu.com/ubuntu/"
+    local security_url="http://security.ubuntu.com/ubuntu"
+    local sources_dir="/etc/apt/sources.list.d"
+
+    echo "Configuring default apt repositories... "
+    sudo_file_write "/etc/apt/sources.list" ""
+    try sudo rm -rf "$sources_dir"
+    try sudo mkdir -p "$sources_dir"
+
+    sudo_file_write \
+        "$sources_dir/ubuntu-main.list" \
+        "deb $archive_url $dist main restricted"
+    sudo_file_write \
+        "$sources_dir/ubuntu-main.list" \
+        "deb $archive_url $dist main restricted"
+    sudo_file_write \
+        "$sources_dir/ubuntu-main-updates.list" \
+        "deb $archive_url $dist-updates main restricted"
+    sudo_file_write \
+        "$sources_dir/ubuntu-universe.list" \
+        "deb $archive_url $dist universe"
+    sudo_file_write \
+        "$sources_dir/ubuntu-universe-updates.list" \
+        "deb $archive_url $dist-updates universe"
+    sudo_file_write \
+        "$sources_dir/ubuntu-multiverse.list" \
+        "deb $archive_url $dist multiverse"
+    sudo_file_write \
+        "$sources_dir/ubuntu-multiverse-updates.list" \
+        "deb $archive_url $dist-updates multiverse"
+    sudo_file_write \
+        "$sources_dir/ubuntu-backports.list" \
+        "deb $archive_url $dist-backports main restricted universe multiverse"
+    sudo_file_write \
+        "$sources_dir/ubuntu-security-main.list" \
+        "deb $security_url $dist-security main restricted"
+    sudo_file_write \
+        "$sources_dir/ubuntu-security-universe.list" \
+        "deb $security_url $dist-security universe"
+    sudo_file_write \
+        "$sources_dir/ubuntu-security-multiverse.list" \
+        "deb $security_url $dist-security multiverse"
+}
+
+install_apt_packages() {
+
+    # Core utitilies
+    local p="apt-utils"
+    p="$p ca-certificates"
+    p="$p curl"
+    p="$p wget"
+    p="$p gnupg"
+    p="$p software-properties-common"
+
+    # Basic command line utitilies
+    p="$p make"
+    p="$p build-essential"
+    p="$p cmake"
+    p="$p htop"
+    p="$p iotop"
+    p="$p git"
+    p="$p vim"
+    p="$p exuberant-ctags"
+    p="$p ranger"
+    p="$p tmux"
+    p="$p neofetch"
+    p="$p id3v2"
+
+    # Python
+    p="$p python python-dev python-pip"    # Python 2.7
+    p="$p python3 python3-dev python3-pip" # Python 3.x
+
+    # General GUI Applications
+    p="$p fonts-font-awesome" # Used for media buttons on polybar
+    p="$p rofi"               # Fuzzy application launcher
+    p="$p dunst"              # Desktop notifications
+    p="$p feh"                # Set wallpaper
+    p="$p sxiv"               # Image viewer
+    p="$p nitrogen"           # Set wallpaper
+    p="$p pavucontrol"        # Pulse Audio frontend
+    p="$p compton"            # Window compositor
+    p="$p scrot"              # Screen capture
+    p="$p gucharmap"          # Useful for debugging font issues
+    p="$p keepassxc"          # Credential manager
+    p="$p remmina"            # RDP session manager
+    p="$p usb-creator-gtk"    # Easily flash bootable USBs
+    p="$p chromium-browser"   # Chrome
+
+    # Media
+    p="$p mpv"
+    p="$p vlc"
+
+    # Gaming
+    p="$p steam"
+    p="$p steam-devices"
+
+    apt_install "$p"
+
+}
+
+install_neovim() {
     print_header "Installing neovim"
 
     # Necessary to use add-apt-repository
@@ -68,13 +197,6 @@ function install_neovim() {
     apt_add_repo ppa:neovim-ppa/stable
     apt_update
     apt_install neovim
-
-    # Prerequisites for the Python modules
-    echo "Installing python module prerequisites..."
-    apt_install python-dev
-    apt_install python-pip
-    apt_install python3-dev
-    apt_install python3-pip
 
     # Install python modules
     echo "Installing python modules..."
@@ -95,14 +217,9 @@ function install_neovim() {
         "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
     try mkdir -p "~/.local/share/nvim/site/autoload"
     try cp "~/.vim/autoload/plug.vim" "~/.local/share/nvim/site/autoload/plug.vim"
-
-    echo "Installing plugins..."
-    try nvim +PlugInstall +qa
-
-
 }
 
-function install_cava() {
+install_cava() {
     print_header "Installing cava"
 
     # Install dependencies
@@ -112,7 +229,7 @@ function install_cava() {
     apt_install libpulse-dev
     apt_install libtool
 
-    local cava_src_dir="$temp_src_dir/cava"
+    local cava_src_dir="$cache_dir/cava"
 
     echo "Removing pre-existing source directory if necessary"
     try rm -rf "$cava_src_dir"
@@ -128,7 +245,7 @@ function install_cava() {
     try sudo make install
 }
 
-function install_i3gaps() {
+install_i3gaps() {
     print_header "Installing i3-gaps"
 
     apt_install libxcb1-dev
@@ -152,7 +269,7 @@ function install_i3gaps() {
     apt_install libxcb-shape0-dev
     apt_install automake
 
-    local i3gaps_src_dir="$temp_src_dir/i3-gaps"
+    local i3gaps_src_dir="$cache_dir/i3-gaps"
 
     echo "Removing pre-existing source directory if necessary"
     try rm -rf "$i3gaps_src_dir"
@@ -173,7 +290,7 @@ function install_i3gaps() {
     try sudo make install
 }
 
-function install_polybar() {
+install_polybar() {
     print_header "Installing polybar"
 
     # Required dependencies
@@ -208,8 +325,8 @@ function install_polybar() {
     # This is necessary to use Font Awesome icons
     apt_install fonts-font-awesome	
 
-    local polybar_src_dir="$temp_src_dir/polybar"
-    local polybar_build_dir="$temp_src_dir/polybar/build"
+    local polybar_src_dir="$cache_dir/polybar"
+    local polybar_build_dir="$cache_dir/polybar/build"
 
     echo "Removing pre-existing source directory if necessary"
     try rm -rf "$polybar_src_dir"
@@ -225,7 +342,7 @@ function install_polybar() {
     try sudo make install
 }
 
-function install_youtube-dl() {
+install_youtube-dl() {
     print_header "Installing youtube-dl"
 
     local bin_dir="$HOME/bin"
@@ -240,22 +357,50 @@ function install_youtube-dl() {
     try chmod a+rx "$youtube_dl"
 }
 
+install_urxvt() {
+    print_header "Installing rxvt-unicode"
+
+    apt_install rxvt-unicode
+    sudo update-alternatives --set x-terminal-emulator "$(which urxvt)"
+}
+
 ########
 # Main #
 ########
 
-#apt_install curl
+[[ "$DOTFILES" = "" ]] && DOTFILES="$HOME/.dotfiles"
 
-#install_neovim
+# Save this off so we can return later
+initial_dir="$(pwd)"
 
-#install_i3gaps
-#install_polybar
+# For applications that are built from source, we will put them here
+cache_dir="$HOME/.cache" && mkdir -p "$cache_dir"
 
-install_cava
-#install_youtube-dl
+# Print a warning if the current distro doesn't match what is expected
+verify_distribution "Ubuntu" "18.04" "bionic"
 
-#apt_install id3v2
+# Make sure apt is ready to use
+configure_apt_repositories "bionic"
+apt_update
 
-#apt_install rxvt-unicode
-#sudo update-alternatives --set x-terminal-emulator "$(which urxvt)"
+# Upgrade existing packages
+apt_dist_upgrade
+
+# Install everything via apt that is available in the default repositories
+install_apt_packages
+
+# Install everything else that needs special attention
+[[ "$(which nvim)" = "" ]]          && install_neovim
+[[ "$(which i3)" = "" ]]            && install_i3gaps
+[[ "$(which polybar)" = "" ]]       && install_polybar
+[[ "$(which cava)" = "" ]]          && install_cava
+[[ "$(which youtube-dl)" = "" ]]    && install_youtube-dl
+[[ "$(which urxvt)" = "" ]]         && install_urxvt
+
+# TODO: Implement these
+#[[ "$(which bcompare)" = "" ]]      && install_bcompare4
+#[[ "$(which insync)" = "" ]]        && install_insync
+#[[ "$(which mpd)" = "" ]]           && install_mpd
+#[[ "$(which ncmpcpp)" = "" ]]       && install_ncmpcpp
+#[[ "$(which wpr)" = "" ]]           && install_wpr
 
