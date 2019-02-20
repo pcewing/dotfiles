@@ -3,10 +3,10 @@
 export DOTFILES="$HOME/.dotfiles"
 
 add_to_path() {
-    local path="$("$DOTFILES/bin/add_to_path.py" "$1")"
+    local p="$1"
 
-    if [[ ! "$path" = "" ]]; then
-        export PATH="$path"
+    if [[ ! "$p" = "" ]]; then
+        [[ ":$PATH:" != *":${p}:"* ]] && export PATH="${p}:${PATH}"
     fi
 }
 
@@ -29,6 +29,4 @@ for i in "${paths[@]}"
 do
     add_to_path "$i"
 done
-
-export ENV_LOADED="1"
 
