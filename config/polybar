@@ -38,7 +38,7 @@ embers-bright-magenta = "#82576d"
 embers-bright-cyan = "#576d82"
 embers-bright-white = "#dbd6d1"
 
-background = #dd000000
+background = #000000
 background-alt = ${colors.embers-bright-black}
 foreground = ${colors.embers-white}
 foreground-alt = ${colors.embers-bright-white}
