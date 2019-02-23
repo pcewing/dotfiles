@@ -13,10 +13,7 @@ function link {
     ln -sf "$src" "$dst"
 }
 
-if [[ "$DOTFILES" = "" ]]; then
-    echo "ERROR: The DOTFILES environment variable is not set!"
-    exit 1
-fi
+[ "$DOTFILES" = "" ] && DOTFILES="$HOME/.dotfiles"
 
 echo -e "\\nEnsuring XDG folders exist"
 echo "=========================="
