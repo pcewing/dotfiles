@@ -132,6 +132,14 @@ configure_apt_repositories() {
         "deb $security_url $dist-security multiverse"
 }
 
+prepare_apt() {
+    local codename="$1"
+
+    configure_apt_repositories "$codename"
+    apt_update
+    apt_dist_upgrade
+}
+
 install_apt_packages() {
 
     # Core utitilies
@@ -189,19 +197,42 @@ install_apt_packages() {
 }
 
 install_neovim() {
+    local cache_dir="$1"
+    local version="$2"
+
     print_header "Installing neovim"
 
-    # Necessary to use add-apt-repository
-    apt_install software-properties-common
+    local neovim_dir="$cache_dir/neovim/$version"
+    local neovim_exe="$neovim_dir/build/bin/nvim"
+    if [ -f "$neovim_exe" ]; then
+        echo "$neovim_exe already exists, skipping installation..."
+        return
+    fi
 
-    apt_add_repo ppa:neovim-ppa/stable
-    apt_update
-    apt_install neovim
+    echo "Installing pre-requisites..."
+    apt_install "gcc cmake ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip"
 
-    # Install python modules
-    echo "Installing python modules..."
-    try sudo pip2 install --upgrade neovim
-    try sudo pip3 install --upgrade neovim
+    echo "Cloning the neovim repository..."
+    try mkdir -p "$(dirname -- "$neovim_dir")"
+    try git clone "https://github.com/neovim/neovim" "$neovim_dir"
+
+    local pwd="$(pwd)"
+    try cd "$neovim_dir"
+
+    echo "Checking out version $version..."
+    try git checkout "$version"
+
+    echo "Building neovim $version..."
+    try make
+
+    echo "Installing neovim $version..."
+    try sudo make install
+
+    try cd "$pwd"
+
+    echo "Installing pynvim python modules..."
+    try sudo pip2 install --upgrade pynvim
+    try sudo pip3 install --upgrade pynvim
 
     echo "Updating alternatives to use nvim..."
     nvim_path="$(which nvim)"
@@ -211,157 +242,206 @@ install_neovim() {
     try sudo update-alternatives --set vim "$nvim_path"
     try sudo update-alternatives --install /usr/bin/editor editor "$nvim_path" 60
     try sudo update-alternatives --set editor "$nvim_path"
-
-    echo "Downloading plug.vim..."
-    try curl -fLo "~/.vim/autoload/plug.vim" --create-dirs \
-        "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-    try mkdir -p "~/.local/share/nvim/site/autoload"
-    try cp "~/.vim/autoload/plug.vim" "~/.local/share/nvim/site/autoload/plug.vim"
 }
 
 install_cava() {
+    local cache_dir="$1"
+    local version="$2"
+
     print_header "Installing cava"
 
-    # Install dependencies
-    apt_install libfftw3-dev
-    apt_install libasound2-dev
-    apt_install libncursesw5-dev
-    apt_install libpulse-dev
-    apt_install libtool
+    local cava_dir="$cache_dir/cava/$version"
+    local cava_exe="$cava_dir/cava"
+    if [ -f "$cava_exe" ]; then
+        echo "$cava_exe already exists, skipping installation..."
+        return
+    fi
 
-    local cava_src_dir="$cache_dir/cava"
-
-    echo "Removing pre-existing source directory if necessary"
-    try rm -rf "$cava_src_dir"
+    echo "Installing pre-requisites..."
+    apt_install "libfftw3-dev libasound2-dev libncursesw5-dev libpulse-dev libtool"
 
     echo "Cloning the cava repository"
-    try git clone https://github.com/karlstav/cava "$cava_src_dir"
+    try mkdir -p "$(dirname -- "$cava_dir")"
+    try git clone "https://github.com/karlstav/cava" "$cava_dir"
 
-    echo "Building and installing cava"
-    cd "$cava_src_dir"
+    local pwd="$(pwd)"
+    try cd "$cava_dir"
+
+    echo "Building cava $version..."
     try ./autogen.sh
     try ./configure
     try make
+
+    echo "Installing cava $version..."
     try sudo make install
+
+    try cd "$pwd"
 }
 
 install_i3gaps() {
+    local cache_dir="$1"
+    local version="$2"
+
     print_header "Installing i3-gaps"
 
-    apt_install libxcb1-dev
-    apt_install libxcb-keysyms1-dev
-    apt_install libpango1.0-dev
-    apt_install libxcb-util0-dev
-    apt_install libxcb-icccm4-dev
-    apt_install libyajl-dev
-    apt_install libstartup-notification0-dev
-    apt_install libxcb-randr0-dev
-    apt_install libev-dev
-    apt_install libxcb-cursor-dev
-    apt_install libxcb-xinerama0-dev
-    apt_install libxcb-xkb-dev
-    apt_install libxkbcommon-dev
-    apt_install libxkbcommon-x11-dev
-    apt_install autoconf
-    apt_install libxcb-xrm0
-    apt_install libxcb-xrm-dev
-    apt_install libxcb-shape0
-    apt_install libxcb-shape0-dev
-    apt_install automake
+    local i3gaps_dir="$cache_dir/i3gaps/$version"
+    local i3gaps_exe="$i3gaps_dir/build/i3"
+    if [ -f "$i3gaps_exe" ]; then
+        echo "$i3gaps_exe already exists, skipping installation..."
+        return
+    fi
 
-    local i3gaps_src_dir="$cache_dir/i3-gaps"
-
-    echo "Removing pre-existing source directory if necessary"
-    try rm -rf "$i3gaps_src_dir"
+    echo "Installing pre-requisites..."
+    apt_install "libxcb1-dev libxcb-keysyms1-dev libpango1.0-dev libxcb-util0-dev libxcb-icccm4-dev libyajl-dev libstartup-notification0-dev libxcb-randr0-dev libev-dev libxcb-cursor-dev libxcb-xinerama0-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev autoconf libxcb-xrm0 libxcb-xrm-dev libxcb-shape0 libxcb-shape0-dev automake"
 
     echo "Cloning the i3-gaps repository"
-    try git clone https://www.github.com/Airblader/i3 "$i3gaps_src_dir"
-    
-    # Disabling sanitizers (See below) is important for release versions!
-    # The prefix and sysconfdir are, obviously, dependent on the distribution.
+    try mkdir -p "$(dirname -- "$i3gaps_dir")"
+    try git clone "https://www.github.com/Airblader/i3" "$i3gaps_dir"
 
-    echo "Building and installing i3-gaps"
-    try cd "$i3gaps_src_dir"
+    local pwd="$(pwd)"
+    try cd "$i3gaps_dir"
+
+    echo "Checkout out version $version..."
+    try git checkout "$version"
+    
+    echo "Building i3-gaps $version..."
     try autoreconf --force --install
-    try rm -rf build/
-    try mkdir -p build && cd build/
+    try rm -rf "./build/"
+    try mkdir -p "./build" && cd "./build"
     try ../configure --prefix=/usr --sysconfdir=/etc --disable-sanitizers
     try make
+
+    echo "Installing i3-gaps $version..."
     try sudo make install
+
+    try cd "$pwd"
 }
 
 install_polybar() {
+    local cache_dir="$1"
+    local version="$2"
+
     print_header "Installing polybar"
 
-    # Required dependencies
-    apt_install cmake 
-    apt_install cmake-data 
-    apt_install pkg-config
-    apt_install libcairo2-dev	
-    apt_install libxcb1-dev 
-    apt_install libxcb-util0-dev 
-    apt_install libxcb-randr0-dev 
-    apt_install libxcb-composite0-dev	
-    apt_install python-xcbgen 
-    apt_install xcb-proto	
-    apt_install libxcb-image0-dev	
-    apt_install libxcb-ewmh-dev 
-    apt_install libxcb-icccm4-dev	
+    local polybar_dir="$cache_dir/polybar/$version"
+    local polybar_exe="$polybar_dir/build/bin/polybar"
+    if [ -f "$polybar_exe" ]; then
+        echo "$polybar_exe already exists, skipping installation..."
+        return
+    fi
 
-    # Optional dependencies
-    apt_install libxcb-xkb-dev	
-    apt_install libxcb-xrm-dev	
-    apt_install libxcb-cursor-dev	
-    apt_install libasound2-dev	
-    apt_install libpulse-dev
-    # This is necessary if not installing i3-gaps from source
-    #apt_install i3-wm
-    apt_install libjsoncpp-dev	
-    apt_install libmpdclient-dev	
-    apt_install libcurl4-openssl-dev 
-    apt_install libiw-dev	
-    apt_install libnl-3-dev	
+    echo "Installing pre-requisites..."
+    apt_install "cmake cmake-data pkg-config libcairo2-dev libxcb1-dev libxcb-util0-dev libxcb-randr0-dev libxcb-composite0-dev python-xcbgen xcb-proto libxcb-image0-dev libxcb-ewmh-dev libxcb-icccm4-dev"
 
-    # This is necessary to use Font Awesome icons
-    apt_install fonts-font-awesome	
-
-    local polybar_src_dir="$cache_dir/polybar"
-    local polybar_build_dir="$cache_dir/polybar/build"
-
-    echo "Removing pre-existing source directory if necessary"
-    try rm -rf "$polybar_src_dir"
+    echo "Installing optional pre-requisites..."
+    apt_install "libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev libpulse-dev libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev libiw-dev libnl-3-dev"
 
     echo "Cloning the polybar repository"
-    try git clone --branch 3.2 --recursive https://github.com/jaagr/polybar \
-        "$polybar_src_dir"
+    try mkdir -p "$(dirname -- "$polybar_dir")"
+    try git clone --recursive https://github.com/jaagr/polybar "$polybar_dir"
 
-    echo "Building and installing polybar"
-    try mkdir -p "$polybar_build_dir"
-    try cd "$polybar_build_dir"
+    local pwd="$(pwd)"
+    try cd "$polybar_dir"
+
+    echo "Checkout out version $version..."
+    try git checkout "$version"
+    
+    echo "Building polybar $version..."
+    try mkdir -p "$polybar_dir/build"
+    try cd "$polybar_dir/build"
     try cmake ..
+
+    echo "Installing polybar $version..."
     try sudo make install
+
+    try cd "$pwd"
 }
 
 install_youtube-dl() {
-    print_header "Installing youtube-dl"
+    local cache_dir="$1"
+    local version="$2"
+    local bin_dir="$3"
 
-    local bin_dir="$HOME/bin"
-    local youtube_dl="$bin_dir/youtube-dl"
+    print_header "Installing youtube-dl..."
 
-    mkdir -p "$bin_dir"
+    local ytdl_dir="$cache_dir/youtube-dl/$version"
+    local ytdl_exe="$ytdl_dir/youtube-dl"
+    if [ -f "$ytdl_exe" ]; then
+        echo "$ytdl_exe already exists, skipping installation..."
+        return
+    fi
 
-    echo "Downloading youtube-dl"
-    try curl -L https://yt-dl.org/downloads/latest/youtube-dl -o "$youtube_dl"
+    echo "Downloading youtube-dl $version..."
+    mkdir -p "$ytdl_dir"
+    try curl -L "https://yt-dl.org/downloads/$version/youtube-dl" -o "$ytdl_exe"
 
-    echo "Setting up youtube-dl"
-    try chmod a+rx "$youtube_dl"
+    echo "Installing youtube-dl $version..."
+    try chmod a+rx "$ytdl_exe"
+    try rm -f "$bin_dir/youtube-dl"
+    try ln -s "$ytdl_exe" "$bin_dir/youtube-dl"
 }
 
 install_urxvt() {
     print_header "Installing rxvt-unicode"
 
-    apt_install rxvt-unicode
-    sudo update-alternatives --set x-terminal-emulator "$(which urxvt)"
+    if [ "$(which urxvt)" = "" ]; then
+        apt_install rxvt-unicode
+    else
+        echo "Skipping installation because urxvt is already installed..."
+    fi
+
+    echo "Setting urxvt as the default terminal emulator..."
+    try sudo update-alternatives --set x-terminal-emulator "$(which urxvt)"
+}
+
+install_bcompare4() {
+    local cache_dir="$1"
+    local version="$2"
+
+    print_header "Installing Beyond Compare"
+
+    local deb_name="bcompare-${version}_amd64.deb"
+    local deb_path="$cache_dir/bcompare/$version/$deb_name"
+
+    if [ -f "$deb_path" ]; then
+        echo "$deb_path already exists, skipping installation..."
+        return
+    fi
+
+    echo "Installing pre-requisites..."
+    apt_install gdebi-core
+
+    echo "Downloading Beyond Compare $version..."
+    try mkdir -p "$(dirname -- "$deb_path")"
+    try curl -L "https://www.scootersoftware.com/$deb_name" -o "$deb_path"
+
+    echo "Installing Beyond Compare $version..."
+    try sudo gdebi --non-interactive "$deb_path"
+}
+
+install_insync() {
+    local codename="$1"
+
+    print_header "Installing Insync"
+
+    if [ ! "$(which insync)" = "" ]; then
+        echo "Insync is already installed, skipping installation..."
+        return
+    fi
+
+    echo "Adding the insync apt repository key..."
+    try sudo apt-key adv \
+        --keyserver keyserver.ubuntu.com \
+        --recv-keys ACCAF35C
+
+    echo "Adding the insync apt repository..."
+    sudo_file_write \
+        "/etc/apt/sources.list.d/insync.list" \
+        "deb http://apt.insynchq.com/ubuntu $codename non-free contrib"
+
+    apt_update
+
+    apt_install insync
 }
 
 ########
@@ -370,37 +450,41 @@ install_urxvt() {
 
 [[ "$DOTFILES" = "" ]] && DOTFILES="$HOME/.dotfiles"
 
-# Save this off so we can return later
-initial_dir="$(pwd)"
+distro_name="Ubuntu"
+distro_version="18.10"
+distro_codename="cosmic"
+
+# Make sure apt is ready to use
+prepare_apt "cosmic"
 
 # For applications that are built from source, we will put them here
 cache_dir="$HOME/.cache" && mkdir -p "$cache_dir"
 
+bin_dir="$HOME/bin" && mkdir -p "$bin_dir"
+
 # Print a warning if the current distro doesn't match what is expected
-verify_distribution "Ubuntu" "18.04" "bionic"
+verify_distribution "$distro_name" "$distro_version" "$distro_codename"
 
 # Make sure apt is ready to use
-configure_apt_repositories "bionic"
-apt_update
-
-# Upgrade existing packages
-apt_dist_upgrade
+prepare_apt "$distro_codename"
 
 # Install everything via apt that is available in the default repositories
 install_apt_packages
 
 # Install everything else that needs special attention
-[[ "$(which nvim)" = "" ]]          && install_neovim
-[[ "$(which i3)" = "" ]]            && install_i3gaps
-[[ "$(which polybar)" = "" ]]       && install_polybar
-[[ "$(which cava)" = "" ]]          && install_cava
-[[ "$(which youtube-dl)" = "" ]]    && install_youtube-dl
-[[ "$(which urxvt)" = "" ]]         && install_urxvt
+install_urxvt
+install_neovim     "$cache_dir" "v0.3.4"
+install_i3gaps     "$cache_dir" "4.16.1"
+install_polybar    "$cache_dir" "3.3.0"
+install_cava       "$cache_dir" "0.6.1"
+install_youtube-dl "$cache_dir" "2019.02.18" "$bin_dir"
 
 # TODO: Implement these
-#[[ "$(which bcompare)" = "" ]]      && install_bcompare4
-#[[ "$(which insync)" = "" ]]        && install_insync
-#[[ "$(which mpd)" = "" ]]           && install_mpd
-#[[ "$(which ncmpcpp)" = "" ]]       && install_ncmpcpp
-#[[ "$(which wpr)" = "" ]]           && install_wpr
+#install_mpd
+#install_ncmpcpp
+#install_wpr
+
+# Proprietary software
+install_bcompare4  "$cache_dir" "4.2.9.23626"
+install_insync "$distro_codename"
 
