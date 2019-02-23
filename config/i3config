@@ -187,7 +187,7 @@ bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/pictures/screenshot
 exec_always "[ -e ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
 
 # Force certain apps to specific workspaces
-assign [class="Bcompare"] 7
+assign [class="Bcompare"] 5
 assign [class="discord"] 8
 assign [class="Steam"] 9
 
