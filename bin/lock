@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
 lockscreen_image="$HOME/box/pic/lock.png"
-[[ -e "$lockscreen_image" ]] && i3lock --tiling --image "$lockscreen_image"
+if [ -e "$lockscreen_image" ]; then
+    i3lock --tiling --image "$lockscreen_image"
+else
+    i3lock --color="1f2f3f"
+fi
 

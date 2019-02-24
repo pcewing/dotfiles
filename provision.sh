@@ -183,6 +183,7 @@ install_apt_packages() {
     p="$p remmina"            # RDP session manager
     p="$p usb-creator-gtk"    # Easily flash bootable USBs
     p="$p chromium-browser"   # Chrome
+    p="$p i3lock"             # Lock screen
 
     # Media
     p="$p mpv"
