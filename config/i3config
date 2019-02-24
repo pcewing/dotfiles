@@ -47,6 +47,11 @@ mode "$mode_system" {
     bindsym Escape mode "default"
 }
 
+mode "passthrough" {
+    bindsym Pause mode "default"
+}
+bindsym $mod+F1 mode "passthrough"
+
 # launch rofi
 bindsym $mod+space exec "rofi -show run"
 
