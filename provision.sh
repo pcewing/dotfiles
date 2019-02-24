@@ -394,9 +394,74 @@ install_urxvt() {
     try sudo update-alternatives --set x-terminal-emulator "$(which urxvt)"
 }
 
+install_wpr() {
+    local cache_dir="$1"
+    local version="$2"
+    local bin_dir="$3"
+
+    print_header "Installing wpr..."
+
+    local wpr_dir="$cache_dir/wpr/$version"
+    local wpr_exe="$wpr_dir/wpr"
+    if [ -f "$wpr_exe" ]; then
+        echo "$wpr_exe already exists, skipping installation..."
+        return
+    fi
+
+    echo "Downloading wpr $version..."
+    mkdir -p "$wpr_dir"
+    local tarball_name="wpr.$version.linux-amd64.tar.gz"
+    local s3_url="https://s3-us-west-2.amazonaws.com"
+    local url="$s3_url/pcewing-wpr/releases/$version/$tarball_name"
+    try curl -L "$url" -o "$wpr_dir/$tarball_name"
+
+    echo "Installing wpr $version..."
+    try tar --directory "$wpr_dir" -xvf "$wpr_dir/$tarball_name"
+    try chmod a+rx "$wpr_exe"
+    try rm -f "$bin_dir/wpr"
+    try ln -s "$wpr_exe" "$bin_dir/wpr"
+}
+
+install_mpd() {
+    print_header "Installing mpd"
+
+    if [ ! -z "$(which mpd)" ]; then
+        echo "mpd is already installed, skipping installation..."
+        return
+    fi
+
+    apt_install "mpd"
+
+    echo "Disabling the mpd service..."
+    try sudo systemctl stop mpd.service
+    try sudo systemctl stop mpd.socket
+    try sudo systemctl disable mpd.service
+    try sudo systemctl disable mpd.socket
+
+    echo "Configuring mpd..."
+    mkdir -p "$HOME/.mpd"
+    mkdir -p "$HOME/.mpd/playlists"
+}
+
+install_ncmpcpp() {
+    print_header "Installing ncmpcpp"
+
+    if [ ! -z "$(which ncmpcpp)" ]; then
+        echo "ncmpcpp is already installed, skipping installation..."
+        return
+    fi
+
+    apt_install "ncmpcpp"
+
+    echo "Configuring ncmpcpp..."
+    mkdir -p "$HOME/.config/ncmpcpp"
+}
+
 install_bcompare4() {
     local cache_dir="$1"
     local version="$2"
+    local secrets_dir="$3"
+    local pass="$4"
 
     print_header "Installing Beyond Compare"
 
@@ -417,10 +482,17 @@ install_bcompare4() {
 
     echo "Installing Beyond Compare $version..."
     try sudo gdebi --non-interactive "$deb_path"
+
+    echo "Installing license key..."
+    local key_path="$HOME/.config/bcompare/BC4Key.txt"
+    try mkdir -p "$(dirname -- "$key_path")"
+    try decrypt_with_pass "$secrets_dir/BC4Key.txt.gpg" "$key_path" "$pass"
 }
 
 install_insync() {
     local codename="$1"
+    local secrets_dir="$2"
+    local pass="$3"
 
     print_header "Installing Insync"
 
@@ -435,13 +507,25 @@ install_insync() {
         --recv-keys ACCAF35C
 
     echo "Adding the insync apt repository..."
+    local insync_apt_source_list="/etc/apt/sources.list.d/insync.list"
     sudo_file_write \
-        "/etc/apt/sources.list.d/insync.list" \
+        "$insync_apt_source_list" \
         "deb http://apt.insynchq.com/ubuntu $codename non-free contrib"
 
     apt_update
 
     apt_install insync
+
+    echo "I'd rather avoid leaving this source list around..."
+    try sudo rm -rf "$insync_apt_source_list"
+
+    echo "Adding Google account..."
+    local auth_code_path="$HOME/insync_auth_code.txt"
+    try decrypt_with_pass "$secrets_dir/insync_auth_code.txt.gpg" \
+        "$auth_code_path" "$pass"
+    try insync add_account --auth-code "$(cat "$HOME/insync_auth_code.txt")" \
+        --path "$HOME/box" --no-download
+    rm -f "$auth_code_path"
 }
 
 ########
@@ -450,17 +534,17 @@ install_insync() {
 
 [[ "$DOTFILES" = "" ]] && DOTFILES="$HOME/.dotfiles"
 
+source "$DOTFILES/config/bash/functions.sh"
+
 distro_name="Ubuntu"
 distro_version="18.10"
 distro_codename="cosmic"
-
-# Make sure apt is ready to use
-prepare_apt "cosmic"
 
 # For applications that are built from source, we will put them here
 cache_dir="$HOME/.cache" && mkdir -p "$cache_dir"
 
 bin_dir="$HOME/bin" && mkdir -p "$bin_dir"
+secrets_dir="$DOTFILES/secrets"
 
 # Print a warning if the current distro doesn't match what is expected
 verify_distribution "$distro_name" "$distro_version" "$distro_codename"
@@ -478,13 +562,14 @@ install_i3gaps     "$cache_dir" "4.16.1"
 install_polybar    "$cache_dir" "3.3.0"
 install_cava       "$cache_dir" "0.6.1"
 install_youtube-dl "$cache_dir" "2019.02.18" "$bin_dir"
+install_wpr        "$cache_dir" "0.1.0"      "$bin_dir"
+install_mpd
+install_ncmpcpp
 
-# TODO: Implement these
-#install_mpd
-#install_ncmpcpp
-#install_wpr
+# We will need to decrypt secrets to set up licenses for proprietary software
+echo -n "Enter secret passphrase: " && read -s pass && echo
 
 # Proprietary software
-install_bcompare4  "$cache_dir" "4.2.9.23626"
-install_insync "$distro_codename"
+install_bcompare4 "$cache_dir" "4.2.9.23626" "$secrets_dir" "$pass"
+install_insync "$distro_codename" "$secrets_dir" "$pass"
 

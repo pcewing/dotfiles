@@ -1,23 +1,4 @@
-try()
-{
-    "$@" > ~/.command_log 2>&1
-    local ret_val=$?
-  
-    if [ $ret_val -eq 0 ]; then
-        echo "SUCCESS"
-    else
-        echo "FAILURE"
-        echo "Command: $*"
-        echo "Output:"
-        cat ~/.command_log
-        exit 1
-    fi
-}
-
-apt_update(){ echo "Updating package lists... "; try sudo apt-get -y update; }
-apt_upgrade(){ echo "Upgrading packages... "; try sudo apt-get -y upgrade; }
-apt_install(){ echo "Installing $1... "; try sudo apt-get -y install "$1"; }
-apt_add_repo(){ echo "Adding $1 repository... "; try sudo add-apt-repository -y "ppa:$1"; }
+#!/usr/bin/env bash
 
 function base16() {
     for i in {0..7}; do
@@ -96,5 +77,86 @@ function git_diff_bc3() {
     git diff --name-only "$@" | while read filename; do
         git difftool "$@" --no-prompt "$filename" -t "bc3" &
     done
+}
+
+# WARNING: This shouldn't be called from an interactive shell as the passphrase
+# will be written in plaintext to $HISTFILE. It is only implemented so that
+# scripts can avoid asking for the passphrase multiple times when encrypting
+# more than one file.
+function encrypt_with_pass() {
+    local src="$1"
+    local dst="$2"
+    local pass="$3"
+
+    [ -z "$src" -o -z "$dst" -o -z "$pass" ] \
+        && echo "Usage: encrypt path/to/src path/to/dst passphrase" 1>&2 \
+        && return
+
+    [ ! -f "$src" ] \
+        && echo "Source file $src doesn't exist" 1>&2 \
+        && return
+
+    [ -e "$dst" ] \
+        && echo "Destination file $dst already exists" 1>&2 \
+        && return
+
+    echo "$pass" | gpg --batch --yes --passphrase-fd 0 --output "$dst" \
+        --symmetric "$src"
+}
+
+function encrypt() {
+    local src="$1"
+    local dst="$2" # Optional
+
+    # If source was provided but destination wasn't, set the default
+    # destination by appending ".gpg"
+    [ ! -z "$src" -a -z "$dst" ] && dst="$src.gpg"
+
+    echo -n "Enter passphrase: " && read -s pass && echo
+    echo -n "Re-enter passphrase: " && read -s pass_confirm && echo
+
+    [ ! "$pass" = "$pass_confirm" ] \
+        && echo "Passphrase entries did not match" 1>&2 \
+        && return
+
+    encrypt_with_pass "$src" "$dst" "$pass"
+}
+
+# WARNING: This shouldn't be called from an interactive shell as the passphrase
+# will be written in plaintext to $HISTFILE. It is only implemented so that
+# scripts can avoid asking for the passphrase multiple times when decrypting
+# more than one file.
+function decrypt_with_pass() {
+    local src="$1"
+    local dst="$2"
+    local pass="$3"
+
+    [ -z "$src" -o -z "$dst" -o -z "$pass" ] \
+        && echo "Usage: decrypt path/to/src path/to/dst passphrase" 1>&2 \
+        && return
+
+    [ ! -f "$src" ] \
+        && echo "Source file $src doesn't exist" 1>&2 \
+        && return
+
+    [ -e "$dst" ] \
+        && echo "Destination file $dst already exists" 1>&2 \
+        && return
+
+    echo "$pass" | gpg --batch --yes --passphrase-fd 0 --output "$dst" \
+        --decrypt "$src"
+}
+
+function decrypt() {
+    local src="$1"
+    local dst="$2"
+
+    [ -z "$src" -o -z "$dst" ] \
+        && echo "Usage: decrypt path/to/src path/to/dst" 1>&2 \
+        && return
+
+    echo -n "Enter passphrase: " && read -s pass && echo
+
+    decrypt_with_pass "$src" "$dst" "$pass"
 }
 
