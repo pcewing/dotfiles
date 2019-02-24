@@ -18,33 +18,30 @@
 
 [colors]
 
-black="#000000"
+black = "${xrdb:color0:#151515}"
+bright-black = "${xrdb:color8:#505050}"
+red = "${xrdb:color1:#ac4142}"
+bright-red = "${xrdb:color9:#ac4142}"
+green = "${xrdb:color2:#90a959}"
+bright-green = "${xrdb:color10:#90a959}"
+yellow = "${xrdb:color3:#f4bf75}"
+bright-yellow = "${xrdb:color11:#f4bf75}"
+blue = "${xrdb:color4:#6a9fb5}"
+bright-blue = "${xrdb:color12:#6a9fb5}"
+magenta = "${xrdb:color5:#aa759f}"
+bright-magenta = "${xrdb:color13:#aa759f}"
+cyan = "${xrdb:color6:#75b5aa}"
+bright-cyan = "${xrdb:color14:#75b5aa}"
+white = "${xrdb:color7:#d0d0d0}"
+bright-white = "${xrdb:color15:#f5f5f5}"
 
-; Base16/Embers.dark
-embers-black = "#16130f"
-embers-red = "#826d57"
-embers-green = "#57826d"
-embers-yellow = "#6d8257"
-embers-blue = "#6d5782"
-embers-magenta = "#82576d"
-embers-cyan = "#576d82"
-embers-white = "#a39a90"
-embers-bright-black = "#5a5047"
-embers-bright-red = "#826d57"
-embers-bright-green = "#57826d"
-embers-bright-yellow = "#6d8257"
-embers-bright-blue = "#6d5782"
-embers-bright-magenta = "#82576d"
-embers-bright-cyan = "#576d82"
-embers-bright-white = "#dbd6d1"
-
-background = #000000
-background-alt = ${colors.embers-bright-black}
-foreground = ${colors.embers-white}
-foreground-alt = ${colors.embers-bright-white}
-primary = ${colors.embers-bright-yellow}
-secondary = #e60053
-alert = #bd2c40
+background = ${colors.black}
+background-alt = ${colors.bright-black}
+foreground = ${colors.white}
+foreground-alt = ${colors.bright-white}
+primary = ${colors.bright-yellow}
+secondary = ${colors.bright-magenta}
+alert = ${colors.bright-red}
 
 [bar/top]
 width = 100%
@@ -120,7 +117,7 @@ label-urgent-padding = 2
 [module/xwindow]
 type = internal/xwindow
 label = %title:0:30:...%
-format-underline = ${colors.embers-bright-green}
+format-underline = ${colors.bright-green}
 
 [module/mpd]
 type = internal/mpd
