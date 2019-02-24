@@ -442,6 +442,7 @@ install_mpd() {
     echo "Configuring mpd..."
     mkdir -p "$HOME/.mpd"
     mkdir -p "$HOME/.mpd/playlists"
+    mkdir -p "$HOME/.local/share/mpd"
 }
 
 install_ncmpcpp() {
