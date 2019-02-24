@@ -459,6 +459,27 @@ install_ncmpcpp() {
     mkdir -p "$HOME/.config/ncmpcpp"
 }
 
+install_irssi() {
+    local secrets_dir="$1"
+    local pass="$2"
+
+    print_header "Installing irssi"
+
+    if [ ! -z "$(which irssi)" ]; then
+        echo "irssi is already installed, skipping installation..."
+        return
+    fi
+
+    apt_install "irssi"
+
+    local config_dir="$HOME/.irssi"
+    local tls_cert_path="$config_dir/irssi.pem"
+
+    echo "Configuring irssi..."
+    mkdir -p "$config_dir"
+    try decrypt_with_pass "$secrets_dir/irssi.pem.gpg" "$tls_cert_path" "$pass"
+}
+
 install_bcompare4() {
     local cache_dir="$1"
     local version="$2"
@@ -557,6 +578,9 @@ prepare_apt "$distro_codename"
 # Install everything via apt that is available in the default repositories
 install_apt_packages
 
+# We will need a passphrase to decrypt secrets that some apps depend on
+echo -n "Enter secret passphrase: " && read -s pass && echo
+
 # Install everything else that needs special attention
 install_urxvt
 install_neovim     "$cache_dir" "v0.3.4"
@@ -567,11 +591,8 @@ install_youtube-dl "$cache_dir" "2019.02.18" "$bin_dir"
 install_wpr        "$cache_dir" "0.1.0"      "$bin_dir"
 install_mpd
 install_ncmpcpp
-
-# We will need to decrypt secrets to set up licenses for proprietary software
-echo -n "Enter secret passphrase: " && read -s pass && echo
+install_irssi      "$secrets_dir" "$pass"
 
 # Proprietary software
 install_bcompare4 "$cache_dir" "4.2.9.23626" "$secrets_dir" "$pass"
 install_insync "$distro_codename" "$secrets_dir" "$pass"
-
