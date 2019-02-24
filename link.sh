@@ -20,7 +20,6 @@ echo "================="
 
 link "$DOTFILES/config/bash_profile"     "$HOME/.bash_profile"
 link "$DOTFILES/config/bashrc"           "$HOME/.bashrc"
-link "$DOTFILES/config/cmusrc"           "$HOME/.config/cmus/rc"
 link "$DOTFILES/config/conky.conf"       "$HOME/.config/conky/conky.conf"
 link "$DOTFILES/config/dunstrc"          "$HOME/.config/dunst/dunstrc"
 link "$DOTFILES/config/env"              "$HOME/.env"

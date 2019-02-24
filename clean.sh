@@ -11,7 +11,6 @@ echo "=============================="
 
 remove_link "$HOME/.bash_profile"
 remove_link "$HOME/.bashrc"
-remove_link "$HOME/.config/cmus/rc"
 remove_link "$HOME/.config/conky/conky.conf"
 remove_link "$HOME/.config/dunst/dunstrc"
 remove_link "$HOME/.env"
