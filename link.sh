@@ -1,35 +1,19 @@
 #!/usr/bin/env bash
 
-function create_folder {
-    local dir="$1"
-    echo "Ensuring the directory $dir exists"
-    mkdir -p "$dir"
-}
-
 function link {
     local src="$1"
     local dst="$2"
+
+    local dir="$(dirname -- "$dst")"
+
+    echo "Ensuring the directory $dir exists"
+    mkdir -p "$dir"
+
     echo "Creating symlink $dst to $src"
     ln -sf "$src" "$dst"
 }
 
-[ "$DOTFILES" = "" ] && DOTFILES="$HOME/.dotfiles"
-
-echo -e "\\nEnsuring XDG folders exist"
-echo "=========================="
-
-create_folder "$HOME/.config/cmus"
-create_folder "$HOME/.config/conky"
-create_folder "$HOME/.config/dunst"
-create_folder "$HOME/.config/i3"
-create_folder "$HOME/.config/i3status"
-create_folder "$HOME/.config/mpd"
-create_folder "$HOME/.config/ncmpcpp"
-create_folder "$HOME/.config/ranger"
-create_folder "$HOME/.config/nvim"
-create_folder "$HOME/.config/polybar"
-create_folder "$HOME/.config/sway"
-create_folder "$HOME/.irssi"
+[ -z "$DOTFILES" ] && DOTFILES="$HOME/.dotfiles"
 
 echo -e "\\nCreating symlinks"
 echo "================="
@@ -63,6 +47,5 @@ link "$DOTFILES/config/Xresources"       "$HOME/.Xresources"
 # TODO: This is a temporary fix to https://github.com/arybczak/ncmpcpp/issues/91
 # because the version of ncmpcpp in the apt repositories doesn't have the real
 # fix yet
-create_folder "$HOME/.ncmpcpp"
 link "$DOTFILES/config/ncmpcpp/bindings" "$HOME/.ncmpcpp/bindings"
 
