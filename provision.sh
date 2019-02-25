@@ -357,8 +357,10 @@ install_polybar() {
     apt_install "libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev libpulse-dev libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev libiw-dev libnl-3-dev"
 
     echo "Cloning the polybar repository"
+    local polybar_git_url; polybar_git_url="https://github.com/jaagr/polybar"
     try mkdir -p "$(dirname -- "$polybar_dir")"
-    try git clone --recursive https://github.com/jaagr/polybar "$polybar_dir"
+    [ -d "$polybar_dir" ] \
+        || try git clone --recursive "$polybar_git_url" "$polybar_dir"
 
     local pwd; pwd="$(pwd)"
     try cd "$polybar_dir"
@@ -369,6 +371,9 @@ install_polybar() {
     echo "Building polybar $version..."
     try mkdir -p "$polybar_dir/build"
     try cd "$polybar_dir/build"
+
+    # If this fails due to an invalid gcc version, specify the version via:
+    # cmake -DCMAKE_C_COMPILER=/correct/gcc -DCMAKE_CXX_COMPILER=/correct/g++ ..
     try cmake ..
 
     echo "Installing polybar $version..."
@@ -574,6 +579,9 @@ install_insync() {
 # Main #
 ########
 
+# We will need a passphrase to decrypt secrets that some apps depend on
+echo -n "Enter secret passphrase: " && read -r -s pass && echo
+
 [[ "$DOTFILES" = "" ]] && DOTFILES="$HOME/.dotfiles"
 
 source "$DOTFILES/config/bash/functions.sh"
@@ -599,9 +607,6 @@ install_apt_packages
 
 # This adds a desktop entry that GDM3 will recognize
 configure_default_xsession "$DOTFILES/config/default.desktop"
-
-# We will need a passphrase to decrypt secrets that some apps depend on
-echo -n "Enter secret passphrase: " && read -r -s pass && echo
 
 # Install everything else that needs special attention
 install_urxvt

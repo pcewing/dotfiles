@@ -147,9 +147,9 @@ channels = (
   { name = "#oftc"; chatnet = "OFTC"; autojoin = "no"; },
   { name = "silc"; chatnet = "SILC"; autojoin = "no"; },
   { name = "#freenode"; chatnet = "Freenode"; autojoin = "no"; },
-  { name = "#irssi"; chatnet = "Freenode"; autojoin = "no"; },
 
   # Linux desktop applications
+  { name = "#irssi"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "#i3"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "#sway"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "#bspwc"; chatnet = "Freenode"; autojoin = "yes"; },
