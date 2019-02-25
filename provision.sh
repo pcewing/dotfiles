@@ -22,7 +22,7 @@ try()
 print_header() {
     local header="$1"
 
-    echo -e "\n"
+    echo -e "\\n"
     echo "$header"
     echo "========================================"
 }
@@ -235,7 +235,7 @@ install_neovim() {
     try mkdir -p "$(dirname -- "$neovim_dir")"
     try git clone "https://github.com/neovim/neovim" "$neovim_dir"
 
-    local pwd="$(pwd)"
+    local pwd; pwd="$(pwd)"
     try cd "$neovim_dir"
 
     echo "Checking out version $version..."
@@ -254,7 +254,7 @@ install_neovim() {
     try sudo pip3 install --upgrade pynvim
 
     echo "Updating alternatives to use nvim..."
-    nvim_path="$(which nvim)"
+    nvim_path="$(command -v nvim)"
     try sudo update-alternatives --install /usr/bin/vi vi "$nvim_path" 60
     try sudo update-alternatives --set vi "$nvim_path"
     try sudo update-alternatives --install /usr/bin/vim vim "$nvim_path" 60
@@ -283,7 +283,7 @@ install_cava() {
     try mkdir -p "$(dirname -- "$cava_dir")"
     try git clone "https://github.com/karlstav/cava" "$cava_dir"
 
-    local pwd="$(pwd)"
+    local pwd; pwd="$(pwd)"
     try cd "$cava_dir"
 
     echo "Building cava $version..."
@@ -317,7 +317,7 @@ install_i3gaps() {
     try mkdir -p "$(dirname -- "$i3gaps_dir")"
     try git clone "https://www.github.com/Airblader/i3" "$i3gaps_dir"
 
-    local pwd="$(pwd)"
+    local pwd; pwd="$(pwd)"
     try cd "$i3gaps_dir"
 
     echo "Checkout out version $version..."
@@ -326,7 +326,8 @@ install_i3gaps() {
     echo "Building i3-gaps $version..."
     try autoreconf --force --install
     try rm -rf "./build/"
-    try mkdir -p "./build" && cd "./build"
+    try mkdir -p "./build"
+    try cd "./build"
     try ../configure --prefix=/usr --sysconfdir=/etc --disable-sanitizers
     try make
 
@@ -359,7 +360,7 @@ install_polybar() {
     try mkdir -p "$(dirname -- "$polybar_dir")"
     try git clone --recursive https://github.com/jaagr/polybar "$polybar_dir"
 
-    local pwd="$(pwd)"
+    local pwd; pwd="$(pwd)"
     try cd "$polybar_dir"
 
     echo "Checkout out version $version..."
@@ -403,14 +404,14 @@ install_youtube-dl() {
 install_urxvt() {
     print_header "Installing rxvt-unicode"
 
-    if [ "$(which urxvt)" = "" ]; then
+    if [ "$(command -v urxvt)" = "" ]; then
         apt_install rxvt-unicode
     else
         echo "Skipping installation because urxvt is already installed..."
     fi
 
     echo "Setting urxvt as the default terminal emulator..."
-    try sudo update-alternatives --set x-terminal-emulator "$(which urxvt)"
+    try sudo update-alternatives --set x-terminal-emulator "$(command -v urxvt)"
 }
 
 install_wpr() {
@@ -444,7 +445,7 @@ install_wpr() {
 install_mpd() {
     print_header "Installing mpd"
 
-    if [ ! -z "$(which mpd)" ]; then
+    if [ ! -z "$(command -v mpd)" ]; then
         echo "mpd is already installed, skipping installation..."
         return
     fi
@@ -466,7 +467,7 @@ install_mpd() {
 install_ncmpcpp() {
     print_header "Installing ncmpcpp"
 
-    if [ ! -z "$(which ncmpcpp)" ]; then
+    if [ ! -z "$(command -v ncmpcpp)" ]; then
         echo "ncmpcpp is already installed, skipping installation..."
         return
     fi
@@ -483,7 +484,7 @@ install_irssi() {
 
     print_header "Installing irssi"
 
-    if [ ! -z "$(which irssi)" ]; then
+    if [ ! -z "$(command -v irssi)" ]; then
         echo "irssi is already installed, skipping installation..."
         return
     fi
@@ -537,7 +538,7 @@ install_insync() {
 
     print_header "Installing Insync"
 
-    if [ ! "$(which insync)" = "" ]; then
+    if [ ! "$(command -v insync)" = "" ]; then
         echo "Insync is already installed, skipping installation..."
         return
     fi
@@ -600,7 +601,7 @@ install_apt_packages
 configure_default_xsession "$DOTFILES/config/default.desktop"
 
 # We will need a passphrase to decrypt secrets that some apps depend on
-echo -n "Enter secret passphrase: " && read -s pass && echo
+echo -n "Enter secret passphrase: " && read -r -s pass && echo
 
 # Install everything else that needs special attention
 install_urxvt

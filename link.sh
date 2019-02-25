@@ -4,7 +4,7 @@ function link {
     local src="$1"
     local dst="$2"
 
-    local dir="$(dirname -- "$dst")"
+    local dir; dir="$(dirname -- "$dst")"
 
     echo "Ensuring the directory $dir exists"
     mkdir -p "$dir"
