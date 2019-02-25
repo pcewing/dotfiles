@@ -3,6 +3,8 @@
 #############################
 # General Utility Functions #
 #############################
+die() { echo "$1" 1>&2; exit 1; }
+
 try()
 {
     "$@" > ~/.command_log 2>&1
@@ -84,6 +86,22 @@ verify_distribution() {
 ######################################
 # Application Installation Functions #
 ######################################
+
+configure_default_xsession() {
+    local src_path="$1"
+
+    echo "Configuring default xsession... "
+
+    [ -f "$src_path" ] || die "File $src_path does not exist!"
+
+    local dst_path="/usr/share/xsessions/default.desktop"
+
+    if [ -f "$dst_path" ]; then
+        echo "Skipping configuration becease $dst_path already exists..."
+    else
+        try sudo ln -s "$src_path" "$dst_path"
+    fi
+}
 
 configure_apt_repositories() {
     local dist="$1"
@@ -577,6 +595,9 @@ prepare_apt "$distro_codename"
 
 # Install everything via apt that is available in the default repositories
 install_apt_packages
+
+# This adds a desktop entry that GDM3 will recognize
+configure_default_xsession "$DOTFILES/config/default.desktop"
 
 # We will need a passphrase to decrypt secrets that some apps depend on
 echo -n "Enter secret passphrase: " && read -s pass && echo

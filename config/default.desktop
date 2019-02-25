@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Default
+Comment=Executes the user's ~/.xsession
+TryExec=$HOME/.xsession
+Exec=sh -c "~/.xsession"
+Type=Application
+DesktopNames=Default
+Keywords=default;wm;windowmanager;window;manager;
+
+X-LightDM-DesktopName=Default
+X-Ubuntu-Gettext-Domain=default-xsession
