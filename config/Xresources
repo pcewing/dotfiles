@@ -58,15 +58,15 @@ URxvt*background: rgba:0000/0000/0200/e000
 !URxvt*transparent: true
 !URxvt*shading:     10
 
-URxvt*urlLauncher:     firefox
-URxvt*scrollBar:       false
-URxvt*scrollBar_right: true
-URxvt*scrollColor:     #606060
+URxvt*urlLauncher:          firefox
+URxvt*scrollBar:            false
+URxvt*scrollBar_right:      true
+URxvt*scrollColor:          #606060
 URxvt*scrollTtyOutput:      false
 URxvt*scrollWithBuffer:     true
 URxvt*scrollTtyKeypress:    true
-urxvt*fade:            1
-urxvt.visualBell:      false
-urxvt.urgentOnBell:    true
+urxvt*fade:                 1
+urxvt.visualBell:           false
+urxvt.urgentOnBell:         true
 
 Xcursor.size: 10
