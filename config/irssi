@@ -1,10 +1,12 @@
 servers = (
-  { address = "irc.dal.net"; chatnet = "DALnet"; port = "6667"; },
   {
-    address = "ssl.efnet.org";
-    chatnet = "EFNet";
-    port = "9999";
+    address = "chat.freenode.net";
+    chatnet = "Freenode";
+    port = "6697";
     use_tls = "yes";
+    tls_verify = "yes";
+    tls_cert = "~/.irssi/irssi.pem";
+    autoconnect = "yes";
   },
   {
     address = "irc.esper.net";
@@ -14,43 +16,17 @@ servers = (
     tls_verify = "yes";
   },
   {
-    address = "chat.freenode.net";
-    chatnet = "Freenode";
-    port = "6697";
-    use_tls = "yes";
-    tls_cert = "~/.irssi/irssi.pem";
-    tls_verify = "yes";
-    autoconnect = "yes";
-  },
-  {
-    address = "irc.gamesurge.net";
-    chatnet = "GameSurge";
-    port = "6667";
-  },
-  {
     address = "eu.irc6.net";
     chatnet = "IRCnet";
     port = "6667";
     use_tls = "yes";
   },
-  { address = "open.ircnet.net"; chatnet = "IRCnet"; port = "6667"; },
-  {
-    address = "irc.ircsource.net";
-    chatnet = "IRCSource";
-    port = "6667";
-  },
-  { address = "irc.netfuze.net"; chatnet = "NetFuze"; port = "6667"; },
   {
     address = "irc.oftc.net";
     chatnet = "OFTC";
     port = "6697";
     use_tls = "yes";
     tls_verify = "yes";
-  },
-  { 
-    address = "irc.quakenet.org";
-    chatnet = "QuakeNet";
-    port = "6667";
   },
   {
     address = "irc.rizon.net";
@@ -59,12 +35,36 @@ servers = (
     use_tls = "yes";
     tls_verify = "yes";
   },
+  {
+    address = "ssl.efnet.org";
+    chatnet = "EFNet";
+    port = "9999";
+    use_tls = "yes";
+  },
+  { 
+    address = "irc.quakenet.org";
+    chatnet = "QuakeNet";
+    port = "6667";
+  },
+  {
+    address = "irc.gamesurge.net";
+    chatnet = "GameSurge";
+    port = "6667";
+  },
+  { address = "irc.dal.net"; chatnet = "DALnet"; port = "6667"; },
   { address = "silc.silcnet.org"; chatnet = "SILC"; port = "706"; },
   { 
     address = "irc.undernet.org";
     chatnet = "Undernet";
     port = "6667";
-  }
+  },
+  { address = "open.ircnet.net"; chatnet = "IRCnet"; port = "6667"; },
+  {
+    address = "irc.ircsource.net";
+    chatnet = "IRCSource";
+    port = "6667";
+  },
+  { address = "irc.netfuze.net"; chatnet = "NetFuze"; port = "6667"; }
 );
 
 chatnets = {
@@ -98,16 +98,16 @@ chatnets = {
     max_msgs = "1";
     max_whois = "1";
   };
-  IRCnet = { 
-    type = "IRC";
-    max_kicks = "1";
-    max_msgs = "1";
-    max_whois = "1";
-  };
   IRCSource = {
     type = "IRC";
     max_kicks = "1";
     max_msgs = "4";
+    max_whois = "1";
+  };
+  IRCnet = { 
+    type = "IRC";
+    max_kicks = "1";
+    max_msgs = "1";
     max_whois = "1";
   };
   NetFuze = {
@@ -129,96 +129,100 @@ chatnets = {
     max_msgs = "1";
     max_whois = "1";
   };
-  SILC = { type = "SILC"; };
   Undernet = {
     type = "IRC";
     max_kicks = "1";
     max_msgs = "1";
     max_whois = "1";
   };
+  SILC = { type = "SILC"; };
 };
 
 channels = (
-  { name = "#lobby";            chatnet = "EsperNet";  autojoin = "no";  },
-  { name = "#gamesurge";        chatnet = "GameSurge"; autojoin = "no";  },
-  { name = "#irssi";            chatnet = "IRCNet";    autojoin = "no";  },
-  { name = "#ircsource";        chatnet = "IRCSource"; autojoin = "no";  },
-  { name = "#netfuze";          chatnet = "NetFuze";   autojoin = "no";  },
-  { name = "#oftc";             chatnet = "OFTC";      autojoin = "no";  },
-  { name = "silc";              chatnet = "SILC";      autojoin = "no";  },
-  { name = "#freenode";         chatnet = "Freenode";  autojoin = "no";  },
-  { name = "#irssi";            chatnet = "Freenode";  autojoin = "no";  },
+  { name = "#lobby"; chatnet = "EsperNet"; autojoin = "no"; },
+  { name = "#gamesurge"; chatnet = "GameSurge"; autojoin = "no"; },
+  { name = "#irssi"; chatnet = "IRCNet"; autojoin = "no"; },
+  { name = "#ircsource"; chatnet = "IRCSource"; autojoin = "no"; },
+  { name = "#netfuze"; chatnet = "NetFuze"; autojoin = "no"; },
+  { name = "#oftc"; chatnet = "OFTC"; autojoin = "no"; },
+  { name = "silc"; chatnet = "SILC"; autojoin = "no"; },
+  { name = "#freenode"; chatnet = "Freenode"; autojoin = "no"; },
+  { name = "#irssi"; chatnet = "Freenode"; autojoin = "no"; },
 
   # Linux desktop applications
-  { name = "#i3";               chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "#sway";             chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "#bspwc";            chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "#polybar";          chatnet = "Freenode";  autojoin = "yes"; },
+  { name = "#i3"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "#sway"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "#bspwc"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "#polybar"; chatnet = "Freenode"; autojoin = "yes"; },
 
   # Linux
-  { name = "##kernel";          chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##linux";           chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "#ubuntu";           chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "#centos";           chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "#archlinux";        chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##slackware";       chatnet = "Freenode";  autojoin = "yes"; },
+  { name = "##kernel"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##linux"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "#ubuntu"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "#centos"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "#archlinux"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##slackware"; chatnet = "Freenode"; autojoin = "yes"; },
 
   # Programming related
-  { name = "##programming";     chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##C";               chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##c++";             chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##c++-basic";       chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##C++-general";     chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##C++-social";      chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "#python";           chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "#bash";             chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "#go-nuts";          chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "#elixir";           chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##rust";            chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##asm";             chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##java";            chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##javascript";      chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##bootstrap";       chatnet = "Freenode";  autojoin = "yes"; },
+  { name = "##programming"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##C"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##c++"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##c++-basic"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##C++-general"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##C++-social"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "#python"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "#bash"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "#go-nuts"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "#elixir"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##rust"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##asm"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##java"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##javascript"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##bootstrap"; chatnet = "Freenode"; autojoin = "yes"; },
 
   # Hardware
-  { name = "##hardware";        chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##electronics";     chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##ibmthinkpad";     chatnet = "Freenode";  autojoin = "yes"; },
+  { name = "##hardware"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##electronics"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##ibmthinkpad"; chatnet = "Freenode"; autojoin = "yes"; },
 
   # Computer Science & Math
-  { name = "##cs";              chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##machinelearning"; chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##math";            chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##networking";      chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##security";        chatnet = "Freenode";  autojoin = "yes"; },
+  { name = "##cs"; chatnet = "Freenode"; autojoin = "yes"; },
+  { 
+    name = "##machinelearning";
+    chatnet = "Freenode";
+    autojoin = "yes";
+  },
+  { name = "##math"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##networking"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##security"; chatnet = "Freenode"; autojoin = "yes"; },
 
   # Cloud
-  { name = "##aws";             chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##digitalocean";    chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##infra-talk";      chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "#ansible";          chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "#kubernetes";       chatnet = "Freenode";  autojoin = "yes"; },
-  
+  { name = "##aws"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##digitalocean"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##infra-talk"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "#ansible"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "#kubernetes"; chatnet = "Freenode"; autojoin = "yes"; },
+
   # Hobbies and social
-  { name = "##chat";            chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##chats";           chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##fitness";         chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##anime";           chatnet = "Freenode";  autojoin = "yes"; },
+  { name = "##chat"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##chats"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##fitness"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##anime"; chatnet = "Freenode"; autojoin = "yes"; },
 
   # Gaming
-  { name = "#gamingonlinux";    chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##gaming";          chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "#freegamer";        chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##gamedev";         chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "##videogames";      chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "#boardgames";       chatnet = "Freenode";  autojoin = "yes"; },
+  { name = "#gamingonlinux"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##gaming"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "#freegamer"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##gamedev"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##videogames"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "#boardgames"; chatnet = "Freenode"; autojoin = "yes"; },
 
   # Applications
-  { name = "#blender";          chatnet = "Freenode";  autojoin = "yes"; },
-  { name = "#chromium";         chatnet = "Freenode";  autojoin = "yes"; },
+  { name = "#blender"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "#chromium"; chatnet = "Freenode"; autojoin = "yes"; },
 
   # Other
-  { name = "#cisco";            chatnet = "Freenode";  autojoin = "yes"; }
+  { name = "#cisco"; chatnet = "Freenode"; autojoin = "yes"; }
 );
 
 aliases = {
@@ -482,3 +486,4 @@ settings = {
   "fe-text" = { actlist_sort = "refnum"; };
   "fe-common/core" = { autolog = "yes"; };
 };
+ignores = ( { level = "JOINS PARTS QUITS NICKS"; } );
