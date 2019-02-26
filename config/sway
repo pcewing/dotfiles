@@ -1,25 +1,21 @@
-# Default config for sway
+# Sway Config
 #
-# Copy this to ~/.config/sway/config and edit it to your liking.
-#
-# Read `man 5 sway` for a complete reference.
+# Read `man 5 sway` for a complete reference or see /usr/local/etc/sway/config
+# for examples
 
 ### Variables
-#
-# Logo key. Use Mod1 for Alt.
+
+# Windows Key
 set $mod Mod4
+
 # Home row direction keys, like vim
 set $left h
 set $down j
 set $up k
 set $right l
-# Your preferred terminal emulator
-set $term urxvt
-# Your preferred application launcher
-# Note: it's recommended that you pass the final command to sway
-set $menu dmenu_path | rofi -show run | xargs swaymsg exec
 
-# gaps
+# Gaps
+for_window [class="^.*"] border pixel 1
 gaps inner 20
 smart_borders on
 
@@ -27,26 +23,6 @@ smart_borders on
 #
 # Default wallpaper (more resolutions are available in /usr/local/share/backgrounds/sway/)
 output * bg "$HOME/box/pic/Wallpapers/3440x1440/night-view-3440x1440.jpg" fill
-#
-# Example configuration:
-#
-#   output HDMI-A-1 resolution 1920x1080 position 1920,0
-#
-# You can get the names of your outputs by running: swaymsg -t get_outputs
-
-### Idle configuration
-#
-# Example configuration:
-#
-# exec swayidle -w \
-#          timeout 300 'swaylock -f -c 000000' \
-#          timeout 600 'swaymsg "output * dpms off"' \
-#               resume 'swaymsg "output * dpms on"' \
-#          before-sleep 'swaylock -f -c 000000'
-#
-# This will lock your screen after 300 seconds of inactivity, then turn off
-# your displays after another 300 seconds, and turn your screens back on when
-# resumed. It will also lock your screen before your computer goes to sleep.
 
 ### Input configuration
 #
@@ -67,13 +43,14 @@ output * bg "$HOME/box/pic/Wallpapers/3440x1440/night-view-3440x1440.jpg" fill
 # Basics:
 #
     # start a terminal
-    bindsym $mod+Return exec $term
+    bindsym $mod+Return exec urxvt
 
     # kill focused window
-    bindsym $mod+Shift+q kill
+    bindsym $mod+q kill
 
-    # start your launcher
-    bindsym $mod+d exec $menu
+    # Application Launcher (Note: It's recommended that you pass the final
+    # command to sway)
+    bindsym $mod+Space exec rofi -show run | xargs swaymsg exec
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -84,59 +61,64 @@ output * bg "$HOME/box/pic/Wallpapers/3440x1440/night-view-3440x1440.jpg" fill
 
     # reload the configuration file
     bindsym $mod+Shift+c reload
-    bindsym $mod+ctrl+Return restart
+    bindsym $mod+ctrl+c restart
+
 
     # exit sway (logs you out of your Wayland session)
     bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
 #
 # Moving around:
 #
-    # Move your focus around
-    bindsym $mod+$left focus left
-    bindsym $mod+$down focus down
-    bindsym $mod+$up focus up
-    bindsym $mod+$right focus right
-    # or use $mod+[up|down|left|right]
-    bindsym $mod+Left focus left
-    bindsym $mod+Down focus down
-    bindsym $mod+Up focus up
-    bindsym $mod+Right focus right
 
-    # _move_ the focused window with the same, but add Shift
-    bindsym $mod+Shift+$left move left
-    bindsym $mod+Shift+$down move down
-    bindsym $mod+Shift+$up move up
-    bindsym $mod+Shift+$right move right
-    # ditto, with arrow keys
-    bindsym $mod+Shift+Left move left
-    bindsym $mod+Shift+Down move down
-    bindsym $mod+Shift+Up move up
-    bindsym $mod+Shift+Right move right
+# Move your focus around
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+# or use $mod+[up|down|left|right]
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# _move_ the focused window with the same, but add Shift
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+# ditto, with arrow keys
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
 #
 # Workspaces:
 #
-    # switch to workspace
-    bindsym $mod+1 workspace 1
-    bindsym $mod+2 workspace 2
-    bindsym $mod+3 workspace 3
-    bindsym $mod+4 workspace 4
-    bindsym $mod+5 workspace 5
-    bindsym $mod+6 workspace 6
-    bindsym $mod+7 workspace 7
-    bindsym $mod+8 workspace 8
-    bindsym $mod+9 workspace 9
-    bindsym $mod+0 workspace 10
-    # move focused container to workspace
-    bindsym $mod+Shift+1 move container to workspace 1
-    bindsym $mod+Shift+2 move container to workspace 2
-    bindsym $mod+Shift+3 move container to workspace 3
-    bindsym $mod+Shift+4 move container to workspace 4
-    bindsym $mod+Shift+5 move container to workspace 5
-    bindsym $mod+Shift+6 move container to workspace 6
-    bindsym $mod+Shift+7 move container to workspace 7
-    bindsym $mod+Shift+8 move container to workspace 8
-    bindsym $mod+Shift+9 move container to workspace 9
-    bindsym $mod+Shift+0 move container to workspace 10
+
+# switch to workspace
+bindsym $mod+y workspace 1
+bindsym $mod+u workspace 2
+bindsym $mod+i workspace 3
+bindsym $mod+o workspace 4
+bindsym $mod+p workspace 5
+bindsym $mod+6 workspace 6
+bindsym $mod+7 workspace 7
+bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
+bindsym $mod+0 workspace 10
+
+# move focused container to workspace
+bindsym $mod+Shift+y move container to workspace 1
+bindsym $mod+Shift+u move container to workspace 2
+bindsym $mod+Shift+i move container to workspace 3
+bindsym $mod+Shift+o move container to workspace 4
+bindsym $mod+Shift+p move container to workspace 5
+bindsym $mod+Shift+6 move container to workspace 6
+bindsym $mod+Shift+7 move container to workspace 7
+bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Shift+9 move container to workspace 9
+bindsym $mod+Shift+0 move container to workspace 10
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
 
@@ -163,10 +145,10 @@ bindsym $mod+F2 mode "passthrough"
     bindsym $mod+f fullscreen
 
     # Toggle the current focus between tiling and floating mode
-    bindsym $mod+Shift+space floating toggle
+    bindsym $mod+m floating toggle
 
     # Swap focus between the tiling area and the floating area
-    bindsym $mod+space focus mode_toggle
+    bindsym $mod+Shift+m focus mode_toggle
 
     # move focus to the parent container
     bindsym $mod+a focus parent
@@ -185,21 +167,17 @@ bindsym $mod+F2 mode "passthrough"
 #
 # Resizing containers:
 #
+set $resize_amount 200px
 mode "resize" {
-    # left will shrink the containers width
-    # right will grow the containers width
-    # up will shrink the containers height
-    # down will grow the containers height
-    bindsym $left resize shrink width 10px
-    bindsym $down resize grow height 10px
-    bindsym $up resize shrink height 10px
-    bindsym $right resize grow width 10px
+    bindsym $left  resize shrink width  $resize_amount
+    bindsym $down  resize grow   height $resize_amount
+    bindsym $up    resize shrink height $resize_amount
+    bindsym $right resize grow   width  $resize_amount
 
-    # ditto, with arrow keys
-    bindsym Left resize shrink width 10px
-    bindsym Down resize grow height 10px
-    bindsym Up resize shrink height 10px
-    bindsym Right resize grow width 10px
+    bindsym Left  resize shrink width  $resize_amount
+    bindsym Down  resize grow   height $resize_amount
+    bindsym Up    resize shrink height $resize_amount
+    bindsym Right resize grow   width  $resize_amount
 
     # return to default mode
     bindsym Return mode "default"
@@ -208,7 +186,7 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 #
-# Status Bar:
+# Swaybar:
 #
 # Read `man 5 sway-bar` for more information about this section.
 bar {
@@ -220,7 +198,7 @@ bar {
 
     colors {
         statusline #ffffff
-        background #323232
+        background #88323232
         inactive_workspace #32323200 #32323200 #5c5c5c
     }
 }

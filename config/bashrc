@@ -27,5 +27,5 @@ do
 done
 
 # Minimalist prompt
-PS1="[34m[\W][00m "
+PS1="\[[34m\][\W]\[[00m\] "
 
