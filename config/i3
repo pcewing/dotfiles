@@ -14,17 +14,45 @@ font pango:Inconsolata 14
 floating_modifier $mod
 
 # change border settings for all windows; this is necessary to use gaps
-for_window [class="^.*"] border pixel 1
+for_window [class="^.*"] border pixel 2
 
 # gaps
 gaps inner 20
 smart_borders on
 
-#6d5782
+# base16 colors   $<var>  <xrdb resource> <fallback>
+# black
+set_from_resource $c00    color0          #151515
+set_from_resource $c08    color8          #505050
+# red
+set_from_resource $c01    color1          #ac4142
+set_from_resource $c09    color9          #ac4142
+# green
+set_from_resource $c02    color2          #90a959
+set_from_resource $c10    color10         #90a959
+# yellow
+set_from_resource $c03    color3          #f4bf75
+set_from_resource $c11    color11         #f4bf75
+# blue
+set_from_resource $c04    color4          #6a9fb5
+set_from_resource $c12    color12         #6a9fb5
+# magenta
+set_from_resource $c05    color5          #aa759f
+set_from_resource $c13    color13         #aa759f
+# cyan
+set_from_resource $c06    color6          #75b5aa
+set_from_resource $c14    color14         #75b5aa
+# red
+set_from_resource $c07    color7          #d0d0d0
+set_from_resource $c15    color15         #f5f5f5
+# special
+set_from_resource $fg     foreground      #d0d0d0
+set_from_resource $bg     background      #151515
+set_from_resource $cursor cursorColor     #d0d0d0
 
 # color settings
-# class                  border  backgr. text    indicator child_border
-client.focused           #6D5782 #268bd2 #002b36 #00388e   #6d8257
+# class                  border  backg.  foreg.  indicator child_border
+client.focused           $c04    $bg     $fg     $c04      $c04
 client.focused_inactive  #073642 #073642 #888888 #292d2e   #222222
 client.unfocused         #073642 #073642 #888888 #292d2e   #222222
 #client.urgent           #2f343a #900000 #ffffff #900000   #900000
