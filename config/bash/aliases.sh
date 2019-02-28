@@ -44,3 +44,6 @@ alias tns='tmux new-session -s'
 alias sx="startx"
 alias notes='ranger ~/notebook'
 alias reload_xresources="xrdb -merge ~/.Xresources"
+
+alias gnome-settings="env XDG_CURRENT_DESKTOP=GNOME gnome-control-center"
+
