@@ -167,31 +167,16 @@ channels = (
   { name = "##programming"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "##C"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "##c++"; chatnet = "Freenode"; autojoin = "yes"; },
-  { name = "##c++-basic"; chatnet = "Freenode"; autojoin = "yes"; },
-  { name = "##C++-general"; chatnet = "Freenode"; autojoin = "yes"; },
-  { name = "##C++-social"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "##csharp"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "#python"; chatnet = "Freenode"; autojoin = "yes"; },
-  { name = "#bash"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "#go-nuts"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "#elixir"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "##rust"; chatnet = "Freenode"; autojoin = "yes"; },
-  { name = "##asm"; chatnet = "Freenode"; autojoin = "yes"; },
-  { name = "##java"; chatnet = "Freenode"; autojoin = "yes"; },
-  { name = "##javascript"; chatnet = "Freenode"; autojoin = "yes"; },
-  { name = "##bootstrap"; chatnet = "Freenode"; autojoin = "yes"; },
-
-  # Hardware
-  { name = "##hardware"; chatnet = "Freenode"; autojoin = "yes"; },
-  { name = "##electronics"; chatnet = "Freenode"; autojoin = "yes"; },
-  { name = "##ibmthinkpad"; chatnet = "Freenode"; autojoin = "yes"; },
+  { name = "#bash"; chatnet = "Freenode"; autojoin = "yes"; },
 
   # Computer Science & Math
   { name = "##cs"; chatnet = "Freenode"; autojoin = "yes"; },
-  { 
-    name = "##machinelearning";
-    chatnet = "Freenode";
-    autojoin = "yes";
-  },
+  { name = "##machinelearning"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "##math"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "##networking"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "##security"; chatnet = "Freenode"; autojoin = "yes"; },
@@ -199,13 +184,11 @@ channels = (
   # Cloud
   { name = "##aws"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "##digitalocean"; chatnet = "Freenode"; autojoin = "yes"; },
-  { name = "##infra-talk"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "#ansible"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "#kubernetes"; chatnet = "Freenode"; autojoin = "yes"; },
 
   # Hobbies and social
   { name = "##chat"; chatnet = "Freenode"; autojoin = "yes"; },
-  { name = "##chats"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "##fitness"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "##anime"; chatnet = "Freenode"; autojoin = "yes"; },
 
@@ -276,7 +259,7 @@ aliases = {
   WJOIN = "JOIN -window";
   WI = "WHOIS";
   WII = "WHOIS $0 $0";
-  WL = "WINDOW LIST";
+  WL = "WINDOW LIST; WINDOW GOTO 1";
   WN = "WINDOW NEW HIDDEN";
   WQUERY = "QUERY -window";
   WW = "WHOWAS";
