@@ -52,7 +52,7 @@ set_from_resource $cursor cursorColor     #d0d0d0
 
 # color settings
 # class                  border  backg.  foreg.  indicator child_border
-client.focused           $c04    $bg     $fg     $c04      $c04
+client.focused           $fg     $bg     $fg     $fg       $fg
 client.focused_inactive  #073642 #073642 #888888 #292d2e   #222222
 client.unfocused         #073642 #073642 #888888 #292d2e   #222222
 #client.urgent           #2f343a #900000 #ffffff #900000   #900000
