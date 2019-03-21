@@ -10,7 +10,7 @@ alias gs='git status --short'
 alias gc='git commit'
 alias gac='git add --all && git commit'
 alias gd='git diff'
-alias gdt='git_diff_bc3' # This is defined in functions.sh
+alias gdbc='git_diff_bc3' # This is defined in functions.sh
 alias gaa='git add --all'
 alias gaad='git add --all --dry-run'
 
