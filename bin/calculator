@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+urxvt -e bash -c "python -ic \"import math; print(\\\"Calculator\\\")\""
+
