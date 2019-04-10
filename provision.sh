@@ -504,6 +504,41 @@ install_irssi() {
     try decrypt_with_pass "$secrets_dir/irssi.pem.gpg" "$tls_cert_path" "$pass"
 }
 
+install_git_ssh_key() {
+    local secrets_dir="$1"
+    local pass="$2"
+
+    print_header "Installing git ssh key"
+
+    local key_file="git_ssh_key"
+
+    local ssh_dir="$HOME/.ssh"
+    echo "Ensuring $ssh_dir directory exists..."
+    try mkdir -p "$ssh_dir"
+
+    if [ -e "$ssh_dir/$key_file" -o -e "$ssh_dir/$key_file.pub" ]; then
+        echo "Key already exists, skipping..."
+    else
+        echo "Decrypting ssh key..."
+        try decrypt_with_pass \
+            "$secrets_dir/$key_file.gpg" \
+            "$ssh_dir/$key_file" \
+            "$pass"
+        try decrypt_with_pass \
+            "$secrets_dir/$key_file.pub.gpg" \
+            "$ssh_dir/$key_file.pub" \
+            "$pass"
+
+        echo "Setting ssh key file permissions..."
+        chmod 600 "$ssh_dir/$key_file.pub"
+        chmod 600 "$ssh_dir/$key_file"
+
+        echo "Adding key to agent..."
+        eval "$(ssh-agent -s)"
+        ssh-add "$ssh_dir/$key_file"
+    fi
+}
+
 install_bcompare4() {
     local cache_dir="$1"
     local version="$2"
@@ -587,8 +622,8 @@ echo -n "Enter secret passphrase: " && read -r -s pass && echo
 source "$DOTFILES/config/bash/functions.sh"
 
 distro_name="Ubuntu"
-distro_version="18.10"
-distro_codename="cosmic"
+distro_version="18.04"
+distro_codename="bionic"
 
 # For applications that are built from source, we will put them here
 cache_dir="$HOME/.cache" && mkdir -p "$cache_dir"
@@ -610,15 +645,16 @@ configure_default_xsession "$DOTFILES/config/default.desktop"
 
 # Install everything else that needs special attention
 install_urxvt
-install_neovim     "$cache_dir" "v0.3.4"
-install_i3gaps     "$cache_dir" "4.16.1"
-install_polybar    "$cache_dir" "3.3.0"
-install_cava       "$cache_dir" "0.6.1"
-install_youtube-dl "$cache_dir" "2019.02.18" "$bin_dir"
-install_wpr        "$cache_dir" "0.1.0"      "$bin_dir"
+install_neovim      "$cache_dir" "v0.3.4"
+install_i3gaps      "$cache_dir" "4.16.1"
+install_polybar     "$cache_dir" "3.3.0"
+install_cava        "$cache_dir" "0.6.1"
+install_youtube-dl  "$cache_dir" "2019.02.18" "$bin_dir"
+install_wpr         "$cache_dir" "0.1.0"      "$bin_dir"
 install_mpd
 install_ncmpcpp
-install_irssi      "$secrets_dir" "$pass"
+install_irssi       "$secrets_dir" "$pass"
+install_git_ssh_key "$secrets_dir" "$pass"
 
 # Proprietary software
 install_bcompare4 "$cache_dir" "4.2.9.23626" "$secrets_dir" "$pass"

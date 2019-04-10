@@ -89,7 +89,7 @@ function encrypt_with_pass() {
     local pass="$3"
 
     [ -z "$src" -o -z "$dst" -o -z "$pass" ] \
-        && echo "Usage: encrypt path/to/src path/to/dst passphrase" 1>&2 \
+        && echo "Usage: encrypt_with_pass path/to/src path/to/dst passphrase" 1>&2 \
         && return
 
     [ ! -f "$src" ] \
@@ -107,6 +107,10 @@ function encrypt_with_pass() {
 function encrypt() {
     local src="$1"
     local dst="$2" # Optional
+
+    [ -z "$src" ] \
+        && echo "Usage: encrypt path/to/src path/to/dst" 1>&2 \
+        && return
 
     # If source was provided but destination wasn't, set the default
     # destination by appending ".gpg"
