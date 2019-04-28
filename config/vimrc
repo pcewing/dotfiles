@@ -65,6 +65,7 @@ Plug 'nvie/vim-flake8'
 Plug 'tikhomirov/vim-glsl'
 Plug 'martinda/Jenkinsfile-vim-syntax'
 Plug 'aklt/plantuml-syntax'
+Plug 'elubow/cql-vim'
 "Plug 'Valloric/YouCompleteMe'
 
 call plug#end()

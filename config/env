@@ -23,6 +23,7 @@ declare -a paths=(
     "/usr/local/go/bin"
     "$HOME/go/bin"
     "$HOME/go"
+    "$HOME/.mix/escripts"
 )
 
 for i in "${paths[@]}"
