@@ -47,3 +47,5 @@ alias reload_xresources="xrdb -merge ~/.Xresources"
 
 alias gnome-settings="env XDG_CURRENT_DESKTOP=GNOME gnome-control-center"
 
+[ -z "$(command -v iex)" ] && alias iex="docker run -it elixir:latest iex"
+
