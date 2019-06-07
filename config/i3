@@ -89,6 +89,9 @@ bindsym $mod+c exec "conky"
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
 
+# fuzzy nautilus
+bindsym $mod+f exec "fzf_nautilus.sh"
+
 # reload the configuration file
 bindsym $mod+ctrl+Return reload
 
