@@ -622,8 +622,8 @@ echo -n "Enter secret passphrase: " && read -r -s pass && echo
 source "$DOTFILES/config/bash/functions.sh"
 
 distro_name="Ubuntu"
-distro_version="18.04"
-distro_codename="bionic"
+distro_version="18.10"
+distro_codename="cosmic"
 
 # For applications that are built from source, we will put them here
 cache_dir="$HOME/.cache" && mkdir -p "$cache_dir"
