@@ -212,9 +212,9 @@ mode "resize" {
 }
 
 # print screen bindings
-bindsym --release Print exec "scrot -m $HOME/pictures/screenshots/%s_%H%M_%d.%m.%Y_$wx$h.png"
-bindsym --release Shift+Print exec "scrot -s $HOME/pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
-bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
+bindsym --release Print exec "scrot -m $HOME/box/pic/screenshots/%s_%H%M_%d.%m.%Y_$wx$h.png"
+bindsym --release Shift+Print exec "scrot -s $HOME/box/pic/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
+bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/box/pic/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
 
 # source the machine-specific screen layout if it exists
 exec_always "[ -e ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
