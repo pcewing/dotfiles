@@ -18,13 +18,16 @@ ensure_installed() {
     fi
 }
 
-filename=$screenshot_dir/$(date +%Y%m%d_%H%M%S).png
+filename="$screenshot_dir/$(date +%Y%m%d_%H%M%S).png"
 
 ensure_installed scrot
 scrot -s "$filename"
 
 if [[ -e $filename ]]; then
     ensure_installed feh
-    feh "$filename"
+    feh "$filename" >/dev/null 2>&1 &
+
+    ensure_installed nautilus
+    nautilus "$screenshot_dir" >/dev/null 2>&1 &
 fi
 
