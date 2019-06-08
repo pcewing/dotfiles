@@ -20,16 +20,51 @@ function colours() {
     done
 }
 
+# Create an executable bash file and open it in NeoVim
 function nvims() {
     script_name="$1"
 
-    if [[ -e "$script_name" ]]; then
+    if [[ -z "$script_name" ]]; then
+        echo "Usage: nvims <filename>" 1>&2
         return 1
-    else
-        echo "#!/usr/bin/env bash" >> "$script_name"
-        chmod +x "$script_name"
-        nvim "$script_name"
     fi
+
+    if [[ -e "$script_name" ]]; then
+        echo "ERROR: File $script_name already exists" 1>&2
+        return 1
+    fi
+
+    echo "#!/usr/bin/env bash" >> "$script_name"
+    chmod +x "$script_name"
+    nvim "$script_name"
+}
+
+# Create an executable Python file and open it in NeoVim
+function nvimp() {
+    script_name="$1"
+
+    if [[ -z "$script_name" ]]; then
+        echo "Usage: nvimp <filename>" 1>&2
+        return 1
+    fi
+
+    if [[ -e "$script_name" ]]; then
+        echo "ERROR: File $script_name already exists" 1>&2
+        return 1
+    fi
+
+    local template="#!/usr/bin/env python3
+
+def main():
+    pass
+
+if __name__ == '__main__':
+    main()
+"
+
+    echo "$template" > "$script_name"
+    chmod +x "$script_name"
+    nvim "$script_name"
 }
 
 function vman() {
