@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
 
-urxvt -e bash -c "python -ic \"import math; print(\\\"Calculator\\\")\""
+urxvt \
+    -e bash \
+        -c "xprop -id \$WINDOWID -f WM_CLASS 8ss -set WM_CLASS \"calculator\"
+            python -ic \"import math; print(\\\"Calculator\\\")\""
 

@@ -90,7 +90,7 @@ bindsym $mod+c exec "conky"
 bindsym $mod+Return exec i3-sensible-terminal
 
 # fuzzy nautilus
-bindsym $mod+f exec "fzf_nautilus.sh"
+bindsym $mod+n exec "fuzzy.sh nautilus"
 
 # reload the configuration file
 bindsym $mod+ctrl+Return reload
@@ -240,6 +240,7 @@ for_window [class="keepassxc"] floating enable
 for_window [class="VirtualBox Machine"] floating enable
 for_window [class="net-runelite-launcher-Launcher"] floating enable
 for_window [class="net-runelite-client-RuneLite"] floating enable
+for_window [instance="calculator"] floating enable
 
 for_window [class=ShadowOfMordor] floating enable, resize set 1920 1080
 
