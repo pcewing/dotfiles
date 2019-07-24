@@ -51,7 +51,8 @@ mkdir -p "$filedir"
 
 append "$filename" "# $date_string"
 append "$filename" ""
-append "$filename" "## TODO:"
+append "$filename" "## TODO"
+append "$filename" ""
 append "$filename" "- [ ] "
 
 nvim "$filename"
