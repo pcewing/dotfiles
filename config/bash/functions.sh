@@ -161,6 +161,21 @@ function encrypt() {
     encrypt_with_pass "$src" "$dst" "$pass"
 }
 
+# Simple file search: Execute `find` with the most common parameters and hide
+# errors
+function f() {
+    local search_term="$1"
+
+    if [ -z "$search_term" ]; then
+        echo "Usage: f <search_term>" 1>&2
+        return
+    fi
+
+    echo "Command: find . -iname \"*$search_term*\""
+    echo "Results:"
+    find . -iname "*$search_term*" 2>/dev/null
+}
+
 # WARNING: This shouldn't be called from an interactive shell as the passphrase
 # will be written in plaintext to $HISTFILE. It is only implemented so that
 # scripts can avoid asking for the passphrase multiple times when decrypting
