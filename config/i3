@@ -166,9 +166,6 @@ bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
-# TODO: I've been moving all of my bindings to the right hand; can we figure
-# out a sane way to do that for these? Perhaps use lower/raise layers?
-
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
@@ -242,9 +239,6 @@ for_window [class="net-runelite-launcher-Launcher"] floating enable
 for_window [class="net-runelite-client-RuneLite"] floating enable
 
 for_window [class=ShadowOfMordor] floating enable, resize set 1920 1080
-
-# TODO: Remove this once done with vulkan tutorial
-for_window [class="HelloTriangle"] floating enable, border normal
 
 exec_always "startup.sh"
 
