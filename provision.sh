@@ -181,6 +181,7 @@ install_apt_packages() {
     p="$p tmux"
     p="$p neofetch"
     p="$p id3v2"
+    p="$p calcurse"
 
     # Python
     p="$p python python-dev python-pip"    # Python 2.7
