@@ -42,30 +42,32 @@ output * bg "$HOME/box/pic/Wallpapers/3440x1440/night-view-3440x1440.jpg" fill
 #
 # Basics:
 #
-    # start a terminal
-    bindsym $mod+Return exec urxvt
+#
+# start a terminal
+bindsym $mod+Return exec urxvt
 
-    # kill focused window
-    bindsym $mod+q kill
+# kill focused window
+bindsym $mod+minus kill
 
-    # Application Launcher (Note: It's recommended that you pass the final
-    # command to sway)
-    bindsym $mod+Space exec rofi -show run | xargs swaymsg exec
+# Application Launcher (Note: It's recommended that you pass the final
+# command to sway)
+bindsym $mod+Space exec rofi -show run | xargs swaymsg exec
 
-    # Drag floating windows by holding down $mod and left mouse button.
-    # Resize them with right mouse button + $mod.
-    # Despite the name, also works for non-floating windows.
-    # Change normal to inverse to use left mouse button for resizing and right
-    # mouse button for dragging.
-    floating_modifier $mod normal
+# Drag floating windows by holding down $mod and left mouse button.
+# Resize them with right mouse button + $mod.
+# Despite the name, also works for non-floating windows.
+# Change normal to inverse to use left mouse button for resizing and right
+# mouse button for dragging.
+floating_modifier $mod normal
 
-    # reload the configuration file
-    bindsym $mod+Shift+c reload
-    bindsym $mod+ctrl+c restart
+# reload the configuration file
+bindsym $mod+Shift+c reload
+bindsym $mod+ctrl+c restart
 
 
-    # exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+# exit sway (logs you out of your Wayland session)
+bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+
 #
 # Moving around:
 #
@@ -159,11 +161,11 @@ bindsym $mod+F2 mode "passthrough"
     # You can send windows there and get them back later.
 
     # Move the currently focused window to the scratchpad
-    bindsym $mod+Shift+minus move scratchpad
+    bindsym $mod+Shift+backslash move scratchpad
 
     # Show the next scratchpad window or hide the focused scratchpad window.
     # If there are multiple scratchpad windows, this command cycles through them.
-    bindsym $mod+minus scratchpad show
+    bindsym $mod+backslash scratchpad show
 #
 # Resizing containers:
 #
