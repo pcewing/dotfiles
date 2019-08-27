@@ -66,6 +66,7 @@ Plug 'tikhomirov/vim-glsl'
 Plug 'martinda/Jenkinsfile-vim-syntax'
 Plug 'aklt/plantuml-syntax'
 Plug 'elubow/cql-vim'
+Plug 'tpope/vim-fugitive'
 "Plug 'Valloric/YouCompleteMe'
 
 call plug#end()

@@ -14,3 +14,9 @@
 
     diff = diff --ignore-space-at-eol -b -w --ignore-blank-lines
 
+    # Diff all of the changes in a specific revision using meld
+    # Examples:
+    #   git showm a8d375bc     Diff changes in revision a8d375bc
+    #   git showm              Diff changes in HEAD
+    showm = "!f(){ c=$1; [ -z $c ] && c='HEAD'; git difftool --dir-diff --tool=meld -y $c~..$c; }; f"
+
