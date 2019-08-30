@@ -162,6 +162,8 @@ channels = (
   #{ name = "#centos"; chatnet = "Freenode"; autojoin = "yes"; },
   #{ name = "#archlinux"; chatnet = "Freenode"; autojoin = "yes"; },
   #{ name = "##slackware"; chatnet = "Freenode"; autojoin = "yes"; },
+  #{ name = "#xorg"; chatnet = "Freenode"; autojoin = "yes"; },
+  #{ name = "#xcb"; chatnet = "Freenode"; autojoin = "yes"; },
 
   # Programming related
   { name = "##programming"; chatnet = "Freenode"; autojoin = "yes"; },
