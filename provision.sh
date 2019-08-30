@@ -616,6 +616,15 @@ install_insync() {
 # Main #
 ########
 
+secrets_dir="$HOME/secrets"
+if [ ! -d "$secrets_dir" ]; then
+    echo "Secrets directory '$secrets_dir' does not exist." 
+    echo "Did you forget to create it?" 
+    exit 1
+fi
+
+exit 0
+
 # We will need a passphrase to decrypt secrets that some apps depend on
 echo -n "Enter secret passphrase: " && read -r -s pass && echo
 
@@ -631,7 +640,6 @@ distro_codename="disco"
 cache_dir="$HOME/.cache" && mkdir -p "$cache_dir"
 
 bin_dir="$HOME/bin" && mkdir -p "$bin_dir"
-secrets_dir="$DOTFILES/secrets"
 
 # Print a warning if the current distro doesn't match what is expected
 verify_distribution "$distro_name" "$distro_version" "$distro_codename"
