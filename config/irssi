@@ -7,145 +7,19 @@ servers = (
     tls_verify = "yes";
     tls_cert = "~/.irssi/irssi.pem";
     autoconnect = "yes";
-  },
-  {
-    address = "irc.esper.net";
-    chatnet = "EsperNet";
-    port = "6697";
-    use_tls = "yes";
-    tls_verify = "yes";
-  },
-  {
-    address = "eu.irc6.net";
-    chatnet = "IRCnet";
-    port = "6667";
-    use_tls = "yes";
-  },
-  {
-    address = "irc.oftc.net";
-    chatnet = "OFTC";
-    port = "6697";
-    use_tls = "yes";
-    tls_verify = "yes";
-  },
-  {
-    address = "irc.rizon.net";
-    chatnet = "Rizon";
-    port = "6697";
-    use_tls = "yes";
-    tls_verify = "yes";
-  },
-  {
-    address = "ssl.efnet.org";
-    chatnet = "EFNet";
-    port = "9999";
-    use_tls = "yes";
-  },
-  { 
-    address = "irc.quakenet.org";
-    chatnet = "QuakeNet";
-    port = "6667";
-  },
-  {
-    address = "irc.gamesurge.net";
-    chatnet = "GameSurge";
-    port = "6667";
-  },
-  { address = "irc.dal.net"; chatnet = "DALnet"; port = "6667"; },
-  { address = "silc.silcnet.org"; chatnet = "SILC"; port = "706"; },
-  { 
-    address = "irc.undernet.org";
-    chatnet = "Undernet";
-    port = "6667";
-  },
-  { address = "open.ircnet.net"; chatnet = "IRCnet"; port = "6667"; },
-  {
-    address = "irc.ircsource.net";
-    chatnet = "IRCSource";
-    port = "6667";
-  },
-  { address = "irc.netfuze.net"; chatnet = "NetFuze"; port = "6667"; }
+  }
 );
 
 chatnets = {
-  DALnet = {
-    type = "IRC";
-    max_kicks = "4";
-    max_msgs = "20";
-    max_whois = "30";
-  };
-  EFNet = { 
-    type = "IRC";
-    max_kicks = "1";
-    max_msgs = "4";
-    max_whois = "1";
-  };
-  EsperNet = {
-    type = "IRC";
-    max_kicks = "1";
-    max_msgs = "4";
-    max_whois = "1";
-  };
   Freenode = {
     type = "IRC";
     max_kicks = "1";
     max_msgs = "4";
     max_whois = "1";
   };
-  GameSurge = {
-    type = "IRC";
-    max_kicks = "1";
-    max_msgs = "1";
-    max_whois = "1";
-  };
-  IRCSource = {
-    type = "IRC";
-    max_kicks = "1";
-    max_msgs = "4";
-    max_whois = "1";
-  };
-  IRCnet = { 
-    type = "IRC";
-    max_kicks = "1";
-    max_msgs = "1";
-    max_whois = "1";
-  };
-  NetFuze = {
-    type = "IRC";
-    max_kicks = "1";
-    max_msgs = "1";
-    max_whois = "1";
-  };
-  OFTC = { type = "IRC"; max_kicks = "1"; max_msgs = "1"; max_whois = "1"; };
-  QuakeNet = {
-    type = "IRC";
-    max_kicks = "1";
-    max_msgs = "1";
-    max_whois = "1";
-  };
-  Rizon = { 
-    type = "IRC";
-    max_kicks = "1";
-    max_msgs = "1";
-    max_whois = "1";
-  };
-  Undernet = {
-    type = "IRC";
-    max_kicks = "1";
-    max_msgs = "1";
-    max_whois = "1";
-  };
-  SILC = { type = "SILC"; };
 };
 
 channels = (
-  { name = "#lobby"; chatnet = "EsperNet"; autojoin = "no"; },
-  { name = "#gamesurge"; chatnet = "GameSurge"; autojoin = "no"; },
-  { name = "#irssi"; chatnet = "IRCNet"; autojoin = "no"; },
-  { name = "#ircsource"; chatnet = "IRCSource"; autojoin = "no"; },
-  { name = "#netfuze"; chatnet = "NetFuze"; autojoin = "no"; },
-  { name = "#oftc"; chatnet = "OFTC"; autojoin = "no"; },
-  { name = "silc"; chatnet = "SILC"; autojoin = "no"; },
   { name = "#freenode"; chatnet = "Freenode"; autojoin = "no"; },
 
   # Linux desktop applications
