@@ -13,7 +13,7 @@ function link {
     ln -sf "$src" "$dst"
 }
 
-[ -z "$DOTFILES" ] && DOTFILES="$HOME/.dotfiles"
+[ -z "$DOTFILES" ] && DOTFILES="$HOME/dot"
 
 echo -e "\\nCreating symlinks"
 echo "================="

@@ -176,7 +176,8 @@ install_apt_packages() {
     p="$p iotop"
     p="$p git"
     p="$p vim"
-    p="$p exuberant-ctags"
+    #p="$p exuberant-ctags"
+    p="$p universal-ctags" # I think this has better c++11 support
     p="$p ranger"
     p="$p tmux"
     p="$p neofetch"

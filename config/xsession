@@ -36,7 +36,7 @@ xsetroot -solid "#333333"
 ulimit -c unlimited
 
 # Set up environment variables
-source ~/.dotfiles/config/env
+source ~/dot/config/env
 
 # Start i3 and log to ~/.i3/logfile
 mkdir -p ~/.logs
