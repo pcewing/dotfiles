@@ -166,6 +166,7 @@ install_apt_packages() {
     p="$p curl"
     p="$p wget"
     p="$p gnupg"
+    p="$p jq"
     p="$p software-properties-common"
 
     # Basic command line utitilies
@@ -204,6 +205,7 @@ install_apt_packages() {
     p="$p usb-creator-gtk"    # Easily flash bootable USBs
     p="$p chromium-browser"   # Chrome
     p="$p i3lock"             # Lock screen
+    p="$p meld"               # Diff tool
 
     # Media
     p="$p mpv"
