@@ -1,6 +1,8 @@
 # gitconfig
+
 [include]
     path = ~/.gitconfig_local
+
 [alias]
     s = status --short
     ss  = status
@@ -19,4 +21,8 @@
     #   git showm a8d375bc     Diff changes in revision a8d375bc
     #   git showm              Diff changes in HEAD
     showm = "!f(){ c=$1; [ -z $c ] && c='HEAD'; git difftool --dir-diff --tool=meld -y $c~..$c; }; f"
+
+[user]
+	email = pcewing00@gmail.com
+	name = Paul Ewing
 
