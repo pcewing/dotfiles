@@ -171,8 +171,6 @@ function f() {
         return
     fi
 
-    echo "Command: find . -iname \"*$search_term*\""
-    echo "Results:"
     find . -iname "*$search_term*" 2>/dev/null
 }
 
