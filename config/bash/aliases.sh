@@ -5,6 +5,10 @@ alias lV="locate"
 
 alias nvimf="nvim \$(fzf)"
 
+# Apt aliases
+alias apti="sudo apt install -y"
+alias apts="sudo apt search"
+
 # Git aliases
 alias gs='git status --short'
 alias gc='git commit'
@@ -50,3 +54,4 @@ alias gnome-settings="env XDG_CURRENT_DESKTOP=GNOME gnome-control-center"
 
 [ -z "$(command -v iex)" ] && alias iex="docker run -it elixir:latest iex"
 
+alias aliases="view --clean $DOTFILES/config/bash/aliases.sh"
