@@ -4,6 +4,7 @@ alias lv="locate --regex"
 alias lV="locate"
 
 alias nvimf="nvim \$(fzf)"
+alias nvimt="nvim \$(mktemp)"
 
 # Apt aliases
 alias apti="sudo apt install -y"
@@ -16,6 +17,7 @@ alias gb='git branch'
 alias gac='git add --all && git commit'
 alias gd='git diff'
 alias gdbc='git_diff_bc3' # This is defined in functions.sh
+alias gdm='git_diff_meld' # This is defined in functions.sh
 alias gaa='git add --all'
 alias gaad='git add --all --dry-run'
 
@@ -53,5 +55,8 @@ alias reload_xresources="xrdb -merge ~/.Xresources"
 alias gnome-settings="env XDG_CURRENT_DESKTOP=GNOME gnome-control-center"
 
 [ -z "$(command -v iex)" ] && alias iex="docker run -it elixir:latest iex"
+
+# Remove all docker containers
+alias docker_rma="docker ps --all | grep '^[0-9a-z]' | sed -e 's/ .*//g' | xargs docker rm"
 
 alias aliases="view --clean $DOTFILES/config/bash/aliases.sh"

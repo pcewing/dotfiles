@@ -114,6 +114,12 @@ function git_diff_bc3() {
     done
 }
 
+function git_diff_meld() {
+    git diff --name-only "$@" | while read filename; do
+        git difftool "$@" --no-prompt "$filename" -t "meld" &
+    done
+}
+
 # WARNING: This shouldn't be called from an interactive shell as the passphrase
 # will be written in plaintext to $HISTFILE. It is only implemented so that
 # scripts can avoid asking for the passphrase multiple times when encrypting

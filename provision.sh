@@ -7,14 +7,15 @@ die() { echo "$1" 1>&2; exit 1; }
 
 try()
 {
-    "$@" > ~/.command_log 2>&1
+    local f="$(mktemp)"
+    "$@" > "$f" 2>&1
     local ret_val=$?
   
     if [ ! $ret_val -eq 0 ]; then
         echo "FAILURE"
         echo "Command: $*"
         echo "Output:"
-        cat ~/.command_log
+        cat "$f"
         exit 1
     fi
 }
