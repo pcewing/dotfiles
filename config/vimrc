@@ -49,7 +49,7 @@ filetype plugin on
 call plug#begin('~/.config/nvim/plugged')
 
 " Colorschemes
-Plug 'https://gitlab.com/pcewing/vim-16color.git'
+Plug 'https://github.com/pcewing/vim-16color.git'
 Plug 'joshdick/onedark.vim'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
