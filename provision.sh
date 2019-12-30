@@ -7,14 +7,15 @@ die() { echo "$1" 1>&2; exit 1; }
 
 try()
 {
-    "$@" > ~/.command_log 2>&1
+    local f="$(mktemp)"
+    "$@" > "$f" 2>&1
     local ret_val=$?
   
     if [ ! $ret_val -eq 0 ]; then
         echo "FAILURE"
         echo "Command: $*"
         echo "Output:"
-        cat ~/.command_log
+        cat "$f"
         exit 1
     fi
 }
@@ -625,12 +626,10 @@ if [ ! -d "$secrets_dir" ]; then
     exit 1
 fi
 
-exit 0
-
 # We will need a passphrase to decrypt secrets that some apps depend on
 echo -n "Enter secret passphrase: " && read -r -s pass && echo
 
-[[ "$DOTFILES" = "" ]] && DOTFILES="$HOME/.dotfiles"
+[[ "$DOTFILES" = "" ]] && DOTFILES="$HOME/dot"
 
 source "$DOTFILES/config/bash/functions.sh"
 
@@ -669,5 +668,5 @@ install_irssi       "$secrets_dir" "$pass"
 install_git_ssh_key "$secrets_dir" "$pass"
 
 # Proprietary software
-install_bcompare4 "$cache_dir" "4.2.9.23626" "$secrets_dir" "$pass"
+#install_bcompare4 "$cache_dir" "4.2.9.23626" "$secrets_dir" "$pass"
 install_insync "$distro_codename" "$secrets_dir" "$pass"

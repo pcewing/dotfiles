@@ -68,7 +68,7 @@ font-0 = Ubuntu Mono:pixelsize=14;1
 font-1 = Font Awesome:pixelsize=10;1
 
 modules-left = i3 xwindow
-modules-right = mpd pulseaudio date
+modules-right = mpd pulseaudio battery date
 
 tray-position = right
 tray-padding = 2
@@ -174,6 +174,26 @@ bar-volume-fill-font = 2
 bar-volume-empty = ─
 bar-volume-empty-font = 2
 bar-volume-empty-foreground = ${colors.foreground-alt}
+
+[module/battery]
+type = internal/battery
+
+; This is useful in case the battery never reports 100% charge
+full-at = 99
+
+; Use the following command to list batters and adapters:
+; $ ls -1 /sys/class/power_supply/
+battery = BAT1
+adapter = ACAD
+
+; If an inotify event haven't been reported in this many seconds, manually poll for new values
+;
+; Needed as a fallback for systems that don't report events on sysfs/procfs.
+;
+; Disable polling by setting the interval to 0.
+;
+; Default: 5
+poll-interval = 5
 
 [settings]
 screenchange-reload = true
