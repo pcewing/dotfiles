@@ -38,8 +38,11 @@ ulimit -c unlimited
 # Set up environment variables
 source ~/dot/config/env
 
-# Start i3 and log to ~/.i3/logfile
-mkdir -p ~/.logs
-echo "Starting at $(date)" >> ~/.logs/i3.log
-exec /usr/bin/i3 -V -d all >> ~/.logs/i3.log
+# Start i3 and log output
+logdir="$HOME/.logs"
+mkdir -p "$logdir"
+$HOME/dot/bin/cleanup_logs.sh
+i3logfile="$logdir/i3_$(date +"%Y%m%d_%H%M%S").log"
+echo "Starting at $(date)" >> "$i3logfile"
+exec /usr/bin/i3 -V -d all >> "$i3logfile"
 
