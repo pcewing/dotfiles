@@ -26,6 +26,9 @@ set softtabstop=4
 set tabstop=4
 set expandtab
 
+" Use the following command to use temporarily switch to 2-space tabs
+" set autoindent smartindent smarttab shiftwidth=2 softtabstop=2 tabstop=2 expandtab
+
 " Install vim-plug if it isn't already
 if has('unix')
     if has('nvim')
