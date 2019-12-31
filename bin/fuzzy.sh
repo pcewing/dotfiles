@@ -10,6 +10,8 @@ fi
 directories="$HOME
 $HOME/box/pic/screenshots
 $HOME/src
+$HOME/box
+$HOME/.config
 $HOME/box/doc
 $HOME/box/pic
 $HOME/box/mus
@@ -24,7 +26,7 @@ $HOME/Pictures
 $HOME/Videos"
 
 function fuzzy_nautilus() {
-    selection="$(echo "$directories" | rofi -dmenu)"
+    selection="$(echo "$directories" | rofi -i -dmenu -p "nautilus")"
 
     if [ ! -z "$selection" ]; then
         nautilus "$selection" > /dev/null 2>&1 &
@@ -32,7 +34,7 @@ function fuzzy_nautilus() {
 }
 
 function fuzzy_ranger() {
-    selection="$(echo "$directories" | rofi -dmenu)"
+    selection="$(echo "$directories" | rofi -i -dmenu)"
 
     if [ ! -z "$selection" ]; then
         urxvt -e bash -c "ranger \"$selection\""
