@@ -16,6 +16,7 @@ set splitbelow                    " When splitting horizontally, the new pane sh
 set ruler                         " Show the line & column number at cursor
 set pastetoggle=<F2>              " See: http://vim.wikia.com/wiki/Toggle_auto-indenting_for_code_paste
 set clipboard=unnamed,unnamedplus " Use system clipboard if possible
+set cursorline                    " Add a visual indicator to the line the cursor is on
 
 " Indentation
 set autoindent
@@ -141,17 +142,13 @@ nnoremap <A-F0> 10gt
 
 
 silent! colorscheme dracula
+hi CursorLine cterm=NONE ctermbg=black
+
 if has('win32')
     set background=dark
 else
-    " Make the background transparent on non-Windows OSes
+    " On Non-Windows operating systems, use the host window's background. This
+    " allows for transparency if the terminal emulator has that configured.
     hi Normal guibg=NONE ctermbg=NONE
 endif
-
-" Add a visual indicator to the line the cursor is on.
-function! s:SetCursorLine()
-    set cursorline
-    hi CursorLine cterm=NONE ctermbg=black
-endfunction
-autocmd VimEnter * call s:SetCursorLine()
 
