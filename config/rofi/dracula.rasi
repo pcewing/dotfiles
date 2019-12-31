@@ -6,26 +6,26 @@
 
 * {
 	/* Place base16 colors here (Currently embers.dark) */
-    color0:       #16130f; /* black           */  
-    color8:       #5a5047; /* black   (light) */
-    color1:       #826d57; /* red             */
-    color9:       #826d57; /* red     (light) */
-    color2:       #57826d; /* green           */
-    color10:      #57826d; /* green   (light) */
-    color3:       #6d8257; /* yellow          */
-    color11:      #6d8257; /* yellow  (light) */
-    color4:       #6d5782; /* blue            */
-    color12:      #6d5782; /* blue    (light) */
-    color5:       #82576d; /* magenta         */
-    color13:      #82576d; /* magenta (light) */
-    color6:       #576d82; /* cyan            */
-    color14:      #576d82; /* cyan    (light) */
-    color7:       #a39a90; /* white           */
-    color15:      #dbd6d1; /* white   (light) */
+    color0:       #000000; /* black           */  
+    color8:       #4D4D4D; /* black   (light) */
+    color1:       #FF5555; /* red             */
+    color9:       #FF6E67; /* red     (light) */
+    color2:       #50FA7B; /* green           */
+    color10:      #5AF78E; /* green   (light) */
+    color3:       #F1FA8C; /* yellow          */
+    color11:      #F4F99D; /* yellow  (light) */
+    color4:       #BD93F9; /* blue            */
+    color12:      #CAA9FA; /* blue    (light) */
+    color5:       #FF79C6; /* magenta         */
+    color13:      #FF92D0; /* magenta (light) */
+    color6:       #8BE9FD; /* cyan            */
+    color14:      #9AEDFE; /* cyan    (light) */
+    color7:       #BFBFBF; /* white           */
+    color15:      #E6E6E6; /* white   (light) */
 
-    foreground:   @color7;
-    background:   @color0;
-    cursor:       @color7;
+    foreground:   #F8F8F2;
+    background:   #282A36;
+    cursor:       #F8F8F2;
 
     normal-foreground:           @foreground;
     active-foreground:           @foreground;
