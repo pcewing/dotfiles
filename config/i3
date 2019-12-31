@@ -211,11 +211,12 @@ bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/box/pic/screenshots
 bar {
     status_command py3status -c ~/.config/py3status/config
     position top
+    separator_symbol " | "
 
     colors {
         background $bg
         statusline $fg
-        separator #666666
+        separator $c08
 
         # <colorclass>     <border> <background> <text>
         focused_workspace  $bg      $c06         $c00
