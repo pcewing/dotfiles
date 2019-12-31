@@ -206,6 +206,7 @@ install_apt_packages() {
     p="$p usb-creator-gtk"    # Easily flash bootable USBs
     p="$p chromium-browser"   # Chrome
     p="$p i3lock"             # Lock screen
+    p="$p py3status"          # Replacement for i3status
     p="$p meld"               # Diff tool
 
     # Media
