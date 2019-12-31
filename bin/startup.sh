@@ -27,7 +27,6 @@ start_process() {
 }
 
 echo "Starting up user processes $(date)" >> "$logfile" 2>&1
-start_process "polybar" "top" "1"
 start_process "insync" "start" "1"
 start_process "wpr" "" "1"
 

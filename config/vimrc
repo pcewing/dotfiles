@@ -52,7 +52,7 @@ filetype plugin on
 call plug#begin('~/.config/nvim/plugged')
 
 " Colorschemes
-Plug 'https://github.com/pcewing/vim-16color.git'
+Plug 'https://github.com/dracula/vim.git'
 Plug 'joshdick/onedark.vim'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -140,12 +140,11 @@ nnoremap <A-F9> 9gt
 nnoremap <A-F0> 10gt
 
 
+silent! colorscheme dracula
 if has('win32')
-    silent! colorscheme onedark
     set background=dark
 else
     " Make the background transparent on non-Windows OSes
-    silent! colorscheme 16color
     hi Normal guibg=NONE ctermbg=NONE
 endif
 

@@ -1,39 +1,23 @@
-! special
-*.foreground:   #a39a90
-*.background:   #16130f
-*.cursorColor:  #a39a90
-
-! black
-*.color0:       #16130f
-*.color8:       #5a5047
-
-! red
-*.color1:       #826d57
-*.color9:       #826d57
-
-! green
-*.color2:       #57826d
-*.color10:      #57826d
-
-! yellow
-*.color3:       #6d8257
-*.color11:      #6d8257
-
-! blue
-*.color4:       #6d5782
-*.color12:      #6d5782
-
-! magenta
-*.color5:       #82576d
-*.color13:      #82576d
-
-! cyan
-*.color6:       #576d82
-*.color14:      #576d82
-
-! white
-*.color7:       #a39a90
-*.color15:      #dbd6d1
+! Dracula Xresources palette
+*.foreground: #F8F8F2
+*.background: #282A36
+*.cursorColor: #F8F8F2
+*.color0:     #000000
+*.color8:     #4D4D4D
+*.color1:     #FF5555
+*.color9:     #FF6E67
+*.color2:     #50FA7B
+*.color10:    #5AF78E
+*.color3:     #F1FA8C
+*.color11:    #F4F99D
+*.color4:     #BD93F9
+*.color12:    #CAA9FA
+*.color5:     #FF79C6
+*.color13:    #FF92D0
+*.color6:     #8BE9FD
+*.color14:    #9AEDFE
+*.color7:     #BFBFBF
+*.color15:    #E6E6E6
 
 URxvt.font:           xft:Ubuntu Mono:pixelsize=20
 URxvt.boldFont:       xft:Ubuntu Mono:pixelsize=20:bold
@@ -42,15 +26,15 @@ URxvt.boldItalicFont: xft:Ubuntu Mono:pixelsize=20:bold:italic
 
 URxvt.internalBorder: 8
 
-! This is important when using solarized dark colors. The terminal emulator
-! will display bold font using the "bright" color variants. This is visible in
-! git diffs where the additions which should be green show up as a non-descript
-! light gray.
+! This is important when using certain color schemes such as solarized dark.
+! The terminal emulator will display bold font using the "bright" color
+! variants. This is visible in git diffs where the additions which should be
+! green show up as a non-descript light gray.
 URxvt.intensityStyles: false
 
 ! This adds "real" transparency, but it requires a composite manager to be running.
 URxvt*depth:      32
-URxvt*background: rgba:0000/0000/0200/e000
+URxvt*background: rgba:2800/2a00/3600/efff
 
 ! This adds "fake" transparency. If a composite manager is not running, this
 ! simulates transparency by capturing what is behind the window and drawing it

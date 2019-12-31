@@ -21,34 +21,25 @@ gaps inner 20
 smart_borders on
 
 # base16 colors   $<var>  <xrdb resource> <fallback>
-# black
-set_from_resource $c00    color0          #151515
-set_from_resource $c08    color8          #505050
-# red
-set_from_resource $c01    color1          #ac4142
-set_from_resource $c09    color9          #ac4142
-# green
-set_from_resource $c02    color2          #90a959
-set_from_resource $c10    color10         #90a959
-# yellow
-set_from_resource $c03    color3          #f4bf75
-set_from_resource $c11    color11         #f4bf75
-# blue
-set_from_resource $c04    color4          #6a9fb5
-set_from_resource $c12    color12         #6a9fb5
-# magenta
-set_from_resource $c05    color5          #aa759f
-set_from_resource $c13    color13         #aa759f
-# cyan
-set_from_resource $c06    color6          #75b5aa
-set_from_resource $c14    color14         #75b5aa
-# red
-set_from_resource $c07    color7          #d0d0d0
-set_from_resource $c15    color15         #f5f5f5
-# special
-set_from_resource $fg     foreground      #d0d0d0
-set_from_resource $bg     background      #151515
-set_from_resource $cursor cursorColor     #d0d0d0
+set_from_resource $fg     foreground      #F8F8F2
+set_from_resource $bg     background      #282A36
+set_from_resource $cursor cursorColor     #F8F8F2
+set_from_resource $c00    color0          #000000
+set_from_resource $c08    color8          #4D4D4D
+set_from_resource $c01    color1          #FF5555
+set_from_resource $c09    color9          #FF6E67
+set_from_resource $c02    color2          #50FA7B
+set_from_resource $c10    color10         #5AF78E
+set_from_resource $c03    color3          #F1FA8C
+set_from_resource $c11    color11         #F4F99D
+set_from_resource $c04    color4          #BD93F9
+set_from_resource $c12    color12         #CAA9FA
+set_from_resource $c05    color5          #FF79C6
+set_from_resource $c13    color13         #FF92D0
+set_from_resource $c06    color6          #8BE9FD
+set_from_resource $c14    color14         #9AEDFE
+set_from_resource $c07    color7          #BFBFBF
+set_from_resource $c15    color15         #E6E6E6
 
 # color settings
 # class                  border  backg.  foreg.  indicator child_border
@@ -215,6 +206,25 @@ mode "resize" {
 bindsym --release Print exec "scrot -m $HOME/box/pic/screenshots/%s_%H%M_%d.%m.%Y_$wx$h.png"
 bindsym --release Shift+Print exec "scrot -s $HOME/box/pic/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
 bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/box/pic/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
+
+# py3status bar config
+bar {
+    status_command py3status -c ~/.config/py3status/config
+    position top
+
+    colors {
+        background $bg
+        statusline $fg
+        separator #666666
+
+        # <colorclass>     <border> <background> <text>
+        focused_workspace  $bg      $c06         $c00
+        active_workspace   $bg      $c05         $fg
+        inactive_workspace $bg      $bg          $fg
+        urgent_workspace   $bg      $c01         $fg
+        binding_mode       $bg      #ff0000     #00ff00
+    }
+}
 
 # source the machine-specific screen layout if it exists
 exec_always "[ -e ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
