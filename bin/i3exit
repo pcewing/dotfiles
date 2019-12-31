@@ -8,9 +8,16 @@ case "$1" in
         i3-msg exit
         ;;
     suspend)
+        # Suspending the system causes system state to be saved to RAM. RAM
+        # will not be powered off along with the other devices. This allows
+        # system state to be reloaded very quickly but the state will not
+        # survive a loss of power.
         systemctl suspend
         ;;
     hibernate)
+        # Hibernating the system causes system state to be saved to disk.
+        # Reloading system state will be slower in comparison to a suspended
+        # system; however, the state will persist regardless of power loss.
         systemctl hibernate
         ;;
     reboot)
