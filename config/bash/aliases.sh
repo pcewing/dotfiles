@@ -4,6 +4,7 @@ alias lv="locate --regex"
 alias lV="locate"
 
 alias nvimf="nvim \$(fzf)"
+alias nvimd="nvim $DOTFILES"
 alias nvimt="nvim \$(mktemp)"
 
 # Apt aliases
@@ -17,7 +18,7 @@ alias gb='git branch'
 alias gac='git add --all && git commit'
 alias gd='git diff'
 alias gdbc='git_diff_bc3' # This is defined in functions.sh
-alias gdm='git_diff_meld' # This is defined in functions.sh
+alias gdm='git difftool -t "meld" -d'
 alias gaa='git add --all'
 alias gaad='git add --all --dry-run'
 
@@ -51,6 +52,7 @@ alias tns='tmux new-session -s'
 alias sx="startx"
 alias notes='ranger ~/notebook'
 alias reload_xresources="xrdb -merge ~/.Xresources"
+alias reload_aliases="source $DOTFILES/config/bash/aliases.sh"
 alias clip="xclip -i -selection clipboard"
 
 alias gnome-settings="env XDG_CURRENT_DESKTOP=GNOME gnome-control-center"
