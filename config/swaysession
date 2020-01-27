@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+. ~/dot/config/env
+
+rm -f ~/sway.log
+exec sway > ~/sway.log 2>&1
+

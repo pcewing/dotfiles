@@ -169,6 +169,7 @@ install_apt_packages() {
     p="$p gnupg"
     p="$p jq"
     p="$p software-properties-common"
+    p="$p apt-file"
 
     # Basic command line utitilies
     p="$p make"

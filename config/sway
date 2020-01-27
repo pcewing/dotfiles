@@ -3,100 +3,134 @@
 # Read `man 5 sway` for a complete reference or see /usr/local/etc/sway/config
 # for examples
 
-### Variables
-
-# Windows Key
+# windows modifier key
 set $mod Mod4
 
-# Home row direction keys, like vim
+# normal mouse controls for moving/resizing windows
+floating_modifier $mod normal
+
+# set the font used in window chrome and swaybar
+font pango:Inconsolata 14
+
+# navigation variables used in a few places
 set $left h
 set $down j
 set $up k
 set $right l
 
-# Gaps
-for_window [class="^.*"] border pixel 1
-gaps inner 20
-smart_borders on
+# configure gaps and window chrome styles
+#for_window [class="^.*"] border pixel 1
+#smart_borders on
+gaps inner 10
 
-### Output configuration
-#
-# Default wallpaper (more resolutions are available in /usr/local/share/backgrounds/sway/)
-output * bg "$HOME/box/pic/Wallpapers/3440x1440/night-view-3440x1440.jpg" fill
+# color pallette
+set $fg     #F8F8F2
+set $bg     #282A36
+set $cursor #F8F8F2
+set $c00    #000000
+set $c08    #4D4D4D
+set $c01    #FF5555
+set $c09    #FF6E67
+set $c02    #50FA7B
+set $c10    #5AF78E
+set $c03    #F1FA8C
+set $c11    #F4F99D
+set $c04    #BD93F9
+set $c12    #CAA9FA
+set $c05    #FF79C6
+set $c13    #FF92D0
+set $c06    #8BE9FD
+set $c14    #9AEDFE
+set $c07    #BFBFBF
+set $c15    #E6E6E6
 
-### Input configuration
-#
-# Example configuration:
-#
-#   input "2:14:SynPS/2_Synaptics_TouchPad" {
-#       dwt enabled
-#       tap enabled
-#       natural_scroll enabled
-#       middle_emulation enabled
-#   }
-#
-# You can get the names of your inputs by running: swaymsg -t get_inputs
-# Read `man 5 sway-input` for more information about this section.
+# color settings
+# class                  border  backg.  foreg.  indicator child_border
+client.focused           $fg     $bg     $fg     $fg       $fg
+client.focused_inactive  #073642 #073642 #888888 #292d2e   #222222
+client.unfocused         #073642 #073642 #888888 #292d2e   #222222
+#client.urgent           #2f343a #900000 #ffffff #900000   #900000
+#client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+#client.background       #ffffff
 
-### Key bindings
-#
-# Basics:
-#
-#
-# start a terminal
-bindsym $mod+Return exec urxvt
+set $mode_system (l)ock, (Shift+l)ogout, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
+mode "$mode_system" {
+    bindsym l exec --no-startup-id swayexit lock, mode "default"
+    bindsym Shift+l exec --no-startup-id swayexit logout, mode "default"
+    bindsym s exec --no-startup-id swayexit suspend, mode "default"
+    bindsym h exec --no-startup-id swayexit hibernate, mode "default"
+    bindsym r exec --no-startup-id swayexit reboot, mode "default"
+    bindsym Shift+s exec --no-startup-id swayexit shutdown, mode "default"
 
-# kill focused window
-bindsym $mod+minus kill
-
-# Application Launcher (Note: It's recommended that you pass the final
-# command to sway)
-bindsym $mod+Space exec rofi -show run | xargs swaymsg exec
-
-# Drag floating windows by holding down $mod and left mouse button.
-# Resize them with right mouse button + $mod.
-# Despite the name, also works for non-floating windows.
-# Change normal to inverse to use left mouse button for resizing and right
-# mouse button for dragging.
-floating_modifier $mod normal
-
-# reload the configuration file
-bindsym $mod+Shift+c reload
-bindsym $mod+ctrl+c restart
-
+    # exit system mode: "Enter" or "Escape"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+Escape mode "$mode_system"
 
 # exit sway (logs you out of your Wayland session)
 bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
 
-#
-# Moving around:
-#
+# enable passthrough, useful for nesting compostiors
+mode "passthrough" {
+    bindsym Pause mode "default"
+}
+bindsym $mod+F1 mode "passthrough"
 
-# Move your focus around
+# application launcher (final command should be passed to sway)
+bindsym $mod+Space exec rofi -show run | xargs swaymsg exec
+
+# launch conky
+bindsym $mod+c exec "conky"
+
+# start a terminal
+bindsym $mod+Return exec urxvt
+
+# fuzzy nautilus
+bindsym $mod+n exec "fuzzy.sh nautilus"
+
+# reload the configuration file
+bindsym $mod+ctrl+Return reload
+bindsym $mod+shift+Return restart
+
+# kill focused window
+bindsym $mod+minus kill
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen
+
+# change focused window
 bindsym $mod+$left focus left
 bindsym $mod+$down focus down
 bindsym $mod+$up focus up
 bindsym $mod+$right focus right
-# or use $mod+[up|down|left|right]
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
-# _move_ the focused window with the same, but add Shift
+# move focused window
 bindsym $mod+Shift+$left move left
 bindsym $mod+Shift+$down move down
 bindsym $mod+Shift+$up move up
 bindsym $mod+Shift+$right move right
-# ditto, with arrow keys
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
-#
-# Workspaces:
-#
+# set split mode
+bindsym $mod+b splith
+bindsym $mod+v splitv
+bindsym $mod+semicolon split toggle
+
+# toggle floating on focused window
+#bindsym $mod+apostrophe floating toggle
+bindsym $mod+m floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+shift+apostrophe focus mode_toggle
+
 
 # switch to workspace
 bindsym $mod+y workspace 1
@@ -121,54 +155,27 @@ bindsym $mod+Shift+7 move container to workspace 7
 bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
-    # Note: workspaces can have any name you want, not just numbers.
-    # We just use 1-10 as the default.
 
-mode "passthrough" {
-    bindsym Pause mode "default"
-}
-bindsym $mod+F2 mode "passthrough"
+# move workspace
+bindsym $mod+Ctrl+h move workspace to output left
+bindsym $mod+Ctrl+l move workspace to output right
 
-#
-# Layout stuff:
-#
-    # You can "split" the current object of your focus with
-    # $mod+b or $mod+v, for horizontal and vertical splits
-    # respectively.
-    bindsym $mod+b splith
-    bindsym $mod+v splitv
+# change container layout
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
 
-    # Switch the current container between different layout styles
-    bindsym $mod+s layout stacking
-    bindsym $mod+w layout tabbed
-    bindsym $mod+e layout toggle split
+# move focus to the parent container
+bindsym $mod+Tab focus parent
+bindsym $mod+Shift+Tab focus child
 
-    # Make the current focus fullscreen
-    bindsym $mod+f fullscreen
+# move the focused window to scratchpad
+bindsym $mod+Shift+backslash move scratchpad
 
-    # Toggle the current focus between tiling and floating mode
-    bindsym $mod+m floating toggle
+# show, hide, or cycle through scratchpad windows
+bindsym $mod+backslash scratchpad show
 
-    # Swap focus between the tiling area and the floating area
-    bindsym $mod+Shift+m focus mode_toggle
-
-    # move focus to the parent container
-    bindsym $mod+a focus parent
-#
-# Scratchpad:
-#
-    # Sway has a "scratchpad", which is a bag of holding for windows.
-    # You can send windows there and get them back later.
-
-    # Move the currently focused window to the scratchpad
-    bindsym $mod+Shift+backslash move scratchpad
-
-    # Show the next scratchpad window or hide the focused scratchpad window.
-    # If there are multiple scratchpad windows, this command cycles through them.
-    bindsym $mod+backslash scratchpad show
-#
-# Resizing containers:
-#
+# resize window (you can also use the mouse for that)
 set $resize_amount 200px
 mode "resize" {
     bindsym $left  resize shrink width  $resize_amount
@@ -187,10 +194,13 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
-#
-# Swaybar:
-#
-# Read `man 5 sway-bar` for more information about this section.
+# print screen bindings
+#  TODO: How can these be implemented with sway?
+#bindsym --release Print exec "scrot -m $HOME/box/pic/screenshots/%s_%H%M_%d.%m.%Y_$wx$h.png"
+#bindsym --release Shift+Print exec "scrot -s $HOME/box/pic/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
+#bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/box/pic/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
+
+# swaybar (man 5 swaybar)
 bar {
     position top
 
@@ -199,12 +209,48 @@ bar {
     status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
 
     colors {
-        statusline #ffffff
-        background #88323232
-        inactive_workspace #32323200 #32323200 #5c5c5c
+        background $bg
+        statusline $fg
+        separator $c08
+
+        # <colorclass>     <border> <background> <text>
+        focused_workspace  $bg      $c06         $c00
+        active_workspace   $bg      $c05         $fg
+        inactive_workspace $bg      $bg          $fg
+        urgent_workspace   $bg      $c01         $fg
+        binding_mode       $bg      $c01         $c00
     }
 }
 
+# force certain apps to specific workspaces
+assign [class="Bcompare"] 5
+assign [class="discord"] 8
+assign [class="Steam"] 9
+
+# float certain apps by default
+for_window [class="^feh$"] floating enable
+for_window [class="Pavucontrol"] floating enable
+for_window [class="Nitrogen"] floating enable
+for_window [class="Ps2"] floating enable
+for_window [class="Conky"] floating enable
+for_window [class="Nautilus"] floating enable
+for_window [instance="RabbitVCS"] floating enable
+for_window [class="insync.py"] floating enable
+for_window [class="keepassxc"] floating enable
+for_window [class="VirtualBox Machine"] floating enable
+for_window [class="net-runelite-launcher-Launcher"] floating enable
+for_window [class="net-runelite-client-RuneLite"] floating enable
+for_window [instance="calculator"] floating enable
+
 exec_always "xrdb -merge $HOME/.Xresources"
+
+# sway background
+# TODO: This should be put in a local config since this is hardware specific
+output * bg "$HOME/wallpaper.jpg" fill
+
+# configure input devices
+input type:touchpad {
+    tap enabled
+}
 
 include /usr/local/etc/sway/config.d/*
