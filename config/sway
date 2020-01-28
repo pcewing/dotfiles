@@ -240,8 +240,6 @@ for_window [class="net-runelite-launcher-Launcher"] floating enable
 for_window [class="net-runelite-client-RuneLite"] floating enable
 for_window [instance="calculator"] floating enable
 
-exec_always "xrdb -merge $HOME/.Xresources"
-
 # sway background
 # TODO: This should be put in a local config since this is hardware specific
 output * bg "$HOME/wallpaper.jpg" fill
@@ -250,5 +248,8 @@ output * bg "$HOME/wallpaper.jpg" fill
 input type:touchpad {
     tap enabled
 }
+
+exec_always "xrdb -merge $HOME/.Xresources"
+exec_always "sh -c '[ -z \"$(pgrep mpd)\" ] && mpd'"
 
 include /usr/local/etc/sway/config.d/*
