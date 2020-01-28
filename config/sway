@@ -10,7 +10,7 @@ set $mod Mod4
 floating_modifier $mod normal
 
 # set the font used in window chrome and swaybar
-font pango:Inconsolata 14
+font pango:Ubuntu 14
 
 # navigation variables used in a few places
 set $left h
@@ -202,11 +202,9 @@ bindsym $mod+r mode "resize"
 
 # swaybar (man 5 swaybar)
 bar {
+    status_command py3status -c ~/.config/py3status/config --wm sway
     position top
-
-    # When the status_command prints a new line to stdout, swaybar updates.
-    # The default just shows the current date and time.
-    status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
+    separator_symbol " | "
 
     colors {
         background $bg

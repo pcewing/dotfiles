@@ -11,6 +11,10 @@ alias nvimt="nvim \$(mktemp)"
 alias apti="sudo apt install -y"
 alias apts="sudo apt search"
 
+# Pacman aliases
+alias pinstall="sudo pacman -Sy --noconfirm"
+alias psearch="sudo pacman -Ss"
+
 # Git aliases
 alias gs='git status --short'
 alias gc='git commit'
