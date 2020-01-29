@@ -14,6 +14,7 @@ alias apts="sudo apt search"
 # Pacman aliases
 alias pinstall="sudo pacman -Sy --noconfirm"
 alias psearch="sudo pacman -Ss"
+alias premove="sudo pacman -R --noconfirm"
 
 # Git aliases
 alias gs='git status --short'
