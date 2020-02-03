@@ -8,25 +8,28 @@ function pacman_install() {
 }
 
 pacman_install \
+    base-devel \
+    discord
     docker \
-    xclip \
-    wl-clipboard \
+    firefox \
+    htop \
+    i3status \
+    jdk-openjdk \
+    keepassxc \
+    mlocate \
+    mpd \
+    ncmpcpp \
+    py3status \
+    python-pip \
+    rofi \
+    rxvt-unicode \
+    steam \
     sway \
     swaybg \
     swayidle \
     swaylock \
-    waybar \
-    rxvt-unicode \
-    firefox \
-    rofi \
-    steam \
-    keepassxc \
-    jdk-openjdk \
-    py3status \
-    i3status \
+    tmux
     ttf-font-awesome \
-    python-pip \
-    mpd \
-    ncmpcpp \
-    discord
-
+    waybar \
+    wl-clipboard \
+    xclip \
