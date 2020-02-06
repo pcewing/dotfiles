@@ -10,7 +10,7 @@ set $mod Mod4
 floating_modifier $mod normal
 
 # set the font used in window chrome and swaybar
-font pango:Inconsolata 14
+font pango:Ubuntu 14
 
 # navigation variables used in a few places
 set $left h
@@ -48,7 +48,7 @@ set $c15    #E6E6E6
 # class                  border  backg.  foreg.  indicator child_border
 client.focused           $fg     $bg     $fg     $fg       $fg
 client.focused_inactive  #073642 #073642 #888888 #292d2e   #222222
-client.unfocused         #073642 #073642 #888888 #292d2e   #222222
+client.unfocused         $bg     $bg     $c08    #ff0000   $bg
 #client.urgent           #2f343a #900000 #ffffff #900000   #900000
 #client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 #client.background       #ffffff
@@ -202,11 +202,9 @@ bindsym $mod+r mode "resize"
 
 # swaybar (man 5 swaybar)
 bar {
+    status_command py3status -c ~/.config/py3status/config --wm sway
     position top
-
-    # When the status_command prints a new line to stdout, swaybar updates.
-    # The default just shows the current date and time.
-    status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
+    separator_symbol " | "
 
     colors {
         background $bg
@@ -242,8 +240,6 @@ for_window [class="net-runelite-launcher-Launcher"] floating enable
 for_window [class="net-runelite-client-RuneLite"] floating enable
 for_window [instance="calculator"] floating enable
 
-exec_always "xrdb -merge $HOME/.Xresources"
-
 # sway background
 # TODO: This should be put in a local config since this is hardware specific
 output * bg "$HOME/wallpaper.jpg" fill
@@ -252,5 +248,8 @@ output * bg "$HOME/wallpaper.jpg" fill
 input type:touchpad {
     tap enabled
 }
+
+exec_always "xrdb -merge $HOME/.Xresources"
+exec_always "sh -c '[ -z \"$(pgrep mpd)\" ] && mpd'"
 
 include /usr/local/etc/sway/config.d/*

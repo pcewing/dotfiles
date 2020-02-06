@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
 
-# This script will prompt for GitHub credentials and then clone all
-# repositories owned by the specified user.
+# This script will clone all repositories owned by the specified user.
+# 
+# Given that username/password authentication to the GitHub API was deprecated,
+# the script authenticates via a personal access token. This can either be set
+# using the GITHUB_API_TOKEN environment variable or via the --token option,
+# the option taking precedent
 #
 # Usage:
 #     clone.py [options]
+#
+# Examples:
+#     GITHUB_API_TOKEN="26f4f4147352b7c943a62d43c9d5684d7a9a3669" clone.py
+#     clone.py --token="26f4f4147352b7c943a62d43c9d5684d7a9a3669"
 #
 # For more details:
 #     clone.py -h
@@ -41,9 +49,9 @@ def clone(src_dir, repo, dry_run):
         subprocess.run(['git', 'clone', repo.url, path])
 
 
-def get_page(url, creds):
+def get_page(url, token):
     request = urllib.request.Request(url)
-    request.add_header('Authorization', 'Basic %s' % creds.decode('ascii'))
+    request.add_header('Authorization', 'token %s' % token)
 
     with urllib.request.urlopen(request) as response:
         header = response.getheader('Link')
@@ -54,19 +62,11 @@ def get_page(url, creds):
         return (next_page_url, json.loads(response.read()))
 
 
-def get_repo_data():
-    username = input('Enter GitHub username: ')
-    password = getpass.getpass(prompt='Enter GitHub password: ')
-
-    credentials = ('%s:%s' % (username, password))
-    encoded_credentials = base64.b64encode(credentials.encode('ascii'))
-
-    (next_page_url, data) = get_page(
-            'https://api.github.com/user/repos', encoded_credentials)
+def get_repo_data(token):
+    (next_page_url, data) = get_page('https://api.github.com/user/repos', token)
 
     while next_page_url is not None:
-        (next_page_url, page_data) = get_page(next_page_url,
-                                              encoded_credentials)
+        (next_page_url, page_data) = get_page(next_page_url, token)
         data += page_data
 
     return data
@@ -80,6 +80,9 @@ def parse_args():
     parser.add_argument('--source-directory', dest='src_dir', type=str,
                         default='$HOME/src/github',
                         help='The base source directory to clone to')
+    parser.add_argument('--token', dest='token', type=str,
+                        default=None,
+                        help='The personal access token used to authenticate')
     return parser.parse_args()
 
 
@@ -87,7 +90,15 @@ def main():
     args = parse_args()
     src_dir = os.path.expandvars(args.src_dir)
 
-    data = get_repo_data()
+    token = args.token
+    if token is None:
+        token = os.getenv('GITHUB_API_TOKEN')
+        if token is None:
+            print('No GITHUB_API_TOKEN provided')
+            exit(1)
+
+
+    data = get_repo_data(token)
 
     repos = [Repo(r['owner']['login'], r['name'], r['ssh_url']) for r in data]
 

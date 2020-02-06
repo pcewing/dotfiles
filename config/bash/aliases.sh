@@ -11,6 +11,15 @@ alias nvimt="nvim \$(mktemp)"
 alias apti="sudo apt install -y"
 alias apts="sudo apt search"
 
+# Pacman aliases
+alias pinstall="sudo pacman -Sy --noconfirm"
+alias psearch="sudo pacman -Ss"
+alias premove="sudo pacman -R --noconfirm"
+
+# Wi-Fi aliases
+alias wifisearch="nmcli device wifi list"
+alias wificonnect="nmcli device wifi connect --ask"
+
 # Git aliases
 alias gs='git status --short'
 alias gc='git commit'
