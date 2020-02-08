@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
-rm -f ~/sway.log
-exec sway > ~/sway.log 2>&1
+. "$DOTFILES/config/env"
+
+logfile="$HOME/sway.log"
+rm -f "$logfile"
+exec sway > "$logfile" 2>&1
 
