@@ -19,10 +19,10 @@
 *.color7:      #BFBFBF
 *.color15:     #E6E6E6
 
-URxvt.font:           xft:Inconsolata:pixelsize=18
-URxvt.boldFont:       xft:Inconsolata:pixelsize=18:bold
-URxvt.italicFont:     xft:Inconsolata:pixelsize=18:italic
-URxvt.boldItalicFont: xft:Inconsolata:pixelsize=18:bold:italic
+URxvt.font:           xft:Inconsolata:pixelsize=20
+URxvt.boldFont:       xft:Inconsolata:pixelsize=20:bold
+URxvt.italicFont:     xft:Inconsolata:pixelsize=20:italic
+URxvt.boldItalicFont: xft:Inconsolata:pixelsize=20:bold:italic
 
 URxvt.internalBorder: 8
 

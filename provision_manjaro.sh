@@ -9,16 +9,23 @@ function pacman_install() {
 
 pacman_install \
     base-devel \
+    ctags \
     discord
     docker \
     firefox \
+    flatpak \
     htop \
     i3status \
+    inkscape \
     jdk-openjdk \
     keepassxc \
+    kicad \
+    mako \
     mlocate \
     mpd \
+    mpv \
     ncmpcpp \
+    poppler \
     py3status \
     python-pip \
     rofi \
@@ -28,8 +35,14 @@ pacman_install \
     swaybg \
     swayidle \
     swaylock \
-    tmux
+    tmux \
+    transmission-gtk \
     ttf-font-awesome \
     waybar \
     wl-clipboard \
-    xclip \
+    xclip
+
+pamac build nordvpn-bin
+pamac build bcompare
+
+flatpak install com.slack.Slack
