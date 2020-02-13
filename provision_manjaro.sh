@@ -45,4 +45,5 @@ pacman_install \
 pamac build nordvpn-bin
 pamac build bcompare
 
+# https://github.com/flathub/com.slack.Slack/issues/34
 flatpak install com.slack.Slack
