@@ -13,9 +13,11 @@ alias apti="sudo apt install -y"
 alias apts="sudo apt search"
 
 # Pacman aliases
-alias pinstall="sudo pacman -Sy --noconfirm"
+alias pinstall="sudo pacman -Syu --noconfirm"
 alias psearch="sudo pacman -Ss"
 alias premove="sudo pacman -R --noconfirm"
+#alias pupdate="sudo pacman -Syu --noconfirm"
+alias pupdate="sudo pacman -Syyu --noconfirm"
 
 # Wi-Fi aliases
 alias wifisearch="nmcli device wifi list"
@@ -43,6 +45,7 @@ alias ...='cd ../..'
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias ls="ls --color"
+alias lss="ls --sort=extension --group-directories-first"
 
 alias n='nautilus . >/dev/null 2>&1 & disown'
 
