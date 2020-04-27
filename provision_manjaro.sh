@@ -28,6 +28,8 @@ pacman_install \
     poppler \
     py3status \
     python-pip \
+    ranger \
+    remmina \
     rofi \
     rxvt-unicode \
     steam \
