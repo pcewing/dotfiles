@@ -7,6 +7,7 @@ alias lV="locate"
 alias nvimf="nvim \$(fzf)"
 alias nvimd="nvim $DOTFILES"
 alias nvimt="nvim \$(mktemp)"
+alias nvimdiff="nvim -d"
 
 # Apt aliases
 alias apti="sudo apt install -y"
@@ -63,7 +64,11 @@ alias sx="startx"
 alias notes='ranger ~/notebook'
 alias reload_xresources="xrdb -merge ~/.Xresources"
 alias reload_aliases="source $DOTFILES/config/bash/aliases.sh"
+alias reload_functions="source $DOTFILES/config/bash/functions.sh"
 alias clip="xclip -i -selection clipboard"
+
+# List the functions defined in my dotfiles
+alias functions="grep -E 'function' $DOTFILES/config/bash/functions.sh | sed -e 's/function //g' | sed -e 's/() {//g'"
 
 alias gnome-settings="env XDG_CURRENT_DESKTOP=GNOME gnome-control-center"
 

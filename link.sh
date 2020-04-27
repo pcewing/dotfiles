@@ -19,6 +19,7 @@ echo -e "\\nCreating symlinks"
 echo "================="
 
 link "$DOTFILES/config/Xresources"       "$HOME/.Xresources"
+link "$DOTFILES/config/alacritty.yml"    "$HOME/.config/alacritty/alacritty.yml"
 link "$DOTFILES/config/bash_profile"     "$HOME/.bash_profile"
 link "$DOTFILES/config/bashrc"           "$HOME/.bashrc"
 link "$DOTFILES/config/conky.conf"       "$HOME/.config/conky/conky.conf"
@@ -37,8 +38,8 @@ link "$DOTFILES/config/polybar"          "$HOME/.config/polybar/config"
 link "$DOTFILES/config/profile"          "$HOME/.profile"
 link "$DOTFILES/config/py3status.conf"   "$HOME/.config/py3status/config"
 link "$DOTFILES/config/rangerrc"         "$HOME/.config/ranger/rc.conf"
-link "$DOTFILES/config/rofi/dracula.rasi" "$HOME/.config/rofi/dracula.rasi"
 link "$DOTFILES/config/rofi/config"      "$HOME/.config/rofi/config"
+link "$DOTFILES/config/rofi/dracula.rasi" "$HOME/.config/rofi/dracula.rasi"
 link "$DOTFILES/config/sway"             "$HOME/.config/sway/config"
 link "$DOTFILES/config/swaysession"      "$HOME/.swaysession"
 link "$DOTFILES/config/tmux.conf"        "$HOME/.tmux.conf"
@@ -51,4 +52,7 @@ link "$DOTFILES/config/xsession"         "$HOME/.xsession"
 # because the version of ncmpcpp in the apt repositories doesn't have the real
 # fix yet
 link "$DOTFILES/config/ncmpcpp/bindings" "$HOME/.ncmpcpp/bindings"
+
+echo -e "\nCreating symlink for sway-user.desktop requires root priveleges; run:"
+echo "sudo ln -s \"$DOTFILES/config/sway-user.desktop\" \"/usr/share/wayland-sessions/sway-user.desktop\""
 

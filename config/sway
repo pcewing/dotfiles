@@ -6,21 +6,14 @@
 # windows modifier key
 set $mod Mod4
 
+# set the font used in window chrome and bar
+font pango:Inconsolata 14
+
 # normal mouse controls for moving/resizing windows
 floating_modifier $mod normal
 
-# set the font used in window chrome and swaybar
-font pango:Ubuntu 14
-
-# navigation variables used in a few places
-set $left h
-set $down j
-set $up k
-set $right l
 
 # configure gaps and window chrome styles
-#for_window [class="^.*"] border pixel 1
-#smart_borders on
 gaps inner 10
 
 # color pallette
@@ -77,7 +70,7 @@ mode "passthrough" {
 }
 bindsym $mod+F1 mode "passthrough"
 
-# application launcher (final command should be passed to sway)
+# application launcher
 bindsym $mod+Space exec rofi -show run | xargs swaymsg exec
 
 # launch conky
@@ -91,29 +84,31 @@ bindsym $mod+n exec "fuzzy.sh nautilus"
 
 # reload the configuration file
 bindsym $mod+ctrl+Return reload
+
+# restart in-place
 bindsym $mod+shift+Return restart
 
 # kill focused window
 bindsym $mod+minus kill
 
 # enter fullscreen mode for the focused container
-bindsym $mod+f fullscreen
+bindsym $mod+ctrl+space fullscreen toggle
 
-# change focused window
-bindsym $mod+$left focus left
-bindsym $mod+$down focus down
-bindsym $mod+$up focus up
-bindsym $mod+$right focus right
+# change focus
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
 # move focused window
-bindsym $mod+Shift+$left move left
-bindsym $mod+Shift+$down move down
-bindsym $mod+Shift+$up move up
-bindsym $mod+Shift+$right move right
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
@@ -125,12 +120,10 @@ bindsym $mod+v splitv
 bindsym $mod+semicolon split toggle
 
 # toggle floating on focused window
-#bindsym $mod+apostrophe floating toggle
 bindsym $mod+m floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+shift+apostrophe focus mode_toggle
-
+bindsym $mod+ctrl+m focus mode_toggle
 
 # switch to workspace
 bindsym $mod+y workspace 1
@@ -178,10 +171,10 @@ bindsym $mod+backslash scratchpad show
 # resize window (you can also use the mouse for that)
 set $resize_amount 200px
 mode "resize" {
-    bindsym $left  resize shrink width  $resize_amount
-    bindsym $down  resize grow   height $resize_amount
-    bindsym $up    resize shrink height $resize_amount
-    bindsym $right resize grow   width  $resize_amount
+    bindsym h resize shrink width  $resize_amount
+    bindsym j resize grow   height $resize_amount
+    bindsym k resize shrink height $resize_amount
+    bindsym l resize grow   width  $resize_amount
 
     bindsym Left  resize shrink width  $resize_amount
     bindsym Down  resize grow   height $resize_amount
@@ -236,13 +229,12 @@ for_window [instance="RabbitVCS"] floating enable
 for_window [class="insync.py"] floating enable
 for_window [class="keepassxc"] floating enable
 for_window [class="VirtualBox Machine"] floating enable
-for_window [class="net-runelite-launcher-Launcher"] floating enable
-for_window [class="net-runelite-client-RuneLite"] floating enable
 for_window [instance="calculator"] floating enable
 
 # sway background
 # TODO: This should be put in a local config since this is hardware specific
-output * bg "$HOME/wallpaper.jpg" fill
+#output * bg "$HOME/wallpaper.jpg" fill
+output * bg "$HOME/wallpaper.png" fill
 
 # configure input devices
 input type:touchpad {

@@ -5,52 +5,51 @@
 # Start the compositor (Without fading because it's annoying and slow)
 exec_always compton --no-fading-openclose
 
-# use windows key as i3 modifier
+# windows modifier key
 set $mod Mod4
 
+# set the font used in window chrome and bar
 font pango:Inconsolata 14
 
-# use Mouse+$mod to drag floating windows to their wanted position
+# normal mouse controls for moving/resizing windows
 floating_modifier $mod
 
 # change border settings for all windows; this is necessary to use gaps
 for_window [class="^.*"] border pixel 2
 
-# gaps
-gaps inner 20
-smart_borders on
+# configure gaps and window chrome styles
+gaps inner 10
 
-# base16 colors   $<var>  <xrdb resource> <fallback>
-set_from_resource $fg     foreground      #F8F8F2
-set_from_resource $bg     background      #282A36
-set_from_resource $cursor cursorColor     #F8F8F2
-set_from_resource $c00    color0          #000000
-set_from_resource $c08    color8          #4D4D4D
-set_from_resource $c01    color1          #FF5555
-set_from_resource $c09    color9          #FF6E67
-set_from_resource $c02    color2          #50FA7B
-set_from_resource $c10    color10         #5AF78E
-set_from_resource $c03    color3          #F1FA8C
-set_from_resource $c11    color11         #F4F99D
-set_from_resource $c04    color4          #BD93F9
-set_from_resource $c12    color12         #CAA9FA
-set_from_resource $c05    color5          #FF79C6
-set_from_resource $c13    color13         #FF92D0
-set_from_resource $c06    color6          #8BE9FD
-set_from_resource $c14    color14         #9AEDFE
-set_from_resource $c07    color7          #BFBFBF
-set_from_resource $c15    color15         #E6E6E6
+# color pallette
+set $fg     #F8F8F2
+set $bg     #282A36
+set $cursor #F8F8F2
+set $c00    #000000
+set $c08    #4D4D4D
+set $c01    #FF5555
+set $c09    #FF6E67
+set $c02    #50FA7B
+set $c10    #5AF78E
+set $c03    #F1FA8C
+set $c11    #F4F99D
+set $c04    #BD93F9
+set $c12    #CAA9FA
+set $c05    #FF79C6
+set $c13    #FF92D0
+set $c06    #8BE9FD
+set $c14    #9AEDFE
+set $c07    #BFBFBF
+set $c15    #E6E6E6
 
 # color settings
 # class                  border  backg.  foreg.  indicator child_border
 client.focused           $fg     $bg     $fg     $fg       $fg
 client.focused_inactive  #073642 #073642 #888888 #292d2e   #222222
-client.unfocused         #073642 #073642 #888888 #292d2e   #222222
+client.unfocused         $bg     $bg     $c08    #ff0000   $bg
 #client.urgent           #2f343a #900000 #ffffff #900000   #900000
 #client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 #client.background       #ffffff
 
-bindsym $mod+Escape mode "$mode_system"
 set $mode_system (l)ock, (Shift+l)ogout, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
 mode "$mode_system" {
     bindsym l exec --no-startup-id i3exit lock, mode "default"
@@ -64,20 +63,22 @@ mode "$mode_system" {
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
+bindsym $mod+Escape mode "$mode_system"
 
+# enable passthrough, useful for nesting compostiors
 mode "passthrough" {
     bindsym Pause mode "default"
 }
 bindsym $mod+F1 mode "passthrough"
 
-# launch rofi
+# application launcher
 bindsym $mod+space exec "rofi -show run"
 
 # launch conky
 bindsym $mod+c exec "conky"
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec urxvt
 
 # fuzzy nautilus
 bindsym $mod+n exec "fuzzy.sh nautilus"
@@ -85,7 +86,7 @@ bindsym $mod+n exec "fuzzy.sh nautilus"
 # reload the configuration file
 bindsym $mod+ctrl+Return reload
 
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+# restart in-place
 bindsym $mod+shift+Return restart
 
 # kill focused window
@@ -99,8 +100,6 @@ bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
 bindsym $mod+l focus right
-
-# alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
@@ -111,22 +110,21 @@ bindsym $mod+Shift+h move left
 bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
-
-# alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
-#bindsym $mod+Shift+backslash split h
-#bindsym $mod+minus split v
+# set split mode
+bindsym $mod+b splith
+bindsym $mod+v splitv
 bindsym $mod+colon split toggle
 
-# toggle tiling / floating
-bindsym $mod+apostrophe floating toggle
+# toggle floating on focused window
+bindsym $mod+m floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+shift+apostrophe focus mode_toggle
+bindsym $mod+ctrl+m focus mode_toggle
 
 # switch to workspace
 bindsym $mod+y workspace 1
@@ -161,45 +159,28 @@ bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
+# move focus to the parent container
 bindsym $mod+Tab focus parent
 bindsym $mod+Shift+Tab focus child
 
-# the exit mode is a better way to implement confirmation before terminating
-# the X session
-bindsym $mod+ctrl+minus mode "exit"
-mode "exit" {
-    bindsym y exec "i3-msg exit"
-
-    # back to normal: Enter or Escape
-    bindsym n mode "default";
-    bindsym Return mode "default";
-    bindsym Escape mode "default";
-}
-
 # resize window (you can also use the mouse for that)
-bindsym $mod+r mode "resize"
+set $resize_amount 200px
 mode "resize" {
-    # These bindings trigger as soon as you enter the resize mode
+    bindsym h resize shrink width  $resize_amount
+    bindsym j resize grow   height $resize_amount
+    bindsym k resize shrink height $resize_amount
+    bindsym l resize grow   width  $resize_amount
 
-    # Pressing left will shrink the window’s width.
-    # Pressing right will grow the window’s width.
-    # Pressing up will shrink the window’s height.
-    # Pressing down will grow the window’s height.
-    bindsym h resize shrink width 10 px or 10 ppt
-    bindsym j resize grow height 10 px or 10 ppt
-    bindsym k resize shrink height 10 px or 10 ppt
-    bindsym l resize grow width 10 px or 10 ppt
+    bindsym Left  resize shrink width  $resize_amount
+    bindsym Down  resize grow   height $resize_amount
+    bindsym Up    resize shrink height $resize_amount
+    bindsym Right resize grow   width  $resize_amount
 
-    # same bindings, but for the arrow keys
-    bindsym Left resize shrink width 10 px or 10 ppt
-    bindsym Down resize grow height 10 px or 10 ppt
-    bindsym Up resize shrink height 10 px or 10 ppt
-    bindsym Right resize grow width 10 px or 10 ppt
-
-    # back to normal: Enter or Escape
+    # return to default mode
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
+bindsym $mod+r mode "resize"
 
 # print screen bindings
 bindsym --release Print exec "scrot -m $HOME/box/pic/screenshots/%s_%H%M_%d.%m.%Y_$wx$h.png"
@@ -229,12 +210,12 @@ bar {
 # source the machine-specific screen layout if it exists
 exec_always "[ -e ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
 
-# Force certain apps to specific workspaces
+# force certain apps to specific workspaces
 assign [class="Bcompare"] 5
 assign [class="discord"] 8
 assign [class="Steam"] 9
 
-# Float certain apps by default
+# float certain apps by default
 for_window [class="^feh$"] floating enable
 for_window [class="Pavucontrol"] floating enable
 for_window [class="Nitrogen"] floating enable
@@ -245,11 +226,19 @@ for_window [instance="RabbitVCS"] floating enable
 for_window [class="insync.py"] floating enable
 for_window [class="keepassxc"] floating enable
 for_window [class="VirtualBox Machine"] floating enable
-for_window [class="net-runelite-launcher-Launcher"] floating enable
-for_window [class="net-runelite-client-RuneLite"] floating enable
 for_window [instance="calculator"] floating enable
 
 for_window [class=ShadowOfMordor] floating enable, resize set 1920 1080
 
 exec_always "startup.sh"
 
+# enable passthrough, useful for nesting compostiors
+mode "osrs" {
+    bindsym x exec "/home/pewing/bin/click.sh click"
+    bindsym z exec "/home/pewing/bin/click.sh shift-down"
+
+    # exit osrs mode: "Enter" or "Escape"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+F2 mode "osrs"

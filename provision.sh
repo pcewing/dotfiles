@@ -64,6 +64,13 @@ apt_add_repo() {
     try sudo add-apt-repository -y "$1"
 }
 
+pip_install() {
+    local packages="$@"
+
+    echo "(Pip) Installing $packages... "
+    try pip3 install $packages
+}
+
 verify_distribution() {
     source "/etc/lsb-release"
 
@@ -160,7 +167,6 @@ prepare_apt() {
 }
 
 install_apt_packages() {
-
     # Core utitilies
     local p="apt-utils"
     p="$p ca-certificates"
@@ -207,8 +213,9 @@ install_apt_packages() {
     p="$p usb-creator-gtk"    # Easily flash bootable USBs
     p="$p chromium-browser"   # Chrome
     p="$p i3lock"             # Lock screen
-    p="$p py3status"          # Replacement for i3status
     p="$p meld"               # Diff tool
+    p="$p xclip"              # Clipboard for X11
+    p="$p wl-clipboard"       # Clipboard for Wayland
 
     # Media
     p="$p mpv"
@@ -219,7 +226,10 @@ install_apt_packages() {
     p="$p steam-devices"
 
     apt_install "$p"
+}
 
+install_pip_packages() {
+    pip_install "py3status"
 }
 
 install_neovim() {

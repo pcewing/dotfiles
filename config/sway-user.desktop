@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Sway User Session
+Comment=Executes the user's ~/.swaysession
+Exec=sh -c "~/.swaysession"
+Type=Application
+DesktopNames=Default
+Keywords=default;wm;windowmanager;window;manager;
