@@ -22,10 +22,6 @@
     #   git showm              Diff changes in HEAD
     showm = "!f(){ c=$1; [ -z $c ] && c='HEAD'; git difftool --dir-diff --tool=meld -y $c~..$c; }; f"
 
-[user]
-	email = pcewing00@gmail.com
-	name = Paul Ewing
-
 [diff]
 	tool = bc3
 
