@@ -113,8 +113,9 @@ nmap <leader>ls :ls<cr>:buffer<space>
 nnoremap <leader>ssx :set syntax=
 nnoremap <leader>ssg :set syntax=groovy<cr>
 
-nnoremap <Leader>gl :grep<Space>-F<Space>-R<space>'
-nnoremap <Leader>gr :grep<Space>-R<Space>'
+nnoremap <Leader>[ :!ctags -R<CR>
+
+nnoremap <Leader>g :grep<Space>--exclude="tags"<space>-IR<space>'
 
 nnoremap <silent> <leader><Up> :resize +5<cr>
 nnoremap <silent> <leader><Down> :resize -5<cr>
