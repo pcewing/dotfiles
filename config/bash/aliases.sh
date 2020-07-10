@@ -89,3 +89,5 @@ alias gnome-settings="env XDG_CURRENT_DESKTOP=GNOME gnome-control-center"
 alias docker_rma="docker ps --all | grep '^[0-9a-z]' | sed -e 's/ .*//g' | xargs docker rm"
 
 alias aliases="$EDITOR $DOTFILES/config/bash/aliases.sh"
+
+alias serve="python -m SimpleHTTPServer"
