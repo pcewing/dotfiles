@@ -78,9 +78,6 @@ alias reload_aliases="source $DOTFILES/config/bash/aliases.sh"
 alias reload_functions="source $DOTFILES/config/bash/functions.sh"
 alias clip="xclip -i -selection clipboard"
 
-# List the functions defined in my dotfiles
-alias functions="grep -E 'function' $DOTFILES/config/bash/functions.sh | sed -e 's/function //g' | sed -e 's/() {//g'"
-
 alias gnome-settings="env XDG_CURRENT_DESKTOP=GNOME gnome-control-center"
 
 [ -z "$(command -v iex)" ] && alias iex="docker run -it elixir:latest iex"
@@ -88,6 +85,9 @@ alias gnome-settings="env XDG_CURRENT_DESKTOP=GNOME gnome-control-center"
 # Remove all docker containers
 alias docker_rma="docker ps --all | grep '^[0-9a-z]' | sed -e 's/ .*//g' | xargs docker rm"
 
-alias aliases="$EDITOR $DOTFILES/config/bash/aliases.sh"
-
 alias serve="python -m SimpleHTTPServer"
+
+alias gpui="globalprotect launch-ui"
+
+alias aliases="$EDITOR $DOTFILES/config/bash/aliases.sh"
+alias functions="$EDITOR $DOTFILES/config/bash/functions.sh"
