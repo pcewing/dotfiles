@@ -34,7 +34,18 @@ function nvims() {
         return 1
     fi
 
-    echo "#!/usr/bin/env bash" >> "$script_name"
+    cat << 'EOF' > "$script_name"
+#!/usr/bin/env bash
+
+function yell () { >&2 echo "$*";  }
+function die () { yell "$*"; exit 1; }
+function try () { "$@" || die "Command failed: $*"; }
+
+script_path="$( realpath "$0" )"
+script_dir="$( dirname "$script_path" )"
+
+EOF
+
     chmod +x "$script_name"
     nvim "$script_name"
 }
