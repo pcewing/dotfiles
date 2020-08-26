@@ -48,6 +48,7 @@ link "$DOTFILES/config/vimrc"            "$HOME/.config/nvim/init.vim"
 link "$DOTFILES/config/vimrc"            "$HOME/.vimrc"
 link "$DOTFILES/config/xinitrc"          "$HOME/.xinitrc"
 link "$DOTFILES/config/xsession"         "$HOME/.xsession"
+link "$DOTFILES/config/snippets/cpp.snippets" "$HOME/.config/nvim/UltiSnips/cpp.snippets"
 
 # TODO: This is a temporary fix to https://github.com/arybczak/ncmpcpp/issues/91
 # because the version of ncmpcpp in the apt repositories doesn't have the real
