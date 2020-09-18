@@ -88,6 +88,7 @@ alias docker_rma="docker ps --all | grep '^[0-9a-z]' | sed -e 's/ .*//g' | xargs
 alias serve="python -m SimpleHTTPServer"
 
 alias gpui="globalprotect launch-ui"
+alias horizon="vmware-view"
 
 alias aliases="$EDITOR $DOTFILES/config/bash/aliases.sh"
 alias functions="$EDITOR $DOTFILES/config/bash/functions.sh"
