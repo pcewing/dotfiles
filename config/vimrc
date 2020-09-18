@@ -144,3 +144,4 @@ else
     hi Normal guibg=NONE ctermbg=NONE
 endif
 
+nnoremap <silent> <leader>x :vs<cr>:e ~/.vimrc<cr>
