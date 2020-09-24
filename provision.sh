@@ -1,24 +1,11 @@
 #!/usr/bin/env bash
 
-#############################
-# General Utility Functions #
-#############################
-die() { echo "$1" 1>&2; exit 1; }
+function yell () { >&2 echo "$*";  }
+function die () { yell "$*"; exit 1; }
+function try () { "$@" || die "Command failed: $*"; }
 
-try()
-{
-    local f="$(mktemp)"
-    "$@" > "$f" 2>&1
-    local ret_val=$?
-  
-    if [ ! $ret_val -eq 0 ]; then
-        echo "FAILURE"
-        echo "Command: $*"
-        echo "Output:"
-        cat "$f"
-        exit 1
-    fi
-}
+script_path="$( realpath "$0" )"
+script_dir="$( dirname "$script_path" )"
 
 print_header() {
     local header="$1"
@@ -194,7 +181,7 @@ install_apt_packages() {
     p="$p calcurse"
 
     # Python
-    p="$p python python-dev python-pip"    # Python 2.7
+    p="$p python python-dev"    # Python 2.7
     p="$p python3 python3-dev python3-pip" # Python 3.x
 
     # General GUI Applications
@@ -233,45 +220,24 @@ install_pip_packages() {
 }
 
 install_neovim() {
-    local cache_dir="$1"
-    local version="$2"
-
     print_header "Installing neovim"
 
-    local neovim_dir="$cache_dir/neovim/$version"
-    local neovim_exe="$neovim_dir/build/bin/nvim"
-    if [ -f "$neovim_exe" ]; then
-        echo "$neovim_exe already exists, skipping installation..."
+    local nvim_path="/usr/local/bin/nvim"
+    if [ -f "$nvim_path" ]; then
+        echo "$nvim_path already exists, skipping installation..."
         return
     fi
 
-    echo "Installing pre-requisites..."
-    apt_install "gcc cmake ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip"
-
-    echo "Cloning the neovim repository..."
-    try mkdir -p "$(dirname -- "$neovim_dir")"
-    try git clone "https://github.com/neovim/neovim" "$neovim_dir"
-
-    local pwd; pwd="$(pwd)"
-    try cd "$neovim_dir"
-
-    echo "Checking out version $version..."
-    try git checkout "$version"
-
-    echo "Building neovim $version..."
-    try make
-
-    echo "Installing neovim $version..."
-    try sudo make install
-
-    try cd "$pwd"
+    try sudo mkdir -p /opt/neovim
+    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+    try sudo chmod u+x nvim.appimage
+    try sudo mv nvim.appimage /opt/neovim/nvim
+    try sudo ln -s /opt/neovim/nvim $nvim_path
 
     echo "Installing pynvim python modules..."
-    try sudo pip2 install --upgrade pynvim
     try sudo pip3 install --upgrade pynvim
 
     echo "Updating alternatives to use nvim..."
-    nvim_path="$(command -v nvim)"
     try sudo update-alternatives --install /usr/bin/vi vi "$nvim_path" 60
     try sudo update-alternatives --set vi "$nvim_path"
     try sudo update-alternatives --install /usr/bin/vim vim "$nvim_path" 60
@@ -349,51 +315,6 @@ install_i3gaps() {
     try make
 
     echo "Installing i3-gaps $version..."
-    try sudo make install
-
-    try cd "$pwd"
-}
-
-install_polybar() {
-    local cache_dir="$1"
-    local version="$2"
-
-    print_header "Installing polybar"
-
-    local polybar_dir="$cache_dir/polybar/$version"
-    local polybar_exe="$polybar_dir/build/bin/polybar"
-    if [ -f "$polybar_exe" ]; then
-        echo "$polybar_exe already exists, skipping installation..."
-        return
-    fi
-
-    echo "Installing pre-requisites..."
-    apt_install "cmake cmake-data pkg-config libcairo2-dev libxcb1-dev libxcb-util0-dev libxcb-randr0-dev libxcb-composite0-dev python-xcbgen xcb-proto libxcb-image0-dev libxcb-ewmh-dev libxcb-icccm4-dev"
-
-    echo "Installing optional pre-requisites..."
-    apt_install "libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev libpulse-dev libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev libiw-dev libnl-3-dev"
-
-    echo "Cloning the polybar repository"
-    local polybar_git_url; polybar_git_url="https://github.com/jaagr/polybar"
-    try mkdir -p "$(dirname -- "$polybar_dir")"
-    [ -d "$polybar_dir" ] \
-        || try git clone --recursive "$polybar_git_url" "$polybar_dir"
-
-    local pwd; pwd="$(pwd)"
-    try cd "$polybar_dir"
-
-    echo "Checkout out version $version..."
-    try git checkout "$version"
-    
-    echo "Building polybar $version..."
-    try mkdir -p "$polybar_dir/build"
-    try cd "$polybar_dir/build"
-
-    # If this fails due to an invalid gcc version, specify the version via:
-    # cmake -DCMAKE_C_COMPILER=/correct/gcc -DCMAKE_CXX_COMPILER=/correct/g++ ..
-    try cmake ..
-
-    echo "Installing polybar $version..."
     try sudo make install
 
     try cd "$pwd"
@@ -521,40 +442,6 @@ install_irssi() {
     try decrypt_with_pass "$secrets_dir/irssi.pem.gpg" "$tls_cert_path" "$pass"
 }
 
-install_git_ssh_key() {
-    local secrets_dir="$1"
-    local pass="$2"
-
-    print_header "Installing git ssh key"
-
-    local key_file="git_ssh_key"
-
-    local ssh_dir="$HOME/.ssh"
-    echo "Ensuring $ssh_dir directory exists..."
-    try mkdir -p "$ssh_dir"
-
-    if [ -e "$ssh_dir/$key_file" -o -e "$ssh_dir/$key_file.pub" ]; then
-        echo "Key already exists, skipping..."
-    else
-        echo "Decrypting ssh key..."
-        try decrypt_with_pass \
-            "$secrets_dir/$key_file.gpg" \
-            "$ssh_dir/$key_file" \
-            "$pass"
-        try decrypt_with_pass \
-            "$secrets_dir/$key_file.pub.gpg" \
-            "$ssh_dir/$key_file.pub" \
-            "$pass"
-
-        echo "Setting ssh key file permissions..."
-        chmod 600 "$ssh_dir/$key_file.pub"
-        chmod 600 "$ssh_dir/$key_file"
-
-        echo "Adding key to agent..."
-        eval "$(ssh-agent -s)"
-        ssh-add "$ssh_dir/$key_file"
-    fi
-}
 
 install_bcompare4() {
     local cache_dir="$1"
@@ -646,8 +533,8 @@ echo -n "Enter secret passphrase: " && read -r -s pass && echo
 source "$DOTFILES/config/bash/functions.sh"
 
 distro_name="Ubuntu"
-distro_version="19.04"
-distro_codename="disco"
+distro_version="20.04"
+distro_codename="focal"
 
 # For applications that are built from source, we will put them here
 cache_dir="$HOME/.cache" && mkdir -p "$cache_dir"
@@ -668,11 +555,10 @@ configure_default_xsession "$DOTFILES/config/default.desktop"
 
 # Install everything else that needs special attention
 install_urxvt
-install_neovim      "$cache_dir" "v0.3.4"
-install_i3gaps      "$cache_dir" "4.16.1"
-install_polybar     "$cache_dir" "3.3.0"
-install_cava        "$cache_dir" "0.6.1"
-install_youtube-dl  "$cache_dir" "2019.02.18" "$bin_dir"
+install_neovim
+install_i3gaps      "$cache_dir" "4.18.2"
+install_cava        "$cache_dir" "0.7.2"
+install_youtube-dl  "$cache_dir" "2020.09.20" "$bin_dir"
 install_wpr         "$cache_dir" "0.1.0"      "$bin_dir"
 install_mpd
 install_ncmpcpp
@@ -681,4 +567,4 @@ install_git_ssh_key "$secrets_dir" "$pass"
 
 # Proprietary software
 #install_bcompare4 "$cache_dir" "4.2.9.23626" "$secrets_dir" "$pass"
-install_insync "$distro_codename" "$secrets_dir" "$pass"
+#install_insync "$distro_codename" "$secrets_dir" "$pass"
