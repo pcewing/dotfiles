@@ -55,7 +55,7 @@ pip_install() {
     local packages="$@"
 
     echo "(Pip) Installing $packages... "
-    try pip3 install $packages
+    try python3 -m pip install $packages
 }
 
 verify_distribution() {
@@ -215,10 +215,6 @@ install_apt_packages() {
     apt_install "$p"
 }
 
-install_pip_packages() {
-    pip_install "py3status"
-}
-
 install_neovim() {
     print_header "Installing neovim"
 
@@ -317,6 +313,9 @@ install_i3gaps() {
     echo "Installing i3-gaps $version..."
     try sudo make install
 
+    apt_install "i3status"
+    pip_install "py3status"
+
     try cd "$pwd"
 }
 
@@ -405,6 +404,8 @@ install_mpd() {
     mkdir -p "$HOME/.mpd"
     mkdir -p "$HOME/.mpd/playlists"
     mkdir -p "$HOME/.local/share/mpd"
+
+    pip_install "python-mpd2"
 }
 
 install_ncmpcpp() {
