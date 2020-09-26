@@ -7,6 +7,15 @@ function pacman_install() {
     sudo pacman -Syu --noconfirm $package
 }
 
+function install_insync() {
+    # Instructions copied from:
+    # https://help.insynchq.com/en/articles/3417503-linux-installation-guide-unofficial
+    sudo pacman -S base-devel
+    git clone https://aur.archlinux.org/insync.git insync_install
+    cd insync_install
+    makepkg -si
+}
+
 pacman_install base-devel
 pacman_install ctags
 pacman_install discord
