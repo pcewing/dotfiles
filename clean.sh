@@ -39,6 +39,7 @@ remove_link "$HOME/.tmux.conf"
 remove_link "$HOME/.vimrc"
 remove_link "$HOME/.xinitrc"
 remove_link "$HOME/.xsession"
+remove_link "$HOME/.config/nvim/UltiSnips/cpp.snippets"
 
 # TODO: This is a temporary fix to https://github.com/arybczak/ncmpcpp/issues/91
 # because the version of ncmpcpp in the apt repositories doesn't have the real

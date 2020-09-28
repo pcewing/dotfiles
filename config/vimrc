@@ -72,8 +72,16 @@ Plug 'aklt/plantuml-syntax'
 Plug 'elubow/cql-vim'
 Plug 'tpope/vim-fugitive'
 "Plug 'Valloric/YouCompleteMe'
+Plug 'sirver/UltiSnips'
+Plug 'honza/vim-snippets'
 
 call plug#end()
+
+" UltiSnips
+let g:UltiSnipsExpandTrigger="<c-space>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+nnoremap <Leader>se :UltiSnipsEdit<CR>
 
 " FZF
 nnoremap <Leader>o :FZF<CR>
@@ -136,3 +144,4 @@ else
     hi Normal guibg=NONE ctermbg=NONE
 endif
 
+nnoremap <silent> <leader>x :vs<cr>:e ~/.vimrc<cr>
