@@ -6,14 +6,28 @@ function die () { yell "$*"; exit 1; }
 fssh_hosts_file="$HOME/.fssh_hosts"
 
 if [ ! -f "$fssh_hosts_file" ]; then
-    die "ERROR: Hosts file \"$fssh_hosts_file\" does not exist!"
+    >"$fssh_hosts_file"  echo '# File format:'
+    >>"$fssh_hosts_file" echo '# - name=host'
+    >>"$fssh_hosts_file" echo '# - Blank lines and lines beginning with "#" are stripped'
+    >>"$fssh_hosts_file" echo ''
+    >>"$fssh_hosts_file" echo '# Examples'
+    >>"$fssh_hosts_file" echo 'example1=127.0.0.1'
+    >>"$fssh_hosts_file" echo 'example2=myhost.com'
 fi
 
-fssh_hosts="$(cat "$HOME/.fssh_hosts" | grep -vP '(^ *$)|(^#.*)')"
+keys="$(
+    grep -vP '(^ *$)|(^#.*)' "$fssh_hosts_file" | \
+    sed -e 's/=.*//g'
+)"
 
-selection="$(echo "$fssh_hosts" | fzf)"
+key="$(echo "$keys" | fzf)"
 
-if [ ! -z "$selection" ]; then
-    ssh "$selection"
+value="$(
+    grep -P "^$key=.*$" "$fssh_hosts_file" | \
+    sed -e 's/.*=//g'
+)"
+
+if [ ! -z "$value" ]; then
+    ssh "$value"
 fi
 
