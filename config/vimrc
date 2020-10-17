@@ -74,6 +74,7 @@ Plug 'tpope/vim-fugitive'
 "Plug 'Valloric/YouCompleteMe'
 Plug 'sirver/UltiSnips'
 Plug 'honza/vim-snippets'
+Plug 'igankevich/mesonic'
 
 call plug#end()
 
