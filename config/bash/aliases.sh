@@ -28,6 +28,7 @@ alias wificonnect="nmcli device wifi connect --ask"
 alias gs='git status --short'
 alias gc='git commit'
 alias gb='git branch'
+alias gbc='git branch --show-current'
 alias gac='git add --all && git commit'
 alias gd='git diff'
 alias gdbc='git_diff_bc3' # This is defined in functions.sh

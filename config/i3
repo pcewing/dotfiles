@@ -183,9 +183,9 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 # print screen bindings
-bindsym --release Print exec "scrot -m $HOME/box/pic/screenshots/%s_%H%M_%d.%m.%Y_$wx$h.png"
-bindsym --release Shift+Print exec "scrot -s $HOME/box/pic/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
-bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/box/pic/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
+bindsym --release Print exec "scrot -m $HOME/Pictures/screenshots/%s_%H%M_%d.%m.%Y_$wx$h.png"
+bindsym --release Shift+Print exec "scrot -s $HOME/Pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
+bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/Pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
 
 # py3status bar config
 bar {
@@ -228,15 +228,22 @@ for_window [class="keepassxc"] floating enable
 for_window [class="VirtualBox Machine"] floating enable
 for_window [instance="calculator"] floating enable
 for_window [class="qjackctl"] floating enable
+for_window [class="Ubuntustudio-controls"] floating enable
+for_window [class="Carla2"] floating enable, resize set 1280 720
 
 for_window [class=ShadowOfMordor] floating enable, resize set 1920 1080
 
 exec_always "startup.sh"
 
-# enable passthrough, useful for nesting compostiors
 mode "osrs" {
     bindsym x exec "/home/pewing/bin/click.sh click"
     bindsym z exec "/home/pewing/bin/click.sh shift-down"
+
+    bindsym $mod+1 exec "/home/pewing/osrs-scripts/test.py 1"
+    bindsym $mod+2 exec "/home/pewing/osrs-scripts/test.py 2"
+    bindsym $mod+3 exec "/home/pewing/osrs-scripts/test.py 3"
+    bindsym $mod+4 exec "/home/pewing/osrs-scripts/test.py 4"
+    bindsym $mod+5 exec "/home/pewing/osrs-scripts/test.py 5"
 
     # exit osrs mode: "Enter" or "Escape"
     bindsym Return mode "default"

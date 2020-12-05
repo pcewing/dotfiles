@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-screenshot_dir=$HOME/box/pic/screenshots
+screenshot_dir=$HOME/Pictures/screenshots
 
 mkdir -p "$screenshot_dir"
 
@@ -27,7 +27,7 @@ if [[ -e $filename ]]; then
     ensure_installed feh
     feh "$filename" >/dev/null 2>&1 &
 
-    ensure_installed nautilus
-    nautilus "$screenshot_dir" >/dev/null 2>&1 &
+    ensure_installed thunar
+    thunar "$screenshot_dir" >/dev/null 2>&1 &
 fi
 

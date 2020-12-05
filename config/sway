@@ -189,9 +189,9 @@ bindsym $mod+r mode "resize"
 
 # print screen bindings
 #  TODO: How can these be implemented with sway?
-#bindsym --release Print exec "scrot -m $HOME/box/pic/screenshots/%s_%H%M_%d.%m.%Y_$wx$h.png"
-#bindsym --release Shift+Print exec "scrot -s $HOME/box/pic/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
-#bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/box/pic/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
+#bindsym --release Print exec "scrot -m $HOME/Pictures/screenshots/%s_%H%M_%d.%m.%Y_$wx$h.png"
+#bindsym --release Shift+Print exec "scrot -s $HOME/Pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
+#bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/Pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
 
 # swaybar (man 5 swaybar)
 bar {
