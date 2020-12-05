@@ -15,40 +15,21 @@ print_header() {
     echo "========================================"
 }
 
-sudo_file_write() {
-    local file="$1"
-    local content="$2"
-
-    try sudo sh -c "echo \"$content\" > \"$file\""
-}
-
-sudo_file_append() {
-    local file="$1"
-    local content="$2"
-
-    try sudo sh -c "echo \"$content\" >> \"$file\""
-}
-
 apt_update() {
-    echo "Updating package lists... "
+    echo "(Apt) Updating package lists... "
     try sudo apt-get -y update
 }
 
 apt_dist_upgrade() {
-    echo "Upgrading packages... "
+    echo "(Apt) Upgrading packages... "
     try sudo apt-get -y dist-upgrade
 }
 
 apt_install() {
     local packages="$@"
 
-    echo "Installing $packages... "
+    echo "(Apt) Installing $packages... "
     try sudo apt-get -y install $packages
-}
-
-apt_add_repo() {
-    echo "Adding $1 repository... "
-    try sudo add-apt-repository -y "$1"
 }
 
 pip_install() {
@@ -58,24 +39,12 @@ pip_install() {
     try python3 -m pip install $packages
 }
 
-verify_distribution() {
-    source "/etc/lsb-release"
+function get_latest_github_release() {
+    local org="$1"
+    local repo="$2"
 
-    local expected_id="$1"
-    local expected_release="$2"
-    local expected_codename="$3"
-
-    local mismatch="0"
-
-    [[ ! "$DISTRIB_ID" = "$expected_id" ]]                   && mismatch="1"
-    [[ ! "$DISTRIB_RELEASE" = "$expected_release" ]]         && mismatch="1"
-    [[ ! "$DISTRIB_CODENAME" = "$expected_codename" ]]       && mismatch="1"
-
-    if [[ "$mismatch" = "1" ]]; then
-        echo "WARNING: Current Linux distribution doesn't match expectations"
-        echo "Expected = $expected_id $expected_release ($expected_codename)"
-        echo "Actual = $DISTRIB_ID $DISTRIB_RELEASE ($DISTRIB_CODENAME)"
-    fi
+    local api_url="https://api.github.com/repos/$org/$repo/releases/latest"
+    echo "$( curl --silent "$api_url" | jq -r .tag_name )"
 }
 
 ######################################
@@ -98,61 +67,6 @@ configure_default_xsession() {
     fi
 }
 
-configure_apt_repositories() {
-    local dist="$1"
-
-    local archive_url="http://us.archive.ubuntu.com/ubuntu/"
-    local security_url="http://security.ubuntu.com/ubuntu"
-    local sources_dir="/etc/apt/sources.list.d"
-
-    echo "Configuring default apt repositories... "
-    sudo_file_write "/etc/apt/sources.list" ""
-    try sudo rm -rf "$sources_dir"
-    try sudo mkdir -p "$sources_dir"
-
-    sudo_file_write \
-        "$sources_dir/ubuntu-main.list" \
-        "deb $archive_url $dist main restricted"
-    sudo_file_write \
-        "$sources_dir/ubuntu-main.list" \
-        "deb $archive_url $dist main restricted"
-    sudo_file_write \
-        "$sources_dir/ubuntu-main-updates.list" \
-        "deb $archive_url $dist-updates main restricted"
-    sudo_file_write \
-        "$sources_dir/ubuntu-universe.list" \
-        "deb $archive_url $dist universe"
-    sudo_file_write \
-        "$sources_dir/ubuntu-universe-updates.list" \
-        "deb $archive_url $dist-updates universe"
-    sudo_file_write \
-        "$sources_dir/ubuntu-multiverse.list" \
-        "deb $archive_url $dist multiverse"
-    sudo_file_write \
-        "$sources_dir/ubuntu-multiverse-updates.list" \
-        "deb $archive_url $dist-updates multiverse"
-    sudo_file_write \
-        "$sources_dir/ubuntu-backports.list" \
-        "deb $archive_url $dist-backports main restricted universe multiverse"
-    sudo_file_write \
-        "$sources_dir/ubuntu-security-main.list" \
-        "deb $security_url $dist-security main restricted"
-    sudo_file_write \
-        "$sources_dir/ubuntu-security-universe.list" \
-        "deb $security_url $dist-security universe"
-    sudo_file_write \
-        "$sources_dir/ubuntu-security-multiverse.list" \
-        "deb $security_url $dist-security multiverse"
-}
-
-prepare_apt() {
-    local codename="$1"
-
-    configure_apt_repositories "$codename"
-    apt_update
-    apt_dist_upgrade
-}
-
 install_apt_packages() {
     # Core utitilies
     local p="apt-utils"
@@ -168,6 +82,7 @@ install_apt_packages() {
     p="$p make"
     p="$p build-essential"
     p="$p cmake"
+    p="$p meson"
     p="$p htop"
     p="$p iotop"
     p="$p git"
@@ -244,9 +159,10 @@ install_neovim() {
 
 install_cava() {
     local cache_dir="$1"
-    local version="$2"
 
-    print_header "Installing cava"
+    local version="$(get_latest_github_release "karlstav" "cava")"
+
+    print_header "Installing cava ($version)"
 
     local cava_dir="$cache_dir/cava/$version"
     local cava_exe="$cava_dir/cava"
@@ -278,9 +194,10 @@ install_cava() {
 
 install_i3gaps() {
     local cache_dir="$1"
-    local version="$2"
 
-    print_header "Installing i3-gaps"
+    local version="$(get_latest_github_release "airblader" "i3")"
+
+    print_header "Installing i3-gaps ($version)"
 
     local i3gaps_dir="$cache_dir/i3gaps/$version"
     local i3gaps_exe="$i3gaps_dir/build/i3"
@@ -303,15 +220,13 @@ install_i3gaps() {
     try git checkout "$version"
     
     echo "Building i3-gaps $version..."
-    try autoreconf --force --install
-    try rm -rf "./build/"
-    try mkdir -p "./build"
-    try cd "./build"
-    try ../configure --prefix=/usr --sysconfdir=/etc --disable-sanitizers
-    try make
+    try mkdir -p build
+    try cd build
+    try meson ..
+    try ninja
 
     echo "Installing i3-gaps $version..."
-    try sudo make install
+    try sudo meson install
 
     apt_install "i3status"
     pip_install "py3status"
@@ -321,10 +236,11 @@ install_i3gaps() {
 
 install_youtube-dl() {
     local cache_dir="$1"
-    local version="$2"
-    local bin_dir="$3"
+    local bin_dir="$2"
 
-    print_header "Installing youtube-dl..."
+    local version="$(get_latest_github_release "ytdl-org" "youtube-dl")"
+
+    print_header "Installing youtube-dl ($version)"
 
     local ytdl_dir="$cache_dir/youtube-dl/$version"
     local ytdl_exe="$ytdl_dir/youtube-dl"
@@ -358,8 +274,9 @@ install_urxvt() {
 
 install_wpr() {
     local cache_dir="$1"
-    local version="$2"
-    local bin_dir="$3"
+    local bin_dir="$2"
+
+    local version="0.1.0"
 
     print_header "Installing wpr..."
 
@@ -444,109 +361,21 @@ install_irssi() {
 }
 
 
-install_bcompare4() {
-    local cache_dir="$1"
-    local version="$2"
-    local secrets_dir="$3"
-    local pass="$4"
-
-    print_header "Installing Beyond Compare"
-
-    local deb_name="bcompare-${version}_amd64.deb"
-    local deb_path="$cache_dir/bcompare/$version/$deb_name"
-
-    if [ -f "$deb_path" ]; then
-        echo "$deb_path already exists, skipping installation..."
-        return
-    fi
-
-    echo "Installing pre-requisites..."
-    apt_install gdebi-core
-
-    echo "Downloading Beyond Compare $version..."
-    try mkdir -p "$(dirname -- "$deb_path")"
-    try curl -L "https://www.scootersoftware.com/$deb_name" -o "$deb_path"
-
-    echo "Installing Beyond Compare $version..."
-    try sudo gdebi --non-interactive "$deb_path"
-
-    echo "Installing license key..."
-    local key_path="$HOME/.config/bcompare/BC4Key.txt"
-    try mkdir -p "$(dirname -- "$key_path")"
-    try decrypt_with_pass "$secrets_dir/BC4Key.txt.gpg" "$key_path" "$pass"
-}
-
-install_insync() {
-    local codename="$1"
-    local secrets_dir="$2"
-    local pass="$3"
-
-    print_header "Installing Insync"
-
-    if [ ! "$(command -v insync)" = "" ]; then
-        echo "Insync is already installed, skipping installation..."
-        return
-    fi
-
-    echo "Adding the insync apt repository key..."
-    try sudo apt-key adv \
-        --keyserver keyserver.ubuntu.com \
-        --recv-keys ACCAF35C
-
-    echo "Adding the insync apt repository..."
-    local insync_apt_source_list="/etc/apt/sources.list.d/insync.list"
-    sudo_file_write \
-        "$insync_apt_source_list" \
-        "deb http://apt.insynchq.com/ubuntu $codename non-free contrib"
-
-    apt_update
-
-    apt_install insync
-
-    echo "I'd rather avoid leaving this source list around..."
-    try sudo rm -rf "$insync_apt_source_list"
-
-    echo "Adding Google account..."
-    local auth_code_path="$HOME/insync_auth_code.txt"
-    try decrypt_with_pass "$secrets_dir/insync_auth_code.txt.gpg" \
-        "$auth_code_path" "$pass"
-    try insync add_account --auth-code "$(cat "$HOME/insync_auth_code.txt")" \
-        --path "$HOME/box" --no-download
-    rm -f "$auth_code_path"
-}
-
 ########
 # Main #
 ########
 
-secrets_dir="$HOME/secrets"
-if [ ! -d "$secrets_dir" ]; then
-    echo "Secrets directory '$secrets_dir' does not exist." 
-    echo "Did you forget to create it?" 
-    exit 1
-fi
-
-# We will need a passphrase to decrypt secrets that some apps depend on
-echo -n "Enter secret passphrase: " && read -r -s pass && echo
-
-[[ "$DOTFILES" = "" ]] && DOTFILES="$HOME/dot"
+[[ -z "$DOTFILES" ]] && DOTFILES="$HOME/dot"
 
 source "$DOTFILES/config/bash/functions.sh"
 
-distro_name="Ubuntu"
-distro_version="20.04"
-distro_codename="focal"
-
 # For applications that are built from source, we will put them here
 cache_dir="$HOME/.cache" && mkdir -p "$cache_dir"
-
 bin_dir="$HOME/bin" && mkdir -p "$bin_dir"
 
-# Print a warning if the current distro doesn't match what is expected
-verify_distribution "$distro_name" "$distro_version" "$distro_codename"
-
 # Make sure apt is ready to use
-prepare_apt "$distro_codename"
+apt_update
+apt_dist_upgrade
 
 # Install everything via apt that is available in the default repositories
 install_apt_packages
@@ -557,15 +386,21 @@ configure_default_xsession "$DOTFILES/config/default.desktop"
 # Install everything else that needs special attention
 install_urxvt
 install_neovim
-install_i3gaps      "$cache_dir" "4.18.2"
-install_cava        "$cache_dir" "0.7.2"
-install_youtube-dl  "$cache_dir" "2020.09.20" "$bin_dir"
-install_wpr         "$cache_dir" "0.1.0"      "$bin_dir"
+install_i3gaps      "$cache_dir"
+install_cava        "$cache_dir"
+install_youtube-dl  "$cache_dir" "$bin_dir"
+install_wpr         "$cache_dir" "$bin_dir"
 install_mpd
 install_ncmpcpp
-install_irssi       "$secrets_dir" "$pass"
-install_git_ssh_key "$secrets_dir" "$pass"
 
-# Proprietary software
-#install_bcompare4 "$cache_dir" "4.2.9.23626" "$secrets_dir" "$pass"
-#install_insync "$distro_codename" "$secrets_dir" "$pass"
+## We will need a passphrase to decrypt secrets that some apps depend on
+#echo -n "Enter secret passphrase: " && read -r -s pass && echo
+
+#secrets_dir="$HOME/secrets"
+#if [ ! -d "$secrets_dir" ]; then
+#    echo "Secrets directory '$secrets_dir' does not exist." 
+#    echo "Did you forget to create it?" 
+#    exit 1
+#fi
+#
+#install_irssi       "$secrets_dir" "$pass"

@@ -44,5 +44,5 @@ mkdir -p "$logdir"
 $HOME/dot/bin/cleanup_logs.sh
 i3logfile="$logdir/i3_$(date +"%Y%m%d_%H%M%S").log"
 echo "Starting at $(date)" >> "$i3logfile"
-exec /usr/bin/i3 -V -d all >> "$i3logfile"
+exec /usr/local/bin/i3 -V -d all >> "$i3logfile"
 

@@ -8,7 +8,7 @@ if [ -z "$action" ]; then
 fi
 
 directories="$HOME
-$HOME/box/pic/screenshots
+$HOME/Pictures/screenshots
 $HOME/src
 $HOME/box
 $HOME/.config

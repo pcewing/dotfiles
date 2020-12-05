@@ -19,7 +19,7 @@ start_process() {
         $procname $procargs >> "$logfile" 2>&1 &
     else
         notify-send \
-            -u critical \
+            -u normal \
             -t 5000 \
             "Failed to start $procname" \
             "Ensure that the program \"$procname\" is installed"
