@@ -85,6 +85,7 @@ alias gnome-settings="env XDG_CURRENT_DESKTOP=GNOME gnome-control-center"
 
 # Remove all docker containers
 alias docker_rma="docker ps --all | grep '^[0-9a-z]' | sed -e 's/ .*//g' | xargs docker rm"
+alias docker_rmi="docker images --all | grep -v '^REPOSITORY' | awk '{ print $3 }' | xargs docker rmi -f"
 
 alias serve="python -m SimpleHTTPServer"
 
