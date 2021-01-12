@@ -58,11 +58,11 @@ alias grep='grep --color=auto'
 alias df='df -h' 
 
 # Sorted, human-readable disk usage by depth
-alias du1='du -hd1 | sort -hr'
-alias du2='du -hd2 | sort -hr'
-alias du3='du -hd3 | sort -hr'
-alias du4='du -hd4 | sort -hr'
-alias du5='du -hd5 | sort -hr'
+alias du1='du -hd1 2>/dev/null | sort -hr'
+alias du2='du -hd2 2>/dev/null | sort -hr'
+alias du3='du -hd3 2>/dev/null | sort -hr'
+alias du4='du -hd4 2>/dev/null | sort -hr'
+alias du5='du -hd5 2>/dev/null | sort -hr'
 
 # Tmux aliases
 alias tm="tmux"
