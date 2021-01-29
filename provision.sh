@@ -339,28 +339,6 @@ install_ncmpcpp() {
     mkdir -p "$HOME/.config/ncmpcpp"
 }
 
-install_irssi() {
-    local secrets_dir="$1"
-    local pass="$2"
-
-    print_header "Installing irssi"
-
-    if [ ! -z "$(command -v irssi)" ]; then
-        echo "irssi is already installed, skipping installation..."
-        return
-    fi
-
-    apt_install "irssi"
-
-    local config_dir="$HOME/.irssi"
-    local tls_cert_path="$config_dir/irssi.pem"
-
-    echo "Configuring irssi..."
-    mkdir -p "$config_dir"
-    try decrypt_with_pass "$secrets_dir/irssi.pem.gpg" "$tls_cert_path" "$pass"
-}
-
-
 ########
 # Main #
 ########
@@ -392,15 +370,3 @@ install_youtube-dl  "$cache_dir" "$bin_dir"
 install_wpr         "$cache_dir" "$bin_dir"
 install_mpd
 install_ncmpcpp
-
-## We will need a passphrase to decrypt secrets that some apps depend on
-#echo -n "Enter secret passphrase: " && read -r -s pass && echo
-
-#secrets_dir="$HOME/secrets"
-#if [ ! -d "$secrets_dir" ]; then
-#    echo "Secrets directory '$secrets_dir' does not exist." 
-#    echo "Did you forget to create it?" 
-#    exit 1
-#fi
-#
-#install_irssi       "$secrets_dir" "$pass"

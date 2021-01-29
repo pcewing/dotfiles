@@ -75,8 +75,13 @@ Plug 'tpope/vim-fugitive'
 Plug 'sirver/UltiSnips'
 Plug 'honza/vim-snippets'
 Plug 'igankevich/mesonic'
+Plug 'rhysd/vim-clang-format'
 
 call plug#end()
+
+" vim-clang-format
+let g:clang_format#detect_style_file = 1
+autocmd FileType c,cpp vnoremap <buffer><Leader>q :ClangFormat<CR>
 
 " UltiSnips
 let g:UltiSnipsExpandTrigger="<c-space>"
