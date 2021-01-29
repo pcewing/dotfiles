@@ -40,15 +40,43 @@ set $c06    #8BE9FD
 set $c14    #9AEDFE
 set $c07    #BFBFBF
 set $c15    #E6E6E6
+ 
+# Hot pink
+set $temp1  #F706CF
+# Purple
+set $temp2  #791E94
+
+set $black  #000000
+set $white  #FFFFFF
+set $red    #FF0000
+set $green  #00FF00
+set $blue   #0000FF
+
+
+### Legend 
+# border:       The border of the titlebar, not the border of the window itself
+# background:   The background of the titlebar
+# foreground:   The foreground (Font color) of the titlebar
+# indicator:    ???
+# child_border: The border of the window
+#
+# The easiest way to test new color settings when titlebars are disabled is to
+# change to tabbed layout.
 
 # color settings
 # class                  border  backg.  foreg.  indicator child_border
-client.focused           $fg     $bg     $fg     $fg       $fg
-client.focused_inactive  #073642 #073642 #888888 #292d2e   #222222
-client.unfocused         $bg     $bg     $c08    #ff0000   $bg
+#client.focused           $fg     $bg     $fg     $fg       $fg
+#client.focused_inactive  #073642 #073642 #888888 #292d2e   #222222
+#client.unfocused         $bg     $bg     $c08    #ff0000   $bg
 #client.urgent           #2f343a #900000 #ffffff #900000   #900000
 #client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 #client.background       #ffffff
+client.focused           $temp1  $temp1  $black  $red      $temp1
+client.focused_inactive  $temp2  $temp2  $temp2  $temp2    $temp2
+client.unfocused         $temp2  $temp2  $temp2  $temp2    $temp2
+client.urgent            $temp2  $temp2  $temp2  $temp2    $temp2
+client.placeholder       $temp2  $temp2  $temp2  $temp2    $temp2
+client.background        $temp2  $temp2  $temp2  $temp2    $temp2
 
 set $mode_system (l)ock, (Shift+l)ogout, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
 mode "$mode_system" {
@@ -194,16 +222,20 @@ bar {
     separator_symbol " | "
 
     colors {
-        background $bg
-        statusline $fg
+        #background $bg
+        #statusline $fg
+        #separator $c08
+
+        background $temp2
+        statusline $white
         separator $c08
 
         # <colorclass>     <border> <background> <text>
-        focused_workspace  $bg      $c06         $c00
-        active_workspace   $bg      $c05         $fg
-        inactive_workspace $bg      $bg          $fg
-        urgent_workspace   $bg      $c01         $fg
-        binding_mode       $bg      $c01         $c00
+        focused_workspace  $temp2   $c06         $c00
+        active_workspace   $temp2   $c05         $fg
+        inactive_workspace $temp2   $temp2       $fg
+        urgent_workspace   $temp2   $c01         $fg
+        binding_mode       $temp2   $c01         $c00
     }
 }
 
@@ -229,11 +261,12 @@ for_window [class="VirtualBox Machine"] floating enable
 for_window [instance="calculator"] floating enable
 for_window [class="qjackctl"] floating enable
 for_window [class="Ubuntustudio-controls"] floating enable
-for_window [class="Carla2"] floating enable, resize set 1280 720
+for_window [class="Carla2"] floating enable, resize set 1280 1280
 
 for_window [class=ShadowOfMordor] floating enable, resize set 1920 1080
 
-exec_always "startup.sh"
+# TODO
+#exec_always "startup.sh"
 
 mode "osrs" {
     bindsym x exec "/home/pewing/bin/click.sh click"
