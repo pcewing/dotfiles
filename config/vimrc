@@ -60,7 +60,7 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'elixir-lang/vim-elixir'
 Plug 'slashmili/alchemist.vim'
-"Plug 'fatih/vim-go'
+Plug 'fatih/vim-go'
 Plug 'OrangeT/vim-csharp'
 Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-vinegar'
