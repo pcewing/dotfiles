@@ -211,3 +211,9 @@ function decrypt() {
     decrypt_with_pass "$src" "$dst" "$pass"
 }
 
+function replace() {
+    local before="$1"
+    local after="$2"
+
+    find . -type f -exec sed -i "s/$before/$after/g" {} \;
+}
