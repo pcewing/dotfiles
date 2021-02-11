@@ -122,6 +122,7 @@ install_apt_packages() {
     # Media
     p="$p mpv"
     p="$p vlc"
+    p="$p easytag"
 
     # Gaming
     p="$p steam"
