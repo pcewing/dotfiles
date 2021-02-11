@@ -229,7 +229,7 @@ for_window [class="VirtualBox Machine"] floating enable
 for_window [instance="calculator"] floating enable
 for_window [class="qjackctl"] floating enable
 for_window [class="Ubuntustudio-controls"] floating enable
-for_window [class="Carla2"] floating enable, resize set 1280 720
+for_window [class="Carla2"] floating enable, resize set 1280 1280
 
 for_window [class=ShadowOfMordor] floating enable, resize set 1920 1080
 
