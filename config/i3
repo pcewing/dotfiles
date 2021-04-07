@@ -212,6 +212,8 @@ exec_always "[ -e ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
 
 # force certain apps to specific workspaces
 assign [class="Bcompare"] 5
+assign [class="zoom"] 7
+assign [class="Slack"] 8
 assign [class="discord"] 8
 assign [class="Steam"] 9
 
