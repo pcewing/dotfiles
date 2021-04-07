@@ -56,7 +56,7 @@ call plug#begin('~/.config/nvim/plugged')
 Plug 'https://github.com/dracula/vim.git'
 Plug 'joshdick/onedark.vim'
 
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
 Plug 'elixir-lang/vim-elixir'
 Plug 'slashmili/alchemist.vim'
