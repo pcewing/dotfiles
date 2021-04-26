@@ -1,33 +1,53 @@
 #!/usr/bin/env bash
 
-screenshot_dir=$HOME/Pictures/screenshots
-
+screenshot_dir="$HOME/Pictures/screenshots"
 mkdir -p "$screenshot_dir"
 
-error() {
-    >&2 echo "$1"
+function error_notify() {
+    local msg="$1"
+    notify-send \
+        -u normal \
+        -t 5000 \
+        "snipping-tool error" \
+        "$msg"
+}
+
+# Make sure scrot is installed
+hash scrot 2>/dev/null
+if [ ! $? -eq 0 ]; then
+    error_notify "Please ensure that scrot is installed"
     exit 1
-}
-
-ensure_installed() {
-    which "$1" >/dev/null
-    local ret_val=$?
-  
-    if [[ ! $ret_val -eq 0 ]]; then
-        error "$1 is not installed..."
-    fi
-}
-
-filename="$screenshot_dir/$(date +%Y%m%d_%H%M%S).png"
-
-ensure_installed scrot
-scrot -s "$filename"
-
-if [[ -e $filename ]]; then
-    ensure_installed feh
-    feh "$filename" >/dev/null 2>&1 &
-
-    ensure_installed thunar
-    thunar "$screenshot_dir" >/dev/null 2>&1 &
 fi
 
+# Take the screenshot
+filename="$screenshot_dir/$(date +%Y%m%d_%H%M%S).png"
+scrot -s "$filename" &>/dev/null
+
+# Make sure the file was created; the user may have exited out of scrot without
+# taking the screenshot
+if [[ ! -e $filename ]]; then
+    exit 0
+fi
+
+# If feh is installed, use it to display the screenshot immediately
+hash feh 2>/dev/null
+if [ $? -eq 0 ]; then
+    feh --scale-down "$filename" &>/dev/null &
+else
+    error_notify "Please ensure that feh is installed"
+fi
+
+# Try opening the screenshot directory in any of the following file managers
+file_managers="nautilus
+thunar"
+
+for fm in $file_managers; do
+    # Check if the file manager is installed
+    hash $fm 2>/dev/null
+    if [ $? -eq 0 ]; then
+        $fm "$screenshot_dir" &>/dev/null &
+        exit 0
+    fi
+done
+
+error_notify "Please install a supported file manager (Nautilus, Thunar)"
