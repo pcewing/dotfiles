@@ -218,7 +218,7 @@ assign [class="discord"] 8
 assign [class="Steam"] 9
 
 # float certain apps by default
-for_window [class="^feh$"] floating enable
+#for_window [class="^feh$"] floating enable
 for_window [class="Pavucontrol"] floating enable
 for_window [class="Ps2"] floating enable
 for_window [class="Conky"] floating enable
