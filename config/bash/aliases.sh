@@ -27,6 +27,8 @@ alias wificonnect="nmcli device wifi connect --ask"
 # Git aliases
 alias gs='git status --short'
 alias gc='git commit'
+alias gco='git checkout'
+alias gcob='git checkout -b'
 alias gb='git branch'
 alias gbc='git branch --show-current'
 alias gac='git add --all && git commit'
@@ -47,6 +49,7 @@ alias ...='cd ../..'
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias ls="ls --color"
+alias lsl="ls -l --group-directories-first"
 alias lss="ls --sort=extension --group-directories-first"
 
 alias n='nautilus . >/dev/null 2>&1 & disown'
@@ -83,14 +86,16 @@ alias gnome-settings="env XDG_CURRENT_DESKTOP=GNOME gnome-control-center"
 
 [ -z "$(command -v iex)" ] && alias iex="docker run -it elixir:latest iex"
 
+# Stop all docker containers
+alias docker_stop="docker ps | tail -n +2 | awk '{print \$1}' | xargs docker stop"
 # Remove all docker containers
-alias docker_rma="docker ps --all | grep '^[0-9a-z]' | sed -e 's/ .*//g' | xargs docker rm"
-alias docker_rmi="docker images --all | grep -v '^REPOSITORY' | awk '{ print $3 }' | xargs docker rmi -f"
+alias docker_rma="docker ps --all | tail -n +2 | sed -e 's/ .*//g' | xargs docker rm"
+# Remove all docker images
+alias docker_rmi="docker images --all | tail -n +2 | awk '{ print $3 }' | xargs docker rmi -f"
+# Stop and remove all docker containers and then remove all docker images
+alias docker_nuke="docker_stop; docker_rma; docker_rmi"
 
 alias serve="python -m SimpleHTTPServer"
-
-alias gpui="globalprotect launch-ui"
-alias horizon="vmware-view"
 
 alias aliases="$EDITOR $DOTFILES/config/bash/aliases.sh"
 alias functions="$EDITOR $DOTFILES/config/bash/functions.sh"

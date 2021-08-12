@@ -217,3 +217,8 @@ function replace() {
 
     find . -type f -exec sed -i "s/$before/$after/g" {} \;
 }
+
+function apt_available_updates() {
+    local num_updates="$(apt list --upgradeable 2>/dev/null | grep -Ev '^Listing\.\.\.' | wc -l)"
+    echo "There are $num_updates updates available"
+}
