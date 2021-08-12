@@ -99,3 +99,8 @@ alias serve="python -m SimpleHTTPServer"
 
 alias aliases="$EDITOR $DOTFILES/config/bash/aliases.sh"
 alias functions="$EDITOR $DOTFILES/config/bash/functions.sh"
+
+# On Ubuntu, the system-supplied open file dialog can be very slow to open.
+# Running this should fix it temporarily. For more details, see:
+# https://askubuntu.com/questions/1341909/file-browser-and-file-dialogs-take-a-long-time-to-open-or-fail-to-open-in-all-ap
+alias fix_open_file_dialog="pkill gvfsd-trash"
