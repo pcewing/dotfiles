@@ -2,10 +2,6 @@
 xset +fp /home/paul/.fonts
 xset fp rehash
 
-# Disable DPMS turning off the screen
-xset dpms force on
-xset s off
-
 # Disable bell
 xset -b
 
