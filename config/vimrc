@@ -137,7 +137,7 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 nnoremap <Leader>se :UltiSnipsEdit<CR>
 
 " Switch between FZF and Telescope
-let g:UseFZF=1
+let g:UseFZF=0
 if g:UseFZF == 1
     " FZF
     nnoremap <Leader>o :FZF<CR>
@@ -232,7 +232,7 @@ else
     hi Normal guibg=NONE ctermbg=NONE
 endif
 
-nnoremap <silent> <leader>x :vs<cr>:e ~/.vimrc<cr>
+nnoremap <silent> <leader>x :e ~/.vimrc<cr>
 
 
 lua << EOF

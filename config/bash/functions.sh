@@ -222,3 +222,8 @@ function apt_available_updates() {
     local num_updates="$(apt list --upgradeable 2>/dev/null | grep -Ev '^Listing\.\.\.' | wc -l)"
     echo "There are $num_updates updates available"
 }
+
+function go_test_coverage() {
+    local tempfile="$(mktemp)"
+    go test -coverprofile="$tempfile" && go tool cover -html="$tempfile"
+}
