@@ -224,7 +224,6 @@ for_window [class="Ps2"] floating enable
 for_window [class="Conky"] floating enable
 for_window [class="insync.py"] floating enable
 for_window [class="keepassxc"] floating enable
-for_window [class="VirtualBox Machine"] floating enable
 for_window [instance="calculator"] floating enable
 for_window [class="qjackctl"] floating enable
 for_window [class="Ubuntustudio-controls"] floating enable
