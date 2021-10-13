@@ -227,3 +227,23 @@ function go_test_coverage() {
     local tempfile="$(mktemp)"
     go test -coverprofile="$tempfile" && go tool cover -html="$tempfile"
 }
+
+function viewhex {
+    local path="$1"
+
+    [ -z "$path" ] && yell "Usage: viewhex filename" && return 1
+
+    local tmp="$(mktemp)"
+    local success="false"
+
+    xxd "$path" > "$tmp"
+    [ "$?" = 0 ] && success="true" && nvim "$tmp"
+
+    rm "$tmp"
+
+    if [ "$success" = "true" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
