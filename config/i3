@@ -207,9 +207,6 @@ bar {
     }
 }
 
-# source the machine-specific screen layout if it exists
-exec_always "[ -e ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
-
 # force certain apps to specific workspaces
 assign [class="Bcompare"] 5
 assign [class="zoom"] 7
@@ -228,10 +225,8 @@ for_window [instance="calculator"] floating enable
 for_window [class="qjackctl"] floating enable
 for_window [class="Ubuntustudio-controls"] floating enable
 for_window [class="Carla2"] floating enable, resize set 1280 1280
-
-for_window [class=ShadowOfMordor] floating enable, resize set 1920 1080
-
-exec_always "startup.sh"
+# This should float only the main window and not the guests
+for_window [class="Virt-manager" title="Virtual Machine Manager"] floating enable
 
 mode "osrs" {
     bindsym x exec "/home/pewing/bin/click.sh click"
@@ -253,3 +248,8 @@ bindsym $mod+F2 mode "osrs"
 exec --no-startup-id xset s off
 exec --no-startup-id xset -dpms
 exec --no-startup-id xset s noblank
+
+# source the machine-specific screen layout if it exists
+exec_always "[ -e ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
+exec_always "startup.sh"
+
