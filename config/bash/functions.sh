@@ -222,3 +222,23 @@ function apt_available_updates() {
     local num_updates="$(apt list --upgradeable 2>/dev/null | grep -Ev '^Listing\.\.\.' | wc -l)"
     echo "There are $num_updates updates available"
 }
+
+function viewhex {
+    local path="$1"
+
+    [ -z "$path" ] && yell "Usage: viewhex filename" && return 1
+
+    local tmp="$(mktemp)"
+    local success="false"
+
+    xxd "$path" > "$tmp"
+    [ "$?" = 0 ] && success="true" && nvim "$tmp"
+
+    rm "$tmp"
+
+    if [ "$success" = "true" ]; then
+        return 0
+    else
+        return 1
+    fi
+}

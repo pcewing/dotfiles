@@ -74,6 +74,9 @@ alias tls='tmux ls'
 alias tat='tmux attach -t'
 alias tns='tmux new-session -s'
 
+# Restart mpd
+alias mpd_restart='mpd --kill && mpd'
+
 # Other
 alias sx="startx"
 alias notes='ranger ~/notebook'
