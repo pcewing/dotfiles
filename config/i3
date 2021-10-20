@@ -250,5 +250,9 @@ exec --no-startup-id xset s noblank
 
 # source the machine-specific screen layout if it exists
 exec_always "[ -e ~/.screenlayout/config.sh ] && ~/.screenlayout/config.sh"
-exec_always "startup.sh"
 
+# set the wallpaper
+exec_always "[ -e ~/set-bg.sh ] && ~/set-bg.sh"
+
+# run startup script
+exec_always "startup.sh"
