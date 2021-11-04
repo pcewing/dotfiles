@@ -22,6 +22,11 @@
     #   git showm              Diff changes in HEAD
     showm = "!f(){ c=$1; [ -z $c ] && c='HEAD'; git difftool --dir-diff --tool=meld -y $c~..$c; }; f"
 
+    # Common submodule operations
+    smupdate = submodule update --init --recursive
+    smclean = submodule deinit --all
+    smreset = "!f(){ git smclean && git smupdate }; f"
+
 [diff]
 	tool = bc3
 
