@@ -247,3 +247,10 @@ function viewhex {
         return 1
     fi
 }
+
+function git_show_tool {
+    local before="$(git log --oneline -n 2 | tail -n 1 | awk '{ print $1 }')"
+    local after="$(git log --oneline -n 2 | head -n 1 | awk '{ print $1 }')"
+
+    git difftool "$before" "$after"
+}
