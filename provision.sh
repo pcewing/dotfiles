@@ -120,9 +120,10 @@ install_apt_packages() {
     p="$p wl-clipboard"       # Clipboard for Wayland
 
     # Media
-    p="$p mpv"
-    p="$p vlc"
-    p="$p easytag"
+    p="$p mpv"      # Minimal media player
+    p="$p vlc"      # General purpose FOSS media player
+    p="$p easytag"  # Edit ID3 Tags on MP3 files
+    p="$p blueman"  # Bluetooth device support
 
     # Gaming
     p="$p steam"
