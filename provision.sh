@@ -113,7 +113,6 @@ install_apt_packages() {
     p="$p keepassxc"          # Credential manager
     p="$p remmina"            # RDP session manager
     p="$p usb-creator-gtk"    # Easily flash bootable USBs
-    p="$p chromium-browser"   # Chrome
     p="$p i3lock"             # Lock screen
     p="$p meld"               # Diff tool
     p="$p xclip"              # Clipboard for X11
