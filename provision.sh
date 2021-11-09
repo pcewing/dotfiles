@@ -51,20 +51,18 @@ function get_latest_github_release() {
 # Application Installation Functions #
 ######################################
 
-configure_default_xsession() {
+configure_xsession() {
     local src_path="$1"
 
-    echo "Configuring default xsession... "
+    echo "Configuring xsession... "
 
     [ -f "$src_path" ] || die "File $src_path does not exist!"
 
-    local dst_path="/usr/share/xsessions/default.desktop"
+    local dst_path="/usr/share/xsessions/xsession.desktop"
 
-    if [ -f "$dst_path" ]; then
-        echo "Skipping configuration becease $dst_path already exists..."
-    else
-        try sudo ln -s "$src_path" "$dst_path"
-    fi
+    try sudo rm -f "$dst_path"
+    try sudo cp "$src_path" "$dst_path"
+    try sudo chmod 644 "$dst_path"
 }
 
 install_apt_packages() {
@@ -359,8 +357,9 @@ apt_dist_upgrade
 # Install everything via apt that is available in the default repositories
 install_apt_packages
 
-# This adds a desktop entry that GDM3 will recognize
-configure_default_xsession "$DOTFILES/config/default.desktop"
+# This adds a simple desktop entry to /usr/share/xsessions that display
+# managers should recognize
+configure_xsession "$DOTFILES/config/xsession.desktop"
 
 # Install everything else that needs special attention
 install_urxvt
