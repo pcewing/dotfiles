@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # i3-get-window-criteria - Get criteria for use with i3 config commands
 
@@ -13,7 +13,7 @@ PROGNAME=`basename "$0"`
 
 # Check for xwininfo and xprop
 for cmd in xwininfo xprop; do
-    if ! which $cmd > /dev/null 2>&1; then
+    if ! command -v "$cmd" &>/dev/null; then
         echo "$PROGNAME: $cmd: command not found" >&2
         exit 1
     fi
