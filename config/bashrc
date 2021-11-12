@@ -12,7 +12,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
 # Set GOPATH
-[ -n "$(which go)" ] && export GOPATH="$HOME/go"
+command -v "go" &>/dev/null && export GOPATH="$HOME/go"
 
 src_if_exists() {
    [[ -e "$1" ]] && source "$1"

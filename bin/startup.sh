@@ -12,7 +12,7 @@ function start_process() {
     local notify="$4"
 
     # Make sure the program is installed
-    if [[ -z "$(which $procname)" ]]; then
+    if ! command -v "$procname" &>/dev/null; then
         # If not, post a notification if desired
         if [[ "$notify" = "1" ]]; then
             notify-send \
