@@ -227,21 +227,15 @@ for_window [class="Carla2"] floating enable, resize set 1280 1280
 # This should float only the main window and not the guests
 for_window [class="Virt-manager" title="Virtual Machine Manager"] floating enable
 
-mode "osrs" {
+mode "automation" {
     bindsym x exec "/home/pewing/bin/click.sh click"
     bindsym z exec "/home/pewing/bin/click.sh shift-down"
 
-    bindsym $mod+1 exec "/home/pewing/osrs-scripts/test.py 1"
-    bindsym $mod+2 exec "/home/pewing/osrs-scripts/test.py 2"
-    bindsym $mod+3 exec "/home/pewing/osrs-scripts/test.py 3"
-    bindsym $mod+4 exec "/home/pewing/osrs-scripts/test.py 4"
-    bindsym $mod+5 exec "/home/pewing/osrs-scripts/test.py 5"
-
-    # exit osrs mode: "Enter" or "Escape"
+    # exit automation mode: "Enter" or "Escape"
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
-bindsym $mod+F2 mode "osrs"
+bindsym $mod+F2 mode "automation"
 
 # Stop the screen from shutting off
 exec --no-startup-id xset s off
