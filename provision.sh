@@ -115,6 +115,7 @@ install_apt_packages() {
     p="$p meld"               # Diff tool
     p="$p xclip"              # Clipboard for X11
     p="$p wl-clipboard"       # Clipboard for Wayland
+    p="$p xdotool"            # X11 automation tool
 
     # Media
     p="$p mpv"      # Minimal media player
