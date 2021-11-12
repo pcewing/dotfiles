@@ -160,19 +160,6 @@ function encrypt() {
     encrypt_with_pass "$src" "$dst" "$pass"
 }
 
-# Simple file search: Execute `find` with the most common parameters and hide
-# errors
-function f() {
-    local search_term="$1"
-
-    if [ -z "$search_term" ]; then
-        echo "Usage: f <search_term>" 1>&2
-        return
-    fi
-
-    find . -iname "*$search_term*" 2>/dev/null
-}
-
 # WARNING: This shouldn't be called from an interactive shell as the passphrase
 # will be written in plaintext to $HISTFILE. It is only implemented so that
 # scripts can avoid asking for the passphrase multiple times when decrypting
@@ -209,6 +196,19 @@ function decrypt() {
     echo -n "Enter passphrase: " && read -s pass && echo
 
     decrypt_with_pass "$src" "$dst" "$pass"
+}
+
+# Simple file search: Execute `find` with the most common parameters and hide
+# errors
+function f() {
+    local search_term="$1"
+
+    if [ -z "$search_term" ]; then
+        echo "Usage: f <search_term>" 1>&2
+        return
+    fi
+
+    find . -iname "*$search_term*" 2>/dev/null
 }
 
 function replace() {
@@ -253,4 +253,53 @@ function git_show_tool {
     local after="$(git log --oneline -n 2 | head -n 1 | awk '{ print $1 }')"
 
     git difftool "$before" "$after"
+}
+
+# This isn't all that useful because this is already a single line command but
+# I'm mostly adding this so I can remember the proper way to check if a command
+# exists in $PATH. To use in an if statement:
+# if command -v "$cmd" &>/dev/null; then echo "true"; fi
+function is_installed() {
+    local cmd="$1"
+    command -v "$cmd" &>/dev/null
+}
+
+# Converts an image file from webp to jpg format. Requires webp and ImageMagick
+# to be installed.
+function webp_to_jpg() {
+    local webp_file="$1"
+    local jpg_file="$2"
+
+    if [[ -z "$webp_file" || -z "$jpg_file" ]]; then
+        1>&2 echo "Usage: webp_to_jpg path_to_img.webp path_to_img.jpg"
+        return 1
+    fi
+
+    if ! command -v "dwebp" &>/dev/null; then
+        1>&2 echo "ERROR: dwebp missing; install it via 'apt install webp'"
+        return 1
+    fi
+
+    if ! command -v "convert" &>/dev/null; then
+        1>&2 echo "ERROR: convert missing; install it via 'apt install imagemagick'"
+        return 1
+    fi
+
+    if ! dwebp "$webp_file" -o "$jpg_file.png"; then
+        1>&2 echo "ERROR: failed to convert webp to intermediary png"
+        return 1
+    fi
+
+    if ! convert "$webp_file" "$jpg_file"; then
+        # Clean up the intermediary png
+        rm "$jpg_file.png"
+
+        1>&2 echo "ERROR: failed to convert intermediary png to jpg"
+        return 1
+    fi
+
+    echo "Removing intermediary png"
+    rm "$jpg_file.png"
+
+    echo "Successfully converted $webp_file to $jpg_file"
 }
