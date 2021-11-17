@@ -228,8 +228,8 @@ for_window [class="Carla2"] floating enable, resize set 1280 1280
 for_window [class="Virt-manager" title="Virtual Machine Manager"] floating enable
 
 mode "automation" {
-    bindsym x exec "/home/pewing/bin/click.sh click"
-    bindsym z exec "/home/pewing/bin/click.sh shift-down"
+    bindsym x exec "~/bin/click.sh click"
+    bindsym z exec "~/bin/click.sh shift-down"
 
     # exit automation mode: "Enter" or "Escape"
     bindsym Return mode "default"

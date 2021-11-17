@@ -53,12 +53,24 @@ function get_latest_github_release() {
 
 configure_xsession() {
     local src_path="$1"
+    local dst_path="$2"
 
     echo "Configuring xsession... "
 
     [ -f "$src_path" ] || die "File $src_path does not exist!"
 
-    local dst_path="/usr/share/xsessions/xsession.desktop"
+    try sudo rm -f "$dst_path"
+    try sudo cp "$src_path" "$dst_path"
+    try sudo chmod 644 "$dst_path"
+}
+
+configure_wayland_session() {
+    local src_path="$1"
+    local dst_path="$2"
+
+    echo "Configuring wayland session... "
+
+    [ -f "$src_path" ] || die "File $src_path does not exist!"
 
     try sudo rm -f "$dst_path"
     try sudo cp "$src_path" "$dst_path"
@@ -358,9 +370,17 @@ apt_dist_upgrade
 # Install everything via apt that is available in the default repositories
 install_apt_packages
 
-# This adds a simple desktop entry to /usr/share/xsessions that display
-# managers should recognize
-configure_xsession "$DOTFILES/config/xsession.desktop"
+# Set up a simple xsession desktop file that display managers will recognize.
+# This will execute /etc/X11/Xsession which in turn executes the .xsession in
+# the user's home directory.
+configure_xsession \
+    "$DOTFILES/config/xsession.desktop" \
+    "/usr/share/xsessions/xsession.desktop"
+
+# Set up a wayland session for sway that the display manager will recognize
+configure_wayland_session \
+    "$DOTFILES/config/sway-user.desktop" \
+    "/usr/share/wayland-sessions/sway-user.desktop"
 
 # Install everything else that needs special attention
 install_urxvt
