@@ -13,8 +13,7 @@ function error_notify() {
 }
 
 # Make sure scrot is installed
-hash scrot 2>/dev/null
-if [ ! $? -eq 0 ]; then
+if ! command -v scrot &>/dev/null; then
     error_notify "Please ensure that scrot is installed"
     exit 1
 fi
@@ -30,8 +29,7 @@ if [[ ! -e $filename ]]; then
 fi
 
 # If feh is installed, use it to display the screenshot immediately
-hash feh 2>/dev/null
-if [ $? -eq 0 ]; then
+if command -v feh &>/dev/null; then
     feh --scale-down "$filename" &>/dev/null &
 else
     error_notify "Please ensure that feh is installed"
@@ -43,8 +41,7 @@ thunar"
 
 for fm in $file_managers; do
     # Check if the file manager is installed
-    hash $fm 2>/dev/null
-    if [ $? -eq 0 ]; then
+    if command -v $fm &>/dev/null; then
         $fm "$screenshot_dir" &>/dev/null &
         exit 0
     fi
