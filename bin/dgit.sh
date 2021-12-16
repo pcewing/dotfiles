@@ -27,6 +27,9 @@ COLOR_GREEN='\033[0;32m'
 COLOR_YELLOW='\033[0;37m'
 COLOR_NONE='\033[0m'
 
+cmd="$1"
+[ -z "$cmd" ] && cmd="s"
+
 function status_short() {
     local repo="$1"
 
@@ -39,10 +42,17 @@ function status_short() {
     fi
 }
 
-cmd="$1"
-if [ -z "$cmd" ]; then
-    cmd="s"
-fi
+function unpushed() {
+    local repo="$1"
+
+    local unpushed_commits="$(git log --branches --not --remotes)"
+
+    if [ -z "$unpushed_commits" ]; then
+        echo -e "${COLOR_GREEN}$repo${COLOR_NONE}"
+    else
+        echo -e "${COLOR_RED}$repo${COLOR_NONE}"
+    fi
+}
 
 dir="$(realpath ".")"
 repos="$(find "$dir" -maxdepth 1 -type d | xargs realpath)"
@@ -59,7 +69,9 @@ for repo in $repos; do
 
     cd "$repo"
 
-    if [ "$cmd" = "s" ]; then
-        status_short "$repo"
-    fi
+    case "$cmd" in
+        "s") status_short "$repo" ;;
+        "u") unpushed     "$repo" ;;
+        *)   status_short "$repo" ;;
+    esac
 done
