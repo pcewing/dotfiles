@@ -21,7 +21,6 @@ src_if_exists() {
 declare -a sources=(
     "$HOME/.fzf.bash"
     "$HOME/.localrc"
-    "$DOTFILES/scripts/provision/ubuntu.sh"
 )
 
 for i in "${sources[@]}"
