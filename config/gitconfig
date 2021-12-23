@@ -16,6 +16,8 @@
 
     diff = diff --ignore-space-at-eol -b -w --ignore-blank-lines
 
+    unpushed = log --branches --not --remotes
+
     # Diff all of the changes in a specific revision using meld
     # Examples:
     #   git showm a8d375bc     Diff changes in revision a8d375bc
