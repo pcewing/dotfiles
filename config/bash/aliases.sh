@@ -74,6 +74,10 @@ alias tls='tmux ls'
 alias tat='tmux attach -t'
 alias tns='tmux new-session -s'
 
+# HashiCorp Tools
+alias tf='terraform'
+alias csl='consul'
+
 # Restart mpd
 alias mpd_restart='mpd --kill && mpd'
 
