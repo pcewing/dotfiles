@@ -225,7 +225,11 @@ function apt_available_updates() {
 
 function go_test_coverage() {
     local tempfile="$(mktemp)"
-    go test -coverprofile="$tempfile" && go tool cover -html="$tempfile"
+    if go test -coverprofile="$tempfile"; then
+        go tool cover -html="$tempfile"
+    else
+        1>&1 echo -e "ERROR: Tests failed; to view coverage anyways run:\ngo tool cover -html=\"$tempfile\""
+    fi
 }
 
 function viewhex {

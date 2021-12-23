@@ -2,3 +2,4 @@
 
 [[ -f "$HOME/.env" ]] && . "$HOME/.env"
 
+export BROWSER="/usr/bin/google-chrome"
