@@ -27,11 +27,3 @@ If using `wpr`, create `~/.config/wpr/config.json` like:
     "Interval":120
 }
 ```
-
-## Tools to Manually Install
-
-- Chrome
-- Beyond Compare
-- Insync
-- Discord
-- RuneLite
