@@ -29,6 +29,19 @@ function link() {
     ln -sf "$src" "$dst"
 }
 
+function link_windows() {
+    local src="$1"
+    local dst="$2"
+
+    local dir="$(dirname -- "$dst")"
+
+    echo "Ensuring the directory $dir exists"
+    mkdir -p "$dir"
+
+    echo "Copying $dst to $src"
+    cp "$src" "$dst"
+}
+
 function unlink() {
     local link="$1"
     echo "Removing $link..."
@@ -102,8 +115,14 @@ function cmd_link() {
     link "$DOTFILES/config/snippets/cpp.snippets" "$HOME/.config/nvim/UltiSnips/cpp.snippets"
 }
 
+function cmd_windows() {
+    link_windows "$DOTFILES\config\vimrc"   "$HOME/.vimrc"
+    link_windows "$DOTFILES\config\gvimrc"  "$HOME/.gvimrc"
+}
+
 case "$1" in
     "link")     cmd_link    ;;
     "clean")    cmd_clean   ;;
+    "windows")  cmd_windows ;;
     *)          usage       ;;
 esac
