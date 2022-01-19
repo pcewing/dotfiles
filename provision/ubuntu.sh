@@ -130,6 +130,7 @@ install_apt_packages() {
     p="$p xdotool"            # X11 automation tool
 
     # Media
+    p="$p inkscape" # Vector graphics editor
     p="$p mpv"      # Minimal media player
     p="$p vlc"      # General purpose FOSS media player
     p="$p easytag"  # Edit ID3 Tags on MP3 files
