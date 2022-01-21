@@ -28,7 +28,6 @@ COLOR_YELLOW='\033[0;37m'
 COLOR_NONE='\033[0m'
 
 cmd="$1"
-[ -z "$cmd" ] && cmd="s"
 
 function status_short() {
     local repo="$1"
@@ -54,6 +53,27 @@ function unpushed() {
     fi
 }
 
+function pull() {
+    local repo="$1"
+
+    git pull origin master &>/dev/null
+    if [ "$?" = "0" ]; then
+        echo -e "${COLOR_GREEN}$repo pull succeeeded${COLOR_NONE}"
+    else
+        echo -e "${COLOR_RED}$repo pull failed${COLOR_NONE}"
+    fi
+}
+
+function usage() {
+    local repo="$1"
+
+    echo "Usage: dgit.sh <command>"
+    echo "Commands:"
+    echo "    s    Print short status of repositories"
+    echo "    u    Show unpushed commits in repositories"
+    echo "    p    Pull repositories from origin/master"
+}
+
 dir="$(realpath ".")"
 repos="$(find "$dir" -maxdepth 1 -type d | xargs realpath)"
 
@@ -72,6 +92,7 @@ for repo in $repos; do
     case "$cmd" in
         "s") status_short "$repo" ;;
         "u") unpushed     "$repo" ;;
-        *)   status_short "$repo" ;;
+        "p") pull         "$repo" ;;
+        *)   usage;       exit 1; ;;
     esac
 done
