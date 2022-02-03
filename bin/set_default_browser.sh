@@ -13,7 +13,7 @@ function die () { yell "$*"; exit 1; }
 function try () { "$@" || die "Command failed: $*"; }
 
 chrome="/usr/share/applications/google-chrome.desktop"
-firefox="/usr/share/applications/firefox.desktop"
+#firefox="/usr/share/applications/firefox.desktop"
 
 # To change the default browser, change this:
 default_browser="$chrome"
@@ -34,6 +34,6 @@ mimetypes=(
     "application/x-extension-xht"
 )
 
-for mimetype in ${mimetypes[@]}; do
+for mimetype in "${mimetypes[@]}"; do
     try xdg-mime default "$default_browser" "$mimetype"
 done

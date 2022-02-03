@@ -18,9 +18,6 @@ function yell () { >&2 echo "$*";  }
 function die () { yell "$*"; exit 1; }
 function try () { "$@" || die "Command failed: $*"; }
 
-script_path="$( realpath "$0" )"
-script_dir="$( dirname "$script_path" )"
-
 COLOR_RED='\033[0;31m'
 COLOR_GREY='\033[1;30m'
 COLOR_GREEN='\033[0;32m'
@@ -30,9 +27,12 @@ COLOR_NONE='\033[0m'
 cmd="$1"
 
 function status_short() {
-    local repo="$1"
+    local repo
+    local status
 
-    local status="$(git status --short)"
+    repo="$1"
+
+    status="$(git status --short)"
 
     if [ -z "$status" ]; then
         echo -e "${COLOR_GREEN}$repo${COLOR_NONE}"
@@ -42,9 +42,12 @@ function status_short() {
 }
 
 function unpushed() {
-    local repo="$1"
+    local repo
+    local unpushed_commits
 
-    local unpushed_commits="$(git log --branches --not --remotes)"
+    repo="$1"
+
+    unpushed_commits="$(git log --branches --not --remotes)"
 
     if [ -z "$unpushed_commits" ]; then
         echo -e "${COLOR_GREEN}$repo${COLOR_NONE}"
@@ -54,10 +57,11 @@ function unpushed() {
 }
 
 function pull() {
-    local repo="$1"
+    local repo
 
-    git pull origin master &>/dev/null
-    if [ "$?" = "0" ]; then
+    repo="$1"
+
+    if git pull origin master &>/dev/null; then
         echo -e "${COLOR_GREEN}$repo pull succeeeded${COLOR_NONE}"
     else
         echo -e "${COLOR_RED}$repo pull failed${COLOR_NONE}"
@@ -65,8 +69,6 @@ function pull() {
 }
 
 function usage() {
-    local repo="$1"
-
     echo "Usage: dgit.sh <command>"
     echo "Commands:"
     echo "    s    Print short status of repositories"
@@ -75,7 +77,7 @@ function usage() {
 }
 
 dir="$(realpath ".")"
-repos="$(find "$dir" -maxdepth 1 -type d | xargs realpath)"
+repos="$(find "$dir" -maxdepth 1 -type d -print0 | xargs -0 realpath)"
 
 for repo in $repos; do
     if [ "$repo" = "$dir" ]; then
@@ -87,7 +89,7 @@ for repo in $repos; do
         continue
     fi
 
-    cd "$repo"
+    try cd "$repo"
 
     case "$cmd" in
         "s") status_short "$repo" ;;

@@ -28,7 +28,7 @@ $HOME/Videos"
 function fuzzy_nautilus() {
     selection="$(echo "$directories" | rofi -i -dmenu -p "nautilus")"
 
-    if [ ! -z "$selection" ]; then
+    if [ -n "$selection" ]; then
         nautilus "$selection" > /dev/null 2>&1 &
     fi
 }
@@ -36,7 +36,7 @@ function fuzzy_nautilus() {
 function fuzzy_ranger() {
     selection="$(echo "$directories" | rofi -i -dmenu)"
 
-    if [ ! -z "$selection" ]; then
+    if [ -n "$selection" ]; then
         urxvt -e bash -c "ranger \"$selection\""
     fi
 }
