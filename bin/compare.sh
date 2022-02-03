@@ -44,7 +44,7 @@ if [[ ! -d "$dir_left" || ! -d "$dir_right" ]]; then
     rm -rf "$dir_right"
 
     # Clone once and then copy
-    try git clone git@github.com:$org/$repo.git "$dir_left"
+    try git clone "git@github.com:$org/$repo.git" "$dir_left"
     try cp -r "$dir_left" "$dir_right"
 fi
 

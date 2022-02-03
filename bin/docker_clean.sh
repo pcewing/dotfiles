@@ -5,7 +5,7 @@ function destroy_containers() {
         | grep -Ev '^CONTAINER' \
         | awk '{print $1}')"
 
-    if [ ! -z "$containers" ]; then
+    if [ -n "$containers" ]; then
         echo "$containers" | xargs docker rm -f
     fi
 }
@@ -15,7 +15,7 @@ function destroy_images() {
         | grep -Ev '^REPOSITORY' \
         | awk '{print $3}')"
     
-    if [ ! -z "$images" ]; then
+    if [ -n "$images" ]; then
         echo "$images" | xargs docker rmi
     fi
 }
