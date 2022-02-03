@@ -222,6 +222,9 @@ nnoremap <silent> <leader><F8> 8gt
 nnoremap <silent> <leader><F9> 9gt
 nnoremap <silent> <leader><F0> 0gt
 
+" Copy file path and line number of current line to clipboard
+nnoremap <silent> <leader>y :let @+ = join([expand('%'),  line(".")], ':')<cr>
+
 silent! colorscheme dracula
 hi CursorLine cterm=NONE ctermbg=black
 
