@@ -79,7 +79,7 @@ alias tf='terraform'
 alias csl='consul'
 
 # Restart mpd
-alias mpd_restart='mpd --kill && mpd'
+alias mpd_restart='mpd --kill; mpd'
 
 # Other
 alias sx="startx"
@@ -111,3 +111,9 @@ alias functions="$EDITOR $DOTFILES/config/bash/functions.sh"
 # Running this should fix it temporarily. For more details, see:
 # https://askubuntu.com/questions/1341909/file-browser-and-file-dialogs-take-a-long-time-to-open-or-fail-to-open-in-all-ap
 alias fix_open_file_dialog="pkill gvfsd-trash"
+
+# NoMachine
+alias nomachine_client="/usr/NX/bin/nxplayer"
+
+# Parsec
+alias parsec="parsecd app_daemon=1"
