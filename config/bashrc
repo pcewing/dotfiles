@@ -40,3 +40,5 @@ white="\[\033[37m\]"
 none="\[\033[00m\]"
 
 PS1="$white[$green\u$white@$blue\H$white:$yellow\w$white] "
+
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"

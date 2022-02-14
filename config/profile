@@ -3,3 +3,5 @@
 [[ -f "$HOME/.env" ]] && . "$HOME/.env"
 
 export BROWSER="/usr/bin/google-chrome"
+
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"

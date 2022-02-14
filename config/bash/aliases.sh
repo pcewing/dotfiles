@@ -81,6 +81,9 @@ alias csl='consul'
 # Restart mpd
 alias mpd_restart='mpd --kill && mpd'
 
+# Restart wpr (TODO: Make wpr a user systemd service)
+alias wpr_restart='killall wpr &>/dev/null; wpr &>/dev/null &'
+
 # Other
 alias sx="startx"
 alias notes='ranger ~/notebook'
