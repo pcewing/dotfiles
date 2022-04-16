@@ -227,6 +227,9 @@ for_window [class="Carla2"] floating enable, resize set 1280 1280
 # This should float only the main window and not the guests
 for_window [class="Virt-manager" title="Virtual Machine Manager"] floating enable
 
+# This will float only the initial splash loading windows
+for_window [class="net-runelite-launcher-Launcher" title="RuneLite Launcher"] floating enable
+
 mode "automation" {
     bindsym x exec "~/bin/click.sh click"
     bindsym z exec "~/bin/click.sh shift-down"
