@@ -9,7 +9,6 @@ set gcr=a:blinkon0                " Disable cursor blink
 set visualbell                    " No sounds
 set autoread                      " Reload files changed outside vim
 set autowrite                     " Write the file on :make
-set laststatus=2                  " Always display the status line
 set nohidden                      " Hide buffer instead of closing it
 set splitright                    " When splitting vertically, the new pane should be on the right
 set splitbelow                    " When splitting horizontally, the new pane should be on the bottom
@@ -18,6 +17,12 @@ set pastetoggle=<F2>              " See: http://vim.wikia.com/wiki/Toggle_auto-i
 set clipboard=unnamed,unnamedplus " Use system clipboard if possible
 set cursorline                    " Add a visual indicator to the line the cursor is on
 set nojoinspaces                  " Don't insert an extra space after periods when joining lines
+
+if has('nvim')
+    set laststatus=3              " Use global status line (Only supported in nvim 0.7+)
+else
+    set laststatus=2              " Always display the status line
+endif
 
 " Indentation
 set autoindent
@@ -28,8 +33,10 @@ set softtabstop=4
 set tabstop=4
 set expandtab
 
-" Use the following command to use temporarily switch to 2-space tabs
-" set autoindent smartindent smarttab shiftwidth=2 softtabstop=2 tabstop=2 expandtab
+" Set the Leader key. I leave the leader key as '\' and remap ' ' to it
+" instead of setting ' ' as the leader. This is so that showcmd is actually
+" useful.
+map <Space> <Leader>
 
 " Install vim-plug automatically on Linux if it isn't already
 if has('unix')
@@ -55,24 +62,25 @@ call plug#begin('~/.config/nvim/plugged')
 
 " Colorschemes
 Plug 'https://github.com/dracula/vim.git'
-Plug 'joshdick/onedark.vim'
+"Plug 'joshdick/onedark.vim'
 
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
-Plug 'junegunn/fzf.vim'
-Plug 'elixir-lang/vim-elixir'
-Plug 'slashmili/alchemist.vim'
+"Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
+"Plug 'junegunn/fzf.vim'
+"Plug 'elixir-lang/vim-elixir'
+"Plug 'slashmili/alchemist.vim'
+"Plug 'editorconfig/editorconfig-vim'
+"Plug 'Valloric/YouCompleteMe'
+
 Plug 'fatih/vim-go'
 Plug 'OrangeT/vim-csharp'
 Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-vinegar'
-Plug 'editorconfig/editorconfig-vim'
 Plug 'nvie/vim-flake8'
 Plug 'tikhomirov/vim-glsl'
 Plug 'martinda/Jenkinsfile-vim-syntax'
 Plug 'aklt/plantuml-syntax'
 Plug 'elubow/cql-vim'
 Plug 'tpope/vim-fugitive'
-"Plug 'Valloric/YouCompleteMe'
 Plug 'sirver/UltiSnips'
 Plug 'honza/vim-snippets'
 Plug 'igankevich/mesonic'
@@ -102,32 +110,13 @@ let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 nnoremap <Leader>se :UltiSnipsEdit<CR>
 
-" Switch between FZF and Telescope
-let g:UseFZF=0
-if g:UseFZF == 1
-    " FZF
-    nnoremap <Leader>o :FZF<CR>
-    nnoremap <silent> <leader>t :Tags<cr>
-else
-    " Telescope
-    "nnoremap <leader>ff <cmd>Telescope find_files<cr>
-    nnoremap <leader>o <cmd>Telescope find_files<cr>
-    nnoremap <leader>t <cmd>Telescope tags<cr>
-    "nnoremap <leader>fg <cmd>Telescope live_grep<cr>
-    "nnoremap <leader>fb <cmd>Telescope buffers<cr>
-    "nnoremap <leader>fh <cmd>Telescope help_tags<cr>
-endif
-
+" Telescope
 nnoremap <Leader>f :Telescope 
-
-" Setup vim-go mappings
-autocmd FileType go nmap <Leader>gor :GoRun<CR>
-autocmd FileType go nmap <Leader>gob :GoBuild<CR>
-
-" Set the Leader key. I leave the leader key as '\' and remap ' ' to it
-" instead of setting ' ' as the leader. This is so that showcmd is actually
-" useful.
-map <Space> <Leader>
+nnoremap <leader>o <cmd>Telescope find_files<cr>
+nnoremap <leader>t <cmd>Telescope tags<cr>
+"nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+"nnoremap <leader>fb <cmd>Telescope buffers<cr>
+"nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 
 nnoremap <Leader>m :make<CR>
 
@@ -148,8 +137,6 @@ nnoremap <leader>ssx :set syntax=
 nnoremap <leader>ssg :set syntax=groovy<cr>
 
 nnoremap <Leader>[ :!ctags -R<CR>
-
-nnoremap <Leader>g :grep<Space>--exclude="tags"<space>-IR<space>'
 
 nnoremap <silent> <leader><Up> :resize +5<cr>
 nnoremap <silent> <leader><Down> :resize -5<cr>
@@ -178,17 +165,6 @@ nnoremap <leader><F8> 8gt
 nnoremap <leader><F9> 9gt
 nnoremap <leader><F0> 10gt
 
-nnoremap <silent> <leader><F1> 1gt
-nnoremap <silent> <leader><F2> 2gt
-nnoremap <silent> <leader><F3> 3gt
-nnoremap <silent> <leader><F4> 4gt
-nnoremap <silent> <leader><F5> 5gt
-nnoremap <silent> <leader><F6> 6gt
-nnoremap <silent> <leader><F7> 7gt
-nnoremap <silent> <leader><F8> 8gt
-nnoremap <silent> <leader><F9> 9gt
-nnoremap <silent> <leader><F0> 0gt
-
 " Copy file path and line number of current line to clipboard
 nnoremap <silent> <leader>y :let @+ = join([expand('%'),  line(".")], ':')<cr>
 
@@ -203,10 +179,15 @@ else
     hi Normal guibg=NONE ctermbg=NONE
 endif
 
-nnoremap <silent> <leader>x :e ~/.vimrc<cr>
+if has('nvim')
+    nnoremap <silent> <leader>x :e ~/.config/nvim/init.vim<cr>
+else
+    nnoremap <silent> <leader>x :e ~/.vimrc<cr>
+endif
 
 " Source lua files in Neovim
 if has('nvim')
-    luafile ~/dot/config/nvim/lsp.lua
     luafile ~/dot/config/nvim/treesitter.lua
+    luafile ~/dot/config/nvim/lsp_go.lua
+    luafile ~/dot/config/nvim/lsp_cpp.lua
 endif

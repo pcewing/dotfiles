@@ -1,5 +1,6 @@
--- TODO: Write a quick summary of what's in this file
+-- This file is responsible for configuring treesitter
 
+-- TODO: Link to useful docs
 require'nvim-treesitter.configs'.setup {
   highlight = {
     enable = true,
