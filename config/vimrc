@@ -129,6 +129,8 @@ autocmd FileType go nmap <Leader>gob :GoBuild<CR>
 " useful.
 map <Space> <Leader>
 
+nnoremap <Leader>m :make<CR>
+
 nnoremap <Leader>bn :bn<CR>
 nnoremap <Leader>bp :bp<CR>
 nnoremap <Leader>be :Ex<CR>

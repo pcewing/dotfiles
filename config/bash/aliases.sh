@@ -69,10 +69,8 @@ alias du5='du -hd5 2>/dev/null | sort -hr'
 
 # Tmux aliases
 alias tm="tmux"
-alias ta='tmux attach'
-alias tls='tmux ls'
-alias tat='tmux attach -t'
-alias tns='tmux new-session -s'
+alias tms="tmux new-session -s \"\$(basename \"\$(pwd)\")\""
+alias tma='tmux attach'
 
 # HashiCorp Tools
 alias tf='terraform'
