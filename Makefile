@@ -1,3 +1,7 @@
+.PHONY: help
+help:
+	@echo "Usage: make <link|clean|windows>"
+
 .PHONY: link
 link:
 	./dot.sh link
