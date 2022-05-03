@@ -64,8 +64,8 @@ call plug#begin('~/.config/nvim/plugged')
 Plug 'https://github.com/dracula/vim.git'
 "Plug 'joshdick/onedark.vim'
 
-"Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
-"Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
+Plug 'junegunn/fzf.vim'
 "Plug 'elixir-lang/vim-elixir'
 "Plug 'slashmili/alchemist.vim'
 "Plug 'editorconfig/editorconfig-vim'
@@ -110,10 +110,13 @@ let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 nnoremap <Leader>se :UltiSnipsEdit<CR>
 
+" FZF
+nnoremap <Leader>o :Files<CR>
+nnoremap <leader>t :Tags<cr>
+
 " Telescope
-nnoremap <Leader>f :Telescope 
-nnoremap <leader>o <cmd>Telescope find_files<cr>
-nnoremap <leader>t <cmd>Telescope tags<cr>
+nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>ft <cmd>Telescope tags<cr>
 "nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 "nnoremap <leader>fb <cmd>Telescope buffers<cr>
 "nnoremap <leader>fh <cmd>Telescope help_tags<cr>
