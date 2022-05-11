@@ -30,10 +30,10 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<C-k>',      '<cmd>lua vim.lsp.buf.signature_help()<CR>',    opts)
 end
 
-local nvim_lsp = require('lspconfig')
-nvim_lsp["clangd"].setup {
-    on_attach = on_attach,
-    flags = {
-        debounce_text_changes = 150,
-    }
-}
+--local nvim_lsp = require('lspconfig')
+--nvim_lsp["clangd"].setup {
+--    on_attach = on_attach,
+--    flags = {
+--        debounce_text_changes = 150,
+--    }
+--}
