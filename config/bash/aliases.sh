@@ -85,6 +85,8 @@ alias gnome-settings="env XDG_CURRENT_DESKTOP=GNOME gnome-control-center"
 
 [ -z "$(command -v iex)" ] && alias iex="docker run -it elixir:latest iex"
 
+alias dps="docker_pss"
+
 # Stop all docker containers
 alias docker_stop="docker ps | tail -n +2 | awk '{print \$1}' | xargs docker stop"
 # Remove all docker containers

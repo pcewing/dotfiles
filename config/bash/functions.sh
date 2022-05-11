@@ -263,3 +263,10 @@ function webp_to_jpg() {
 
     echo "Successfully converted $webp_file to $jpg_file"
 }
+
+function docker_pss() {
+    local tempfile="$(mktemp)"
+    echo "ID Name Image" >> "$tempfile"
+    docker ps --format "{{.ID}} {{.Names}} {{.Image}}" >> "$tempfile"
+    column -t "$tempfile"
+}
