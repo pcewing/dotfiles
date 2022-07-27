@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 
-function base16() {
-    for i in {0..7}; do
-        let j=$i+8
-        printf "\x1b[38;5;${i}m colour${i}\t\x1b[38;5;${j}m colour${j}\n"
-    done
+# Open graphical file manager in the current directory
+function fm() {
+    file_manager="$(xdg-mime query default inode/directory | sed -e 's/\.desktop//')"
+    gtk-launch "$file_manager" .
 }
 
-
-# Create an executable bash file and open it in NeoVim
+# Create an executable bash script and open it in Neovim
 function nvims() {
     script_name="$1"
 
@@ -66,51 +64,9 @@ if __name__ == '__main__':
     nvim "$script_name"
 }
 
-function vman() {
-    key="$1"
-
-    rand=$[${RANDOM}%10000]
-    tmp_file="/tmp/man_$rand.txt"
-
-    man "$key" >> "$tmp_file"
-    nvim "$tmp_file"
-
-    rm "$tmp_file"
-}
-
-function sdr() {
-    r1="$1"
-    r2="$2"
-
-    if [[ ! "$r1" = "" ]] && [[ ! "$r2" = "" ]]; then
-        tmp_dir="$HOME/tmp"
-        tmp_file="$tmp_dir/diff.patch"
-
-        mkdir -p "$tmp_dir"
-        rm -f "$tmp_file"
-
-        svn diff --readonly --diff-cmd=bcompare_svnrev -r "$1:$2"
-    else
-        echo "Usage: sdr <rev1> <rev2>"
-        echo ""
-        echo "Example: sdr 1837 1839"
-    fi
-}
-
-# Download just the audio from a YouTube video as an MP3 file
+# Download the audio from a YouTube video as an MP3 file
 function yt-mp3() {
     youtube-dl -x --audio-format "mp3" "$1"
-}
-
-# Download a playlist from YouTube as a set of MP3 files
-function ytpl-mp3() {
-    youtube-dl --extract-audio --audio-format mp3 -o "%(title)s.%(ext)s" "$1"
-}
-
-function git_diff_bc3() {
-    git diff --name-only "$@" | while read filename; do
-        git difftool "$@" --no-prompt "$filename" -t "bc3" &
-    done
 }
 
 # WARNING: This shouldn't be called from an interactive shell as the passphrase
@@ -306,4 +262,11 @@ function webp_to_jpg() {
     rm "$jpg_file.png"
 
     echo "Successfully converted $webp_file to $jpg_file"
+}
+
+function docker_pss() {
+    local tempfile="$(mktemp)"
+    echo "ID Name Image" >> "$tempfile"
+    docker ps --format "{{.ID}} {{.Names}} {{.Image}}" >> "$tempfile"
+    column -t "$tempfile"
 }
