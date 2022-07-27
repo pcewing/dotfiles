@@ -38,11 +38,6 @@ alias gdm='git difftool -t "meld" -d'
 alias gaa='git add --all'
 alias gaad='git add --all --dry-run'
 
-# Svn aliases
-alias ss='svn status'
-alias sd='svn diff --diff-cmd=bcompare_svn'
-alias sl='svn log -l'
-
 # Filesystem aliases
 alias ..='cd ..'
 alias ...='cd ../..'
@@ -51,8 +46,6 @@ alias .....="cd ../../../.."
 alias ls="ls --color"
 alias lsl="ls -l --group-directories-first"
 alias lss="ls --sort=extension --group-directories-first"
-
-alias n='nautilus . >/dev/null 2>&1 & disown'
 
 # Helpers
 alias grep='grep --color=auto'
@@ -86,13 +79,13 @@ alias wpr_restart='killall wpr &>/dev/null; wpr &>/dev/null &'
 alias sx="startx"
 alias notes='ranger ~/notebook'
 alias reload_xresources="xrdb -merge ~/.Xresources"
-alias reload_aliases="source $DOTFILES/config/bash/aliases.sh"
-alias reload_functions="source $DOTFILES/config/bash/functions.sh"
 alias clip="xclip -i -selection clipboard"
 
 alias gnome-settings="env XDG_CURRENT_DESKTOP=GNOME gnome-control-center"
 
 [ -z "$(command -v iex)" ] && alias iex="docker run -it elixir:latest iex"
+
+alias dps="docker_pss"
 
 # Stop all docker containers
 alias docker_stop="docker ps | tail -n +2 | awk '{print \$1}' | xargs docker stop"
@@ -107,6 +100,8 @@ alias serve="python -m SimpleHTTPServer"
 
 alias aliases="$EDITOR $DOTFILES/config/bash/aliases.sh"
 alias functions="$EDITOR $DOTFILES/config/bash/functions.sh"
+alias reload_aliases="source $DOTFILES/config/bash/aliases.sh"
+alias reload_functions="source $DOTFILES/config/bash/functions.sh"
 
 # On Ubuntu, the system-supplied open file dialog can be very slow to open.
 # Running this should fix it temporarily. For more details, see:
