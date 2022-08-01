@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+function yell () { >&2 echo "$*";  }
+
 # Open graphical file manager in the current directory
 function fm() {
     file_manager="$(xdg-mime query default inode/directory | sed -e 's/\.desktop//')"
@@ -269,4 +271,45 @@ function docker_pss() {
     echo "ID Name Image" >> "$tempfile"
     docker ps --format "{{.ID}} {{.Names}} {{.Image}}" >> "$tempfile"
     column -t "$tempfile"
+}
+
+# Fuzzy directory changer
+function fdh() {
+    local fdh_dirs_file
+    fdh_dirs_file="$HOME/.fdh_dirs"
+
+    if [ ! -f "$fdh_dirs_file" ]; then
+        >"$fdh_dirs_file"  echo '# File format:'
+        >>"$fdh_dirs_file" echo '# - name=path'
+        >>"$fdh_dirs_file" echo '# - Blank lines and lines beginning with "#" are stripped'
+        >>"$fdh_dirs_file" echo ''
+        >>"$fdh_dirs_file" echo '# Examples'
+        >>"$fdh_dirs_file" echo 'example1=/home/paul/Documents'
+    fi
+
+    keys="$(
+        grep -vP '(^ *$)|(^#.*)' "$fdh_dirs_file" | \
+        sed -e 's/=.*//g'
+    )"
+
+    local key
+    key="$(echo "$keys" | fzf)"
+
+    local value
+    value="$(
+        grep -P "^$key=.*$" "$fdh_dirs_file" | \
+        sed -e 's/.*=//g'
+    )"
+
+    if [ ! -z "$value" ]; then
+        # Expand variables like $HOME
+        local dir
+        dir="$(eval echo "$value")"
+
+        if [ -d "$dir" ]; then
+            cd "$dir"
+        else
+            yell "ERROR: Directory \"$dir\" does not exist"
+        fi
+    fi
 }
