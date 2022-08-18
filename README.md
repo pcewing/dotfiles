@@ -27,3 +27,13 @@ If using `wpr`, create `~/.config/wpr/config.json` like:
     "Interval":120
 }
 ```
+
+### Dual Boot Clock Fix
+
+If dual booting with Windows, set hardware clock to local time:
+
+```bash
+timedatectl set-local-rtc 1
+```
+
+Without this, clock time in Windows will be off.
