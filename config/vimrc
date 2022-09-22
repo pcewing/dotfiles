@@ -168,6 +168,9 @@ nnoremap <leader><F8> 8gt
 nnoremap <leader><F9> 9gt
 nnoremap <leader><F0> 10gt
 
+" Print the current file path
+nnoremap <silent> <leader>p :echo @%<cr>
+
 " Copy file path and line number of current line to clipboard
 nnoremap <silent> <leader>y :let @+ = join([expand('%'),  line(".")], ':')<cr>
 
