@@ -1,33 +1,40 @@
-#!/usr/bin/env bash
+#!/bin/sh
+
+# This file is sourced from .xsession so it needs to be POSIX compliant.
 
 export DOTFILES="$HOME/dot"
 
-add_to_path() {
-    local p="$1"
-
-    if [[ ! "$p" = "" ]]; then
-        [[ ":$PATH:" != *":${p}:"* ]] && export PATH="${p}:${PATH}"
+contains() {
+    string="$1"
+    substring="$2"
+    if test "${string#*$substring}" != "$string"
+    then
+        return 0    # $substring is in $string
+    else
+        return 1    # $substring is not in $string
     fi
 }
 
-declare -a paths=(
-    "/usr/local/bin"
-    "/usr/local/sbin"
-    "$HOME/bin"
-    "$HOME/.flatpak_aliases"
-    "$HOME/.local/bin"
-    "$DOTFILES/bin"
-    "$HOME/.rvm/bin"
-    "$HOME/.npm-global/bin"
-    "/usr/local/go/bin"
-    "$HOME/go/bin"
-    "$HOME/go"
-    "$HOME/.mix/escripts"
-    "$HOME/box/bin"
-)
+add_to_path() {
+    p="$1"
+    export PATH="${p}:${PATH}"
+}
 
-for i in "${paths[@]}"
-do
-    add_to_path "$i"
-done
+try_add_to_path() {
+    p="$1"
+    contains "$PATH" "$p" || add_to_path "$p"
+}
 
+try_add_to_path "/usr/local/bin"
+try_add_to_path "/usr/local/sbin"
+try_add_to_path "$HOME/bin"
+try_add_to_path "$HOME/.flatpak_aliases"
+try_add_to_path "$HOME/.local/bin"
+try_add_to_path "$DOTFILES/bin"
+try_add_to_path "$HOME/.rvm/bin"
+try_add_to_path "$HOME/.npm-global/bin"
+try_add_to_path "/usr/local/go/bin"
+try_add_to_path "$HOME/go/bin"
+try_add_to_path "$HOME/go"
+try_add_to_path "$HOME/.mix/escripts"
+try_add_to_path "$HOME/box/bin"
