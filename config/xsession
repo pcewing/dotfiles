@@ -1,3 +1,13 @@
+#!/bin/sh
+
+# This script may be invoked when starting an X11 session via a display manager
+# or otherwise. For more information, see:
+# https://wiki.debian.org/Xsession
+#
+# To run shellcheck properly on this file:
+# $ cd ~/dot/config
+# $ shellcheck --shell=dash -x ./env ./xsession
+
 # Add user-defined fonts
 xset +fp /home/paul/.fonts
 xset fp rehash
@@ -28,17 +38,22 @@ export AWT_TOOLKIT=XToolkit
 # Set background color
 xsetroot -solid "#333333"
 
-# Enable core dumps in case something goes wrong
+# Set maximum core dump file size to unlimited
+# Note that shellcheck will warn that `ulimit -c` is not supported in POSIX sh;
+# however, dash is the standard implementation of sh on Linux and it does
+# support this. See comments at the top of file for properly running shellcheck
+# on this script.
 ulimit -c unlimited
 
 # Set up environment variables
-source ~/dot/config/env
+# shellcheck source=./env
+. "$HOME/dot/config/env"
+echo "Path = $PATH" > "$HOME/test.txt"
 
 # Start i3 and log output
 logdir="$HOME/.logs"
 mkdir -p "$logdir"
-$HOME/dot/bin/cleanup_logs.sh
+"$HOME/dot/bin/cleanup_logs.sh"
 i3logfile="$logdir/i3_$(date +"%Y%m%d_%H%M%S").log"
 echo "Starting at $(date)" >> "$i3logfile"
 exec /usr/local/bin/i3 -V -d all >> "$i3logfile"
-
