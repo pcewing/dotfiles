@@ -168,6 +168,12 @@ nnoremap <leader><F8> 8gt
 nnoremap <leader><F9> 9gt
 nnoremap <leader><F0> 10gt
 
+" Save out buffers
+nnoremap <silent> <leader>w :wa<cr>
+
+" Clear search highlighting
+nnoremap <silent> <leader><esc> :noh<cr>
+
 " Print the current file path
 nnoremap <silent> <leader>p :echo @%<cr>
 
