@@ -181,6 +181,48 @@ function apt_available_updates() {
     echo "There are $num_updates updates available"
 }
 
+function apt_file_search() {
+    local file="$1"
+    local skip_update="$2"
+
+    local usage
+
+    read -r -d '' usage <<'EOF'
+Usage: apt_file_search <filename> [-s]
+
+Search for apt packages that provide a specific file
+
+Options:
+    -s  Skip preliminary apt update step
+
+Example:
+    apt_file_search \"curl.h\"
+
+Output:
+    ...
+    libcurl4-openssl-dev: /usr/include/x86_64-linux-gnu/curl/curl.h
+    ...
+EOF
+
+    if [ -z "$file" ]; then
+        yell "$usage"
+        return 1
+    fi
+
+    if ! command -v "apt-file" &>/dev/null; then
+        yell "ERROR: apt-file missing; install it via 'apt install apt-file'"
+        return 1
+    fi
+
+    if [ ! "$skip_update" = "-s" ]; then
+        sudo apt-file update &>/dev/null &
+        echo "Updating apt-file database; to skip this step pass the '-s' flag"
+        wait
+    fi
+
+    apt-file find "$file"
+}
+
 function go_test_coverage() {
     local tempfile="$(mktemp)"
     if go test -coverprofile="$tempfile"; then
