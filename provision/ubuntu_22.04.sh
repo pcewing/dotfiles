@@ -88,6 +88,7 @@ install_apt_packages() {
     p="$p software-properties-common"
     p="$p apt-file"
     p="$p libfuse2" # This is required to use AppImage
+    p="$p locate"
 
     # Basic command line utitilies
     p="$p make"
