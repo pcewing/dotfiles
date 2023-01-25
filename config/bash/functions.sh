@@ -274,21 +274,26 @@ function docker_pss() {
 }
 
 # Fuzzy directory changer
-function fdh() {
-    local fdh_dirs_file
-    fdh_dirs_file="$HOME/.fdh_dirs"
+function fd() {
+    if ! command -v "fzf" &>/dev/null; then
+        1>&2 echo "ERROR: fzf missing; install it via 'apt install fzf'"
+        return 1
+    fi
 
-    if [ ! -f "$fdh_dirs_file" ]; then
-        >"$fdh_dirs_file"  echo '# File format:'
-        >>"$fdh_dirs_file" echo '# - name=path'
-        >>"$fdh_dirs_file" echo '# - Blank lines and lines beginning with "#" are stripped'
-        >>"$fdh_dirs_file" echo ''
-        >>"$fdh_dirs_file" echo '# Examples'
-        >>"$fdh_dirs_file" echo 'example1=/home/paul/Documents'
+    local fd_dirs_file
+    fd_dirs_file="$HOME/.fd_dirs"
+
+    if [ ! -f "$fd_dirs_file" ]; then
+        >"$fd_dirs_file"  echo '# File format:'
+        >>"$fd_dirs_file" echo '# - name=path'
+        >>"$fd_dirs_file" echo '# - Blank lines and lines beginning with "#" are stripped'
+        >>"$fd_dirs_file" echo ''
+        >>"$fd_dirs_file" echo '# Examples'
+        >>"$fd_dirs_file" echo 'example1=/home/paul/Documents'
     fi
 
     keys="$(
-        grep -vP '(^ *$)|(^#.*)' "$fdh_dirs_file" | \
+        grep -vP '(^ *$)|(^#.*)' "$fd_dirs_file" | \
         sed -e 's/=.*//g'
     )"
 
@@ -297,7 +302,7 @@ function fdh() {
 
     local value
     value="$(
-        grep -P "^$key=.*$" "$fdh_dirs_file" | \
+        grep -P "^$key=.*$" "$fd_dirs_file" | \
         sed -e 's/.*=//g'
     )"
 
@@ -312,4 +317,10 @@ function fdh() {
             yell "ERROR: Directory \"$dir\" does not exist"
         fi
     fi
+}
+
+fzfd() {
+    local dir
+    dir=$(find ${1:-.} -path '*/\.*' -prune -o -type d -print 2>/dev/null \
+            | fzf +m) && cd "$dir"
 }
