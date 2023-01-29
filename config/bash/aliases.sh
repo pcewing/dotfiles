@@ -1,5 +1,6 @@
 alias cl='clear'
 alias x='exit'
+alias r='ranger'
 
 alias lv="locate --regex"
 alias lV="locate"
