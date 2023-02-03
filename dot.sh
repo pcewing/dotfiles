@@ -32,8 +32,8 @@ function link() {
 # https://stackoverflow.com/questions/18641864/git-bash-shell-fails-to-create-symbolic-links/40914277#40914277
 #
 # Instead, just copy the files to their destination. This makes it easy to
-# accidentally update the wrong file and overwrite changes when re-linking but
-# that seems to be the lesser of two evils.
+# accidentally update the wrong file and overwrite changes when re-linking so
+# to mitigate that we mark the files as read-only.
 function link_windows() {
     local src="$1"
     local dst="$2"
@@ -44,9 +44,16 @@ function link_windows() {
     echo "Ensuring the directory $dir exists"
     mkdir -p "$dir"
 
+    # Make sure destination file doesn't already exist; the -f flag is needed
+    # here because we mark these files as read-only when creating them
+    rm -f "$dst" &>"/dev/null"
+
     echo "Copying $dst to $src"
-    rm "$dst" &>"/dev/null"
     cp "$src" "$dst"
+
+    # This is a Windows command to set the read-only flag but it should work
+    # correctly from Git Bash
+    attrib +r "$dst"
 }
 
 function unlink() {
@@ -132,6 +139,7 @@ function cmd_windows() {
     link_windows "$DOTFILES/config/gvimrc"          "$HOME/.gvimrc"
     link_windows "$DOTFILES/config/vsvimrc"         "$HOME/.vsvimrc"
     link_windows "$DOTFILES/config/gitconfig"       "$HOME/.gitconfig"
+    link_windows "$DOTFILES/config/alacritty.yml"   "$APPDATA/alacritty/alacritty.yml"
 }
 
 case "$1" in

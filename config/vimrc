@@ -84,10 +84,13 @@ Plug 'martinda/Jenkinsfile-vim-syntax'
 Plug 'aklt/plantuml-syntax'
 Plug 'elubow/cql-vim'
 Plug 'tpope/vim-fugitive'
-Plug 'sirver/UltiSnips'
 Plug 'honza/vim-snippets'
 Plug 'igankevich/mesonic'
 Plug 'rhysd/vim-clang-format'
+
+if has('unix')
+    Plug 'sirver/UltiSnips'
+endif
 
 if has('nvim')
     " New plugins to use neovim 0.5 features

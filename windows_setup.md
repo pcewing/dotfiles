@@ -26,3 +26,10 @@ TODO
       Windows
     - Get tips, tricks, and suggestions as you use Windows
 
+## Install Powerline Fonts
+
+TODO
+
+## Install vim-plug
+
+TODO
