@@ -4,9 +4,6 @@ function yell () { >&2 echo "$*";  }
 function die () { yell "$*"; exit 1; }
 function try () { "$@" || die "Command failed: $*"; }
 
-script_path="$( realpath "$0" )"
-script_dir="$( dirname "$script_path" )"
-
 [ -z "$DOTFILES" ] && DOTFILES="$HOME/dot"
 
 function usage() {
@@ -30,11 +27,19 @@ function link() {
     ln -sf "$src" "$dst"
 }
 
+# Symlinks in Git Bash aren't great due to Windows requiring administrator
+# privileges to create them. See:
+# https://stackoverflow.com/questions/18641864/git-bash-shell-fails-to-create-symbolic-links/40914277#40914277
+#
+# Instead, just copy the files to their destination. This makes it easy to
+# accidentally update the wrong file and overwrite changes when re-linking but
+# that seems to be the lesser of two evils.
 function link_windows() {
     local src="$1"
     local dst="$2"
 
-    local dir="$(dirname -- "$dst")"
+    local dir
+    dir="$(dirname -- "$dst")"
 
     echo "Ensuring the directory $dir exists"
     mkdir -p "$dir"
@@ -118,11 +123,15 @@ function cmd_link() {
 }
 
 function cmd_windows() {
-    link_windows "$DOTFILES/config/vimrc"       "$HOME/.vimrc"
-    link_windows "$DOTFILES/config/vimrc"       "$HOME/AppData/Local/nvim/init.vim"
-    link_windows "$DOTFILES/config/gvimrc"      "$HOME/.gvimrc"
-    link_windows "$DOTFILES/config/vsvimrc"     "$HOME/.vsvimrc"
-    link_windows "$DOTFILES/config/gitconfig"   "$HOME/.gitconfig"
+    link_windows "$DOTFILES/config/profile"         "$HOME/.profile"
+    link_windows "$DOTFILES/config/env"             "$HOME/.env"
+    link_windows "$DOTFILES/config/bashrc"          "$HOME/.bashrc"
+    link_windows "$DOTFILES/config/bash_profile"    "$HOME/.bash_profile"
+    link_windows "$DOTFILES/config/vimrc"           "$HOME/.vimrc"
+    link_windows "$DOTFILES/config/vimrc"           "$HOME/AppData/Local/nvim/init.vim"
+    link_windows "$DOTFILES/config/gvimrc"          "$HOME/.gvimrc"
+    link_windows "$DOTFILES/config/vsvimrc"         "$HOME/.vsvimrc"
+    link_windows "$DOTFILES/config/gitconfig"       "$HOME/.gitconfig"
 }
 
 case "$1" in
