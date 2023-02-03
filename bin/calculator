@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+if ! command -v "xprop" &>/dev/null; then
+    >&2 echo "xprop: command not found"
+    exit 1
+fi
+
+if ! command -v "python" &>/dev/null; then
+    >&2 echo "python: command not found"
+    return 1
+fi
+
 urxvt \
     -e bash \
         -c "xprop -id \$WINDOWID -f WM_CLASS 8ss -set WM_CLASS \"calculator\"
