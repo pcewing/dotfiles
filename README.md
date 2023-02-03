@@ -37,3 +37,19 @@ timedatectl set-local-rtc 1
 ```
 
 Without this, clock time in Windows will be off.
+
+### Applications to Manually Install
+
+The following aren't in apt and need to be installed manually:
+
+- Chrome
+- Beyond Compare
+- Insync
+- Discord
+- RuneLite
+
+## Windows 10
+
+For setup steps on Windows 10, see:
+
+[windows_setup.md](./windows_setup.md)
