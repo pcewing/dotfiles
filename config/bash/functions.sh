@@ -1,15 +1,38 @@
 #!/usr/bin/env bash
 
-function yell () { >&2 echo "$*";  }
+function yell() { >&2 echo "$*";  }
+
+# Checks whether or not commands passed as parameters are installed. If a
+# command that is not recognized is encountered, an error message is printed
+# and the command returns 1 so that it can be used in conditional statements.
+# Example:
+# function foo() {
+#     installed "git" "npm" || return 1
+#     echo "Git and NPM are installed!"
+# }
+function installed() {
+    arr=("$@")
+    for cmd in "${arr[@]}"; do
+        if ! command -v "$cmd" &>/dev/null; then
+            yell "ERROR: missing dependency: $cmd"
+            return 1
+        fi
+    done
+}
 
 # Open graphical file manager in the current directory
 function fm() {
+    installed "xdg-mime" "gtk-launch" || return 1
+
     file_manager="$(xdg-mime query default inode/directory | sed -e 's/\.desktop//')"
     gtk-launch "$file_manager" .
 }
 
 # Create an executable bash script and open it in Neovim
 function nvims() {
+    installed "nvim" || return 1
+
+    local script_name
     script_name="$1"
 
     if [[ -z "$script_name" ]]; then
@@ -40,6 +63,9 @@ EOF
 
 # Create an executable Python file and open it in NeoVim
 function nvimp() {
+    installed "nvim" || return 1
+
+    local script_name template
     script_name="$1"
 
     if [[ -z "$script_name" ]]; then
@@ -52,7 +78,7 @@ function nvimp() {
         return 1
     fi
 
-    local template="#!/usr/bin/env python3
+    template="#!/usr/bin/env python3
 
 def main():
     pass
@@ -68,6 +94,8 @@ if __name__ == '__main__':
 
 # Download the audio from a YouTube video as an MP3 file
 function yt-mp3() {
+    installed "youtube-dl" || return 1
+
     youtube-dl -x --audio-format "mp3" "$1"
 }
 
@@ -76,40 +104,50 @@ function yt-mp3() {
 # scripts can avoid asking for the passphrase multiple times when encrypting
 # more than one file.
 function encrypt_with_pass() {
+    installed "gpg" || return 1
+
     local src="$1"
     local dst="$2"
     local pass="$3"
 
-    [ -z "$src" -o -z "$dst" -o -z "$pass" ] \
-        && echo "Usage: encrypt_with_pass path/to/src path/to/dst passphrase" 1>&2 \
-        && return
+    if [ -z "$src" ] || [ -z "$dst" ] || [ -z "$pass" ]; then
+        echo "Usage: encrypt_with_pass path/to/src path/to/dst passphrase" 1>&2
+        return
+    fi
 
-    [ ! -f "$src" ] \
-        && echo "Source file $src doesn't exist" 1>&2 \
-        && return
+    if [ ! -f "$src" ]; then
+        echo "Source file $src doesn't exist" 1>&2
+        return
+    fi
 
-    [ -e "$dst" ] \
-        && echo "Destination file $dst already exists" 1>&2 \
-        && return
+    if [ -e "$dst" ]; then
+        echo "Destination file $dst already exists" 1>&2
+        return
+    fi
 
     echo "$pass" | gpg --batch --yes --passphrase-fd 0 --output "$dst" \
         --symmetric "$src"
 }
 
 function encrypt() {
+    installed "gpg" || return 1
+
     local src="$1"
     local dst="$2" # Optional
 
-    [ -z "$src" ] \
-        && echo "Usage: encrypt path/to/src path/to/dst" 1>&2 \
-        && return
+    if [ -z "$src" ]; then
+        echo "Usage: encrypt path/to/src path/to/dst" 1>&2
+        return
+    fi
 
     # If source was provided but destination wasn't, set the default
     # destination by appending ".gpg"
-    [ ! -z "$src" -a -z "$dst" ] && dst="$src.gpg"
+    if [ -n "$src" ] && [ -z "$dst" ]; then
+        dst="$src.gpg"
+    fi
 
-    echo -n "Enter passphrase: " && read -s pass && echo
-    echo -n "Re-enter passphrase: " && read -s pass_confirm && echo
+    echo -n "Enter passphrase: " && read -rs pass && echo
+    echo -n "Re-enter passphrase: " && read -rs pass_confirm && echo
 
     [ ! "$pass" = "$pass_confirm" ] \
         && echo "Passphrase entries did not match" 1>&2 \
@@ -123,35 +161,43 @@ function encrypt() {
 # scripts can avoid asking for the passphrase multiple times when decrypting
 # more than one file.
 function decrypt_with_pass() {
+    installed "gpg" || return 1
+
     local src="$1"
     local dst="$2"
     local pass="$3"
 
-    [ -z "$src" -o -z "$dst" -o -z "$pass" ] \
-        && echo "Usage: decrypt path/to/src path/to/dst passphrase" 1>&2 \
-        && return
+    if [ -z "$src" ] || [ -z "$dst" ] || [ -z "$pass" ]; then
+        echo "Usage: decrypt_with_pass path/to/src path/to/dst passphrase" 1>&2
+        return
+    fi
 
-    [ ! -f "$src" ] \
-        && echo "Source file $src doesn't exist" 1>&2 \
-        && return
+    if [ ! -f "$src" ]; then
+        echo "Source file $src doesn't exist" 1>&2
+        return
+    fi
 
-    [ -e "$dst" ] \
-        && echo "Destination file $dst already exists" 1>&2 \
-        && return
+    if [ -e "$dst" ]; then
+        echo "Destination file $dst already exists" 1>&2
+        return
+    fi
 
     echo "$pass" | gpg --batch --yes --passphrase-fd 0 --output "$dst" \
         --decrypt "$src"
 }
 
 function decrypt() {
+    installed "gpg" || return 1
+
     local src="$1"
     local dst="$2"
 
-    [ -z "$src" -o -z "$dst" ] \
-        && echo "Usage: decrypt path/to/src path/to/dst" 1>&2 \
-        && return
+    if [ -z "$src" ] || [ -z "$dst" ]; then
+        echo "Usage: decrypt path/to/src path/to/dst" 1>&2
+        return
+    fi
 
-    echo -n "Enter passphrase: " && read -s pass && echo
+    echo -n "Enter passphrase: " && read -rs pass && echo
 
     decrypt_with_pass "$src" "$dst" "$pass"
 }
@@ -177,11 +223,17 @@ function replace() {
 }
 
 function apt_available_updates() {
-    local num_updates="$(apt list --upgradeable 2>/dev/null | grep -Ev '^Listing\.\.\.' | wc -l)"
+    installed "apt" || return 1
+
+    local num_updates
+
+    num_updates="$(apt list --upgradeable 2>/dev/null | grep -cEv '^Listing\.\.\.')"
     echo "There are $num_updates updates available"
 }
 
 function apt_file_search() {
+    installed "sudo" "apt-file" || return 1
+
     local file="$1"
     local skip_update="$2"
 
@@ -209,11 +261,6 @@ EOF
         return 1
     fi
 
-    if ! command -v "apt-file" &>/dev/null; then
-        yell "ERROR: apt-file missing; install it via 'apt install apt-file'"
-        return 1
-    fi
-
     if [ ! "$skip_update" = "-s" ]; then
         sudo apt-file update &>/dev/null &
         echo "Updating apt-file database; to skip this step pass the '-s' flag"
@@ -224,7 +271,11 @@ EOF
 }
 
 function go_test_coverage() {
-    local tempfile="$(mktemp)"
+    installed "go" || return 1
+
+    local tempfile
+
+    tempfile="$(mktemp)"
     if go test -coverprofile="$tempfile"; then
         go tool cover -html="$tempfile"
     else
@@ -233,15 +284,20 @@ function go_test_coverage() {
 }
 
 function viewhex {
+    installed "xxd" "nvim" || return 1
+
     local path="$1"
 
     [ -z "$path" ] && yell "Usage: viewhex filename" && return 1
 
-    local tmp="$(mktemp)"
+    local tmp
+    tmp="$(mktemp)"
     local success="false"
 
-    xxd "$path" > "$tmp"
-    [ "$?" = 0 ] && success="true" && nvim "$tmp"
+    if xxd "$path" > "$tmp"; then
+        success="true"
+        nvim "$tmp"
+    fi
 
     rm "$tmp"
 
@@ -253,39 +309,25 @@ function viewhex {
 }
 
 function git_show_tool {
-    local before="$(git log --oneline -n 2 | tail -n 1 | awk '{ print $1 }')"
-    local after="$(git log --oneline -n 2 | head -n 1 | awk '{ print $1 }')"
+    installed "git" || return 1
+
+    local before after
+    before="$(git log --oneline -n 2 | tail -n 1 | awk '{ print $1 }')"
+    after="$(git log --oneline -n 2 | head -n 1 | awk '{ print $1 }')"
 
     git difftool "$before" "$after"
-}
-
-# This isn't all that useful because this is already a single line command but
-# I'm mostly adding this so I can remember the proper way to check if a command
-# exists in $PATH. To use in an if statement:
-# if command -v "$cmd" &>/dev/null; then echo "true"; fi
-function is_installed() {
-    local cmd="$1"
-    command -v "$cmd" &>/dev/null
 }
 
 # Converts an image file from webp to jpg format. Requires webp and ImageMagick
 # to be installed.
 function webp_to_jpg() {
+    installed "dwebp" "convert" || return 1
+
     local webp_file="$1"
     local jpg_file="$2"
 
     if [[ -z "$webp_file" || -z "$jpg_file" ]]; then
         1>&2 echo "Usage: webp_to_jpg path_to_img.webp path_to_img.jpg"
-        return 1
-    fi
-
-    if ! command -v "dwebp" &>/dev/null; then
-        1>&2 echo "ERROR: dwebp missing; install it via 'apt install webp'"
-        return 1
-    fi
-
-    if ! command -v "convert" &>/dev/null; then
-        1>&2 echo "ERROR: convert missing; install it via 'apt install imagemagick'"
         return 1
     fi
 
@@ -309,7 +351,8 @@ function webp_to_jpg() {
 }
 
 function docker_pss() {
-    local tempfile="$(mktemp)"
+    local tempfile
+    tempfile="$(mktemp)"
     echo "ID Name Image" >> "$tempfile"
     docker ps --format "{{.ID}} {{.Names}} {{.Image}}" >> "$tempfile"
     column -t "$tempfile"
@@ -317,21 +360,20 @@ function docker_pss() {
 
 # Fuzzy directory changer
 function fd() {
-    if ! command -v "fzf" &>/dev/null; then
-        1>&2 echo "ERROR: fzf missing; install it via 'apt install fzf'"
-        return 1
-    fi
+    installed "fzf" || return 1
 
     local fd_dirs_file
     fd_dirs_file="$HOME/.fd_dirs"
 
     if [ ! -f "$fd_dirs_file" ]; then
-        >"$fd_dirs_file"  echo '# File format:'
-        >>"$fd_dirs_file" echo '# - name=path'
-        >>"$fd_dirs_file" echo '# - Blank lines and lines beginning with "#" are stripped'
-        >>"$fd_dirs_file" echo ''
-        >>"$fd_dirs_file" echo '# Examples'
-        >>"$fd_dirs_file" echo 'example1=/home/paul/Documents'
+        cat << EOF > "$fd_dirs_file"
+# File format:
+# - name=path
+# - Blank lines and lines beginning with "#" are stripped
+
+# Examples
+example1=/home/paul/Documents
+EOF
     fi
 
     keys="$(
@@ -348,21 +390,25 @@ function fd() {
         sed -e 's/.*=//g'
     )"
 
-    if [ ! -z "$value" ]; then
+    if [ -n "$value" ]; then
         # Expand variables like $HOME
         local dir
         dir="$(eval echo "$value")"
 
         if [ -d "$dir" ]; then
-            cd "$dir"
+            cd "$dir" || return 1
         else
             yell "ERROR: Directory \"$dir\" does not exist"
         fi
     fi
 }
 
-fzfd() {
+function fzfd() {
     local dir
-    dir=$(find ${1:-.} -path '*/\.*' -prune -o -type d -print 2>/dev/null \
-            | fzf +m) && cd "$dir"
+    dir=$(find "${1:-.}" -path '*/\.*' -prune -o -type d -print 2>/dev/null \
+            | fzf +m) && cd "$dir" || return 1
+}
+
+function foobar() {
+    echo "${1:-.}"
 }
