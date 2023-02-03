@@ -12,8 +12,9 @@ script_dir="$( dirname "$script_path" )"
 function usage() {
     yell "Usage: dot.sh <command>"
     yell "Commands:"
-    yell "    link  : Create symlinks to dotfiles"
-    yell "    clean : Remove symlinks to dotfiles"
+    yell "    link      : Create symlinks to dotfiles"
+    yell "    clean     : Remove symlinks to dotfiles"
+    yell "    windows   : Create symlinks to dotfiles on Windows"
 }
 
 function link() {
@@ -39,6 +40,7 @@ function link_windows() {
     mkdir -p "$dir"
 
     echo "Copying $dst to $src"
+    rm "$dst"
     cp "$src" "$dst"
 }
 
@@ -116,11 +118,10 @@ function cmd_link() {
 }
 
 function cmd_windows() {
-    rm "$HOME/.vimrc"
-    rm "$HOME/.gvimrc"
-
-    link_windows "$DOTFILES\config\vimrc"   "$HOME/.vimrc"
-    link_windows "$DOTFILES\config\gvimrc"  "$HOME/.gvimrc"
+    link_windows "$DOTFILES/config/vimrc"   "$HOME/.vimrc"
+    link_windows "$DOTFILES/config/vimrc"   "$HOME/AppData/Local/nvim/init.vim"
+    link_windows "$DOTFILES/config/gvimrc"  "$HOME/.gvimrc"
+    link_windows "$DOTFILES/config/vsvimrc" "$HOME/.vsvimrc"
 }
 
 case "$1" in
