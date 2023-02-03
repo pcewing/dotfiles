@@ -40,7 +40,7 @@ function link_windows() {
     mkdir -p "$dir"
 
     echo "Copying $dst to $src"
-    rm "$dst"
+    rm "$dst" &>"/dev/null"
     cp "$src" "$dst"
 }
 
@@ -118,10 +118,11 @@ function cmd_link() {
 }
 
 function cmd_windows() {
-    link_windows "$DOTFILES/config/vimrc"   "$HOME/.vimrc"
-    link_windows "$DOTFILES/config/vimrc"   "$HOME/AppData/Local/nvim/init.vim"
-    link_windows "$DOTFILES/config/gvimrc"  "$HOME/.gvimrc"
-    link_windows "$DOTFILES/config/vsvimrc" "$HOME/.vsvimrc"
+    link_windows "$DOTFILES/config/vimrc"       "$HOME/.vimrc"
+    link_windows "$DOTFILES/config/vimrc"       "$HOME/AppData/Local/nvim/init.vim"
+    link_windows "$DOTFILES/config/gvimrc"      "$HOME/.gvimrc"
+    link_windows "$DOTFILES/config/vsvimrc"     "$HOME/.vsvimrc"
+    link_windows "$DOTFILES/config/gitconfig"   "$HOME/.gitconfig"
 }
 
 case "$1" in
