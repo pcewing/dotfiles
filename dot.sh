@@ -116,6 +116,9 @@ function cmd_link() {
 }
 
 function cmd_windows() {
+    rm "$HOME/.vimrc"
+    rm "$HOME/.gvimrc"
+
     link_windows "$DOTFILES\config\vimrc"   "$HOME/.vimrc"
     link_windows "$DOTFILES\config\gvimrc"  "$HOME/.gvimrc"
 }
