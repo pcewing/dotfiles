@@ -70,6 +70,7 @@ call plug#begin('~/.config/nvim/plugged')
 " Colorschemes
 Plug 'https://github.com/dracula/vim.git'
 "Plug 'joshdick/onedark.vim'
+Plug 'averak/laserwave.vim'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
@@ -191,6 +192,7 @@ nnoremap <silent> <leader>p :echo @%<cr>
 nnoremap <silent> <leader>y :let @+ = join([expand('%'),  line(".")], ':')<cr>
 
 silent! colorscheme dracula
+"silent! colorscheme laserwave256
 hi CursorLine cterm=NONE ctermbg=black
 
 if has('win32')
