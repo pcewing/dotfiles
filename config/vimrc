@@ -68,9 +68,7 @@ filetype plugin on
 call plug#begin('~/.config/nvim/plugged')
 
 " Colorschemes
-Plug 'https://github.com/dracula/vim.git'
-"Plug 'joshdick/onedark.vim'
-Plug 'averak/laserwave.vim'
+Plug 'chriskempson/base16-vim'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
@@ -191,9 +189,12 @@ nnoremap <silent> <leader>p :echo @%<cr>
 " Copy file path and line number of current line to clipboard
 nnoremap <silent> <leader>y :let @+ = join([expand('%'),  line(".")], ':')<cr>
 
-silent! colorscheme dracula
-"silent! colorscheme laserwave256
-hi CursorLine cterm=NONE ctermbg=black
+" Start flavours - vimrc
+let base16colorspace=256
+let s:Base16Scheme = substitute(tolower("Outrun Dark"), " ", "-", "g")
+let s:ColorScheme = "base16-" . s:Base16Scheme
+execute 'colorscheme ' . s:ColorScheme
+" End flavours - vimrc
 
 if has('win32')
     set background=dark

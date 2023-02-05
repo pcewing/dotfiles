@@ -1,0 +1,4 @@
+let base16colorspace=256
+let s:Base16Scheme = substitute(tolower("{{scheme-name}}"), " ", "-", "g")
+let s:ColorScheme = "base16-" . s:Base16Scheme
+execute 'colorscheme ' . s:ColorScheme
