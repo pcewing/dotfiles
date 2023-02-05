@@ -1,5 +1,15 @@
 # Outrun Theme
 
+Set up base16 colors, initially for outrun but multiple themes we can switch
+between would be cool.
+
+Watch:
+- https://www.youtube.com/watch?v=1HPo4VvI6dA&ab_channel=DaveSnider
+
+base16 resources:
+- https://github.com/chriskempson/base16
+- https://github.com/Misterio77/flavours
+
 Create an outrun theme, use the following resources:
 
 - https://github.com/ZachSchaffer/dotfiles-Outrun

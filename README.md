@@ -50,8 +50,21 @@ The following aren't in apt and need to be installed manually:
 
 ## Theming
 
-Unfortunately there's not an easy way to retheme everything. When updating
-theme, the following files should be considered:
+To make it easier to re-theme everything, I use `base16` and `flavours`. See:
+- [chriskempson/base16](https://github.com/chriskempson/base16)
+- [chriskempson/base16-templates-source](https://github.com/chriskempson/base16-templates-source)
+- [chriskempson/base16-schemes-source](https://github.com/chriskempson/base16-schemes-source)
+- [chriskempson/base16-shell](https://github.com/chriskempson/base16-shell)
+- [Misterio77/flavours](https://github.com/Misterio77/flavours)
+
+Schemes I've used:
+- https://github.com/hugodelahousse/base16-outrun-schemes
+
+To apply the color scheme:
+
+```bash
+flavours apply outrun-dark
+```
 
 - [config/Xresources](./config/Xresources)
     - This controls the colors in `urxvt` which will also affect all terminal

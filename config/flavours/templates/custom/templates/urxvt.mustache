@@ -1,0 +1,20 @@
+
+#ifdef background_opacity
+
+! This configures "real" transparency for urxvt, but it requires a
+! composite manager like compton to be running.
+URxvt.depth:        32
+URxvt.background:   [background_opacity]base00
+
+! This adds "fake" transparency. If a composite manager is not running, this
+! simulates transparency by capturing what is behind the window and drawing it
+! as the background.
+!URxvt*transparent: true
+!URxvt*shading:     10
+
+#else
+
+URxvt.background:   base00
+
+#endif
+

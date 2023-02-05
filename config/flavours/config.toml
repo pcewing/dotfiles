@@ -1,0 +1,24 @@
+# Configuration for flavours
+# https://github.com/Misterio77/flavours
+
+shell = "bash -c '{}'"
+
+[[items]]
+file = "$DOTFILES/config/Xresources"
+template = "xresources"
+start = "! Start flavours - xresources"
+end = "! End flavours - xresources"
+
+[[items]]
+file = "$DOTFILES/config/Xresources"
+template = "custom"
+subtemplate = "urxvt"
+start = "! Start flavours - urxvt"
+end = "! End flavours - urxvt"
+
+[[items]]
+file = "$DOTFILES/config/bashrc"
+template = "custom"
+subtemplate = "bashrc"
+start = "# Start flavours - bashrc"
+end = "# End flavours - bashrc"

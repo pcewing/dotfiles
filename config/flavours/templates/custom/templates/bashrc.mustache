@@ -1,0 +1,4 @@
+# Scheme name is upper case with spaces in the base16 templating system so it
+# needs to be converted to the proper format here
+scheme="$(echo "{{scheme-name}}" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')"
+eval "base16_$scheme"
