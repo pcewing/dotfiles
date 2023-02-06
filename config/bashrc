@@ -5,17 +5,12 @@
 export EDITOR='nvim'
 
 # Load config files
-for config in $DOTFILES/config/bash/*.sh; do source $config; done
-
-# Set up Node Version Manager.
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-
-# Set GOPATH
-command -v "go" &>/dev/null && export GOPATH="$HOME/go"
+for config in "$DOTFILES/config/bash/"*.sh; do
+    . "$config"
+done
 
 src_if_exists() {
-   [[ -e "$1" ]] && source "$1"
+   [[ -f "$1" ]] && . "$1"
 }
 
 declare -a sources=(
@@ -23,8 +18,7 @@ declare -a sources=(
     "$HOME/.localrc"
 )
 
-for i in "${sources[@]}"
-do
+for i in "${sources[@]}"; do
     src_if_exists  "$i"
 done
 
@@ -41,4 +35,19 @@ none="\[\033[00m\]"
 
 PS1="$white[$green\u$white@$blue\H$white:$yellow\w$white] "
 
-[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+# Node.js configuration
+if command -v "node" &>"/dev/null"; then
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+fi
+
+# Golang configuration
+if command -v "go" &>"/dev/null"; then
+    # Set GOPATH
+    export GOPATH="$HOME/go"
+fi
+
+# Rust configuration
+if command -v "rust" &>"/dev/null"; then
+    [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+fi
