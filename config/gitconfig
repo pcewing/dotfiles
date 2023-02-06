@@ -10,6 +10,7 @@
     cob = checkout -b
     br = branch -v
     cont = rebase --continue
+    rv = remote -v
 
     # current branch
     cbr = rev-parse --abbrev-ref HEAD
