@@ -173,25 +173,13 @@
     context = ctrl+shift+period
 
 [urgency_low]
-    # IMPORTANT: colors have to be defined in quotation marks.
-    # Otherwise the "#" and following would be interpreted as a comment.
-    frame_color = "#50fa7b"
-    background = "#5af78e"
-    foreground = "#282a36"
     timeout = 10
 
 [urgency_normal]
-    frame_color = "#f1fa8c"
-    background = "#f4f99d"
-    foreground = "#282a36"
     timeout = 10
 
 [urgency_critical]
-    frame_color = "#ff5555"
-    background = "#ff6e67"
-    foreground = "#282a36"
     timeout = 0
-
 
 # Every section that isn't one of the above is interpreted as a rules to
 # override settings for certain messages.
@@ -246,3 +234,30 @@
 #    urgency = normal
 #
 # vim: ft=cfg
+
+# Start flavours - dunstrc
+
+# Base16 Outrun Dark
+
+[base16_low]
+    msg_urgency = low
+    background = "#20204A"
+    foreground = "#50507A"
+    frame_color = "#D0D0FA"
+    separator_color = "#D0D0FA"
+
+[base16_normal]
+    msg_urgency = normal
+    background = "#30305A"
+    foreground = "#D0D0FA"
+    frame_color = "#D0D0FA"
+    separator_color = "#D0D0FA"
+
+[base16_critical]
+    msg_urgency = critical
+    background = "#FF4242"
+    foreground = "#E0E0FF"
+    frame_color = "#D0D0FA"
+    separator_color = "#D0D0FA"
+
+# End flavours - dunstrc

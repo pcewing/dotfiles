@@ -70,8 +70,9 @@ BASE16_SHELL="$HOME/.config/base16-shell/"
 # Should be: base16_outrun-dark
 
 # Start flavours - bashrc
-# Scheme name is upper case with spaces in the base16 templating system so it
-# needs to be converted to the proper format here
-scheme="$(echo "Outrun Dark" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')"
-eval "base16_$scheme"
+
+# Base16 Outrun Dark
+
+eval "base16_outrun-dark"
+
 # End flavours - bashrc

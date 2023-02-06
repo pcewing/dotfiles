@@ -1,4 +1,9 @@
+
+" Base16 {{scheme-name}}
+
+" Loads the scheme from:
+" https://github.com/chriskempson/base16-vim
+
 let base16colorspace=256
-let s:Base16Scheme = substitute(tolower("{{scheme-name}}"), " ", "-", "g")
-let s:ColorScheme = "base16-" . s:Base16Scheme
-execute 'colorscheme ' . s:ColorScheme
+colorscheme base16-{{scheme-slug}}
+

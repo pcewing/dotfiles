@@ -20,49 +20,6 @@ for_window [class="^.*"] border pixel 2
 # configure gaps and window chrome styles
 gaps inner 10
 
-# color pallette
-set $back               #1d1F21
-set $black              #282A2E
-set $grey               #373B41
-set $lightgrey          #707880
-set $white              #C5C8C6
-set $yellow             #F0C674
-set $red                #CC6666
-set $darkred            #A54242
-set $green              #B5BD56
-set $transparent        #1d202100
-
-#client.focused         #493757 #453452 #FFFFFF #523445
-client.focused          #394042 #394042 #FFFFFF #009688
-client.focused_inactive #4F4E43 #49483E #BFBFBF #49483E
-client.unfocused        #000000 #000000 #888888 #000000
-client.urgent           #662B32 #58252B #F4BF75 #58252B
-
-
-### Legend 
-# border:       The border of the titlebar, not the border of the window itself
-# background:   The background of the titlebar
-# foreground:   The foreground (Font color) of the titlebar
-# indicator:    ???
-# child_border: The border of the window
-#
-# The easiest way to test new color settings when titlebars are disabled is to
-# change to tabbed layout.
-
-# color settings
-# class                  border  backg.  foreg.  indicator child_border
-#client.focused           $fg     $bg     $fg     $fg       $fg
-#client.focused_inactive  #073642 #073642 #888888 #292d2e   #222222
-#client.unfocused         $bg     $bg     $c08    #ff0000   $bg
-#client.urgent           #2f343a #900000 #ffffff #900000   #900000
-#client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
-#client.background       #ffffff
-#client.focused           $temp1  $temp1  $black  $red      $temp1
-#client.focused_inactive  $temp2  $temp2  $temp2  $temp2    $temp2
-#client.unfocused         $temp2  $temp2  $temp2  $temp2    $temp2
-#client.urgent            $temp2  $temp2  $temp2  $temp2    $temp2
-#client.placeholder       $temp2  $temp2  $temp2  $temp2    $temp2
-#client.background        $temp2  $temp2  $temp2  $temp2    $temp2
 
 set $mode_system (l)ock, (Shift+l)ogout, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
 mode "$mode_system" {
@@ -201,41 +158,6 @@ bindsym --release Print exec "scrot -m $HOME/Pictures/screenshots/%s_%H%M_%d.%m.
 bindsym --release Shift+Print exec "scrot -s $HOME/Pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
 bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/Pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
 
-# py3status bar config
-bar {
-    status_command py3status -c ~/.config/py3status/config
-    position top
-    separator_symbol " | "
-
-    colors {
-        #background $bg
-        #statusline $fg
-        #separator $c08
-
-        background #1B123A
-        statusline $white
-        separator #1B123A
-
-        # <colorclass>     <border> <background> <text>
-        focused_workspace  #f20ef7  #f20ef7      #f3f4f5
-        active_workspace   #f20ef7  #1B123A      #f3f4f5
-        inactive_workspace #1B123A  #1B123A      #f3f4f5
-        urgent_workspace   #48cfcb  #1B123A      #f3f4f5
-        binding_mode       #48cfcb  #1B123A      #f3f4f5
-
-#[colors]
-#background = #1B123A
-#background-alt = #9e4d79
-#foreground = #f3f4f5
-#foreground-alt = #F20EF7
-#primary = #48cfcb
-#secondary = #F20EF7
-#tertiary = #F20EF7
-#tertiary-alt = #a26af9
-#alert = #ffffff
-    }
-}
-
 # force certain apps to specific workspaces
 assign [class="Bcompare"] 5
 assign [class="zoom"] 7
@@ -282,3 +204,55 @@ exec_always "[ -e ~/set-bg.sh ] && ~/set-bg.sh"
 
 # run startup script
 exec_always "startup.sh"
+
+# Start flavours - i3
+
+# Base16 Outrun Dark
+
+set $base00 #00002A
+set $base01 #20204A
+set $base02 #30305A
+set $base03 #50507A
+set $base04 #B0B0DA
+set $base05 #D0D0FA
+set $base06 #E0E0FF
+set $base07 #F5F5FF
+set $base08 #FF4242
+set $base09 #FC8D28
+set $base0A #F3E877
+set $base0B #59F176
+set $base0C #0EF0F0
+set $base0D #66B0FF
+set $base0E #F10596
+set $base0F #F003EF
+
+# End flavours - i3
+
+# Basic color configuration using the Base16 variables for windows and borders.
+# Property Name         Border  BG      Text    Indicator Child Border
+client.focused          $base05 $base0D $base00 $base0D $base0C
+client.focused_inactive $base01 $base01 $base05 $base03 $base01
+client.unfocused        $base01 $base00 $base05 $base01 $base01
+client.urgent           $base08 $base08 $base00 $base08 $base08
+client.placeholder      $base00 $base00 $base05 $base00 $base00
+client.background       $base07
+
+# Configure i3bar/py3status
+bar {
+    status_command py3status -c ~/.config/py3status/config
+    position top
+    separator_symbol " | "
+
+    colors {
+        background $base00
+        separator  $base01
+        statusline $base04
+
+        # State             Border  BG      Text
+        focused_workspace   $base0D $base0D $base00
+        active_workspace    $base05 $base03 $base00
+        inactive_workspace  $base00 $base00 $base05
+        urgent_workspace    $base08 $base08 $base00
+        binding_mode        $base00 $base0A $base00
+    }
+}

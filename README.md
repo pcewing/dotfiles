@@ -50,56 +50,69 @@ The following aren't in apt and need to be installed manually:
 
 ## Theming
 
-To make it easier to re-theme everything, I use `base16` and `flavours`. See:
-- [chriskempson/base16](https://github.com/chriskempson/base16)
-- [chriskempson/base16-templates-source](https://github.com/chriskempson/base16-templates-source)
-- [chriskempson/base16-schemes-source](https://github.com/chriskempson/base16-schemes-source)
-- [chriskempson/base16-shell](https://github.com/chriskempson/base16-shell)
-- [Misterio77/flavours](https://github.com/Misterio77/flavours)
+To make it easier to re-theme everything at once, I use
+[base16](https://github.com/chriskempson/base16) and
+[flavours](https://github.com/Misterio77/flavours). See:
 
-Schemes I've used:
-- https://github.com/hugodelahousse/base16-outrun-schemes
+The tl;dr of `base16` is that it is guideline for designing a color scheme such
+that the scheme consists of a palette of 16 colors - 8 shades and 8 accents.
+Templates can then be created to render the base16 scheme into various config
+formats for different applications.
 
-To apply the color scheme:
+Due to some [turbulence](https://github.com/tinted-theming/home/issues/51) in
+the `base16` project, I've added my most used schemes directly to my dotfiles
+to avoid things breaking if repositories are ever moved or taken down. I've
+also created my own templates rather than using the defaults.
+
+- [schemes](./config/flavours/schemes/custom)
+- [templates](./config/flavours/templates/custom/templates)
+
+Using the `flavours` application, these templates are rendered directly into my
+dotfiles based on the `flavours` config:
+
+- [flavours/config.toml](./config/flavours/config.toml)
+
+To apply a new color scheme, download and install `flavours`:
+
+https://github.com/Misterio77/flavours/releases/latest
+
+Then run:
+
+```bash
+flavours apply <scheme-name>
+```
+
+The name should match the corresponding yaml file without the extension. For
+example:
 
 ```bash
 flavours apply outrun-dark
 ```
 
-- [config/Xresources](./config/Xresources)
-    - This controls the colors in `urxvt` which will also affect all terminal
-      applications such as `ncmpcpp`, `neovim`, and `tmux`
-- [config/i3](./config/i3)
-    - This controls the colors used in `i3` window manager and the default `i3`
-      bar
-- [config/vimrc](./config/vimrc)
-    - This controls the color scheme in `vim` and `neovim`
-- [config/dunstrc](./config/dunstrc)
-    - This controls the colors used in `dunst` desktop notifications
-- [config/py3status.conf](./config/py3status.conf)
-    - This controls the colors used in `py3status`, the application that
-      populates the `i3` status bar
-- [config/tmux.conf](./config/tmux.conf)
-    - This controls the color scheme in `tmux`
-    - `tmux` uses terminal emulator colors but which color is used for each
-      component needs to be configured
-- [config/ncmpcpp/config](./config/ncmpcpp/config)
-    - This controls the color scheme in `ncmpcpp`
-    - `ncmpcpp` uses terminal emulator colors but which color is used for each
-      component needs to be configured
-- [config/rofi/config.rasi](./config/rofi/config.rasi)
-    - This controls the color scheme in `rofi`
-- [config/alacritty.yml](./config/alacritty.yml)
-    - This controls the color scheme in `alacritty` (Terminal used on Windows)
-- [config/polybar](./config/polybar)
-    - Not currently necessary but if we switch from the default `i3` status bar
-      to `polybar` this would configure its colors
-- [config/sway](./config/sway)
-    - Not currently necessary but if we switch from `i3` to `sway` this would
-      configure its colors
-    - Theoretically the config is identical to `i3`; however, we would also
-      need to update peripheral applications that don't support Wayland such as Rofi
-        - See: https://github.com/swaywm/sway/wiki/i3-Migration-Guide
+The official lists of templates and schemes supported by flavours live here:
+
+- https://github.com/chriskempson/base16-schemes-source/blob/main/list.yaml
+- https://github.com/chriskempson/base16-templates-source/blob/master/list.yaml
+
+After applying a new scheme, a few things need to be done:
+
+- Reload Xresources
+    - `reload_xresources`
+- Reload tmux config
+    - `:source-file ~/.tmux.conf`
+- Reload i3 config
+    - `<win> + <ctrl> + Enter`
+- Restart terminal emulators/shells
+
+### TODO
+
+Some remaining items to tackle in regards to theming:
+- Create a custom dracula theme
+    - swap the green and yellow so they're in the canonical spots; without that
+      certain things don't work well, like mpd status in the i3status bar
+- Add templates for
+    - alacritty
+    - sway
 
 ## Windows 10
 

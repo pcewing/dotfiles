@@ -5,17 +5,10 @@ shell = "bash -c '{}'"
 
 [[items]]
 file = "$DOTFILES/config/Xresources"
-template = "xresources"
-subtemplate = "default-256"
+template = "custom"
+subtemplate = "xresources"
 start = "! Start flavours - xresources"
 end = "! End flavours - xresources"
-
-[[items]]
-file = "$DOTFILES/config/Xresources"
-template = "custom"
-subtemplate = "urxvt"
-start = "! Start flavours - urxvt"
-end = "! End flavours - urxvt"
 
 [[items]]
 file = "$DOTFILES/config/bashrc"
@@ -30,3 +23,39 @@ template = "custom"
 subtemplate = "vimrc"
 start = '" Start flavours - vimrc'
 end = '" End flavours - vimrc'
+
+[[items]]
+file = "$DOTFILES/config/i3"
+template = "custom"
+subtemplate = "i3"
+start = '# Start flavours - i3'
+end = '# End flavours - i3'
+
+[[items]]
+file = "$DOTFILES/config/py3status.conf"
+template = "custom"
+subtemplate = "py3status"
+start = '# Start flavours - py3status'
+end = '# End flavours - py3status'
+rewrite = false
+
+[[items]]
+file = "$DOTFILES/config/dunstrc"
+template = "custom"
+subtemplate = "dunstrc"
+start = '# Start flavours - dunstrc'
+end = '# End flavours - dunstrc'
+
+[[items]]
+file = "$DOTFILES/config/tmux.conf"
+template = "custom"
+subtemplate = "tmux"
+start = '# Start flavours - tmux'
+end = '# End flavours - tmux'
+
+[[items]]
+file = "$DOTFILES/config/rofi/base16.rasi"
+template = "custom"
+subtemplate = "rofi"
+start = '    /* Start flavours - rofi */'
+end = '    /* End flavours - rofi */'

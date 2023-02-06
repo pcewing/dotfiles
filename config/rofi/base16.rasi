@@ -5,27 +5,50 @@
  */
 
 * {
-	/* Place base16 colors here (Currently embers.dark) */
-    color0:       #000000; /* black           */  
-    color8:       #4D4D4D; /* black   (light) */
-    color1:       #FF5555; /* red             */
-    color9:       #FF6E67; /* red     (light) */
-    color2:       #50FA7B; /* green           */
-    color10:      #5AF78E; /* green   (light) */
-    color3:       #F1FA8C; /* yellow          */
-    color11:      #F4F99D; /* yellow  (light) */
-    color4:       #BD93F9; /* blue            */
-    color12:      #CAA9FA; /* blue    (light) */
-    color5:       #FF79C6; /* magenta         */
-    color13:      #FF92D0; /* magenta (light) */
-    color6:       #8BE9FD; /* cyan            */
-    color14:      #9AEDFE; /* cyan    (light) */
-    color7:       #BFBFBF; /* white           */
-    color15:      #E6E6E6; /* white   (light) */
+    /* Start flavours - rofi */
 
-    foreground:   #F8F8F2;
-    background:   #282A36;
-    cursor:       #F8F8F2;
+    /* Base16 Outrun Dark */
+
+    base00: #00002A;
+    base01: #20204A;
+    base02: #30305A;
+    base03: #50507A;
+    base04: #B0B0DA;
+    base05: #D0D0FA;
+    base06: #E0E0FF;
+    base07: #F5F5FF;
+    base08: #FF4242;
+    base09: #FC8D28;
+    base0A: #F3E877;
+    base0B: #59F176;
+    base0C: #0EF0F0;
+    base0D: #66B0FF;
+    base0E: #F10596;
+    base0F: #F003EF;
+
+    /* End flavours - rofi */
+
+    /* Apply base16 colors */
+    color0:       @base00; /* black           */  
+    color8:       @base03; /* black   (light) */
+    color1:       @base08; /* red             */
+    color9:       @base08; /* red     (light) */
+    color2:       @base0B; /* green           */
+    color10:      @base0B; /* green   (light) */
+    color3:       @base0A; /* yellow          */
+    color11:      @base0A; /* yellow  (light) */
+    color4:       @base0D; /* blue            */
+    color12:      @base0D; /* blue    (light) */
+    color5:       @base0E; /* magenta         */
+    color13:      @base0E; /* magenta (light) */
+    color6:       @base0C; /* cyan            */
+    color14:      @base0C; /* cyan    (light) */
+    color7:       @base05; /* white           */
+    color15:      @base07; /* white   (light) */
+
+    foreground:   @base05;
+    background:   @base00;
+    cursor:       @base05;
 
     normal-foreground:           @foreground;
     active-foreground:           @foreground;
