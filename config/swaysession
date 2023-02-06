@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-source "$HOME/.env"
+. "$HOME/.env"
 
 logfile="$HOME/sway.log"
 rm -f "$logfile"
