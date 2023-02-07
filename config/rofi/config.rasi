@@ -11,4 +11,4 @@ configuration {
   */
 }
 
-@theme "dracula"
+@theme "base16"

@@ -1,24 +1,4 @@
-! Dracula Xresources palette
-*.foreground:  #F8F8F2
-*.background:  #282A36
-*.cursorColor: #F8F8F2
-*.color0:      #000000
-*.color8:      #4D4D4D
-*.color1:      #FF5555
-*.color9:      #FF6E67
-*.color2:      #50FA7B
-*.color10:     #5AF78E
-*.color3:      #F1FA8C
-*.color11:     #F4F99D
-*.color4:      #BD93F9
-*.color12:     #CAA9FA
-*.color5:      #FF79C6
-*.color13:     #FF92D0
-*.color6:      #8BE9FD
-*.color14:     #9AEDFE
-*.color7:      #BFBFBF
-*.color15:     #E6E6E6
-
+! Configure font
 URxvt.font:           xft:Inconsolata:pixelsize=20
 URxvt.boldFont:       xft:Inconsolata:pixelsize=20:bold
 URxvt.italicFont:     xft:Inconsolata:pixelsize=20:italic
@@ -32,16 +12,7 @@ URxvt.internalBorder: 8
 ! green show up as a non-descript light gray.
 URxvt.intensityStyles: false
 
-! This adds "real" transparency, but it requires a composite manager to be running.
-URxvt*depth:      32
-URxvt*background: rgba:2800/2a00/3600/ef00
-
-! This adds "fake" transparency. If a composite manager is not running, this
-! simulates transparency by capturing what is behind the window and drawing it
-! as the background.
-!URxvt*transparent: true
-!URxvt*shading:     10
-
+! Various urxvt settings
 URxvt*urlLauncher:          firefox
 URxvt*scrollBar:            false
 URxvt*scrollBar_right:      true
@@ -54,3 +25,80 @@ urxvt.visualBell:           false
 urxvt.urgentOnBell:         true
 
 Xcursor.size: 10
+
+! Set background transparency
+#define background_opacity 90
+
+! Start flavours - xresources
+
+! Base16 Outrun Dark
+
+! Template based on:
+! https://github.com/tinted-theming/base16-xresources/blob/main/templates/default-256.mustache
+
+#define base00 #00002A
+#define base01 #20204A
+#define base02 #30305A
+#define base03 #50507A
+#define base04 #B0B0DA
+#define base05 #D0D0FA
+#define base06 #E0E0FF
+#define base07 #F5F5FF
+#define base08 #FF4242
+#define base09 #FC8D28
+#define base0A #F3E877
+#define base0B #59F176
+#define base0C #0EF0F0
+#define base0D #66B0FF
+#define base0E #F10596
+#define base0F #F003EF
+
+URxvt*color0:       base00 ! Black
+URxvt*color8:       base03 ! Black (Bright)
+URxvt*color1:       base08 ! Red
+URxvt*color9:       base08 ! Red (Bright)
+URxvt*color2:       base0B ! Green
+URxvt*color10:      base0B ! Green (Bright)
+URxvt*color3:       base0A ! Yellow
+URxvt*color11:      base0A ! Yellow (Bright)
+URxvt*color4:       base0D ! Blue
+URxvt*color12:      base0D ! Blue (Bright)
+URxvt*color5:       base0E ! Magenta
+URxvt*color13:      base0E ! Magenta (Bright)
+URxvt*color6:       base0C ! Cyan
+URxvt*color14:      base0C ! Cyan (Bright)
+URxvt*color7:       base05 ! White
+URxvt*color15:      base07 ! White (Bright)
+
+! Note: colors beyond 15 might not be loaded (e.g., xterm, urxvt),
+! use 'shell' template to set these if necessary
+URxvt*color16:      base09
+URxvt*color17:      base0F
+URxvt*color18:      base01
+URxvt*color19:      base02
+URxvt*color20:      base04
+URxvt*color21:      base06
+
+! End flavours - xresources
+
+URxvt*foreground:   base05
+URxvt*cursorColor:  base05
+
+#ifdef background_opacity
+
+! This configures "real" transparency for urxvt, but it requires a
+! composite manager like compton to be running.
+URxvt.depth:        32
+URxvt.background:   [background_opacity]base00
+
+! This adds "fake" transparency. If a composite manager is not running, this
+! simulates transparency by capturing what is behind the window and drawing it
+! as the background.
+!URxvt*transparent: true
+!URxvt*shading:     10
+
+#else
+
+URxvt.background:   base00
+
+#endif

@@ -68,8 +68,7 @@ filetype plugin on
 call plug#begin('~/.config/nvim/plugged')
 
 " Colorschemes
-Plug 'https://github.com/dracula/vim.git'
-"Plug 'joshdick/onedark.vim'
+Plug 'chriskempson/base16-vim'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
@@ -77,6 +76,8 @@ Plug 'junegunn/fzf.vim'
 "Plug 'slashmili/alchemist.vim'
 "Plug 'editorconfig/editorconfig-vim'
 "Plug 'Valloric/YouCompleteMe'
+
+Plug 'rodjek/vim-puppet'
 
 Plug 'fatih/vim-go'
 Plug 'OrangeT/vim-csharp'
@@ -190,8 +191,17 @@ nnoremap <silent> <leader>p :echo @%<cr>
 " Copy file path and line number of current line to clipboard
 nnoremap <silent> <leader>y :let @+ = join([expand('%'),  line(".")], ':')<cr>
 
-silent! colorscheme dracula
-hi CursorLine cterm=NONE ctermbg=black
+" Start flavours - vimrc
+
+" Base16 Outrun Dark
+
+" Loads the scheme from:
+" https://github.com/chriskempson/base16-vim
+
+let base16colorspace=256
+colorscheme base16-outrun-dark
+
+" End flavours - vimrc
 
 if has('win32')
     set background=dark

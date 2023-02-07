@@ -20,35 +20,6 @@ for_window [class="^.*"] border pixel 2
 # configure gaps and window chrome styles
 gaps inner 10
 
-# color pallette
-set $fg     #F8F8F2
-set $bg     #282A36
-set $cursor #F8F8F2
-set $c00    #000000
-set $c08    #4D4D4D
-set $c01    #FF5555
-set $c09    #FF6E67
-set $c02    #50FA7B
-set $c10    #5AF78E
-set $c03    #F1FA8C
-set $c11    #F4F99D
-set $c04    #BD93F9
-set $c12    #CAA9FA
-set $c05    #FF79C6
-set $c13    #FF92D0
-set $c06    #8BE9FD
-set $c14    #9AEDFE
-set $c07    #BFBFBF
-set $c15    #E6E6E6
-
-# color settings
-# class                  border  backg.  foreg.  indicator child_border
-client.focused           $fg     $bg     $fg     $fg       $fg
-client.focused_inactive  #073642 #073642 #888888 #292d2e   #222222
-client.unfocused         $bg     $bg     $c08    #ff0000   $bg
-#client.urgent           #2f343a #900000 #ffffff #900000   #900000
-#client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
-#client.background       #ffffff
 
 set $mode_system (l)ock, (Shift+l)ogout, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
 mode "$mode_system" {
@@ -187,26 +158,6 @@ bindsym --release Print exec "scrot -m $HOME/Pictures/screenshots/%s_%H%M_%d.%m.
 bindsym --release Shift+Print exec "scrot -s $HOME/Pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
 bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/Pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
 
-# py3status bar config
-bar {
-    status_command py3status -c ~/.config/py3status/config
-    position top
-    separator_symbol " | "
-
-    colors {
-        background $bg
-        statusline $fg
-        separator $c08
-
-        # <colorclass>     <border> <background> <text>
-        focused_workspace  $bg      $c06         $c00
-        active_workspace   $bg      $c05         $fg
-        inactive_workspace $bg      $bg          $fg
-        urgent_workspace   $bg      $c01         $fg
-        binding_mode       $bg      $c01         $c00
-    }
-}
-
 # force certain apps to specific workspaces
 assign [class="Bcompare"] 5
 assign [class="zoom"] 7
@@ -253,3 +204,55 @@ exec_always "[ -e ~/set-bg.sh ] && ~/set-bg.sh"
 
 # run startup script
 exec_always "startup.sh"
+
+# Start flavours - i3
+
+# Base16 Outrun Dark
+
+set $base00 #00002A
+set $base01 #20204A
+set $base02 #30305A
+set $base03 #50507A
+set $base04 #B0B0DA
+set $base05 #D0D0FA
+set $base06 #E0E0FF
+set $base07 #F5F5FF
+set $base08 #FF4242
+set $base09 #FC8D28
+set $base0A #F3E877
+set $base0B #59F176
+set $base0C #0EF0F0
+set $base0D #66B0FF
+set $base0E #F10596
+set $base0F #F003EF
+
+# End flavours - i3
+
+# Basic color configuration using the Base16 variables for windows and borders.
+# Property Name         Border  BG      Text    Indicator Child Border
+client.focused          $base05 $base0D $base00 $base0D $base0C
+client.focused_inactive $base01 $base01 $base05 $base03 $base01
+client.unfocused        $base01 $base00 $base05 $base01 $base01
+client.urgent           $base08 $base08 $base00 $base08 $base08
+client.placeholder      $base00 $base00 $base05 $base00 $base00
+client.background       $base07
+
+# Configure i3bar/py3status
+bar {
+    status_command py3status -c ~/.config/py3status/config
+    position top
+    separator_symbol " | "
+
+    colors {
+        background $base00
+        separator  $base01
+        statusline $base04
+
+        # State             Border  BG      Text
+        focused_workspace   $base0D $base0D $base00
+        active_workspace    $base05 $base03 $base00
+        inactive_workspace  $base00 $base00 $base05
+        urgent_workspace    $base08 $base08 $base00
+        binding_mode        $base00 $base0A $base00
+    }
+}
