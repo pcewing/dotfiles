@@ -51,3 +51,26 @@ fi
 if command -v "rust" &>"/dev/null"; then
     [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 fi
+
+# Base16 color scheme
+base16_shell_dir="$HOME/.config/base16-shell"
+[ ! -d "$base16_shell_dir" ] && \
+    git clone "https://github.com/chriskempson/base16-shell.git" \
+        "$base16_shell_dir"
+
+BASE16_SHELL_SET_BACKGROUND=true
+if uname | grep -i 'linux' &>/dev/null; then
+    BASE16_SHELL_SET_BACKGROUND=false
+fi
+BASE16_SHELL="$HOME/.config/base16-shell/"
+[ -n "$PS1" ] && \
+    [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
+        source "$BASE16_SHELL/profile_helper.sh"
+        
+# Start flavours - bashrc
+
+# Base16 Outrun Dark
+
+eval "base16_outrun-dark"
+
+# End flavours - bashrc
