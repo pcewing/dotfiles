@@ -16,6 +16,6 @@
 # So, the below should gracefully support different configs per OS as long as
 # only the desired config files are linked to ~/.config/alacritty:
 import:
-  - ~/.config/alacritty/windows.yml
-  - ~/.config/alacritty/linux.yml
-  - ~/.config/alacritty/base16.yml
+- ~/.config/alacritty/windows.yml
+- ~/.config/alacritty/linux.yml
+- ~/.config/alacritty/base16.yml

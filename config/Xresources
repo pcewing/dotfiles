@@ -53,39 +53,39 @@ Xcursor.size: 10
 #define base0E #F10596
 #define base0F #F003EF
 
-*foreground:   base05
+URxvt*foreground:   base05
 #ifdef background_opacity
-*background:   [background_opacity]base00
+URxvt*background:   [background_opacity]base00
 #else
-*background:   base00
+URxvt*background:   base00
 #endif
-*cursorColor:  base05
+URxvt*cursorColor:  base05
 
-*color0:       base00 ! Black
-*color8:       base03 ! Black (Bright)
-*color1:       base08 ! Red
-*color9:       base08 ! Red (Bright)
-*color2:       base0B ! Green
-*color10:      base0B ! Green (Bright)
-*color3:       base0A ! Yellow
-*color11:      base0A ! Yellow (Bright)
-*color4:       base0D ! Blue
-*color12:      base0D ! Blue (Bright)
-*color5:       base0E ! Magenta
-*color13:      base0E ! Magenta (Bright)
-*color6:       base0C ! Cyan
-*color14:      base0C ! Cyan (Bright)
-*color7:       base05 ! White
-*color15:      base07 ! White (Bright)
+URxvt*color0:       base00 ! Black
+URxvt*color8:       base03 ! Black (Bright)
+URxvt*color1:       base08 ! Red
+URxvt*color9:       base08 ! Red (Bright)
+URxvt*color2:       base0B ! Green
+URxvt*color10:      base0B ! Green (Bright)
+URxvt*color3:       base0A ! Yellow
+URxvt*color11:      base0A ! Yellow (Bright)
+URxvt*color4:       base0D ! Blue
+URxvt*color12:      base0D ! Blue (Bright)
+URxvt*color5:       base0E ! Magenta
+URxvt*color13:      base0E ! Magenta (Bright)
+URxvt*color6:       base0C ! Cyan
+URxvt*color14:      base0C ! Cyan (Bright)
+URxvt*color7:       base05 ! White
+URxvt*color15:      base07 ! White (Bright)
 
 ! Note: colors beyond 15 might not be loaded (e.g., xterm, urxvt),
 ! use 'shell' template to set these if necessary
-*color16:      base09
-*color17:      base0F
-*color18:      base01
-*color19:      base02
-*color20:      base04
-*color21:      base06
+URxvt*color16:      base09
+URxvt*color17:      base0F
+URxvt*color18:      base01
+URxvt*color19:      base02
+URxvt*color20:      base04
+URxvt*color21:      base06
 
 ! End flavours - xresources
 
@@ -107,15 +107,3 @@ URxvt.background:   [background_opacity]base00
 URxvt.background:   base00
 
 #endif
-
-! TODO: Either get this working or remove it; hacky way to hot-reload
-! Xresources
-! See:
-! https://github.com/felixr/urxvt-theme-switch
-! Or:
-! https://github.com/johntyree/urxvt-perls/blob/master/rotate-colors
-! Put scripts in ~/.urxvt/ext
-URxvt.perl-ext-common: ...,rotate-colors
-URxvt.rotate-colors.files: ~/.Xresources,~/foo.txt
-URxvt.keysym.Control-n:   perl:rotate-colors:next
-URxvt.keysym.Control-p:   perl:rotate-colors:prev

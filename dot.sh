@@ -68,7 +68,7 @@ function link_windows() {
     local dir
     dir="$(dirname -- "$dst")"
 
-    echo "Ensuring the directory $dir exists"
+    echo "Ensuring the parent directory $dir exists"
     mkdir -p "$dir"
 
     # Make sure destination file doesn't already exist; the -f flag is needed
@@ -154,27 +154,30 @@ function cmd_link() {
     link "$cfg/xsession"                "$HOME/.xsession"
     link "$cfg/snippets/cpp.snippets"   "$HOME/.config/nvim/UltiSnips/cpp.snippets"
 
-    #TODO: alacritty/alacritty.yml
-    #TODO: alacritty/base16.yml
-    #TODO: alacritty/linux.yml
+    link "$cfg/alacritty/alacritty.yml" "$HOME/.config/alacritty/alacritty.yml"
+    link "$cfg/alacritty/base16.yml"    "$HOME/.config/alacritty/base16.yml"
+    link "$cfg/alacritty/linux.yml"     "$HOME/.config/alacritty/linux.yml"
 
     link_dir "$cfg/flavours"            "$HOME/.config/flavours"
 }
 
 function cmd_windows() {
-    link_windows "$DOTFILES/config/profile"         "$HOME/.profile"
-    link_windows "$DOTFILES/config/env"             "$HOME/.env"
-    link_windows "$DOTFILES/config/bashrc"          "$HOME/.bashrc"
-    link_windows "$DOTFILES/config/bash_profile"    "$HOME/.bash_profile"
-    link_windows "$DOTFILES/config/vimrc"           "$HOME/.vimrc"
-    link_windows "$DOTFILES/config/vimrc"           "$HOME/AppData/Local/nvim/init.vim"
-    link_windows "$DOTFILES/config/gvimrc"          "$HOME/.gvimrc"
-    link_windows "$DOTFILES/config/vsvimrc"         "$HOME/.vsvimrc"
-    link_windows "$DOTFILES/config/gitconfig"       "$HOME/.gitconfig"
-    link_windows "$DOTFILES/config/alacritty.yml"   "$APPDATA/alacritty/alacritty.yml"
+    local cfg
+    cfg="$DOTFILES/config"
 
-    #TODO: alacritty/base16.yml
-    #TODO: alacritty/windows.yml
+    link_windows "$cfg/profile"         "$HOME/.profile"
+    link_windows "$cfg/env"             "$HOME/.env"
+    link_windows "$cfg/bashrc"          "$HOME/.bashrc"
+    link_windows "$cfg/bash_profile"    "$HOME/.bash_profile"
+    link_windows "$cfg/vimrc"           "$HOME/.vimrc"
+    link_windows "$cfg/vimrc"           "$HOME/AppData/Local/nvim/init.vim"
+    link_windows "$cfg/gvimrc"          "$HOME/.gvimrc"
+    link_windows "$cfg/vsvimrc"         "$HOME/.vsvimrc"
+    link_windows "$cfg/gitconfig"       "$HOME/.gitconfig"
+    link_windows "$cfg/alacritty.yml"   "$APPDATA/alacritty/alacritty.yml"
+
+    link_windows "$cfg/alacritty/base16.yml"    "$HOME/.config/alacritty/base16.yml"
+    link_windows "$cfg/alacritty/windows.yml"   "$HOME/.config/alacritty/windows.yml"
 }
 
 case "$1" in

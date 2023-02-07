@@ -126,6 +126,10 @@ Some remaining items to tackle in regards to theming:
 - Add templates for
     - alacritty
     - sway
+- Add a more automated way to reload application configs:
+    - If we use kitty terminal, all processes can be forced to reload config via:
+        - `kill -SIGUSR1 $(pgrep kitty)`
+    - i3 should be doable via i3-msg
 
 ## Windows 10
 
