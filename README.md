@@ -61,8 +61,8 @@ To make it easier to re-theme everything at once, I use
 [base16](https://github.com/chriskempson/base16) and
 [flavours](https://github.com/Misterio77/flavours). See:
 
-The tl;dr of `base16` is that it is guideline for designing a color scheme such
-that the scheme consists of a palette of 16 colors - 8 shades and 8 accents.
+The tl;dr of `base16` is that it is a system for designing color schemes.
+`base16` schemes consists of a palette of 16 colors - 8 shades and 8 accents.
 Templates can then be created to render the base16 scheme into various config
 formats for different applications.
 
@@ -79,11 +79,11 @@ dotfiles based on the `flavours` config:
 
 - [flavours/config.toml](./config/flavours/config.toml)
 
-To apply a new color scheme, download and install `flavours`:
+To apply a new color scheme, download and install
+[flavours](https://github.com/Misterio77/flavours/releases/latest).
 
-https://github.com/Misterio77/flavours/releases/latest
-
-The first time running, update sources:
+The first time running, update sources. Even if using schemes/templates
+committed to my dotfiles, this still appears to be necessary:
 
 ```bash
 flavours update all
