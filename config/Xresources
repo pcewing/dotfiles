@@ -53,14 +53,6 @@ Xcursor.size: 10
 #define base0E #F10596
 #define base0F #F003EF
 
-URxvt*foreground:   base05
-#ifdef background_opacity
-URxvt*background:   [background_opacity]base00
-#else
-URxvt*background:   base00
-#endif
-URxvt*cursorColor:  base05
-
 URxvt*color0:       base00 ! Black
 URxvt*color8:       base03 ! Black (Bright)
 URxvt*color1:       base08 ! Red
@@ -88,6 +80,9 @@ URxvt*color20:      base04
 URxvt*color21:      base06
 
 ! End flavours - xresources
+
+URxvt*foreground:   base05
+URxvt*cursorColor:  base05
 
 #ifdef background_opacity
 
