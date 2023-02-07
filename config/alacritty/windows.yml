@@ -1,0 +1,43 @@
+shell:
+  program: C:\Program Files\Git\bin\bash.exe
+  args:
+  - --login
+
+# On Windows Alacritty may launch in the C:\WINDOWS\system32 directory. The
+# below doesn't accept variable names so to make sure it launches into home
+# across different machines where username may vary, it's better to just modify
+# the shortcut.
+#
+# Navigate to the shortcut from the Start Menu and set the "Start in" field to:
+# C:\Users\USERNAME
+#working_directory: C:\Users\foo
+#
+font:
+  normal:
+    family: Ubuntu Mono derivative Powerline
+    #family: Ubuntu Mono
+    style: Regular
+
+  bold:
+    family: Ubuntu Mono derivative Powerline
+      #family: Ubuntu Mono
+    style: Bold
+
+  italic:
+    family: Ubuntu Mono derivative Powerline
+      #family: Ubuntu Mono
+    style: Italic
+
+  bold_italic:
+    family: Ubuntu Mono derivative Powerline
+      #family: Ubuntu Mono
+    style: Bold Italic
+
+  size: 16
+
+  # Ideally the default offset would look nice but for whatever reason on
+  # Windows it feels cramped so add a bit more spacing around text
+  offset:
+    x: 1
+    y: 1
+

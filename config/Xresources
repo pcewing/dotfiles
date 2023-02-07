@@ -107,3 +107,15 @@ URxvt.background:   [background_opacity]base00
 URxvt.background:   base00
 
 #endif
+
+! TODO: Either get this working or remove it; hacky way to hot-reload
+! Xresources
+! See:
+! https://github.com/felixr/urxvt-theme-switch
+! Or:
+! https://github.com/johntyree/urxvt-perls/blob/master/rotate-colors
+! Put scripts in ~/.urxvt/ext
+URxvt.perl-ext-common: ...,rotate-colors
+URxvt.rotate-colors.files: ~/.Xresources,~/foo.txt
+URxvt.keysym.Control-n:   perl:rotate-colors:next
+URxvt.keysym.Control-p:   perl:rotate-colors:prev

@@ -59,3 +59,10 @@ template = "custom"
 subtemplate = "rofi"
 start = '    /* Start flavours - rofi */'
 end = '    /* End flavours - rofi */'
+
+[[items]]
+file = "$DOTFILES/config/alacritty/base16.yml"
+template = "custom"
+subtemplate = "alacritty"
+start = '# Start flavours - alacritty'
+end = '# End flavours - alacritty'

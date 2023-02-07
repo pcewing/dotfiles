@@ -48,6 +48,13 @@ The following aren't in apt and need to be installed manually:
 - Discord
 - RuneLite
 
+Alacritty is not yet in the default Ubuntu apt repositories:
+
+```bash
+sudo add-apt-repository ppa:mmstick76/alacritty
+sudo apt update
+```
+
 ## Theming
 
 To make it easier to re-theme everything at once, I use
@@ -75,6 +82,12 @@ dotfiles based on the `flavours` config:
 To apply a new color scheme, download and install `flavours`:
 
 https://github.com/Misterio77/flavours/releases/latest
+
+The first time running, update sources:
+
+```bash
+flavours update all
+```
 
 Then run:
 

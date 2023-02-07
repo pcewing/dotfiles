@@ -154,6 +154,10 @@ function cmd_link() {
     link "$cfg/xsession"                "$HOME/.xsession"
     link "$cfg/snippets/cpp.snippets"   "$HOME/.config/nvim/UltiSnips/cpp.snippets"
 
+    #TODO: alacritty/alacritty.yml
+    #TODO: alacritty/base16.yml
+    #TODO: alacritty/linux.yml
+
     link_dir "$cfg/flavours"            "$HOME/.config/flavours"
 }
 
@@ -168,6 +172,9 @@ function cmd_windows() {
     link_windows "$DOTFILES/config/vsvimrc"         "$HOME/.vsvimrc"
     link_windows "$DOTFILES/config/gitconfig"       "$HOME/.gitconfig"
     link_windows "$DOTFILES/config/alacritty.yml"   "$APPDATA/alacritty/alacritty.yml"
+
+    #TODO: alacritty/base16.yml
+    #TODO: alacritty/windows.yml
 }
 
 case "$1" in
