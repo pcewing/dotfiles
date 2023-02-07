@@ -15,22 +15,18 @@ shell:
 font:
   normal:
     family: Ubuntu Mono derivative Powerline
-    #family: Ubuntu Mono
     style: Regular
 
   bold:
     family: Ubuntu Mono derivative Powerline
-      #family: Ubuntu Mono
     style: Bold
 
   italic:
     family: Ubuntu Mono derivative Powerline
-      #family: Ubuntu Mono
     style: Italic
 
   bold_italic:
     family: Ubuntu Mono derivative Powerline
-      #family: Ubuntu Mono
     style: Bold Italic
 
   size: 16
