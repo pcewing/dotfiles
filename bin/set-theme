@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+function yell () { >&2 echo "$*";  }
+function die () { yell "$*"; exit 1; }
+function try () { "$@" || die "Command failed: $*"; }
+
+script_path="$( realpath "$0" )"
+script_dir="$( dirname "$script_path" )"
+
+# TODO: Either add flavours to provision script or install it here if it's
+# missing
+if ! command -v flavours &>/dev/null; then
+    flavours_url="https://github.com/Misterio77/flavours/releases/latest"
+    die "Error: flavours is not installed; download and install it from: $flavours_url"
+fi
+
+# Run flavours to render the config templates into all dotfiles
+try flavours apply "$1"
+
+# Reload i3 config
+try i3-msg reload
+
+# Send SIGUSR1 signal to all kitty processes which forces them to reload
+# config. Because we launch kitty using the x-terminal-emulator alternative we
+# also have to search for that in the `ps` output. It's possible this could
+# pick up non-kitty terminals such as when the alternative is set to `urxvt`,
+# launched, and then switched back to kitty; however, this signal should be
+# harmless anyways so we can ignore that edge case.
+kitty_pids="$(
+    ps aux | \
+        grep -E '(x-terminal-emulator|kitty)' | \
+        grep -v 'grep' | \
+        awk '{print $2}' | \
+        uniq
+)"
+if test -n "$kitty_pids"; then
+    echo "$kitty_pids" | xargs kill -SIGUSR1
+fi
+
+# TODO: Is it possible to reload tmux config across all running sessions?
+# It can be reloaded in a single session via `source-file ~/.tmux.conf` but
+# maybe there's a way to send that command to all sessions?
+#
+# These look promising:
+# https://serverfault.com/questions/339390/run-command-in-detached-tmux-session
+# https://unix.stackexchange.com/questions/409861/is-it-possible-to-send-input-to-a-tmux-session-without-connecting-to-it
+#
+# Maybe we can do something like `tmux list-sessions` and then iterate over the
+# results and use `send-keys` to execute that command on all of them

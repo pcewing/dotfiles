@@ -49,7 +49,7 @@ bindsym $mod+space exec "rofi -show run"
 bindsym $mod+c exec "conky"
 
 # start a terminal
-bindsym $mod+Return exec urxvt
+bindsym $mod+Return exec x-terminal-emulator
 
 # fuzzy nautilus
 bindsym $mod+n exec "fuzzy.sh nautilus"

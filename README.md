@@ -89,14 +89,18 @@ committed to my dotfiles, this still appears to be necessary:
 flavours update all
 ```
 
-Then run:
+**Note:** We should add flavours installation to the provision script.
+
+Once flavours is installed, set the theme using the
+[set-theme](./bin/set-theme) script. This not only executes `flavours` but also
+reloads config across various applications to smoothly transition themes.
 
 ```bash
-flavours apply <scheme-name>
+set-theme <theme-name>
 ```
 
-The name should match the corresponding yaml file without the extension. For
-example:
+The name should match the corresponding base16 scheme yaml file without the
+extension. For example:
 
 ```bash
 flavours apply outrun-dark
@@ -107,15 +111,11 @@ The official lists of templates and schemes supported by flavours live here:
 - https://github.com/chriskempson/base16-schemes-source/blob/main/list.yaml
 - https://github.com/chriskempson/base16-templates-source/blob/master/list.yaml
 
-After applying a new scheme, a few things need to be done:
+Manual steps after changing themes:
 
-- Reload Xresources
-    - `reload_xresources`
 - Reload tmux config
     - `:source-file ~/.tmux.conf`
-- Reload i3 config
-    - `<win> + <ctrl> + Enter`
-- Restart terminal emulators/shells
+    - We should figure out how to automate this
 
 ### TODO
 
@@ -126,10 +126,6 @@ Some remaining items to tackle in regards to theming:
 - Add templates for
     - alacritty
     - sway
-- Add a more automated way to reload application configs:
-    - If we use kitty terminal, all processes can be forced to reload config via:
-        - `kill -SIGUSR1 $(pgrep kitty)`
-    - i3 should be doable via i3-msg
 
 ## Windows 10
 
