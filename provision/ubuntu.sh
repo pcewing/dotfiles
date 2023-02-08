@@ -78,67 +78,71 @@ configure_wayland_session() {
 }
 
 install_apt_packages() {
+    local p
+
     # Core utitilies
-    local p="apt-utils"
-    p="$p ca-certificates"
-    p="$p curl"
-    p="$p wget"
-    p="$p gnupg"
-    p="$p jq"
-    p="$p software-properties-common"
-    p="$p apt-file"
+    p="apt-utils"
+    p+=" ca-certificates"
+    p+=" curl"
+    p+=" wget"
+    p+=" gnupg"
+    p+=" jq"
+    p+=" software-properties-common"
+    p+=" apt-file"
 
     # Basic command line utitilies
-    p="$p make"
-    p="$p build-essential"
-    p="$p cmake"
-    p="$p meson"
-    p="$p htop"
-    p="$p iotop"
-    p="$p git"
-    p="$p vim"
-    #p="$p exuberant-ctags"
-    p="$p universal-ctags" # I think this has better c++11 support
-    p="$p ranger"
-    p="$p tmux"
-    p="$p neofetch"
-    p="$p id3v2"
-    p="$p calcurse"
+    p+=" make"
+    p+=" build-essential"
+    p+=" cmake"
+    p+=" meson"
+    p+=" htop"
+    p+=" iotop"
+    p+=" git"
+    p+=" vim"
+    #p+=" exuberant-ctags"
+    p+=" universal-ctags" # I think this has better c++11 support
+    p+=" ranger"
+    p+=" tmux"
+    p+=" neofetch"
+    p+=" id3v2"
+    p+=" calcurse"
 
     # Python
-    p="$p python python-dev"    # Python 2.7
-    p="$p python3 python3-dev python3-pip" # Python 3.x
+    p+=" python python-dev"    # Python 2.7
+    p+=" python3 python3-dev python3-pip" # Python 3.x
 
     # General GUI Applications
-    p="$p fonts-font-awesome" # Used for media buttons on polybar
-    p="$p rofi"               # Fuzzy application launcher
-    p="$p dunst"              # Desktop notifications
-    p="$p feh"                # Set wallpaper
-    p="$p sxiv"               # Image viewer
-    p="$p nitrogen"           # Set wallpaper
-    p="$p pavucontrol"        # Pulse Audio frontend
-    p="$p compton"            # Window compositor
-    p="$p scrot"              # Screen capture
-    p="$p gucharmap"          # Useful for debugging font issues
-    p="$p keepassxc"          # Credential manager
-    p="$p remmina"            # RDP session manager
-    p="$p usb-creator-gtk"    # Easily flash bootable USBs
-    p="$p i3lock"             # Lock screen
-    p="$p meld"               # Diff tool
-    p="$p xclip"              # Clipboard for X11
-    p="$p wl-clipboard"       # Clipboard for Wayland
-    p="$p xdotool"            # X11 automation tool
+    p+=" fonts-font-awesome" # Used for media buttons on polybar
+    p+=" rofi"               # Fuzzy application launcher
+    p+=" dunst"              # Desktop notifications
+    p+=" feh"                # Set wallpaper
+    p+=" sxiv"               # Image viewer
+    p+=" nitrogen"           # Set wallpaper
+    p+=" pavucontrol"        # Pulse Audio frontend
+    p+=" compton"            # Window compositor
+    p+=" scrot"              # Screen capture
+    p+=" gucharmap"          # Useful for debugging font issues
+    p+=" keepassxc"          # Credential manager
+    p+=" remmina"            # RDP session manager
+    p+=" usb-creator-gtk"    # Easily flash bootable USBs
+    p+=" i3lock"             # Lock screen
+    p+=" meld"               # Diff tool
+    p+=" xclip"              # Clipboard for X11
+    p+=" wl-clipboard"       # Clipboard for Wayland
+    p+=" xdotool"            # X11 automation tool
+    p+=" kitty"              # Kitty terminal emulator
+    p+=" kitty-terminfo"     # Kitty TERMINFO
 
     # Media
-    p="$p inkscape" # Vector graphics editor
-    p="$p mpv"      # Minimal media player
-    p="$p vlc"      # General purpose FOSS media player
-    p="$p easytag"  # Edit ID3 Tags on MP3 files
-    p="$p blueman"  # Bluetooth device support
+    p+=" inkscape" # Vector graphics editor
+    p+=" mpv"      # Minimal media player
+    p+=" vlc"      # General purpose FOSS media player
+    p+=" easytag"  # Edit ID3 Tags on MP3 files
+    p+=" blueman"  # Bluetooth device support
 
     # Gaming
-    p="$p steam"
-    p="$p steam-devices"
+    p+=" steam"
+    p+=" steam-devices"
 
     apt_install "$p"
 }
