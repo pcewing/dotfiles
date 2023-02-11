@@ -54,6 +54,9 @@ bindsym $mod+Return exec x-terminal-emulator
 # fuzzy nautilus
 bindsym $mod+n exec "fuzzy.sh nautilus"
 
+# set the color theme
+bindsym $mod+t exec "set-theme"
+
 # reload the configuration file
 bindsym $mod+ctrl+Return reload
 

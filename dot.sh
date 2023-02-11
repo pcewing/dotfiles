@@ -113,6 +113,7 @@ function cmd_clean() {
     unlink "$HOME/.xinitrc"
     unlink "$HOME/.xsession"
     unlink "$HOME/.config/nvim/UltiSnips/cpp.snippets"
+    unlink "$HOME/.config/kitty/kitty.conf"
 
     unlink_dir "$HOME/.config/flavours"
 
@@ -153,6 +154,7 @@ function cmd_link() {
     link "$cfg/xinitrc"                 "$HOME/.xinitrc"
     link "$cfg/xsession"                "$HOME/.xsession"
     link "$cfg/snippets/cpp.snippets"   "$HOME/.config/nvim/UltiSnips/cpp.snippets"
+    link "$cfg/kitty.conf"              "$HOME/.config/kitty/kitty.conf"
 
     link "$cfg/alacritty/alacritty.yml" "$HOME/.config/alacritty/alacritty.yml"
     link "$cfg/alacritty/base16.yml"    "$HOME/.config/alacritty/base16.yml"
