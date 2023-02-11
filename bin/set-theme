@@ -7,6 +7,47 @@ function try () { "$@" || die "Command failed: $*"; }
 script_path="$( realpath "$0" )"
 script_dir="$( dirname "$script_path" )"
 
+theme="$( flavours list | tr " " "\n" |  rofi -i -dmenu )"
+if test -z "$theme"; then
+    exit 0
+fi
+
+# This function returns the desired background opacity for a specified theme.
+# Different themes have different opacities because darker backgrounds need
+# more transparency than lighter ones.
+function get_background_opacity() {
+    local theme="$1"
+
+    local default_opacity
+    default_opacity='0.9'
+
+    declare -A opacity_lookup=(
+        ['classic-dark']='0.9'
+        ['default-dark']='1.0'
+        ['dracula']='0.95'
+        ['embers']='0.90'
+        ['gruvbox-dark-hard']='0.95'
+        ['outrun-dark']='0.85'
+        ['solarized-dark']='0.95'
+    )
+
+    if test -z "$theme"; then
+        die 'Error: no theme specified'
+    fi
+
+    opacity="${opacity_lookup["$1"]}"
+
+    if test -z "$opacity"; then
+        opacity="$default_opacity"
+    fi
+
+    echo "$opacity"
+}
+
+# Set the background opacity in kitty config for the specified theme
+background_opacity="$(get_background_opacity "$theme")"
+sed -Ei "s/^background_opacity.*/background_opacity $background_opacity/" "$DOTFILES/config/kitty.conf"
+
 # TODO: Either add flavours to provision script or install it here if it's
 # missing
 if ! command -v flavours &>/dev/null; then
@@ -15,10 +56,17 @@ if ! command -v flavours &>/dev/null; then
 fi
 
 # Run flavours to render the config templates into all dotfiles
-try flavours apply "$1"
+try flavours apply "$theme"
 
-# Reload i3 config
+# Reload i3 config and restart i3bar which doesn't support reloading config at
+# runtime. Sleep for 50ms afterwards to give the compositor time to start up so
+# kitty background opacity functions correctly. Normally it should already be
+# running and won't restart but if it stopped for some reason, i3 should start
+# it up again on a reload.
 try i3-msg reload
+i3-msg -t command 'exec --no-startup-id killall i3bar'
+i3-msg -t command 'exec --no-startup-id i3bar --bar_id=bar-0'
+sleep 0.05
 
 # Send SIGUSR1 signal to all kitty processes which forces them to reload
 # config. Because we launch kitty using the x-terminal-emulator alternative we
@@ -36,6 +84,11 @@ kitty_pids="$(
 if test -n "$kitty_pids"; then
     echo "$kitty_pids" | xargs kill -SIGUSR1
 fi
+
+theme_cfg_file="$HOME/.config/pcewing/theme.txt"
+theme_cfg_dir="$( dirname "$theme_cfg_file" )"
+mkdir -p "$theme_cfg_dir"
+echo "$theme" >> "$theme_cfg_file"
 
 # TODO: Is it possible to reload tmux config across all running sessions?
 # It can be reloaded in a single session via `source-file ~/.tmux.conf` but
