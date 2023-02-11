@@ -158,6 +158,9 @@ bindsym --release Print exec "scrot -m $HOME/Pictures/screenshots/%s_%H%M_%d.%m.
 bindsym --release Shift+Print exec "scrot -s $HOME/Pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
 bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/Pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
 
+# Open firefox to gifcap, a gif capture tool
+bindsym --release $mod+g exec "firefox 'https://gifcap.dev'"
+
 # force certain apps to specific workspaces
 assign [class="Bcompare"] 5
 assign [class="zoom"] 7
