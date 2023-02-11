@@ -120,11 +120,7 @@ Manual steps after changing themes:
 ### TODO
 
 Some remaining items to tackle in regards to theming:
-- Create a custom dracula theme
-    - swap the green and yellow so they're in the canonical spots; without that
-      certain things don't work well, like mpd status in the i3status bar
 - Add templates for
-    - alacritty
     - sway
 
 ## Windows 10
