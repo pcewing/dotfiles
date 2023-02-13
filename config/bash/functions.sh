@@ -409,6 +409,10 @@ function fzfd() {
             | fzf +m) && cd "$dir" || return 1
 }
 
-function foobar() {
-    echo "${1:-.}"
+function is_restart_required() {
+    if test -f "/var/run/reboot-required"; then
+        echo "Yes"
+    else
+        echo "No"
+    fi
 }

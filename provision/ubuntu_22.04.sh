@@ -279,20 +279,35 @@ install_youtube-dl() {
 }
 
 install_kitty() {
-    local default_terminal="$1"
+    local tmp_dir version tar_file cwd kitty_path
 
-    # TODO: This version of kitty in apt is super outdated; update this to:
-    # - Download "Linux amd64 binary bundle" from:
-    #     - https://github.com/kovidgoyal/kitty/releases/latest
-    # - `tar -xJf kitty-$VERSION-x86_64.txz'
-    # - mv to /opt/kitty/$VERSION
-    # - ln -s /opt/kitty/$VERSION/bin/kitty /usr/local/bin/kitty
-    # - ln -s /opt/kitty/$VERSION/bin/kitten /usr/local/bin/kitten
+    cwd="$(pwd)"
 
-    try sudo apt-get -y install kitty kitty-terminfo
+    version="$(get_latest_github_release "kovidgoyal" "kitty")"
 
-    local kitty_path
-    kitty_path="$(command -v $default_terminal)"
+    if [ -z "$version" ]; then
+        die "Failed to determine latest kitty release"
+    fi
+
+    tmp_dir="$HOME/Downloads/kitty/$version"
+    try mkdir -p "$tmp_dir"
+    try cd "$tmp_dir"
+
+    # Make sure to strip the 'v' from the version out of the file name
+    tar_file="kitty-${version/v/}-x86_64.txz"
+    try wget "https://github.com/kovidgoyal/kitty/releases/download/$version/$tar_file"
+
+    try tar -xJf "$tar_file"
+    try rm "$tar_file"
+
+    try sudo mkdir -p "/opt/kitty"
+    try sudo rm -rf "/opt/kitty/$version"
+    try sudo mv "$tmp_dir" "/opt/kitty/$version"
+
+    try sudo ln -s "/opt/kitty/$version/bin/kitty" "/usr/local/bin/kitty"
+    try sudo ln -s "/opt/kitty/$version/bin/kitten" "/usr/local/bin/kitten"
+
+    kitty_path="$(command -v kitty)"
 
     echo "Setting the default terminal emulator to $default_terminal"
     try sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator "$kitty_path" 50
@@ -366,6 +381,35 @@ install_ncmpcpp() {
     mkdir -p "$HOME/.config/ncmpcpp"
 }
 
+install_flavours() {
+    local tmp_dir version tar_file cwd
+
+    cwd="$(pwd)"
+
+    version="$(get_latest_github_release "Misterio77" "flavours")"
+
+    if [ -z "$version" ]; then
+        die "Failed to determine latest flavours release"
+    fi
+
+    tmp_dir="$HOME/Downloads/flavours/$version"
+    try mkdir -p "$tmp_dir"
+    try cd "$tmp_dir"
+
+    tar_file="flavours-${version}-x86_64-linux.tar.gz"
+    try wget "https://github.com/Misterio77/flavours/releases/download/$version/$tar_file"
+
+    try tar -xzf "$tar_file"
+    try rm "$tar_file"
+
+    try sudo mkdir -p "/opt/flavours"
+    try sudo rm -rf "/opt/flavours/$version"
+    try sudo mv "$tmp_dir" "/opt/flavours/$version"
+    try sudo ln -s "/opt/flavours/$version/flavours" "/usr/local/bin/flavours"
+
+    flavours update all &>/dev/null
+}
+
 ########
 # Main #
 ########
@@ -398,7 +442,7 @@ configure_wayland_session \
     "/usr/share/wayland-sessions/sway-user.desktop"
 
 # Install everything else that needs special attention
-install_kitty "kitty"
+install_kitty
 install_neovim
 install_i3gaps      "$cache_dir"
 #install_cava        "$cache_dir"
@@ -406,3 +450,4 @@ install_youtube-dl  "$cache_dir" "$bin_dir"
 install_wpr         "$cache_dir" "$bin_dir"
 install_mpd
 install_ncmpcpp
+install_flavours
