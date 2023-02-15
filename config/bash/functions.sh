@@ -22,10 +22,17 @@ function installed() {
 
 # Open graphical file manager in the current directory
 function fm() {
+    local path="$1"
+
     installed "xdg-mime" "gtk-launch" || return 1
 
     file_manager="$(xdg-mime query default inode/directory | sed -e 's/\.desktop//')"
-    gtk-launch "$file_manager" .
+
+    if test -z "path"; then
+        path="."
+    fi
+
+    gtk-launch "$file_manager" "$path"
 }
 
 # Create an executable bash script and open it in Neovim

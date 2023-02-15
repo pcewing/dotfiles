@@ -51,8 +51,8 @@ bindsym $mod+c exec "conky"
 # start a terminal
 bindsym $mod+Return exec x-terminal-emulator
 
-# fuzzy nautilus
-bindsym $mod+n exec "fuzzy.sh nautilus"
+# fuzzy file manager directory navigation
+bindsym $mod+n exec "fuzzy-fm"
 
 # set the color theme
 bindsym $mod+t exec "set-theme"
