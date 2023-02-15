@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
 
-if ! command -v "xprop" &>/dev/null; then
-    >&2 echo "xprop: command not found"
-    exit 1
-fi
+. "$DOTFILES/config/bash/functions.sh"
 
-if ! command -v "python" &>/dev/null; then
-    >&2 echo "python: command not found"
-    return 1
-fi
+function calculator() {
+    installed "kitty" "python" || return 1
 
-urxvt \
-    -e bash \
-        -c "xprop -id \$WINDOWID -f WM_CLASS 8ss -set WM_CLASS \"calculator\"
-            python -ic \"import math; print(\\\"Calculator\\\")\""
+    kitty \
+        --class="calculator" \
+        --override "remember_window_size=no" \
+        --override "initial_window_width=48c" \
+        --override "initial_window_height=24c" \
+        python -ic "import math; print('Calculator')"
+}
 
+calculator

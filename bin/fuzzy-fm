@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+DIRECTORIES="$HOME
+$HOME/Pictures/screenshots
+$HOME/src
+$HOME/box
+$HOME/.config
+$HOME/box/doc
+$HOME/box/pic
+$HOME/box/mus
+$HOME/box/vid
+$HOME/Desktop
+$HOME/Downloads
+$HOME/Templates
+$HOME/Public
+$HOME/Documents
+$HOME/Music
+$HOME/Pictures
+$HOME/Videos"
+
+
+. "$DOTFILES/config/bash/functions.sh"
+
+function fuzzy_fm() {
+    selection="$(echo "$DIRECTORIES" | rofi -i -dmenu -p "open")"
+
+    if [ -n "$selection" ]; then
+        fm "$selection" > /dev/null 2>&1 &
+    fi
+}
+
+fuzzy_fm
