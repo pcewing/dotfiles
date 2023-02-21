@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
 
+# To run shellcheck properly on this file:
+# $ cd ~/dot/bin
+# $ shellcheck -x ../config/bash/functions.sh calculator
+#
+# shellcheck source=../config/bash/functions.sh
 . "$DOTFILES/config/bash/functions.sh"
 
 function calculator() {
-    installed "kitty" "python" || return 1
+    local err
+    if ! err="$(installed "kitty" "python" 2>&1)"; then
+        error_notify "calculator error" "$err"
+        exit $?
+    fi
 
     kitty \
         --class="calculator" \
