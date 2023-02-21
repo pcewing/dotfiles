@@ -20,6 +20,13 @@ function installed() {
     done
 }
 
+# Publish a desktop error notification
+function error_notify() {
+    local summary="$1"
+    local message="$2"
+    notify-send -u normal -t 5000 "$summary" "$message"
+}
+
 # Open graphical file manager in the current directory
 function fm() {
     local path="$1"

@@ -1,50 +1,38 @@
 #!/usr/bin/env bash
 
-screenshot_dir="$HOME/Pictures/screenshots"
-mkdir -p "$screenshot_dir"
+# To run shellcheck properly on this file:
+# $ cd ~/dot/bin
+# $ shellcheck -x ../config/bash/functions.sh snipping-tool
+#
+# shellcheck source=../config/bash/functions.sh
+. "$DOTFILES/config/bash/functions.sh"
 
-function error_notify() {
-    local msg="$1"
-    notify-send \
-        -u normal \
-        -t 5000 \
-        "snipping-tool error" \
-        "$msg"
+function snip() {
+    local err
+    if ! err="$(installed "scrot" "feh" 2>&1)"; then
+        error_notify "snipping-tool error" "$err"
+        exit $?
+    fi
+
+    local screenshot_dir
+    screenshot_dir="$HOME/Pictures/screenshots"
+    mkdir -p "$screenshot_dir"
+
+    # Take the screenshot
+    filename="$screenshot_dir/$(date +%Y%m%d_%H%M%S).png"
+    scrot -s "$filename" &>/dev/null
+
+    # Make sure the file was created; the user may have exited out of scrot
+    if [[ ! -f "$filename" ]]; then
+        exit 0;
+    fi
+
+    # Open the image in feh
+    feh --scale-down "$filename" &>/dev/null &
+
+    # Open the screenshots directory in default file manager
+    fm "$screenshot_dir" &>/dev/null &
+    exit 0
 }
 
-# Make sure scrot is installed
-if ! command -v scrot &>/dev/null; then
-    error_notify "Please ensure that scrot is installed"
-    exit 1
-fi
-
-# Take the screenshot
-filename="$screenshot_dir/$(date +%Y%m%d_%H%M%S).png"
-scrot -s "$filename" &>/dev/null
-
-# Make sure the file was created; the user may have exited out of scrot without
-# taking the screenshot
-if [[ ! -e $filename ]]; then
-    exit 0
-fi
-
-# If feh is installed, use it to display the screenshot immediately
-if command -v feh &>/dev/null; then
-    feh --scale-down "$filename" &>/dev/null &
-else
-    error_notify "Please ensure that feh is installed"
-fi
-
-# Try opening the screenshot directory in any of the following file managers
-file_managers="nautilus
-thunar"
-
-for fm in $file_managers; do
-    # Check if the file manager is installed
-    if command -v $fm &>/dev/null; then
-        $fm "$screenshot_dir" &>/dev/null &
-        exit 0
-    fi
-done
-
-error_notify "Please install a supported file manager (Nautilus, Thunar)"
+snip
