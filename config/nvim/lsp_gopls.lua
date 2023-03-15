@@ -1,7 +1,5 @@
 -- This file is responsible for setting up the language server for Go
 
-local nvim_lsp = require('lspconfig')
-
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -21,6 +19,8 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', 'K',          '<Cmd>lua vim.lsp.buf.hover()<CR>',             opts)
   buf_set_keymap('n', '<C-k>',      '<cmd>lua vim.lsp.buf.signature_help()<CR>',    opts)
 end
+
+local nvim_lsp = require('lspconfig')
 
 -- https://github.com/neovim/nvim-lspconfig/tree/master/lua/lspconfig/server_configurations/gopls.lua
 nvim_lsp["gopls"].setup {
