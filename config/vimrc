@@ -220,6 +220,6 @@ endif
 " Source lua files in Neovim
 if has('nvim')
     luafile ~/dot/config/nvim/treesitter.lua
-    luafile ~/dot/config/nvim/lsp_go.lua
-    luafile ~/dot/config/nvim/lsp_cpp.lua
+    luafile ~/dot/config/nvim/lsp_gopls.lua
+    luafile ~/dot/config/nvim/lsp_clangd.lua
 endif
