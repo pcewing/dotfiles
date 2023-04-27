@@ -430,3 +430,26 @@ function is_restart_required() {
         echo "No"
     fi
 }
+
+function fd_add() {
+    local name
+
+    name="$1"
+    if [ -z "$name" ]; then
+        # Get just the current directory name without the full path; see:
+        name=${PWD##*/}
+        name=${name:-/}
+    fi
+
+    if grep -E "^$name=" ~/.fd_dirs &>/dev/null; then
+        yell "ERROR: Key \"$name\" already exists in ~/.fd_dirs"
+        return 1
+    fi
+
+    path="$( realpath "$(pwd)" )"
+    echo "${name}=${path}" >> ~/.fd_dirs
+}
+
+function fd_edit() {
+    nvim ~/.fd_dirs
+}
