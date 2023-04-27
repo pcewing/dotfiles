@@ -432,22 +432,24 @@ function is_restart_required() {
 }
 
 function fd_add() {
-    local name
+    local key
 
-    name="$1"
-    if [ -z "$name" ]; then
-        # Get just the current directory name without the full path; see:
-        name=${PWD##*/}
-        name=${name:-/}
+    key="$1"
+    if [ -z "$key" ]; then
+        # Get the full path to the current directory
+        key="$(pwd)"
+
+        # Replace $HOME with ~
+        key="${key/$HOME/\~}"
     fi
 
-    if grep -E "^$name=" ~/.fd_dirs &>/dev/null; then
-        yell "ERROR: Key \"$name\" already exists in ~/.fd_dirs"
+    if grep -E "^$key=" ~/.fd_dirs &>/dev/null; then
+        yell "ERROR: Key \"$key\" already exists in ~/.fd_dirs"
         return 1
     fi
 
     path="$( realpath "$(pwd)" )"
-    echo "${name}=${path}" >> ~/.fd_dirs
+    echo "${key}=${path}" >> ~/.fd_dirs
 }
 
 function fd_edit() {
