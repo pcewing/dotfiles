@@ -110,6 +110,8 @@ install_apt_packages() {
     p+=" id3v2"
     p+=" calcurse"
     p+=" rxvt-unicode"
+    p+=" clang"
+    p+=" clangd"
 
     # Python
     p+=" python3 python3-dev python3-pip" # Python 3.x

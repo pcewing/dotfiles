@@ -168,16 +168,16 @@ nnoremap <A-F7> 7gt
 nnoremap <A-F8> 8gt
 nnoremap <A-F9> 9gt
 nnoremap <A-F0> 10gt
-nnoremap <leader><F1> 1gt
-nnoremap <leader><F2> 2gt
-nnoremap <leader><F3> 3gt
-nnoremap <leader><F4> 4gt
-nnoremap <leader><F5> 5gt
-nnoremap <leader><F6> 6gt
-nnoremap <leader><F7> 7gt
-nnoremap <leader><F8> 8gt
-nnoremap <leader><F9> 9gt
-nnoremap <leader><F0> 10gt
+nnoremap <leader>1 1gt
+nnoremap <leader>2 2gt
+nnoremap <leader>3 3gt
+nnoremap <leader>4 4gt
+nnoremap <leader>5 5gt
+nnoremap <leader>6 6gt
+nnoremap <leader>7 7gt
+nnoremap <leader>8 8gt
+nnoremap <leader>9 9gt
+nnoremap <leader>0 10gt
 
 " Save out buffers
 nnoremap <silent> <leader>w :wa<cr>
