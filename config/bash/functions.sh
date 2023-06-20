@@ -455,3 +455,12 @@ function fd_add() {
 function fd_edit() {
     nvim ~/.fd_dirs
 }
+
+function dec_to_hex() {
+    if [ -z "$1" ]; then
+        yell "Usage: dec_to_hex <decimal>"
+        return 1
+    fi
+
+    printf "%d -> 0x%x\n" $1 $1
+}
