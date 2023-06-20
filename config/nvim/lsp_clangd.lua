@@ -34,6 +34,8 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<C-k>',      '<cmd>lua vim.lsp.buf.signature_help()<CR>',    opts)
 end
 
+vim.lsp.set_log_level 'trace'
+
 local nvim_lsp = require('lspconfig')
 
 nvim_lsp["clangd"].setup {
