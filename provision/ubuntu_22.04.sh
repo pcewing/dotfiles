@@ -137,6 +137,7 @@ install_apt_packages() {
     p+=" xdotool"            # X11 automation tool
     p+=" kitty"              # Kitty terminal emulator
     p+=" kitty-terminfo"     # Kitty TERMINFO
+    p+=" webp"               # Command line support for webp image files
 
     # Media
     p+=" inkscape" # Vector graphics editor
