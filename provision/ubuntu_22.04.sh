@@ -257,6 +257,8 @@ install_i3gaps() {
     try cd "$pwd"
 }
 
+# TODO: youtube-dl was discontinued. Update this to install yt-dlp instead:
+# https://www.linuxadictos.com/en/yt-dlp-fork-sucesor-del-descontinuado-youtube-dl-que-permite-descargar-videos-de-decenas-de-plataformas.html
 install_youtube-dl() {
     local cache_dir="$1"
     local bin_dir="$2"

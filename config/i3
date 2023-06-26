@@ -243,6 +243,14 @@ client.urgent           $base08 $base08 $base00 $base08 $base08
 client.placeholder      $base00 $base00 $base05 $base00 $base00
 client.background       $base07
 
+# TODO: Can we add keyboard shortcuts to increase/decrease volume? This can be
+# done in bash via:
+# pactl -- set-sink-volume $(pactl -- get-default-sink) +10%
+# pactl -- set-sink-volume $(pactl -- get-default-sink) -10%
+#
+# But i3 status bar won't reflect the change immediately. Maybe py3status
+# supports changing volume programmatically or it's something we could add?
+
 # Configure i3bar/py3status
 bar {
     status_command py3status -c ~/.config/py3status/config
