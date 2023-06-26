@@ -374,9 +374,15 @@ function docker_pss() {
 
 # Fuzzy directory changer
 function fd() {
+    local query fd_dirs_file key value dir
+
     installed "fzf" || return 1
 
-    local fd_dirs_file
+    query=""
+    if [ -n "$1" ]; then
+        query="$1"
+    fi
+
     fd_dirs_file="$HOME/.fd_dirs"
 
     if [ ! -f "$fd_dirs_file" ]; then
@@ -395,10 +401,8 @@ EOF
         sed -e 's/=.*//g'
     )"
 
-    local key
-    key="$(echo "$keys" | fzf)"
+    key="$(echo "$keys" | fzf --query "$query" )"
 
-    local value
     value="$(
         grep -P "^$key=.*$" "$fd_dirs_file" | \
         sed -e 's/.*=//g'
@@ -406,7 +410,6 @@ EOF
 
     if [ -n "$value" ]; then
         # Expand variables like $HOME
-        local dir
         dir="$(eval echo "$value")"
 
         if [ -d "$dir" ]; then
