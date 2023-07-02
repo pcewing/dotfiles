@@ -159,7 +159,7 @@ nnoremap <silent> <leader><Down> :resize -5<cr>
 nnoremap <silent> <leader><Right> :vertical resize +5<cr>
 nnoremap <silent> <leader><Left> :vertical resize -5<cr>
 
-nnoremap <leader><tab> :tabnew<CR>
+nnoremap <leader><tab> :tab split<CR>
 nnoremap <A-F1> 1gt
 nnoremap <A-F2> 2gt
 nnoremap <A-F3> 3gt
