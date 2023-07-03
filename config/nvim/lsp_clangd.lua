@@ -42,5 +42,6 @@ nvim_lsp["clangd"].setup {
     on_attach = on_attach,
     flags = {
         debounce_text_changes = 150,
-    }
+    },
+    filetypes = { "c", "cpp" },
 }
