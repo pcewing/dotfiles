@@ -92,6 +92,7 @@ install_apt_packages() {
     p+=" libfuse2" # This is required to use AppImage
     p+=" locate"
     p+=" fzf"
+    p+=" net-tools"
 
     # Basic command line utitilies
     p+=" make"
