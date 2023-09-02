@@ -3,7 +3,7 @@
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
 # Start the compositor (Without fading because it's annoying and slow)
-exec_always compton --no-fading-openclose
+exec_always "~/dot/bin/run_compositor.sh"
 
 # windows modifier key
 set $mod Mod4

@@ -30,6 +30,11 @@
     smclean = submodule deinit --all
     smreset = "!f(){ git smclean && git smupdate }; f"
 
+    # Detect the repository's default branch and check it out; useful when you
+    # can't remember if the default is "main" or "master"
+    checkout-default = "!bash -c 'if default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed s@^refs/remotes/origin/@@); then echo \"Checking out $default_branch\"; git checkout $default_branch; else echo \"Failed to infer default branch\" >&2; fi'"
+    cod = "!git checkout-default"
+
 [diff]
 	tool = bc3
 
