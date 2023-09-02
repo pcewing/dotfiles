@@ -458,3 +458,5 @@ install_wpr         "$cache_dir" "$bin_dir"
 install_mpd
 install_ncmpcpp
 install_flavours
+
+# TODO: Install picom from source
