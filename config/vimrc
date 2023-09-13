@@ -160,7 +160,9 @@ nnoremap <silent> <leader><Down> :resize -5<cr>
 nnoremap <silent> <leader><Right> :vertical resize +5<cr>
 nnoremap <silent> <leader><Left> :vertical resize -5<cr>
 
-nnoremap <leader><tab> :tab split<CR>
+" Open current file in a second tab and make it the last tab
+nnoremap <leader><tab> :tab split<CR>:tabm<CR>
+
 nnoremap <A-F1> 1gt
 nnoremap <A-F2> 2gt
 nnoremap <A-F3> 3gt
