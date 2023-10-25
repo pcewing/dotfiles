@@ -8,14 +8,17 @@ https://clangd.llvm.org/
 Support for clangd in lspconfig:
 https://github.com/neovim/nvim-lspconfig/tree/master/lua/lspconfig/server_configurations/clangd.lua
 
-To install the clangd language server:
-sudo apt-get install clangd-12
-sudo update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-12 100
-
-Use an on_attach function to only map the following keys
-after the language server attaches to the current buffer
-
 ]]--
+
+-- Requires clangd LSP, to install:
+-- sudo apt-get install clangd-12
+-- sudo update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-12 100
+if vim.fn.executable('clangd') ~= 1 then
+    return
+end
+
+-- Use an on_attach function to only map the following keys after the language
+-- server attaches to the current buffer
 local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end

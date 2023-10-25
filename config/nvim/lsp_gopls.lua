@@ -1,5 +1,10 @@
 -- This file is responsible for setting up the language server for Go
 
+-- Requires gopls which should be installed by default with Go
+if vim.fn.executable('gopls') ~= 1 then
+    return
+end
+
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
