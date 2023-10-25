@@ -107,9 +107,13 @@ if has('nvim')
     Plug 'glepnir/lspsaga.nvim'
     Plug 'hoob3rt/lualine.nvim'
     Plug 'nvim-telescope/telescope.nvim'
+    Plug 'ixru/nvim-markdown'
 endif
 
 call plug#end()
+
+" Don't use smart indent in markdown files
+autocmd FileType markdown setlocal nosmartindent
 
 " Format the current C/C++ file with clang-format (Uses vim-clang-format plugin)
 let g:clang_format#detect_style_file = 1
