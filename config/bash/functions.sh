@@ -66,8 +66,8 @@ function yell () { >&2 echo "$*";  }
 function die () { yell "$*"; exit 1; }
 function try () { "$@" || die "Command failed: $*"; }
 
-script_path="$( realpath "$0" )"
-script_dir="$( dirname "$script_path" )"
+SCRIPT_PATH="$( realpath "$0" )"
+SCRIPT_DIR="$( dirname "$script_path" )"
 
 EOF
 
@@ -92,7 +92,7 @@ function nvimp() {
         return 1
     fi
 
-    template="#!/usr/bin/env python3
+    template="#!/usr/bin/env python
 
 def main():
     pass
