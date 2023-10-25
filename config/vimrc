@@ -100,6 +100,9 @@ endif
 if has('nvim')
     " New plugins to use neovim 0.5 features
     Plug 'neovim/nvim-lspconfig'
+    " Sometimes the atuomatic :TSUpdate won't run successfully and then it
+    " won't rerun. If cryptic treesitter errors show up after running
+    " :PlugUpdate, try running :TSUpdate manually
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'nvim-lua/completion-nvim'
     Plug 'nvim-lua/popup.nvim'
