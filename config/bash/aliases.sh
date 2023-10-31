@@ -86,7 +86,7 @@ if command -v 'git' &>/dev/null; then
     alias gbc='git branch --show-current'
     alias gac='git add --all && git commit'
     alias gd='git diff'
-    alias gdbc='git_diff_bc3' # This is defined in functions.sh
+    alias gdt='git difftool --dir-diff --no-symlinks'
     alias gdm='git difftool -t "meld" -d'
     alias gaa='git add --all'
     alias gaad='git add --all --dry-run'
