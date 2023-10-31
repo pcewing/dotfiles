@@ -4,8 +4,8 @@ function yell () { >&2 echo "$*";  }
 function die () { yell "$*"; exit 1; }
 function try () { "$@" || die "Command failed: $*"; }
 
-script_path="$( realpath "$0" )"
-script_dir="$( dirname "$script_path" )"
+SCRIPT_PATH="$( realpath "$0" )"
+SCRIPT_DIR="$( dirname "$SCRIPT_PATH" )"
 
 print_header() {
     local header="$1"
@@ -311,7 +311,9 @@ install_kitty() {
     try sudo rm -rf "/opt/kitty/$version"
     try sudo mv "$tmp_dir" "/opt/kitty/$version"
 
+    try sudo rm "/usr/local/bin/kitty"
     try sudo ln -s "/opt/kitty/$version/bin/kitty" "/usr/local/bin/kitty"
+    try sudo rm "/usr/local/bin/kitten"
     try sudo ln -s "/opt/kitty/$version/bin/kitten" "/usr/local/bin/kitten"
 
     kitty_path="$(command -v kitty)"
@@ -319,6 +321,8 @@ install_kitty() {
     echo "Setting the default terminal emulator to $default_terminal"
     try sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator "$kitty_path" 50
     try sudo update-alternatives --set x-terminal-emulator "$kitty_path"
+
+    try cd "$cwd"
 }
 
 install_wpr() {
@@ -412,16 +416,19 @@ install_flavours() {
     try sudo mkdir -p "/opt/flavours"
     try sudo rm -rf "/opt/flavours/$version"
     try sudo mv "$tmp_dir" "/opt/flavours/$version"
+    try sudo rm -f "/usr/local/bin/flavours"
     try sudo ln -s "/opt/flavours/$version/flavours" "/usr/local/bin/flavours"
 
     flavours update all &>/dev/null
+
+    try cd "$cwd"
 }
 
 ########
 # Main #
 ########
 
-[[ -z "$DOTFILES" ]] && DOTFILES="$HOME/dot"
+[[ -z "$DOTFILES" ]] && DOTFILES="$( realpath "$SCRIPT_DIR/.." )"
 
 source "$DOTFILES/config/bash/functions.sh"
 
