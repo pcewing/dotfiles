@@ -67,7 +67,7 @@ function die () { yell "$*"; exit 1; }
 function try () { "$@" || die "Command failed: $*"; }
 
 SCRIPT_PATH="$( realpath "$0" )"
-SCRIPT_DIR="$( dirname "$script_path" )"
+SCRIPT_DIR="$( dirname "$SCRIPT_PATH" )"
 
 EOF
 
