@@ -113,6 +113,7 @@ function cmd_clean() {
     unlink "$HOME/.vimrc"
     unlink "$HOME/.xinitrc"
     unlink "$HOME/.xsession"
+    unlink "$HOME/.config/nvim/UltiSnips/sh.snippets"
     unlink "$HOME/.config/nvim/UltiSnips/cpp.snippets"
     unlink "$HOME/.config/kitty/kitty.conf"
 
@@ -155,6 +156,7 @@ function cmd_link() {
     link "$cfg/vimrc"                   "$HOME/.vimrc"
     link "$cfg/xinitrc"                 "$HOME/.xinitrc"
     link "$cfg/xsession"                "$HOME/.xsession"
+    link "$cfg/snippets/sh.snippets"    "$HOME/.config/nvim/UltiSnips/sh.snippets"
     link "$cfg/snippets/cpp.snippets"   "$HOME/.config/nvim/UltiSnips/cpp.snippets"
     link "$cfg/kitty.conf"              "$HOME/.config/kitty/kitty.conf"
 

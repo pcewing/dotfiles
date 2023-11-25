@@ -118,6 +118,8 @@ call plug#end()
 " Don't use smart indent in markdown files
 autocmd FileType markdown setlocal nosmartindent
 
+let g:vim_markdown_frontmatter = 1
+
 " Format the current C/C++ file with clang-format (Uses vim-clang-format plugin)
 let g:clang_format#detect_style_file = 1
 autocmd FileType c,cpp vnoremap <buffer><Leader>q :ClangFormat<CR>
@@ -126,10 +128,10 @@ autocmd FileType c,cpp vnoremap <buffer><Leader>q :ClangFormat<CR>
 autocmd FileType python nnoremap <buffer><Leader>q :lua format_current_python_file()<CR>
 
 " UltiSnips
-let g:UltiSnipsExpandTrigger="<c-space>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-nnoremap <Leader>se :UltiSnipsEdit<CR>
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsListSnippets="<c-tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 " FZF
 nnoremap <Leader>o :Files<CR>
