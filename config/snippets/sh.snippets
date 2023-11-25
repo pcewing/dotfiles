@@ -1,0 +1,9 @@
+snippet for "Basic for-each loop on an array"
+$1=(
+    "foo"
+)
+
+for $2 in "${$1[@]}"; do
+    echo "$2 = $$2"
+done
+endsnippet

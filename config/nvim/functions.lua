@@ -6,3 +6,7 @@ function format_current_python_file()
     vim.cmd "edit"
     print(result)
 end
+
+function print_current_filetype()
+    print(vim.bo.filetype)
+end

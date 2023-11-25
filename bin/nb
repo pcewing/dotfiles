@@ -1,58 +1,42 @@
 #!/usr/bin/env bash
 
-notebook_dir=$HOME/notebook
+NOTEBOOK_DIR=$HOME/notebook
 
-day=$(date +"%d")
-month=$(date +"%m")
-year=$(date +"%Y")
-day_of_week=$(date +"%w")
+DAY=$(date +"%d")
+MONTH=$(date +"%m")
+YEAR=$(date +"%Y")
+DAY_OF_WEEK=$(date +"%w")
 
-filedir=$notebook_dir/$year/$month
-filename=$filedir/$year\_$month\_$day.md
+FILEPATH="${NOTEBOOK_DIR}/${YEAR}/${YEAR}_${MONTH}_${DAY}.md"
 
-append() {
-  echo "$2" >> "$1"
-}
-
-if [[ -e $filename ]]; then
-  nvim "$filename"
-  exit 0
-fi
-
-day_string=""
-
-case "$day_of_week" in
-  "0")
-    day_string="Sunday"
-    ;;
-  "1")
-    day_string="Monday"
-    ;;
-  "2")
-    day_string="Tuesday"
-    ;;
-  "3")
-    day_string="Wednesday"
-    ;;
-  "4")
-    day_string="Thursday"
-    ;;
-  "5")
-    day_string="Friday"
-    ;;
-  "6")
-    day_string="Saturday"
-    ;;
+DAY_STRING=""
+case "$DAY_OF_WEEK" in
+  "0")  DAY_STRING="Sunday"     ;;
+  "1")  DAY_STRING="Monday"     ;;
+  "2")  DAY_STRING="Tuesday"    ;;
+  "3")  DAY_STRING="Wednesday"  ;;
+  "4")  DAY_STRING="Thursday"   ;;
+  "5")  DAY_STRING="Friday"     ;;
+  "6")  DAY_STRING="Saturday"   ;;
 esac
 
-date_string="$day_string $month/$day/$year"
+DATE_STRING="$DAY_STRING $YEAR-$MONTH-$DAY"
 
-mkdir -p "$filedir"
+read -r -d '' TEMPLATE << EOF
+# $DATE_STRING
 
-append "$filename" "# $date_string"
-append "$filename" ""
-append "$filename" "## TODO"
-append "$filename" ""
-append "$filename" "- [ ] "
+## TODO
 
-nvim "$filename"
+- [ ]
+EOF
+
+function initialize_file() {
+    mkdir -p "$( dirname "$FILEPATH" )"
+    echo "$TEMPLATE" >> "$FILEPATH"
+}
+
+if [[ ! -e "$FILEPATH" ]]; then
+    initialize_file
+fi
+
+nvim "$FILEPATH"
