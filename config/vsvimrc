@@ -78,6 +78,13 @@ nnoremap <leader>vs :vsc Edit.GoToSymbol<cr>
 nnoremap <leader>vr :vsc Edit.GoToRecentFile<cr>
 nnoremap <leader>vt :vsc Edit.GoToType<cr>
 
+" Add gvim as an External Tool as described in this guide:
+" https://vim.fandom.com/wiki/Integrate_gvim_with_Visual_Studio
+"
+" Make sure it's at index 4 in the list (1-based) or change this to the
+" corresponding index
+nnoremap <leader>vv :vsc Tools.ExternalCommand4<CR>
+
 " Map Visual Studio's native jump behavior which are decent equivalents to the
 " Vim keybinds. See:
 " https://github.com/VsVim/VsVim/wiki/VsVim-Nonstandard-Behavior#jumps
