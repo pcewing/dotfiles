@@ -485,4 +485,23 @@ function dec_to_hex() {
     fi
 
     printf "%d -> 0x%x\n" "$1" "$1"
+
+function dot-cd() {
+    cd "$DOTFILES"
+}
+
+function dot-push() {
+    local cwd
+    cwd="$(pwd)"
+    cd "$DOTFILES"
+    git push origin "$(git branch --show-current)"
+    cd "$cwd"
+}
+
+function dot-pull() {
+    local cwd
+    cwd="$(pwd)"
+    cd "$DOTFILES"
+    git pull origin "$(git branch --show-current)"
+    cd "$cwd"
 }
