@@ -485,6 +485,7 @@ function dec_to_hex() {
     fi
 
     printf "%d -> 0x%x\n" "$1" "$1"
+}
 
 function dot-cd() {
     cd "$DOTFILES"
@@ -504,4 +505,13 @@ function dot-pull() {
     cd "$DOTFILES"
     git pull origin "$(git branch --show-current)"
     cd "$cwd"
+}
+
+function kssh() {
+    installed "kitten" || return 1
+
+    # TODO: Doesn't currently work; seems like the way I've installed kitty I
+    # don't have this and `kitten update-self` isn't working either. Update
+    # provision scripts that install kitty so that this works.
+    kitten ssh "$@"
 }
