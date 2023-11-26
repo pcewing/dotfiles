@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import pwd
 import subprocess
 import urllib.request
 
@@ -12,6 +13,8 @@ def download_file(url, dst):
 def mkdir_p(path):
     os.makedirs(path, exist_ok=True)
 
+def get_current_user():
+    return pwd.getpwuid(os.getuid())
 
 class DistroInformation:
     def __init__(self):
@@ -70,7 +73,15 @@ def install_docker():
     cmd = ["sudo", "dpkg", "-i"] + [os.path.join(tmp_dir, pkg) for pkg in packages]
 
     print("Installing packages:\n{}\n".format(" ".join(cmd)))
-    subprocess.call(cmd)
+    if subprocess.call(cmd) != 0:
+        raise Exception("Failed to install packages")
+
+    user = get_current_user()
+    cmd = ["sudo", "usermod", "-aG", "docker", user.pw_name]
+
+    print("Adding user to docker group")
+    if subprocess.call(cmd) != 0:
+        raise Exception("Failed to add user to docker group")
 
 
 def main():
