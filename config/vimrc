@@ -217,7 +217,6 @@ nnoremap <silent> <leader>y :let @+ = join([expand('%'),  line(".")], ':')<cr>
 
 let base16colorspace=256
 colorscheme base16-outrun-dark
-
 " End flavours - vimrc
 
 if has('win32')

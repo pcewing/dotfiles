@@ -72,5 +72,4 @@ BASE16_SHELL="$HOME/.config/base16-shell/"
 # Base16 Outrun Dark
 
 eval "base16_outrun-dark"
-
 # End flavours - bashrc
