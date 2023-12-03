@@ -92,16 +92,7 @@ function nvimp() {
         return 1
     fi
 
-    template="#!/usr/bin/env python
-
-def main():
-    pass
-
-if __name__ == '__main__':
-    main()
-"
-
-    echo "$template" > "$script_name"
+    cp "$DOTFILES/templates/nvimp.template.py" "$script_name"
     chmod +x "$script_name"
     nvim "$script_name"
 }
@@ -485,6 +476,15 @@ function dec_to_hex() {
     fi
 
     printf "%d -> 0x%x\n" "$1" "$1"
+}
+
+function hex_to_dec() {
+    if [ -z "$1" ]; then
+        yell "Usage: hex_to_dec <hex>"
+        return 1
+    fi
+
+    echo "0x$1 -> $((16#$1))"
 }
 
 function dot-cd() {
