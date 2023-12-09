@@ -1,4 +1,4 @@
-snippet cla "C++ Class with default (con|de)structors"
+snippet class "C++ Class with default (con|de)structors"
 class $1
 {
 public:
@@ -12,4 +12,13 @@ endsnippet
 
 snippet cout "C++ std::cout statement to print output"
 std::cout << "$1" << std::endl;
+endsnippet
+
+snippet interface "C++ Interface"
+class $1
+{
+public:
+    virtual void Foo() = 0;
+    virtual void Bar() = 0;
+};
 endsnippet
