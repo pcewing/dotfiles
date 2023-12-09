@@ -241,23 +241,22 @@
 
 [base16_low]
     msg_urgency = low
-    background = "#20204A"
-    foreground = "#50507A"
-    frame_color = "#D0D0FA"
-    separator_color = "#D0D0FA"
+    background = "#20204a"
+    foreground = "#50507a"
+    frame_color = "#d0d0fa"
+    separator_color = "#d0d0fa"
 
 [base16_normal]
     msg_urgency = normal
-    background = "#30305A"
-    foreground = "#D0D0FA"
-    frame_color = "#D0D0FA"
-    separator_color = "#D0D0FA"
+    background = "#30305a"
+    foreground = "#d0d0fa"
+    frame_color = "#d0d0fa"
+    separator_color = "#d0d0fa"
 
 [base16_critical]
     msg_urgency = critical
-    background = "#FF4242"
-    foreground = "#E0E0FF"
-    frame_color = "#D0D0FA"
-    separator_color = "#D0D0FA"
-
+    background = "#ff4242"
+    foreground = "#e0e0ff"
+    frame_color = "#d0d0fa"
+    separator_color = "#d0d0fa"
 # End flavours - dunstrc

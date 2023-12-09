@@ -92,16 +92,7 @@ function nvimp() {
         return 1
     fi
 
-    template="#!/usr/bin/env python
-
-def main():
-    pass
-
-if __name__ == '__main__':
-    main()
-"
-
-    echo "$template" > "$script_name"
+    cp "$DOTFILES/templates/nvimp.template.py" "$script_name"
     chmod +x "$script_name"
     nvim "$script_name"
 }
@@ -485,4 +476,42 @@ function dec_to_hex() {
     fi
 
     printf "%d -> 0x%x\n" "$1" "$1"
+}
+
+function hex_to_dec() {
+    if [ -z "$1" ]; then
+        yell "Usage: hex_to_dec <hex>"
+        return 1
+    fi
+
+    echo "0x$1 -> $((16#$1))"
+}
+
+function dot-cd() {
+    cd "$DOTFILES"
+}
+
+function dot-push() {
+    local cwd
+    cwd="$(pwd)"
+    cd "$DOTFILES"
+    git push origin "$(git branch --show-current)"
+    cd "$cwd"
+}
+
+function dot-pull() {
+    local cwd
+    cwd="$(pwd)"
+    cd "$DOTFILES"
+    git pull origin "$(git branch --show-current)"
+    cd "$cwd"
+}
+
+function kssh() {
+    installed "kitten" || return 1
+
+    # TODO: Doesn't currently work; seems like the way I've installed kitty I
+    # don't have this and `kitten update-self` isn't working either. Update
+    # provision scripts that install kitty so that this works.
+    kitten ssh "$@"
 }
