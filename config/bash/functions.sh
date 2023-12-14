@@ -79,7 +79,7 @@ EOF
 function nvimp() {
     installed "nvim" || return 1
 
-    local script_name template
+    local script_name
     script_name="$1"
 
     if [[ -z "$script_name" ]]; then
@@ -488,23 +488,23 @@ function hex_to_dec() {
 }
 
 function dot-cd() {
-    cd "$DOTFILES"
+    cd "$DOTFILES" || return 1
 }
 
 function dot-push() {
     local cwd
     cwd="$(pwd)"
-    cd "$DOTFILES"
+    cd "$DOTFILES" || return 1
     git push origin "$(git branch --show-current)"
-    cd "$cwd"
+    cd "$cwd" || return 1
 }
 
 function dot-pull() {
     local cwd
     cwd="$(pwd)"
-    cd "$DOTFILES"
+    cd "$DOTFILES" || return 1
     git pull origin "$(git branch --show-current)"
-    cd "$cwd"
+    cd "$cwd" || return 1
 }
 
 function kssh() {
@@ -514,4 +514,27 @@ function kssh() {
     # don't have this and `kitten update-self` isn't working either. Update
     # provision scripts that install kitty so that this works.
     kitten ssh "$@"
+}
+
+# Diff two revisions in an SVN repository
+function sdr() {
+    local r1 r2 tmp_dir tmp_file
+
+    r1="$1"
+    r2="$2"
+
+    if [ -z "$r1" ] || [ -z "$r2" ]; then
+        echo "Usage: sdr <rev1> <rev2>"
+        echo ""
+        echo "Example: sdr 1837 1839"
+        return 1
+    fi
+
+    tmp_dir="$HOME/tmp"
+    tmp_file="$tmp_dir/diff.patch"
+
+    mkdir -p "$tmp_dir"
+    rm -f "$tmp_file"
+
+    svn diff --readonly --diff-cmd=bcompare_svnrev -r "$1:$2"
 }

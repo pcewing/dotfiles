@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# TODO: What does this do?
+
+before="$3"
+after="$5"
+temp_file_a="$6"
+temp_file_b="$7"
+
+sanitize() {
+    echo "$1" | awk '{print $1;}' | sed -e 's/ /_/g' | sed -e 's/\//_/g'
+}
+
+before="$(sanitize "$before")"
+after="$(sanitize "$after")"
+
+before_dir="$HOME/tmp/before"
+after_dir="$HOME/tmp/after"
+mkdir -p "$before_dir"
+mkdir -p "$after_dir"
+
+before_path="$before_dir/$before"
+rm -f "$before_path" && cp "$temp_file_a" "$before_path"
+
+after_path="$after_dir/$after"
+rm -f "$after_path" && cp "$temp_file_b" "$after_path"
+
+bcompare --readonly "$before_path" "$after_path" &
+
+exit 0
