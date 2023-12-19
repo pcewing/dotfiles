@@ -118,7 +118,26 @@ call plug#end()
 " Don't use smart indent in markdown files
 autocmd FileType markdown setlocal nosmartindent
 
+" TODO: Some plugins are nvim only; we should move plugin configuration into
+" their own files, like:
+" config/nvim/plugins/nvim-markdown.lua
+" config/nvim/plugins/UltiSnips.lua
+"
+" And then we can just do something like:
+" if has('nvim)
+"     luafile ~/dot/config/nvim/plugins/nvim-markdown.lua
+"     luafile ~/dot/config/nvim/plugins/UltiSnips.lua
+" endif
+
+" Configure nvim-markdown plugin
+
 let g:vim_markdown_frontmatter = 1
+
+" Disable some nvim-markdown mappings that either conflict with other plugins
+" or that I just don't want.
+
+" This is <tab> by default which conflicts with UltiSnips
+imap <Plug> <Plug>Markdown_Jump
 
 " Format the current C/C++ file with clang-format (Uses vim-clang-format plugin)
 let g:clang_format#detect_style_file = 1
@@ -127,11 +146,12 @@ autocmd FileType c,cpp vnoremap <buffer><Leader>q :ClangFormat<CR>
 " Format the current Python file with black
 autocmd FileType python nnoremap <buffer><Leader>q :lua format_current_python_file()<CR>
 
-" UltiSnips
+" UltiSnips insert mode mappings
 let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsListSnippets="<c-tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+
+nnoremap <leader>ue :UltiSnipsEdit<CR>
 
 " FZF
 nnoremap <Leader>o :Files<CR>
@@ -227,12 +247,6 @@ else
     hi Normal guibg=NONE ctermbg=NONE
 endif
 
-if has('nvim')
-    nnoremap <silent> <leader>x :e ~/.config/nvim/init.vim<cr>
-else
-    nnoremap <silent> <leader>x :e ~/.vimrc<cr>
-endif
-
 " Source lua files in Neovim
 if has('nvim')
     luafile ~/dot/config/nvim/functions.lua
@@ -240,4 +254,12 @@ if has('nvim')
     luafile ~/dot/config/nvim/lsp_gopls.lua
     luafile ~/dot/config/nvim/lsp_jedi.lua
     luafile ~/dot/config/nvim/treesitter.lua
+endif
+
+if has('nvim')
+    nnoremap <silent> <leader>x :e ~/dot/config/vimrc<cr>
+    nnoremap <silent> <leader>r :lua reload_config()<CR>
+else
+    nnoremap <silent> <leader>x :e ~/.vimrc<cr>
+    nnoremap <silent> <leader>r :source ~/.config/nvim/init.vim<cr>
 endif
