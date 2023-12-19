@@ -24,6 +24,11 @@ function link() {
     echo "Ensuring the parent directory $dir exists"
     mkdir -p "$dir"
 
+    if [ -L "$dst" ]; then
+        echo "Deleting existing symlink"
+        rm "$dst"
+    fi
+
     echo "Creating symlink $dst to $src"
     ln -sf "$src" "$dst"
 }
@@ -43,6 +48,11 @@ function link_dir() {
 
     echo "Ensuring the parent directory $dir exists"
     mkdir -p "$dir"
+
+    if [ -L "$dst" ]; then
+        echo "Deleting existing symlink"
+        rm "$dst"
+    fi
 
     echo "Creating symlink $dst to $src"
     ln -s "$src" "$dst"
@@ -115,6 +125,7 @@ function cmd_clean() {
     unlink "$HOME/.xsession"
     unlink "$HOME/.config/nvim/UltiSnips/sh.snippets"
     unlink "$HOME/.config/nvim/UltiSnips/cpp.snippets"
+    unlink "$HOME/.config/nvim/UltiSnips/markdown.snippets"
     unlink "$HOME/.config/kitty/kitty.conf"
 
     unlink_dir "$HOME/.config/flavours"
@@ -158,6 +169,7 @@ function cmd_link() {
     link "$cfg/xsession"                "$HOME/.xsession"
     link "$cfg/snippets/sh.snippets"    "$HOME/.config/nvim/UltiSnips/sh.snippets"
     link "$cfg/snippets/cpp.snippets"   "$HOME/.config/nvim/UltiSnips/cpp.snippets"
+    link "$cfg/snippets/markdown.snippets" "$HOME/.config/nvim/UltiSnips/markdown.snippets"
     link "$cfg/kitty.conf"              "$HOME/.config/kitty/kitty.conf"
 
     link "$cfg/alacritty/alacritty.yml" "$HOME/.config/alacritty/alacritty.yml"

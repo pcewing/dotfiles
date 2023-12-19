@@ -1,0 +1,22 @@
+snippet date "Today's date in the format: Monday 2021-01-01"
+`#!/usr/bin/env bash
+
+DAY=$(date +"%d")
+MONTH=$(date +"%m")
+YEAR=$(date +"%Y")
+DAY_OF_WEEK=
+
+DAY_STRING=""
+case "$(date +"%w")" in
+  "0")  DAY_STRING="Sunday"     ;;
+  "1")  DAY_STRING="Monday"     ;;
+  "2")  DAY_STRING="Tuesday"    ;;
+  "3")  DAY_STRING="Wednesday"  ;;
+  "4")  DAY_STRING="Thursday"   ;;
+  "5")  DAY_STRING="Friday"     ;;
+  "6")  DAY_STRING="Saturday"   ;;
+esac
+
+echo "$DAY_STRING $YEAR-$MONTH-$DAY"
+`
+endsnippet
