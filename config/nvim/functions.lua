@@ -1,3 +1,11 @@
+function is_int(n)
+  return (type(n) == "number") and (math.floor(n) == n)
+end
+
+function is_string(n)
+  return type(n) == "string"
+end
+
 function format_current_python_file()
     local command = "black " .. vim.api.nvim_buf_get_name(0) .. " 2>&1"
     local handle = io.popen(command)
@@ -9,10 +17,6 @@ end
 
 function print_current_filetype()
     print(vim.bo.filetype)
-end
-
-function is_int(n)
-  return (type(n) == "number") and (math.floor(n) == n)
 end
 
 function move_to_column(column)
@@ -41,4 +45,13 @@ function move_to_column(column)
     local line = vim.api.nvim_get_current_line()
     local nline = line:sub(0, curr) .. insertion_string .. line:sub(curr + 1)
     vim.api.nvim_set_current_line(nline)
+end
+
+function reload_config(config)
+    if config == nil or not is_string(config) or string.len(config) == 0 then
+        config = "~/.config/nvim/init.vim"
+    end
+
+    vim.cmd("source" .. config)
+    print("Config file " .. config .. " reloaded!")
 end
