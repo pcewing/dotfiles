@@ -154,6 +154,9 @@ let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 nnoremap <leader>ue :UltiSnipsEdit<CR>
 
 " FZF
+" TODO: This is slow in large directories in WSL because of the crappy file
+" system speed. Look into using $FZF_DEFAULT_COMMAND to cache results so
+" subsequent usages are fast.
 nnoremap <Leader>o :Files<CR>
 nnoremap <leader>t :Tags<cr>
 

@@ -55,3 +55,10 @@ function reload_config(config)
     vim.cmd("source" .. config)
     print("Config file " .. config .. " reloaded!")
 end
+
+function close_tabs_to_right()
+    local cur = vim.fn.tabpagenr()
+    while cur < vim.fn.tabpagenr('$') do
+        vim.cmd('tabclose ' .. (cur + 1))
+    end
+end

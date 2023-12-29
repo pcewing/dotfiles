@@ -73,3 +73,10 @@ template = "custom"
 subtemplate = "kitty-256"
 start = '# Start flavours - kitty'
 end = '# End flavours - kitty'
+
+[[items]]
+file = "$DOTFILES/config/wezterm.lua"
+template = "custom"
+subtemplate = "wezterm"
+start = '-- Start flavours - wezterm'
+end = '-- End flavours - wezterm'
