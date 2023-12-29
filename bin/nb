@@ -22,6 +22,7 @@ esac
 
 DATE_STRING="$DAY_STRING $YEAR-$MONTH-$DAY"
 
+# TODO: Use a template file for this
 read -r -d '' TEMPLATE << EOF
 # $DATE_STRING
 

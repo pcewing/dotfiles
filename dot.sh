@@ -128,6 +128,8 @@ function cmd_clean() {
     unlink "$HOME/.config/nvim/UltiSnips/markdown.snippets"
     unlink "$HOME/.config/kitty/kitty.conf"
 
+    unlink "$HOME/.config/wezterm/wezterm.lua"
+
     unlink_dir "$HOME/.config/flavours"
 
     echo -e "\nRemoving symlink for sway-user.desktop requires root priveleges; run:"
@@ -175,6 +177,8 @@ function cmd_link() {
     link "$cfg/alacritty/alacritty.yml" "$HOME/.config/alacritty/alacritty.yml"
     link "$cfg/alacritty/base16.yml"    "$HOME/.config/alacritty/base16.yml"
     link "$cfg/alacritty/linux.yml"     "$HOME/.config/alacritty/linux.yml"
+
+    link "$cfg/wezterm.lua"             "$HOME/.config/wezterm/wezterm.lua"
 
     link_dir "$cfg/flavours"            "$HOME/.config/flavours"
 }

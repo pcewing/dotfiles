@@ -128,3 +128,27 @@ Some remaining items to tackle in regards to theming:
 For setup steps on Windows 10, see:
 
 [windows_setup.md](./windows_setup.md)
+
+### WSL
+
+Some useful things to add to `.localrc` in WSL.
+
+Remove the background highlighting of folders in ls:
+
+```bash
+LS_COLORS=$LS_COLORS:'ow=1;34:' ; export LS_COLORS
+```
+
+WezTerm shell integration; this adds some useful features like having new tabs
+open in the same directory as the previous:
+```
+if [ "$TERM_PROGRAM" = "WezTerm" ] && [ -f "$HOME/wezterm.sh" ]; then
+    source "$HOME/wezterm.sh"
+fi
+```
+
+For now just manually create and copy the `wezterm.sh` file from here:
+
+https://raw.githubusercontent.com/wez/wezterm/main/assets/shell-integration/wezterm.sh
+
+We could make this a bit nicer by automatically downloading it.
