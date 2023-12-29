@@ -200,6 +200,8 @@ function cmd_windows() {
 
     link_windows "$cfg/alacritty/base16.yml"    "$HOME/.config/alacritty/base16.yml"
     link_windows "$cfg/alacritty/windows.yml"   "$HOME/.config/alacritty/windows.yml"
+
+    link_windows "$cfg/wezterm.lua"     "$HOME/.config/wezterm/wezterm.lua"
 }
 
 case "$1" in
