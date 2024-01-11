@@ -1,4 +1,4 @@
-snippet for "Basic for-each loop on an array"
+snippet for "for-each loop on an array"
 $1=(
     "foo"
 )
@@ -6,4 +6,14 @@ $1=(
 for $2 in "${$1[@]}"; do
     echo "$2 = $$2"
 done
+endsnippet
+
+snippet if "if-elif-else example"
+if [ "$foo" = "foo" ] || [ "$foo" = "bar" ]; then
+    echo "$foo = foo or bar"
+elif command -v "baz" &>/dev/null; then
+    echo "Command baz is installed"
+else
+    echo "Hello"
+fi
 endsnippet
