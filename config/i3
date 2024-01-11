@@ -5,6 +5,11 @@
 # Start the compositor (Without fading because it's annoying and slow)
 exec_always "~/dot/bin/run_compositor.sh"
 
+# Set the GTK theme settings to dark so that applications that use the system
+# theme (Like Chrome and Nautilus) will be in dark mode
+exec_always "gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark"
+exec_always "gsettings set org.gnome.desktop.interface color-scheme prefer-dark"
+
 # windows modifier key
 set $mod Mod4
 

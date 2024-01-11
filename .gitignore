@@ -2,3 +2,4 @@ tags
 gitconfig_local
 *.zwc
 *.swp
+*.pyc
