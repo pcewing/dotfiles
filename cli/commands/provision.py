@@ -2,14 +2,16 @@
 
 import argparse
 
-from ..common.distro_info import DistroInformation
-from ..common.log import Log
-from ..common.provisioner import ProvisionerArgs, Provisioners
-from ..jammy.provisioner import UbuntuJammyProvisioner
+from lib.common.distro_info import DistroInformation
+from lib.common.log import Log
+from lib.common.provisioner import ProvisionerArgs, Provisioners
+from lib.jammy.provisioner import UbuntuJammyProvisioner
 
 
 def add_provision_parser(subparsers: argparse._SubParsersAction) -> None:
-    parser = subparsers.add_parser("provision", help="Run provisioners to configure components")
+    parser = subparsers.add_parser(
+        "provision", help="Run provisioners to configure components"
+    )
     parser.add_argument(
         "-d",
         "--dry-run",
@@ -38,9 +40,9 @@ def add_provision_parser(subparsers: argparse._SubParsersAction) -> None:
         help="Provision all components",
     )
     parser.add_argument(
-        'components',
-        nargs='*',
-        help='The components to provision',
+        "components",
+        nargs="*",
+        help="The components to provision",
     )
     parser.set_defaults(func=cmd_provision)
 
@@ -60,7 +62,9 @@ def cmd_provision(args: argparse.Namespace) -> None:
     distro = DistroInformation.get()
 
     if distro.codename != args.provisioner:
-        Log.warn(f"Running the {args.provisioner} provisioner but the current system is {distro.codename}")
+        Log.warn(
+            f"Running the {args.provisioner} provisioner but the current system is {distro.codename}"
+        )
 
     Log.info(f"Provisioning {distro.id} {distro.release} ({distro.codename})")
 

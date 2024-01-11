@@ -17,13 +17,6 @@ def sh(cmd) -> None:
     return subprocess.call(cmd)
 
 
-def get_home_dir() -> str:
-    home: StringOrNone = os.getenv("HOME")
-    if home is None:
-        raise Exception("HOME environment variable is missing")
-    return home
-
-
 def mkdir_p(path: str, dry_run: bool) -> None:
     Log.info("Creating directory:", [("path", path)])
 
@@ -52,6 +45,7 @@ def sudo_rmdir(path: str, dry_run: bool) -> None:
         if sh(["sudo", "rm", "-rf", path]) != 0:
             raise Exception("Failed to delete directory")
 
+
 def sudo_mvdir(src: str, dst: str, dry_run: bool) -> None:
     Log.info("Moving directory:", [("from", src), ("to", dst)])
 
@@ -60,6 +54,7 @@ def sudo_mvdir(src: str, dst: str, dry_run: bool) -> None:
     else:
         if sh(["sudo", "mv", src, dst]) != 0:
             raise Exception("Failed to move directory")
+
 
 def download_file(url: str, dst: str, dry_run: bool) -> None:
     Log.info("Downloading file:")

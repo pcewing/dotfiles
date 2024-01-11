@@ -10,7 +10,7 @@ from ..common.log import Log
 from ..common.provisioner import IComponentProvisioner, ProvisionerArgs
 from ..common.semver import Semver
 from ..common.shell import Shell
-from ..common.util import get_home_dir
+from ..common.dir import Dir
 
 FLAVOURS_GITHUB_ORG = "Misterio77"
 FLAVOURS_GITHUB_REPO = "flavours"
@@ -35,7 +35,7 @@ class FlavoursProvisioner(IComponentProvisioner):
             Log.info(f"Flavours {latest_version} is already installed, nothing to do")
             return
 
-        tmp_dir = f"{get_home_dir()}/Downloads/flavours/{latest_version}"
+        tmp_dir = f"{Dir.home()}/Downloads/flavours/{latest_version}"
         archive_filename = f"flavours-{latest_version}-x86_64-linux.tar.gz"
         archive_path = os.path.join(tmp_dir, archive_filename)
 

@@ -2,8 +2,8 @@
 
 import argparse
 
-from ..common.log import Log
-from ..common.provisioner import ProvisionerArgs, Provisioners
+from lib.common.log import Log
+from lib.common.provisioner import ProvisionerArgs, Provisioners
 
 
 def add_list_parser(subparsers: argparse._SubParsersAction) -> None:
