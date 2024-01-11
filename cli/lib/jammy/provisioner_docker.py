@@ -6,8 +6,9 @@ import subprocess
 import urllib.request
 from typing import Dict, List
 
+from ..common.dir import Dir
 from ..common.provisioner import IComponentProvisioner, ProvisionerArgs
-from ..common.util import get_home_dir, mkdir_p, download_file, add_user_to_group
+from ..common.util import mkdir_p, download_file, add_user_to_group
 from ..common.log import Log
 from .apt import Apt
 from ..common.distro_info import DistroInformation
@@ -45,7 +46,7 @@ class DockerProvisioner(IComponentProvisioner):
             Log.info("Docker is already installed, skipping package installs")
             return
 
-        tmp_dir = os.path.join(get_home_dir(), ".tmp")
+        tmp_dir = os.path.join(Dir.home(), ".tmp")
         mkdir_p(tmp_dir, self._args.dry_run)
 
         # Format the filenames for downloading/installing

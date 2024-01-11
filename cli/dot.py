@@ -1,20 +1,14 @@
 #!/usr/bin/env python
 
-
-import os
 import argparse
+import os
 
-from lib.common.log import Log 
-
-
-from lib.commands import add_command_parsers
-
-SCRIPT_PATH = os.path.realpath(__file__)
-SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
+from commands import add_command_parsers
+from lib.common.log import Log
 
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="CLI with utilities for provisioning Linux machines")
+def parse_args():
+    parser = argparse.ArgumentParser(description="Dotfiles CLI")
     parser.add_argument(
         "-l",
         "--log-level",
@@ -24,6 +18,8 @@ def parse_args() -> argparse.Namespace:
 
     add_command_parsers(parser)
 
+    # TODO: Bash auto-completion
+
     args = parser.parse_args()
     if "func" not in args:
         parser.print_help()
@@ -31,7 +27,7 @@ def parse_args() -> argparse.Namespace:
     return args
 
 
-def main() -> None:
+def main():
     args = parse_args()
 
     Log.init(args.log_level)
