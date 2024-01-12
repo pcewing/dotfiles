@@ -6,6 +6,7 @@ from ..common.provisioner import ISystemProvisioner, ProvisionerArgs
 from ..common.log import Log
 from .provisioner_docker import DockerProvisioner
 from .provisioner_flavours import FlavoursProvisioner
+from .provisioner_apt_init import AptInitProvisioner
 
 
 class UbuntuJammyProvisioner(ISystemProvisioner):
@@ -20,10 +21,13 @@ class UbuntuJammyProvisioner(ISystemProvisioner):
         # is important because some component provisioners may depend on others
         # having already run, such as an apt update. We could enforce this more
         # explicitly through a dependency system but that seems like overkill.
+        # fmt: off
         self._component_provisioners = {
-            "docker": DockerProvisioner(args),
+            "apt-init": AptInitProvisioner(args),
+            "docker":   DockerProvisioner(args),
             "flavours": FlavoursProvisioner(args),
         }
+        # fmt: on
 
     def get_component_provisioners(self) -> List[str]:
         return list(self._component_provisioners.keys())

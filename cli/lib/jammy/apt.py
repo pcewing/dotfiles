@@ -102,6 +102,24 @@ class PackageListing:
 
 class Apt:
     @staticmethod
+    def update(dry_run: bool) -> None:
+        Log.info("Updating APT repository")
+        if dry_run:
+            Log.info("Skipping apt update due to --dry-run")
+        else:
+            if subprocess.call(["sudo", "apt", "-y", "update"]) != 0:
+                raise Exception("Apt update failed")
+
+    @staticmethod
+    def upgrade(dry_run: bool) -> None:
+        Log.info("Upgrading APT packages")
+        if dry_run:
+            Log.info("Skipping apt upgrade due to --dry-run")
+        else:
+            if subprocess.call(["sudo", "apt", "-y", "upgrade"]) != 0:
+                raise Exception("Apt upgrade failed")
+
+    @staticmethod
     def install(packages: List[str], dry_run: bool) -> None:
         raise Exception("Not yet implemented")
 
