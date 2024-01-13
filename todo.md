@@ -17,3 +17,9 @@ https://github.com/BurntSushi/ripgrep/releases/tag/14.1.0
 ```
 ripgrep_14.1.0-1_amd64.deb
 ```
+
+## FZF Bash Integration
+
+`~/.fzf.bash` doesn't exist for me, maybe because I'm installing via apt. I'd
+like that so I can get fzf `ctrl+r` functionality so update the provision
+script to set that up correctly.

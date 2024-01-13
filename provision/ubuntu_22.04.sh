@@ -375,6 +375,9 @@ install_mpd() {
     mkdir -p "$HOME/.mpd/playlists"
     mkdir -p "$HOME/.local/share/mpd"
 
+    # TODO: This doesn't seem to be working? Or maybe it's because I updated
+    # Ubuntu and my pip packages disappeared? But this was missing and breaking
+    # my i3 status bar.
     pip_install "python-mpd2"
 }
 
