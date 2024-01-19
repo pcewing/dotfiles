@@ -3,6 +3,9 @@
 from .log import Log
 from .util import sh
 
+# I originally used these instead of Python's native facilities because it was
+# easier to deal with elevating to root this way. I think instead I'm going to
+# just have the script elevate itself which simplifies things a bit.
 class Shell:
     @staticmethod
     def mkdir(path: str, exist_ok: bool, sudo: bool, dry_run: bool) -> None:

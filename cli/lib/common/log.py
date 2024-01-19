@@ -4,21 +4,36 @@ import logging
 import sys
 
 
-def _log_level_from_str(log_level_str: str) -> int:
-    # fmt: off
-    log_levels = {
-        "debug":    logging.DEBUG,
-        "info":     logging.INFO,
-        "warn":     logging.WARN,
-        "error":    logging.ERROR,
-        "crit":     logging.CRITICAL,
-    }
-    # fmt: on
+# fmt: off
+_LOG_LEVEL_STRINGS = {
+    "debug":    logging.DEBUG,
+    "info":     logging.INFO,
+    "warn":     logging.WARN,
+    "error":    logging.ERROR,
+    "fatal":    logging.FATAL,
+}
 
+_LOG_LEVEL_ABBREVIATIONS = {
+    logging.DEBUG:      "D",
+    logging.INFO:       "I",
+    logging.WARNING:    "W",
+    logging.ERROR:      "E",
+    logging.FATAL:      "F",
+}
+# fmt: on
+
+
+def _log_level_from_str(log_level_str: str) -> int:
     key = log_level_str.lower()
-    if key not in log_levels:
+    if key not in _LOG_LEVEL_STRINGS:
         raise Exception("Invalid log level '{}'".format(key))
-    return log_levels[key]
+    return _LOG_LEVEL_STRINGS[key]
+
+
+def _log_level_abbrev(level: int) -> str:
+    if level not in _LOG_LEVEL_ABBREVIATIONS:
+        raise Exception("Invalid log level '{}'".format(level))
+    return _LOG_LEVEL_ABBREVIATIONS[level]
 
 
 class Formatter(logging.Formatter):
@@ -27,20 +42,8 @@ class Formatter(logging.Formatter):
         return time.replace(",", ".")[11:]
 
     def format(self, record):
-        # fmt: off
-        level_map = {
-            "DEBUG":    "DEBUG",
-            "INFO":     "INFO",
-            "WARNING":  "WARN",
-            "ERROR":    "ERROR",
-            "CRITICAL": "CRIT",
-        }
-        # fmt: on
-
-        if record.levelname not in level_map:
-            raise Exception("Invalid log level name " + record.levelname)
-
-        record.levelname = level_map[record.levelname]
+        level_abbrev = _log_level_abbrev(record.levelno)
+        record.level_abbrev = level_abbrev
         return super(Formatter, self).format(record)
 
 
@@ -55,7 +58,7 @@ class Log:
         if isinstance(level, str):
             level = _log_level_from_str(level)
 
-        formatter = Formatter("%(asctime)s - %(levelname)-5s - %(message)s")
+        formatter = Formatter("%(level_abbrev)s %(asctime)s %(message)s")
 
         handler = logging.StreamHandler(sys.stdout)
         handler.setFormatter(formatter)
@@ -83,22 +86,23 @@ class Log:
         Log._log(logging.ERROR, msg, data)
 
     @staticmethod
-    def crit(msg, data=[]):
-        Log._log(logging.CRITICAL, msg, data)
+    def fatal(msg, data=[]):
+        Log._log(logging.FATAL, msg, data)
 
     @staticmethod
     def _log(level, msg, data=[]):
         if Log._logger is None:
             return
+        Log._logger.log(level, Log._format_msg(msg, data))
 
-        formatted = msg
-        if len(data) > 0:
-            formatted += Log._format_kvps(data)
-
-        Log._logger.log(level, formatted)
+    @staticmethod
+    def _format_msg(msg, data):
+        return msg + Log._format_kvps(data)
 
     @staticmethod
     def _format_kvps(kvps):
+        if len(kvps) == 0:
+            return ""
         return f" {{ {', '.join([Log._format_kvp(kvp) for kvp in kvps])} }}"
 
     @staticmethod
