@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
 import argparse
+import os
+import sys
+import subprocess
 
 from lib.common.distro_info import DistroInformation
 from lib.common.log import Log
@@ -46,6 +49,36 @@ def add_provision_parser(subparsers: argparse._SubParsersAction) -> None:
     )
     parser.set_defaults(func=cmd_provision)
 
+# TODO: Move the elevation stuff to lib?
+def is_root():
+    return os.getuid() == 0
+
+def find_in_path(cmd):
+    for dir in os.environ.get('PATH', '').split(':'):
+        path = os.path.join(dir, cmd)
+        if os.path.isfile(path):
+            return path
+    return None
+
+def get_script_path():
+    if isinstance(sys.argv[0], str) and len(sys.argv[0]) > 0:
+        return
+    raise Exception("Failed to identify script path")
+
+def elevate():
+    sudo = find_in_path("sudo")
+    if sudo is None:
+        raise Exception("Failed to find sudo executable in PATH")
+
+    cmd = [
+        sudo,
+        os.path.abspath(sys.executable),
+        os.path.abspath(sys.argv[0]),
+        ] + sys.argv[1:]
+
+    print("This script requires root access, elevating...")
+    sys.exit(subprocess.call(cmd))
+
 
 def cmd_provision(args: argparse.Namespace) -> None:
     if args.all and len(args.components) > 0:
@@ -58,6 +91,9 @@ def cmd_provision(args: argparse.Namespace) -> None:
             "Positional component arguments must be specified when the --all "
             "option is not used"
         )
+
+    if not args.dry_run and not is_root():
+        elevate()
 
     distro = DistroInformation.get()
 
