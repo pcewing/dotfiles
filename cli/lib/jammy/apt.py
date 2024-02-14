@@ -3,10 +3,7 @@
 import subprocess
 import json
 
-# This was moved from typing_extensions to typing in Python 3.11 but I'm still
-# on 3.10
-from typing_extensions import Self
-from typing import List  # , Self
+from typing import List
 
 from ..common.log import Log
 
@@ -35,7 +32,7 @@ class PackageListing:
         # fmt: on
 
     @staticmethod
-    def parse(line: str) -> Self:
+    def parse(line: str) -> "PackageListing":
         # Expected line format:
         # zlib1g-dev/jammy-updates,jammy-security,now 1:1.2.11.dfsg-2ubuntu9.2 amd64 [installed,automatic]
         i = line.find("/")
@@ -121,7 +118,12 @@ class Apt:
 
     @staticmethod
     def install(packages: List[str], dry_run: bool) -> None:
-        raise Exception("Not yet implemented")
+        Log.info("Installing APT packages")
+        if dry_run:
+            Log.info("Skipping apt install due to --dry-run")
+        else:
+            if subprocess.call(["sudo", "apt", "-y", "install"] + packages) != 0:
+                raise Exception("Apt install failed")
 
     @staticmethod
     def install_deb_files(deb_files: List[str], dry_run: bool) -> None:

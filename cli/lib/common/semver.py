@@ -2,7 +2,6 @@
 
 import re
 from typing import Union
-from typing_extensions import Self
 
 class Semver:
     def __init__(self, major, minor, patch):
@@ -56,7 +55,7 @@ class Semver:
         return self.major != rhs.major or self.minor != rhs.minor or self.patch != rhs.patch
 
     @staticmethod
-    def parse(version_str: str) -> Union[Self, None]:
+    def parse(version_str: str) -> Union["Semver", None]:
         m = re.match("v{0,1}([0-9]+)\.([0-9]+)\.([0-9]+)", version_str)
         if m is None:
             return None

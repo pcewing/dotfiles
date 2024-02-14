@@ -6,7 +6,8 @@ from ..common.provisioner import ISystemProvisioner, ProvisionerArgs
 from ..common.log import Log
 from .provisioner_docker import DockerProvisioner
 from .provisioner_flavours import FlavoursProvisioner
-from .provisioner_apt_init import AptInitProvisioner
+from .provisioner_apt import AptProvisioner
+from .provisioner_kitty import KittyProvisioner
 
 
 class UbuntuJammyProvisioner(ISystemProvisioner):
@@ -23,9 +24,17 @@ class UbuntuJammyProvisioner(ISystemProvisioner):
         # explicitly through a dependency system but that seems like overkill.
         # fmt: off
         self._component_provisioners = {
-            "apt-init": AptInitProvisioner(args),
+            "apt":      AptProvisioner(args),
             "docker":   DockerProvisioner(args),
+            "kitty":    KittyProvisioner(args),
             "flavours": FlavoursProvisioner(args),
+            # TODO: install_neovim
+            # TODO: install_i3gaps      "$cache_dir"
+            # TODO: install_cava        "$cache_dir"
+            # TODO: install_youtube-dl  "$cache_dir" "$bin_dir"
+            # TODO: install_wpr         "$cache_dir" "$bin_dir"
+            # TODO: install_mpd
+            # TODO: install_ncmpcpp
         }
         # fmt: on
 

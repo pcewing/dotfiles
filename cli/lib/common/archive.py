@@ -13,6 +13,7 @@ from typing import Tuple
 class CompressionType(Enum):
     NONE = 1
     GZIP = 2
+    XZ = 3
 
 
 class ArchiveType(Enum):
@@ -36,6 +37,8 @@ class Archive:
 
         if compression_type == CompressionType.GZIP:
             cmd.append("--gzip")
+        elif compression_type == CompressionType.XZ:
+            cmd.append("--xz")
 
         cmd += [
             "--file", path,
@@ -51,5 +54,7 @@ class Archive:
     def _infer_type_from_name(name: str) -> Tuple[ArchiveType, CompressionType]:
         if name.lower().endswith(".tar.gz"):
             return ArchiveType.TAR, CompressionType.GZIP
+        elif name.lower().endswith(".txz"):
+            return ArchiveType.TAR, CompressionType.XZ
         else:
             raise Exception("Failed to infer archive file type")

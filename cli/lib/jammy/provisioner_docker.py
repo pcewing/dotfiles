@@ -57,7 +57,7 @@ class DockerProvisioner(IComponentProvisioner):
             package_files.append(os.path.join(tmp_dir, package_filename))
 
         Log.info("Downloading packages that need to be installed")
-        base_url = f"https://download.docker.com/linux/ubuntu/dists/{distro_info.distrib_codename}/pool/stable/amd64"
+        base_url = f"https://download.docker.com/linux/ubuntu/dists/{distro_info.codename}/pool/stable/amd64"
         for package_file in package_files:
             url = f"{base_url}/{os.path.basename(package_file)}"
             download_file(url, package_file, self._args.dry_run)
