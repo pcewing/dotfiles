@@ -26,3 +26,9 @@ audio_output {
     path        "/tmp/mpd.fifo"
     format      "44100:16:2"
 }
+
+decoder {
+    plugin "wildmidi"
+    config_file "/etc/timidity/timidity.cfg"
+    enabled "no"
+}

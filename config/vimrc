@@ -266,3 +266,5 @@ else
     nnoremap <silent> <leader>x :e ~/.vimrc<cr>
     nnoremap <silent> <leader>r :source ~/.config/nvim/init.vim<cr>
 endif
+
+xnoremap <leader>n :normal
