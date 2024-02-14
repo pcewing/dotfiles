@@ -510,10 +510,7 @@ function dot-pull() {
 function kssh() {
     installed "kitten" || return 1
 
-    # TODO: Doesn't currently work; seems like the way I've installed kitty I
-    # don't have this and `kitten update-self` isn't working either. Update
-    # provision scripts that install kitty so that this works.
-    kitten ssh "$@"
+    kitty +kitten ssh "$@"
 }
 
 # Diff two revisions in an SVN repository
