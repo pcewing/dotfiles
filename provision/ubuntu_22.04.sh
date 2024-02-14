@@ -364,11 +364,21 @@ install_mpd() {
 
     apt_install "mpd"
 
-    echo "Disabling the mpd service..."
-    try sudo systemctl stop mpd.service
-    try sudo systemctl stop mpd.socket
+    echo "Disabling the system mpd service..."
+    try sudo systemctl stop --now mpd.service
+    try sudo systemctl stop --now mpd.socket
     try sudo systemctl disable mpd.service
     try sudo systemctl disable mpd.socket
+    try sudo systemctl mask mpd.service
+    try sudo systemctl mask mpd.socket
+
+    echo "Disabling the user mpd service..."
+    try systemctl stop --now --user mpd.service
+    try systemctl stop --now --user mpd.socket
+    try systemctl disable --user mpd.service
+    try systemctl disable --user mpd.socket
+    try systemctl mask --user mpd.service
+    try systemctl mask --user mpd.socket
 
     echo "Configuring mpd..."
     mkdir -p "$HOME/.mpd"
