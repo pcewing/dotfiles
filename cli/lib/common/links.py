@@ -4,7 +4,7 @@ import os
 import json
 from enum import Enum
 from typing import List  # , Self
-from typing_extensions import Self
+#from typing_extensions import Self
 
 from .dir import Dir
 from .log import Log
@@ -15,7 +15,7 @@ class LinkType(Enum):
     DIRECTORY = 2
 
     @staticmethod
-    def parse(s: str) -> Self:
+    def parse(s: str) -> "LinkType":
         # fmt: off
         strings = {
             "file":         LinkType.FILE,

@@ -6,10 +6,6 @@ import os
 LSB_RELEASE_FILE = "/etc/lsb-release"
 CENTOS_RELEASE_FILE = "/etc/centos-release"
 
-# This was moved from typing_extensions to typing in Python 3.11 but I'm still
-# on 3.10
-from typing_extensions import Self
-
 
 class DistroInformation:
     _data = None
@@ -23,15 +19,15 @@ class DistroInformation:
     def __str__(self) -> str:
         # fmt: off
         return json.dumps({
-            "DISTRIB_ID": self.distrib_id,
-            "DISTRIB_RELEASE": self.distrib_release,
-            "DISTRIB_CODENAME": self.distrib_codename,
-            "DISTRIB_DESCRIPTION": self.distrib_description,
+            "DISTRIB_ID": self.id,
+            "DISTRIB_RELEASE": self.release,
+            "DISTRIB_CODENAME": self.codename,
+            "DISTRIB_DESCRIPTION": self.description,
         })
         # fmt: on
 
     @staticmethod
-    def get() -> Self:
+    def get() -> "DistroInformation":
         if DistroInformation._data is None:
             DistroInformation._load_distro_info()
         return DistroInformation._data
