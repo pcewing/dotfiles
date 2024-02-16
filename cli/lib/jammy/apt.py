@@ -129,9 +129,9 @@ class Apt:
     def install_deb_files(deb_files: List[str], dry_run: bool) -> None:
         cmd = ["sudo", "dpkg", "-i"] + deb_files
 
-        Log.info("Installing packages:\n{}\n".format(" ".join(deb_files)))
+        Log.info("installing packages", [("packages", "[ " + ", ".join(deb_files) + " ]")])
         if dry_run:
-            Log.info("Skipping install due to --dry-run")
+            Log.info("skipping install", [("reason", "dry run")])
         else:
             if subprocess.call(cmd) != 0:
                 raise Exception("Failed to install packages")

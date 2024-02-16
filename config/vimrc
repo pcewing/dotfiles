@@ -104,7 +104,11 @@ if has('nvim')
     " won't rerun. If cryptic treesitter errors show up after running
     " :PlugUpdate, try running :TSUpdate manually
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-    Plug 'nvim-lua/completion-nvim'
+    " The 'nvim-lua/completion-nvim' plugin is deprecated so I need to find a
+    " replacement. The two below are recommended by Neovim developers so we
+    " should try both and see which one we prefer. 
+    Plug 'hrsh7th/nvim-cmp'
+    "Plug 'ms-jpq/coq_nvim'
     Plug 'nvim-lua/popup.nvim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'glepnir/lspsaga.nvim'

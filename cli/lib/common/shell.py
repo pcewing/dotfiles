@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
+import subprocess
+
 from .log import Log
-from .util import sh
 
 # I originally used these instead of Python's native facilities because it was
 # easier to deal with elevating to root this way. I think instead I'm going to
@@ -9,10 +10,10 @@ from .util import sh
 class Shell:
     @staticmethod
     def mkdir(path: str, exist_ok: bool, sudo: bool, dry_run: bool) -> None:
-        Log.info("Creating directory", [("path", path)])
+        Log.info("creating directory", [("path", path)])
 
         if dry_run:
-            Log.info("Skipping directory creation due to --dry-run")
+            Log.info("skipping directory creation", [("reason", "dry run")])
             return
 
         cmd = []
@@ -22,7 +23,7 @@ class Shell:
         if exist_ok:
             cmd.append("-p")
         cmd.append(path)
-        if sh(cmd) != 0:
+        if Shell._exec(cmd) != 0:
             raise Exception("Failed to create directory")
 
     @staticmethod
@@ -39,7 +40,7 @@ class Shell:
         if recursive:
             cmd.append("--recursive")
         cmd.append(path)
-        if sh(cmd) != 0:
+        if Shell._exec(cmd) != 0:
             raise Exception("Failed to remove file or directory")
 
     @staticmethod
@@ -52,7 +53,7 @@ class Shell:
 
         cmd = ["sudo"] if sudo else []
         cmd += ["mv", src, dst]
-        if sh(cmd) != 0:
+        if Shell._exec(cmd) != 0:
             raise Exception("Failed to move file or directory")
 
     @staticmethod
@@ -65,5 +66,23 @@ class Shell:
 
         cmd = ["sudo"] if sudo else []
         cmd += ["ln", "-s", src, dst]
-        if sh(cmd) != 0:
+        if Shell._exec(cmd) != 0:
             raise Exception("Failed to create symbolic link")
+
+    @staticmethod
+    def chmod(mod: str, file: str, sudo: bool, dry_run: bool) -> None:
+        Log.info("Changing file permissions", [("file", file), ("permissions", mod)])
+
+        if dry_run:
+            Log.info("Skipping file permission update creation due to --dry-run")
+            return
+
+        cmd = ["sudo"] if sudo else []
+        cmd += ["chmod", mod, file]
+        if Shell._exec(cmd) != 0:
+            raise Exception("Failed to update file permissions")
+
+    @staticmethod
+    def _exec(cmd) -> None:
+        Log.debug("executing shell command", [("command",  ' '.join(cmd))])
+        return subprocess.call(cmd)
