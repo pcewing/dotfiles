@@ -8,6 +8,9 @@ from .provisioner_docker import DockerProvisioner
 from .provisioner_flavours import FlavoursProvisioner
 from .provisioner_apt import AptProvisioner
 from .provisioner_kitty import KittyProvisioner
+from .provisioner_neovim import NeovimProvisioner
+from .provisioner_treesitter import TreeSitterProvisioner
+from .provisioner_ripgrep import RipgrepProvisioner
 
 
 class UbuntuJammyProvisioner(ISystemProvisioner):
@@ -24,11 +27,13 @@ class UbuntuJammyProvisioner(ISystemProvisioner):
         # explicitly through a dependency system but that seems like overkill.
         # fmt: off
         self._component_provisioners = {
-            "apt":      AptProvisioner(args),
-            "docker":   DockerProvisioner(args),
-            "kitty":    KittyProvisioner(args),
-            "flavours": FlavoursProvisioner(args),
-            # TODO: install_neovim
+            "apt":          AptProvisioner(args),
+            "docker":       DockerProvisioner(args),
+            "kitty":        KittyProvisioner(args),
+            "flavours":     FlavoursProvisioner(args),
+            "neovim":       NeovimProvisioner(args),
+            "tree-sitter":  TreeSitterProvisioner(args),
+            "ripgrep":      RipgrepProvisioner(args),
             # TODO: install_i3gaps      "$cache_dir"
             # TODO: install_cava        "$cache_dir"
             # TODO: install_youtube-dl  "$cache_dir" "$bin_dir"

@@ -9,7 +9,8 @@ from typing import Dict, List
 
 from .typing import StringOrNone
 
-from ..common.log import Log
+from .log import Log
+from .shell import Shell
 
 
 def sh(cmd) -> None:
@@ -56,15 +57,20 @@ def sudo_mvdir(src: str, dst: str, dry_run: bool) -> None:
             raise Exception("Failed to move directory")
 
 
-def download_file(url: str, dst: str, dry_run: bool) -> None:
-    Log.info("Downloading file:")
-    Log.info(f"- URL = {url}")
-    Log.info(f"- Path = {dst}")
+def download_file(url: str, path: str, sudo: bool, force: bool, dry_run: bool) -> None:
+    if os.path.isfile(path) and not force:
+        Log.info("skipping download", [("path", path), ("reason", "file already exists")])
+        return
+
+    Log.info("downloading file", [("url", url), ("path", path)])
+
+    # Make sure the directory we are downloading to exists
+    Shell.mkdir(os.path.dirname(path), True, sudo, dry_run)
 
     if dry_run:
-        Log.info("Skipping download due to --dry-run")
+        Log.info("skipping download", [("path", path), ("reason", "dry run")])
     else:
-        urllib.request.urlretrieve(url, dst)
+        urllib.request.urlretrieve(url, path)
 
 
 def get_current_user() -> pwd.struct_passwd:

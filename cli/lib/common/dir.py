@@ -35,3 +35,15 @@ class Dir:
                 raise Exception("HOME environment variable is missing")
             Dir._home = home
         return Dir._home
+
+    @staticmethod
+    def downloads(reload=False) -> str:
+        return os.path.join(Dir.home(), "Downloads")
+
+    @staticmethod
+    def staging(application: str, version: str) -> str:
+        return os.path.join(Dir.downloads(), application, version)
+
+    @staticmethod
+    def install(application: str, version: str) -> str:
+        return os.path.join("/opt", application, version)

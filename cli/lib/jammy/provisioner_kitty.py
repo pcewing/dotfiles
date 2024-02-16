@@ -61,7 +61,7 @@ class KittyProvisioner(IComponentProvisioner):
         Log.info("Moving temp directory to install location")
         Shell.mv(tmp_dir, install_dir, True, self._args.dry_run)
 
-        Log.info("Deleting existing symlinks if they is one")
+        Log.info("Deleting existing symlinks")
         Shell.rm(symlink_path_kitty, False, True, True, self._args.dry_run)
         Shell.rm(symlink_path_kitten, False, True, True, self._args.dry_run)
 

@@ -72,6 +72,7 @@ def elevate():
 
     cmd = [
         sudo,
+        "--preserve-env",
         os.path.abspath(sys.executable),
         os.path.abspath(sys.argv[0]),
         ] + sys.argv[1:]
@@ -92,6 +93,10 @@ def cmd_provision(args: argparse.Namespace) -> None:
             "option is not used"
         )
 
+    # TODO: Revert this change and just runs commands with sudo as needed:
+    # - Running as root means $HOME resolves to /root
+    #     - Resolved by adding --preserve-env but not ideal
+    # - Files written, downloaded, etc will be owned by root
     if not args.dry_run and not is_root():
         elevate()
 
