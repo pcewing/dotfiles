@@ -306,3 +306,7 @@ Install `black` in provision script
 ## fzf_cached_wsl -> Python
 
 Convert this to Python which will make killing existing processes easier
+
+## Windows support in Python CLI
+
+Don't need to implement provisioning but at least get clean/link commands to work on Windows
