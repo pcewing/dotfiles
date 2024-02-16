@@ -269,8 +269,10 @@ endif
 
 xnoremap <leader>n :normal
 
+if has('nvim')
 lua << EOF
 if is_wsl() then
     reload_lua_package('wsl')
 end
 EOF
+endif
