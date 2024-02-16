@@ -93,6 +93,8 @@ install_apt_packages() {
     p+=" locate"
     p+=" fzf"
     p+=" net-tools"
+    p+=" unzip"
+    p+=" uchardet" # Useful for detecting text file encoding
 
     # Basic command line utitilies
     p+=" make"

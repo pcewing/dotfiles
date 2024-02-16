@@ -268,3 +268,9 @@ else
 endif
 
 xnoremap <leader>n :normal
+
+lua << EOF
+if is_wsl() then
+    reload_lua_package('wsl')
+end
+EOF

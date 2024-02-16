@@ -62,3 +62,13 @@ function close_tabs_to_right()
         vim.cmd('tabclose ' .. (cur + 1))
     end
 end
+
+function is_wsl()
+    local x = os.getenv("WSL_DISTRO_NAME")
+    return type(x) == "string" and string.len(x) > 0
+end
+
+function reload_lua_package(name)
+    package.loaded[name] = nil
+    require(name)
+end

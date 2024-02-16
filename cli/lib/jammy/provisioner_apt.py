@@ -16,8 +16,11 @@ APT_PACKAGES = {
         "apt-file",
         "libfuse2",  # This is required to use AppImage
         "locate",
-        "fzf",
+        "fzf", # TODO: Don't install fzf this way, shell integration broken
         "net-tools",
+        "unzip",
+        "uchardet",
+        "dos2unix",
     ],
     "cli-tools": [
         "make",

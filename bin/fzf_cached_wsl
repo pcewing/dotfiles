@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+TMP_DIR="$HOME/.tmp/fzf_cached_wsl"
+LOG_FILE="$TMP_DIR/fzf_cached_wsl.log"
+LOGGING_ENABLED="true"
+
+# This is the default command for FZF_DEFAULT_COMMAND, taken from:
+# https://github.com/junegunn/fzf/blob/76364ea767cca7ca8f6570a049fbb8d3fff751a9/src/constants.go#L61
+#
+# Note that as of the following commit, fzf now defaults to using its own
+# custom file walker and not the find command above but we can still use it.
+# https://github.com/junegunn/fzf/commit/208e5563322436112bb263e69a72f89b41c7037e
+function fzf_find_files() {
+    set -o pipefail
+    command find -L . -mindepth 1 \( -path '*/.*' -o -fstype 'sysfs' -o -fstype 'devfs' -o -fstype 'devtmpfs' -o -fstype 'proc' \) -prune -o -type f -print -o -type l -print 2> /dev/null | cut -b3-
+}
+
+function log() {
+    if [ "$LOGGING_ENABLED" = "true" ]; then
+        echo "($$) $1" >> "$LOG_FILE"
+    fi
+}
+
+function update_cache() {
+    local cache_file
+    cache_file="$1"
+
+    # TODO: Kill existing fzf_cached_wsl processes that were started and may
+    # still be running
+
+    # Write the new find results to a temporary file
+    tmpfile="$(mktemp)"
+    fzf_find_files &> "$tmpfile"
+
+    # Once we're done, copy it over
+    mv "$tmpfile" "$cache_file"
+}
+
+function main() {
+    mkdir -p "$TMP_DIR"
+
+    # Get the working directory and hash it to use as the cache file name
+    cwd="$(pwd)"
+    sha1="$(echo "$cwd" | sha1sum | cut -c -40)"
+    cache_file="$TMP_DIR/${sha1}.txt"
+
+    log "Process Started"
+    log "Time = $(date)"
+    log "PWD = $cwd"
+    log "Cache file = $cache_file"
+
+    # Check if a cached file exists for the current directory
+    if [ -f "$cache_file" ]; then
+        log "Cache file exists"
+
+        log "Reading cached results"
+        results="$(cat "$cache_file")"
+
+        # Fire and forget an asynchronous cache update
+        log "Initiating asynchronous cache refresh"
+        update_cache "$cache_file" &
+
+        # Return the results
+        log "Printing cached results"
+        echo "$results"
+
+        log "Waiting for asynchronous cache refresh to complete"
+        wait
+    else
+        log "Cache file doesn't exist"
+        log "Synchronously refreshing cache and printing results"
+        fzf_find_files | tee "$cache_file"
+    fi
+
+    log "Process finished"
+}
+
+main
