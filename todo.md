@@ -2,6 +2,14 @@
 
 Improvements I'd like to make to my dotfiles.
 
+- [ ] Detect WSL in Neovim/provisionar/etc
+    - [ ] Just look for a `WSL_DISTRO_NAME` environment variable
+- [ ] Python CLI with shell bootstrapper
+    - [ ] Maybe put bootstrapper in a Gist so it's easier to grab on a new
+          system and have it set up git ssh keys, clone the dotfiles repo, etc?
+- [ ] Split Vim and Neovim configs and make Neovim all lua
+- [ ] Clean up Neovim Healthcheck (**Neovim Healtheck** section)
+
 ## Python CLI
 
 ### Bootstrapper
@@ -153,3 +161,148 @@ ripgrep_14.1.0-1_amd64.deb
 `~/.fzf.bash` doesn't exist for me, maybe because I'm installing via apt. I'd
 like that so I can get fzf `ctrl+r` functionality so update the provision
 script to set that up correctly.
+
+## Neovim Healtheck
+
+- In nvim, run `:healthcheck` and go through the errors/warnings:
+
+## Errors
+
+### nvim-lua/completion-nvim
+
+```
+completion: require("completion.health").check()
+
+- ERROR Failed to run healthcheck for "completion" plugin. Exception:
+  function health#check, line 25
+  Vim(eval):E5108: Error executing lua [string "luaeval()"]:1: attempt to call field 'check' (a nil value)
+  stack traceback:
+  [string "luaeval()"]:1: in main chunk
+
+==============================================================================
+completion_nvim: health#completion_nvim#check
+
+general ~
+- OK neovim version is supported
+
+completion source ~
+- OK all completion sources are valid
+
+snippet source ~
+- ERROR Your snippet source is not available! Possible values are: UltiSnips, Neosnippet, vim-vsnip, snippets.nvim
+```
+
+### nvim-telescope/telescope.nvim
+
+```
+==============================================================================
+telescope: require("telescope.health").check()
+
+Checking for required plugins ~
+- OK plenary installed.
+- OK nvim-treesitter installed.
+
+Checking external dependencies ~
+- ERROR rg: not found. `live-grep` finder will not function without [BurntSushi/ripgrep](https://github.com/BurntSushi/ripgrep) installed.
+- WARNING fd: not found. Install [sharkdp/fd](https://github.com/sharkdp/fd) for extended capabilities
+
+===== Installed extensions ===== ~
+```
+
+## Warnings
+
+### glepnir/lspsaga.nvim
+
+```
+==============================================================================
+lspsaga: require("lspsaga.health").check()
+
+Lspsaga.nvim report ~
+- WARNING `tree-sitter` executable not found 
+- OK tree-sitter `markdown` parser found
+- OK tree-sitter `markdown_inline` parser found
+```
+
+### nvim-treesitter/nvim-treesitter
+
+```
+==============================================================================
+nvim-treesitter: require("nvim-treesitter.health").check()
+
+Installation ~
+- WARNING `tree-sitter` executable not found (parser generator, only needed for :TSInstallFromGrammar, not required for :TSInstall)
+- WARNING `node` executable not found (only needed for :TSInstallFromGrammar, not required for :TSInstall)
+- OK `git` executable found.
+- OK `cc` executable found. Selected from { vim.NIL, "cc", "gcc", "clang", "cl", "zig" }
+  Version: cc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
+- OK Neovim was compiled with tree-sitter runtime ABI version 14 (required >=13). Parsers must be compatible with runtime ABI.
+```
+
+### Providers
+
+Is there a way we can say we intentionally don't want these providers to get
+the warnings to go away?
+
+```
+==============================================================================
+provider: health#provider#check
+
+Ruby provider (optional) ~
+- WARNING `ruby` and `gem` must be in $PATH.
+  - ADVICE:
+    - Install Ruby and verify that `ruby` and `gem` commands work.
+
+Node.js provider (optional) ~
+- WARNING `node` and `npm` (or `yarn`, `pnpm`) must be in $PATH.
+  - ADVICE:
+    - Install Node.js and verify that `node` and `npm` (or `yarn`, `pnpm`) commands work.
+
+Perl provider (optional) ~
+- WARNING "Neovim::Ext" cpan module is not installed
+  - ADVICE:
+    - See :help |provider-perl| for more information.
+    - You may disable this provider (and warning) by adding `let g:loaded_perl_provider = 0` to your init.vim
+```
+
+### nvim-telescope/telescope.nvim
+
+```
+==============================================================================
+telescope: require("telescope.health").check()
+
+Checking for required plugins ~
+- OK plenary installed.
+- OK nvim-treesitter installed.
+
+Checking external dependencies ~
+- ERROR rg: not found. `live-grep` finder will not function without [BurntSushi/ripgrep](https://github.com/BurntSushi/ripgrep) installed.
+- WARNING fd: not found. Install [sharkdp/fd](https://github.com/sharkdp/fd) for extended capabilities
+
+===== Installed extensions ===== ~
+```
+
+### neovim/nvim-lspconfig
+
+```
+==============================================================================
+vim.lsp: require("vim.lsp.health").check()
+
+- LSP log level : TRACE
+- WARNING Log level TRACE will cause degraded performance and high disk usage
+- Log path: /home/pewing/.local/state/nvim/lsp.log
+- Log size: 333 KB
+
+vim.lsp: Active Clients ~
+- No active clients
+```
+## win32yank-wsl
+
+Add this to provision scripts?
+
+## Add utils to provision python 
+
+Install `black` in provision script
+
+## fzf_cached_wsl -> Python
+
+Convert this to Python which will make killing existing processes easier

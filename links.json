@@ -25,6 +25,7 @@
     { "src": "vimrc",                        "dst": "~/.vimrc",                                     "type": "f" },
     { "src": "xinitrc",                      "dst": "~/.xinitrc",                                   "type": "f" },
     { "src": "xsession",                     "dst": "~/.xsession",                                  "type": "f" },
+    { "src": "nvim/wsl.lua",                 "dst": "~/.config/nvim/lua/wsl.lua",                   "type": "f" },
     { "src": "nvim/syntax/cwiki.vim",        "dst": "~/.config/nvim/syntax/cwiki.vim",              "type": "f" },
     { "src": "snippets/sh.snippets",         "dst": "~/.config/nvim/UltiSnips/sh.snippets",         "type": "f" },
     { "src": "snippets/cpp.snippets",        "dst": "~/.config/nvim/UltiSnips/cpp.snippets",        "type": "f" },
