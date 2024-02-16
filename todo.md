@@ -310,3 +310,7 @@ Convert this to Python which will make killing existing processes easier
 ## Windows support in Python CLI
 
 Don't need to implement provisioning but at least get clean/link commands to work on Windows
+
+## wezterm shell integration
+
+Automatically download wezterm.sh and source it in ~/.localrc or at least document this for WSL setup
