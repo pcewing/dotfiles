@@ -5,39 +5,36 @@ import subprocess
 import re
 from typing import Union
 
-from ..common.github import Github
-from ..common.log import Log
-from ..common.provisioner import IComponentProvisioner, ProvisionerArgs
-from ..common.semver import Semver
-from ..common.shell import Shell
-from ..common.dir import Dir
-from ..common.pip import Pip
-from ..common.alternatives import Alternatives
+from .github import Github
+from .log import Log
+from .provisioner import IComponentProvisioner, ProvisionerArgs
+from .semver import Semver
+from .shell import Shell
+from .dir import Dir
+from .pip import Pip
+from .alternatives import Alternatives
 
 
-I3GAPS_GITHUB_ORG = "airblader"
-I3GAPS_GITHUB_REPO = "i3"
+NEOVIM_GITHUB_ORG = "neovim"
+NEOVIM_GITHUB_REPO = "neovim"
 
-class I3GapsProvisioner(IComponentProvisioner):
+class NeovimProvisioner(IComponentProvisioner):
     def __init__(self, args: ProvisionerArgs) -> None:
         self._args = args
 
     def provision(self) -> None:
-        # This is a work-in-progress
-        raise Exception("Not yet implemented")
-
-        latest_version = Github.get_latest_release(I3GAPS_GITHUB_ORG, I3GAPS_GITHUB_REPO)
+        latest_version = Github.get_latest_release(NEOVIM_GITHUB_ORG, NEOVIM_GITHUB_REPO)
         latest_version = Semver.parse(latest_version)
 
-        current_version = I3GapsProvisioner._get_current_version()
+        current_version = NeovimProvisioner._get_current_version()
         if current_version is None:
-            Log.info(f"I3Gaps is not installed")
+            Log.info(f"Neovim is not installed")
         elif current_version < latest_version:
             Log.info(
-                f"I3Gaps {current_version} is installed but {latest_version} is available"
+                f"Neovim {current_version} is installed but {latest_version} is available"
             )
         else:
-            Log.info(f"I3Gaps {latest_version} is already installed, nothing to do")
+            Log.info(f"Neovim {latest_version} is already installed, nothing to do")
             return
 
         tmp_dir = f"{Dir.home()}/Downloads/neovim/{latest_version}"
@@ -90,8 +87,8 @@ class I3GapsProvisioner(IComponentProvisioner):
 
         Log.info("Downloading neovim release appimage")
         Github.download_release_artifact(
-            I3GAPS_GITHUB_ORG,
-            I3GAPS_GITHUB_REPO,
+            NEOVIM_GITHUB_ORG,
+            NEOVIM_GITHUB_REPO,
             version,
             os.path.basename(path),
             path,
@@ -109,7 +106,7 @@ class I3GapsProvisioner(IComponentProvisioner):
             )
             stdout, _ = p.communicate()
             if p.returncode != 0:
-                raise Exception("I3Gaps returned non-zero exit code")
+                raise Exception("Neovim returned non-zero exit code")
             m = re.match("NVIM (v[0-9]+\.[0-9]+\.[0-9]+)", stdout)
             if m is None:
                 return None

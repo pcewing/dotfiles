@@ -5,13 +5,13 @@ import subprocess
 import re
 from typing import Union
 
-from ..common.archive import Archive
-from ..common.github import Github
-from ..common.log import Log
-from ..common.provisioner import IComponentProvisioner, ProvisionerArgs
-from ..common.semver import Semver
-from ..common.shell import Shell
-from ..common.dir import Dir
+from .archive import Archive
+from .github import Github
+from .log import Log
+from .provisioner import IComponentProvisioner, ProvisionerArgs
+from .semver import Semver
+from .shell import Shell
+from .dir import Dir
 
 TREE_SITTER_GITHUB_ORG = "tree-sitter"
 TREE_SITTER_GITHUB_REPO = "tree-sitter"

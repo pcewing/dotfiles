@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from ..common.provisioner import IComponentProvisioner, ProvisionerArgs
+from .provisioner import IComponentProvisioner, ProvisionerArgs
 from .apt import Apt
 
 # fmt: off

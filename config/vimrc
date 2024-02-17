@@ -106,7 +106,7 @@ if has('nvim')
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     " The 'nvim-lua/completion-nvim' plugin is deprecated so I need to find a
     " replacement. The two below are recommended by Neovim developers so we
-    " should try both and see which one we prefer. 
+    " should try both and see which one we prefer.
     Plug 'hrsh7th/nvim-cmp'
     "Plug 'ms-jpq/coq_nvim'
     Plug 'nvim-lua/popup.nvim'
@@ -158,19 +158,19 @@ let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 nnoremap <leader>ue :UltiSnipsEdit<CR>
 
 " FZF
-" TODO: This is slow in large directories in WSL because of the crappy file
-" system speed. Look into using $FZF_DEFAULT_COMMAND to cache results so
-" subsequent usages are fast.
 nnoremap <Leader>o :Files<CR>
-nnoremap <leader>t :Tags<cr>
+" Disabling this in favor of the telescope mappings below; however, `:Tags`
+" seems more performant than `:Telescope tags`, especially in large codebases,
+" so we may consider sticking to FZF for that.
+"nnoremap <leader>t :Tags<cr>
 
 " Telescope
-nnoremap <leader>ff :Telescope find_files<cr>
-nnoremap <leader>ft :Telescope tags<cr>
-nnoremap <leader>fs :Telescope lsp_dynamic_workspace_symbols<cr>
-"nnoremap <leader>fg :Telescope live_grep<cr>
-"nnoremap <leader>fb :Telescope buffers<cr>
-"nnoremap <leader>fh :Telescope help_tags<cr>
+nnoremap <leader>tf :Telescope find_files<cr>
+nnoremap <leader>tt :Telescope tags<cr>
+nnoremap <leader>ts :Telescope lsp_dynamic_workspace_symbols<cr>
+nnoremap <leader>tg :Telescope live_grep<cr>
+nnoremap <leader>tb :Telescope buffers<cr>
+nnoremap <leader>th :Telescope help_tags<cr>
 
 " LSP
 nnoremap <leader>ls :LspStop<cr>
@@ -271,7 +271,7 @@ else
     nnoremap <silent> <leader>r :source ~/.config/nvim/init.vim<cr>
 endif
 
-xnoremap <leader>n :normal
+xnoremap <leader>n :normal<space>
 
 if has('nvim')
 lua << EOF
