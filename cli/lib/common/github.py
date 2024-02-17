@@ -7,6 +7,8 @@ from .util import download_file
 
 
 class Github:
+    # TODO: Make a GithubRelease class that this can return that makes it easy
+    # to convert between the raw release name and a Semver
     @staticmethod
     def get_latest_release(org: str, repo: str) -> str:
         url = f"https://api.github.com/repos/{org}/{repo}/releases/latest"

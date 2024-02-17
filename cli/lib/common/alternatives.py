@@ -2,7 +2,7 @@
 
 import subprocess
 
-from ..common.log import Log
+from .log import Log
 
 
 class Alternatives:

@@ -5,7 +5,7 @@ import json
 
 from typing import List
 
-from ..common.log import Log
+from .log import Log
 
 APT_LIST_TIMEOUT_SECONDS = 30
 
@@ -129,7 +129,7 @@ class Apt:
     def install_deb_files(deb_files: List[str], dry_run: bool) -> None:
         cmd = ["sudo", "dpkg", "-i"] + deb_files
 
-        Log.info("installing packages", [("packages", "[ " + ", ".join(deb_files) + " ]")])
+        Log.info("installing deb packages", [("packages", "[ " + ", ".join(deb_files) + " ]")])
         if dry_run:
             Log.info("skipping install", [("reason", "dry run")])
         else:
