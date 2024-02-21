@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import subprocess
+
 from .log import Log
 
 class GitRepository:
@@ -16,8 +18,8 @@ class GitRepository:
 
         cmd = [
             "git",
-                f"--git-dir={self._root}/.git",
-                f"--work-tree={self._root}",
+                f"--git-dir={self._path}/.git",
+                f"--work-tree={self._path}",
                 "checkout",
                 target,
         ]

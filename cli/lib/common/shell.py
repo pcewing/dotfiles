@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import subprocess
 
 from .log import Log
@@ -81,6 +82,14 @@ class Shell:
         cmd += ["chmod", mod, file]
         if Shell._exec(cmd) != 0:
             raise Exception("Failed to update file permissions")
+
+    @staticmethod
+    def cd(path: str, dry_run: bool) -> None:
+        Log.info("changing directory", [("path", path)])
+        if dry_run:
+            Log.info("skipping directory change", [("reason", "dry run")])
+            return
+        os.chdir(path)
 
     @staticmethod
     def _exec(cmd) -> None:
