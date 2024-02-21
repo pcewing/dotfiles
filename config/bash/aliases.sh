@@ -34,7 +34,7 @@ function set_alias() {
 }
 
 # Dotfiles CLI
-set_alias '0' 'dot'                 '$DOTFILES/cli/dot.py'
+set_alias '1' 'dot'                 '$DOTFILES/cli/dot.py'
 
 # Edit/reload bash configs
 set_alias '0' 'aliases'             '$EDITOR $DOTFILES/config/bash/aliases.sh'
@@ -122,7 +122,7 @@ fi
 # Git aliases
 if _is_installed 'git'; then
     set_alias '1' 'gs'      'git status --short'
-    set_alias '0' 'gc'      'git commit'
+    set_alias '1' 'gc'      'git commit'
     set_alias '0' 'gco'     'git checkout'
     set_alias '0' 'gcob'    'git checkout -b'
     set_alias '0' 'gb'      'git branch'
