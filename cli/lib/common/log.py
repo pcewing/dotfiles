@@ -22,6 +22,8 @@ _LOG_LEVEL_ABBREVIATIONS = {
 }
 # fmt: on
 
+def is_string_list(var):
+    return isinstance(var, list) and all(isinstance(item, str) for item in var)
 
 def _log_level_from_str(log_level_str: str) -> int:
     key = log_level_str.lower()
@@ -109,5 +111,7 @@ class Log:
     def _format_kvp(kvp):
         if isinstance(kvp[1], str):
             return f'{kvp[0]} = "{kvp[1]}"'
+        elif is_string_list(kvp[1]):
+            return kvp[0] + " = [" + ", ".join(kvp[1]) + "]"
         else:
             return "{} = {}".format(kvp[0], kvp[1])

@@ -56,9 +56,10 @@ class Semver:
 
     @staticmethod
     def parse(version_str: str) -> Union["Semver", None]:
-        m = re.match("v{0,1}([0-9]+)\.([0-9]+)\.([0-9]+)", version_str)
+        m = re.match("v{0,1}([0-9]+)\.([0-9]+)(\.([0-9]+)){0,1}", version_str)
         if m is None:
             return None
-        if len(m.groups()) < 3:
-            return None
-        return Semver(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+        major = int(m.group(1))
+        minor = int(m.group(2))
+        patch = int(m.group(4)) if m.group(4) is not None else 0
+        return Semver(major, minor, patch)
