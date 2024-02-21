@@ -118,12 +118,12 @@ class Apt:
 
     @staticmethod
     def install(packages: List[str], dry_run: bool) -> None:
-        Log.info("Installing APT packages")
+        Log.info("installing apt packages", [("packages", packages)])
         if dry_run:
             Log.info("Skipping apt install due to --dry-run")
-        else:
-            if subprocess.call(["sudo", "apt", "-y", "install"] + packages) != 0:
-                raise Exception("Apt install failed")
+            return
+        if subprocess.call(["sudo", "apt", "-y", "install"] + packages) != 0:
+            raise Exception("Apt install failed")
 
     @staticmethod
     def install_deb_files(deb_files: List[str], dry_run: bool) -> None:

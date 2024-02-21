@@ -22,6 +22,12 @@ class Github:
             return json.loads(response.read())
 
     @staticmethod
+    def get_tags(org: str, repo: str) -> list[str]:
+        url = f"https://api.github.com/repos/{org}/{repo}/tags"
+        with urllib.request.urlopen(url) as response:
+            return json.loads(response.read())
+
+    @staticmethod
     def download_release_artifact(
         org: str,
         repo: str,
