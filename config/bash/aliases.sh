@@ -135,6 +135,7 @@ if _is_installed 'git'; then
     set_alias '0' 'gaad'    'git add --all --dry-run'
     set_alias '0' 'gpl'     'git pull origin $(gbc)'
     set_alias '0' 'gps'     'git push origin $(gbc)'
+    set_alias '0' 'grv'     'git remote -v'
 fi
 
 # SVN aliases
