@@ -40,6 +40,9 @@ config.keys = {
   { key = 'j',          mods = 'LEADER', action = act.ActivatePaneDirection 'Down', },
 }
 
+-- This is super annoying to me so disable it
+config.hide_mouse_cursor_when_typing = false
+
 -- Start flavours - wezterm
 
 -- Base16 Outrun Dark
