@@ -1,0 +1,181 @@
+#!/usr/bin/env python
+
+import hashlib
+import threading
+import shutil
+import argparse
+import os
+import random
+import string
+import sys
+
+sys.path.append(os.path.join(os.getenv("DOTFILES"), "cli"))
+
+from lib.common.log import Log
+
+# TODO: Move the FileWalker classes into cli/lib
+
+class FileWalkerNode:
+    def __init__(self, root: str, item: str):
+        # TODO: This might be broken? Seems like root isn't what I think it is?
+        self._root = root
+        self._dir = os.path.dirname(item)
+        self._name = os.path.basename(item)
+
+    def get_name(self) -> str:
+        return self._name
+
+    def get_relative_path(self) -> str:
+        return os.path.join(self._dir, self._name)
+
+    def get_absolute_path(self) -> str:
+        return os.path.join(self._root, self._dir, self._name)
+
+
+class FileWalkerFileNode(FileWalkerNode):
+    def __init__(self, root: str, file: str):
+        super().__init__(root, file)
+
+
+class FileWalkerDirectoryNode(FileWalkerNode):
+    def __init__(self, root: str, directory: str):
+        super().__init__(root, directory)
+
+class FileWalkerEnumeration:
+    def __init__(self):
+        self._files = []
+        self._directories = []
+
+    def add_file(self, file: FileWalkerFileNode) -> None:
+        self._files.append(file)
+
+    def add_directory(self, directory: FileWalkerDirectoryNode) -> None:
+        self._directories.append(directory)
+
+    def get_files(self) -> list[FileWalkerFileNode]:
+        return self._files
+
+    def get_directories(self) -> list[FileWalkerDirectoryNode]:
+        return self._directories
+
+    def get_nodes(self) -> list[FileWalkerNode]:
+        return self._files + self._directories
+
+class FileWalker:
+    @staticmethod
+    def walk(directory: str, file_handler=None, directory_handler=None) -> None:
+        """TODO: Document the difference between this and enumerate()"""
+        if file_handler is None and directory_handler is None:
+            return
+
+        # We could probably further optimize this by not using `os.walk()`
+        # which will walk all directories. The `directory_handler` could
+        # theoretically say whether or not that directory should be walked.
+        # This could allow for skipping large directories like build, .git,
+        # etc.
+        top = os.path.realpath(directory)
+        for root, directories, files in os.walk(top):
+            if file_handler is not None:
+                for file in files:
+                    file_handler(FileWalkerFileNode(root, file))
+            if directory_handler is not None:
+                for directory in directories:
+                    directory_handler(FileWalkerDirectoryNode(root, directory))
+
+    @staticmethod
+    def enumerate(directory: str, files:bool=True, directories:bool=True) -> FileWalkerEnumeration:
+        """TODO: Documentation"""
+        enumeration = FileWalkerEnumeration()
+
+        def enumerate_file(file: FileWalkerFileNode):
+            enumeration.add_file(file)
+
+        def enumerate_directory(directory: FileWalkerDirectoryNode):
+            enumeration.add_directory(directory)
+
+        file_handler = enumerate_file if files else None
+        directory_handler = enumerate_directory if directories else None
+
+        FileWalker.walk(directory, file_handler=file_handler, directory_handler=directory_handler)
+        return enumeration
+
+def find_files(f: None, quiet: bool):
+    cwd = os.getcwd()
+
+    def file_handler(file: FileWalkerFileNode) -> None:
+        # TODO: We shouldn't need to do this but get_relative_path() seems
+        # broken right now
+        path = file.get_absolute_path().replace(cwd + os.path.sep, "")
+
+        if path.startswith(".git") or "/.git/" in path:
+            return
+        elif path.endswith(".pyc"):
+            return
+        elif path.endswith(".dll"):
+            return
+        elif path.endswith(".log"):
+            return
+
+        if not quiet:
+            print(path)
+
+        f.write(path + "\n")
+
+    FileWalker.walk(cwd, file_handler=file_handler)
+
+def update_cache(cache_file: str, quiet: bool):
+    random_string = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
+    tmpfile = f"/tmp/{random_string}.txt"
+    with open(tmpfile, "w") as f:
+        find_files(f, quiet)
+    shutil.move(tmpfile, cache_file)
+
+def main():
+    Log.init("error")
+
+    #TODO: Init logger
+    #TODO: Add file target option to log class so it doesn't print to stdout
+    # TODO: Set up dot Python lib module
+    # TODO: Kill existing fzf_cached_wsl processes that were started and may
+    # still be running
+
+    tmp_dir = os.path.join(os.getenv("HOME"), ".tmp/fzf_cached_wsl")
+    os.makedirs(tmp_dir, exist_ok=True)
+
+    cwd = os.getcwd()
+    cwd_sha1 = hashlib.sha1(cwd.encode("utf-8")).hexdigest()
+    cache_file = os.path.join(tmp_dir, f"{cwd_sha1}.txt")
+
+    Log.info("Process Started")
+    Log.info("Time = $(date)")
+    Log.info("PWD = $cwd")
+    Log.info("Cache file = $cache_file")
+
+    # Check if a cached file exists for the current directory
+    if os.path.isfile(cache_file):
+        Log.info("Cache file exists")
+
+        Log.info("Reading cached results")
+        results = None
+        with open(cache_file, "r") as f:
+            results = f.read()
+
+        # Fire and forget an asynchronous cache update
+        Log.info("Initiating asynchronous cache refresh")
+        thread = threading.Thread(target=update_cache, args=(cache_file, True))
+        thread.start()
+
+        Log.info("Printing cached results")
+        print(results)
+
+        Log.info("Waiting for asynchronous cache refresh to complete")
+        thread.join()
+    else:
+        Log.info("Cache file doesn't exist")
+        Log.info("Synchronously refreshing cache and printing results")
+        update_cache(cache_file, False)
+
+    Log.info("Process finished")
+
+if __name__ == "__main__":
+    main()
