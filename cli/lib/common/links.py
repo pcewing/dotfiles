@@ -4,7 +4,8 @@ import os
 import json
 from enum import Enum
 from typing import List  # , Self
-#from typing_extensions import Self
+
+# from typing_extensions import Self
 
 from .dir import Dir
 from .log import Log

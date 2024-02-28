@@ -4,6 +4,7 @@ import subprocess
 
 from .log import Log
 
+
 class Group:
     @staticmethod
     def add_user(group: str, user: str, dry_run: bool) -> None:
@@ -23,8 +24,8 @@ class Group:
     @staticmethod
     def _is_user_in_group(group: str, user: str):
         try:
-            groups_output = subprocess.check_output(['groups', user])
-            groups = groups_output.decode('utf-8').strip().split(':')[-1].split()
+            groups_output = subprocess.check_output(["groups", user])
+            groups = groups_output.decode("utf-8").strip().split(":")[-1].split()
             return group in groups
         except subprocess.CalledProcessError:
             # If the 'groups' command fails (for example, if the user doesn't exist), return False
