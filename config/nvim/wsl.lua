@@ -1,7 +1,6 @@
 local wsl = {}
 
---vim.env.FZF_DEFAULT_COMMAND = 'fzf_cached_wsl'
-vim.env.FZF_DEFAULT_COMMAND = 'fzf_cached_wsl_py'
+vim.env.FZF_DEFAULT_COMMAND = 'fzf_cached_wsl'
 
 vim.g.clipboard = {
     name = "win32yank-wsl",

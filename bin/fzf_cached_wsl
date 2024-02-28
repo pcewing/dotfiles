@@ -145,7 +145,7 @@ def run():
     os.makedirs(tmp_dir, exist_ok=True)
 
     log_file = os.path.join(tmp_dir, "log.txt")
-    Log.init(args.log_level, stdout=False, file=log_file)
+    Log.init("fzf_cached_wsl", args.log_level, stdout=False, file=log_file)
 
     Log.info("fzf_cached_wsl started", [("cache", args.cache)])
 
