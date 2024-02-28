@@ -22,8 +22,10 @@ _LOG_LEVEL_ABBREVIATIONS = {
 }
 # fmt: on
 
+
 def is_string_list(var):
     return isinstance(var, list) and all(isinstance(item, str) for item in var)
+
 
 def _log_level_from_str(log_level_str: str) -> int:
     key = log_level_str.lower()
@@ -50,24 +52,32 @@ class Formatter(logging.Formatter):
 
 
 # Lightweight structured logging wrapper around Python's standard logging
-# facilities. No effort was made to optimize performance given that this
-# library is only using in tooling and automation.
+# facilities. No effort has been made to optimize performance.
 class Log:
     _logger = None
 
     @staticmethod
-    def init(level):
+    def init(name, level, stdout=True, file=None):
+        handlers = []
+        if stdout:
+            handlers.append(logging.StreamHandler(sys.stdout))
+        if file is not None:
+            handlers.append(logging.FileHandler(file, mode="a"))
+
+        if len(handlers) <= 0:
+            return
+
         if isinstance(level, str):
             level = _log_level_from_str(level)
 
         formatter = Formatter("%(level_abbrev)s %(asctime)s %(message)s")
 
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setFormatter(formatter)
-
-        logger = logging.getLogger("d2rs_logger")
+        logger = logging.getLogger(name)
         logger.setLevel(level)
-        logger.addHandler(handler)
+
+        for handler in handlers:
+            handler.setFormatter(formatter)
+            logger.addHandler(handler)
 
         Log._logger = logger
 

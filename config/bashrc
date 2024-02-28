@@ -52,6 +52,10 @@ if command -v "rust" &>"/dev/null"; then
     [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 fi
 
+# Bash auto-completion for dotfiles CLI
+export DOT_BASH_COMPLETION="1"
+source "$HOME/.bash_completion.d/dot.bash"
+
 # Base16 color scheme
 base16_shell_dir="$HOME/.config/base16-shell"
 [ ! -d "$base16_shell_dir" ] && \

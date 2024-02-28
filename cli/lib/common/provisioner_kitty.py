@@ -16,6 +16,7 @@ from .dir import Dir
 KITTY_GITHUB_ORG = "kovidgoyal"
 KITTY_GITHUB_REPO = "kitty"
 
+
 class KittyProvisioner(IComponentProvisioner):
     def __init__(self, args: ProvisionerArgs) -> None:
         self._args = args

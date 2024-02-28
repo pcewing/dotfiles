@@ -6,6 +6,7 @@ import os
 from lib.common.log import Log
 from lib.common.links import Links
 
+
 def add_clean_parser(subparsers: argparse._SubParsersAction) -> None:
     parser = subparsers.add_parser(
         "clean",

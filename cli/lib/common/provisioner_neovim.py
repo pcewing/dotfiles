@@ -18,12 +18,15 @@ from .alternatives import Alternatives
 NEOVIM_GITHUB_ORG = "neovim"
 NEOVIM_GITHUB_REPO = "neovim"
 
+
 class NeovimProvisioner(IComponentProvisioner):
     def __init__(self, args: ProvisionerArgs) -> None:
         self._args = args
 
     def provision(self) -> None:
-        latest_version = Github.get_latest_release(NEOVIM_GITHUB_ORG, NEOVIM_GITHUB_REPO)
+        latest_version = Github.get_latest_release(
+            NEOVIM_GITHUB_ORG, NEOVIM_GITHUB_REPO
+        )
         latest_version = Semver.parse(latest_version)
 
         current_version = NeovimProvisioner._get_current_version()
@@ -70,11 +73,17 @@ class NeovimProvisioner(IComponentProvisioner):
         Pip.install(["pynvim"], True, True, self._args.dry_run)
 
         Log.info("Updating alternatives to use nvim")
-        Alternatives.install("/usr/bin/vi", "vi", symlink_path, 60, True, self._args.dry_run)
+        Alternatives.install(
+            "/usr/bin/vi", "vi", symlink_path, 60, True, self._args.dry_run
+        )
         Alternatives.set("vi", symlink_path, True, self._args.dry_run)
-        Alternatives.install("/usr/bin/vim", "vim", symlink_path, 60, True, self._args.dry_run)
+        Alternatives.install(
+            "/usr/bin/vim", "vim", symlink_path, 60, True, self._args.dry_run
+        )
         Alternatives.set("vim", symlink_path, True, self._args.dry_run)
-        Alternatives.install("/usr/bin/editor", "editor", symlink_path, 60, True, self._args.dry_run)
+        Alternatives.install(
+            "/usr/bin/editor", "editor", symlink_path, 60, True, self._args.dry_run
+        )
         Alternatives.set("editor", symlink_path, True, self._args.dry_run)
 
     def _download_release_appimage(self, version: str, path: str) -> None:
