@@ -54,7 +54,10 @@ local on_attach = function(client, bufnr)
     -- buf_set_keymap('n', 'TODO', '<cmd>lua vim.lsp.buf.workspace_symbol()<cr>',        opts)
 end
 
-vim.lsp.set_log_level 'trace'
+-- This log file isn't rotated so it will grow infinitely. Keep logging off
+-- unless debugging issues with the language server, in which case, set this to
+-- "trace" or "debug" instead of "off".
+vim.lsp.set_log_level("off")
 
 local nvim_lsp = require('lspconfig')
 
