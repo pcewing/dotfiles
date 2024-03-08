@@ -1,16 +1,12 @@
 #!/usr/bin/env bash
 
+source "$DOTFILES/config/bash/core.sh"
+
 # Disable this for the whole file because there are a lot of cases where we
 # intentionally don't want to expand variables.
 # shellcheck disable=SC2016
 
 function yell() { >&2 echo "$*";  }
-
-function _is_installed() {
-    local cmd
-    cmd="$1"
-    command -v "$cmd" &>/dev/null
-}
 
 function set_alias() {
     local override name command
@@ -18,6 +14,11 @@ function set_alias() {
     override="$1"
     name="$2"
     command="$3"
+
+    if _is_wsl; then
+        alias "$name=$command"
+        return 0
+    fi
 
     if [ "$override" = "0" ]; then
         if COMMAND_OUTPUT="$( command -v "$name" )"; then
