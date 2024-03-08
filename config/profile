@@ -2,4 +2,6 @@
 
 [[ -f "$HOME/.env" ]] && . "$HOME/.env"
 
-[[ -f "/usr/bin/google-chrome" ]] && export BROWSER="/usr/bin/google-chrome"
+source "$DOTFILES/config/bash/core.sh"
+
+_is_installed "google-chrome" && export BROWSER="/usr/bin/google-chrome"
