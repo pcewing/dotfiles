@@ -2,12 +2,13 @@
 
 [[ -f "$HOME/.env" ]] && . "$HOME/.env"
 
+. "$DOTFILES/config/bash/core.sh"
+
 export EDITOR='nvim'
 
-# Load config files
-for config in "$DOTFILES/config/bash/"*.sh; do
-    . "$config"
-done
+# Load custom utilities
+. "$DOTFILES/config/bash/aliases.sh"
+. "$DOTFILES/config/bash/functions.sh"
 
 src_if_exists() {
    [[ -f "$1" ]] && . "$1"
@@ -33,22 +34,22 @@ cyan="\[\033[36m\]"
 white="\[\033[37m\]"
 none="\[\033[00m\]"
 
-PS1="$white[$green\u$white@$blue\H$white:$yellow\w$white] "
+PS1="${white}[${green}\u${white}@${blue}\H${white}:${yellow}\w${white}] "
 
 # Node.js configuration
-if command -v "node" &>"/dev/null"; then
+if _is_installed "node"; then
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 fi
 
 # Golang configuration
-if command -v "go" &>"/dev/null"; then
+if _is_installed "go"; then
     # Set GOPATH
     export GOPATH="$HOME/go"
 fi
 
 # Rust configuration
-if command -v "rust" &>"/dev/null"; then
+if _is_installed "rust"; then
     [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 fi
 
