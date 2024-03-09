@@ -13,6 +13,7 @@ from .group import Group
 from .shell import Shell
 from .semver import Semver
 
+
 class DockerPackage:
     def __init__(self, url, name, full_name, version):
         self.url = url
@@ -34,7 +35,9 @@ class DockerProvisioner(IComponentProvisioner):
         # TODO: Work in progress detecting latest available package versions
         # and comparing against installed versions
         installed_packages = Apt.get_installed_packages()
-        latest_packages = DockerProvisioner._get_latest_package_versions(base_url, distro_info)
+        latest_packages = DockerProvisioner._get_latest_package_versions(
+            base_url, distro_info
+        )
         for p in latest_packages:
             found = False
             for i in installed_packages:
@@ -45,7 +48,6 @@ class DockerProvisioner(IComponentProvisioner):
             if not found:
                 raise Exception(f"{p.name} not installed")
         return
-
 
         # TODO: Automatically choose latest version
         packages = [
@@ -74,7 +76,9 @@ class DockerProvisioner(IComponentProvisioner):
         Group.add_user("docker", get_current_user().pw_name, self._args.dry_run)
 
     @staticmethod
-    def _get_latest_package_versions(base_url: str, distro_info: DistroInformation) -> list[DockerPackage]:
+    def _get_latest_package_versions(
+        base_url: str, distro_info: DistroInformation
+    ) -> list[DockerPackage]:
         version_regex_pattern = "[0-9]+\.[0-9]+\.[0-9]+(-[0-9]+){0,1}"
         package_regex_patterns = [
             f".*((containerd\.io)_({version_regex_pattern})_amd64.deb).*",
@@ -91,7 +95,7 @@ class DockerProvisioner(IComponentProvisioner):
                     return m
             return None
 
-        response = urllib.request.urlopen(base_url).read().decode('utf-8')
+        response = urllib.request.urlopen(base_url).read().decode("utf-8")
 
         available_packages = {}
         for line in response.split("\n"):
@@ -112,6 +116,8 @@ class DockerProvisioner(IComponentProvisioner):
 
         latest_packages = []
         for package in available_packages:
-            sorted_packages = sorted(available_packages[package], key=lambda p: p.semver, reverse=True)
+            sorted_packages = sorted(
+                available_packages[package], key=lambda p: p.semver, reverse=True
+            )
             latest_packages.append(sorted_packages[0])
         return latest_packages

@@ -4,6 +4,7 @@ import subprocess
 
 from .log import Log
 
+
 class GitRepository:
     def __init__(self, url, path):
         self._url = url
@@ -18,10 +19,10 @@ class GitRepository:
 
         cmd = [
             "git",
-                f"--git-dir={self._path}/.git",
-                f"--work-tree={self._path}",
-                "checkout",
-                target,
+            f"--git-dir={self._path}/.git",
+            f"--work-tree={self._path}",
+            "checkout",
+            target,
         ]
 
         if subprocess.call(cmd) != 0:

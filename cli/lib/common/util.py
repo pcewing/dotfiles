@@ -59,7 +59,9 @@ def sudo_mvdir(src: str, dst: str, dry_run: bool) -> None:
 
 def download_file(url: str, path: str, sudo: bool, force: bool, dry_run: bool) -> None:
     if os.path.isfile(path) and not force:
-        Log.info("skipping download", [("path", path), ("reason", "file already exists")])
+        Log.info(
+            "skipping download", [("path", path), ("reason", "file already exists")]
+        )
         return
 
     Log.info("downloading file", [("url", url), ("path", path)])

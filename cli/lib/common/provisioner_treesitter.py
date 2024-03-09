@@ -47,9 +47,11 @@ class TreeSitterProvisioner(IComponentProvisioner):
                 f"tree-sitter {current_version} is installed but {latest_version} is available"
             )
         else:
-            Log.info(f"tree-sitter {latest_version} is already installed, nothing to do")
+            Log.info(
+                f"tree-sitter {latest_version} is already installed, nothing to do"
+            )
             return
-        
+
         staging_dir = Dir.staging("tree-sitter", str(latest_version))
         install_dir = Dir.install("tree-sitter", str(latest_version))
 
@@ -65,7 +67,7 @@ class TreeSitterProvisioner(IComponentProvisioner):
         self._download_release_zip(str(latest_version), zip_path_staging)
 
         TreeSitterProvisioner._unzip_executable(zip_path_staging, self._args.dry_run)
-        
+
         prepare_install_dir(install_dir, True, self._args.dry_run)
 
         Log.info("Moving executable to installation directory")

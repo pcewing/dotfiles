@@ -18,7 +18,10 @@ def parse_args():
 
     add_command_parsers(parser)
 
-    # TODO: Bash auto-completion
+    if os.getenv("DBL_BASH_COMPLETION") == "1":
+        import argcomplete
+
+        argcomplete.autocomplete(parser)
 
     args = parser.parse_args()
     if "func" not in args:
@@ -30,7 +33,7 @@ def parse_args():
 def main():
     args = parse_args()
 
-    Log.init(args.log_level)
+    Log.init("dot", args.log_level)
 
     args.func(args)
 
