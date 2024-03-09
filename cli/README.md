@@ -18,6 +18,7 @@ Generate the auto-completion script:
 
 ```bash
 export DOT_BASH_COMPLETION="1"
+mkdir -p ~/.bash_completion.d
 echo "$(
     register-python-argcomplete --external-argcomplete-script $DOTFILES/cli/dot.py dot
 )" &>~/.bash_completion.d/dot.bash
