@@ -62,7 +62,7 @@ class PackageListing:
         i = package_version.find(":")
         if i > -1:
             package_version_epoch = package_version[:i]
-            package_version = package_version[i+1:]
+            package_version = package_version[i + 1 :]
 
         # Expected remaining line format:
         # 1:1.2.11.dfsg-2ubuntu9.2 amd64 [installed,automatic]
@@ -129,7 +129,10 @@ class Apt:
     def install_deb_files(deb_files: List[str], dry_run: bool) -> None:
         cmd = ["sudo", "dpkg", "-i"] + deb_files
 
-        Log.info("installing deb packages", [("packages", "[ " + ", ".join(deb_files) + " ]")])
+        Log.info(
+            "installing deb packages",
+            [("packages", "[ " + ", ".join(deb_files) + " ]")],
+        )
         if dry_run:
             Log.info("skipping install", [("reason", "dry run")])
         else:

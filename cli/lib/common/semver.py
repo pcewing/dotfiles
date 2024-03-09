@@ -3,6 +3,7 @@
 import re
 from typing import Union
 
+
 class Semver:
     def __init__(self, major, minor, patch):
         self.major = major
@@ -49,10 +50,18 @@ class Semver:
             return True
 
     def __eq__(self, rhs):
-        return self.major == rhs.major and self.minor == rhs.minor and self.patch == rhs.patch
+        return (
+            self.major == rhs.major
+            and self.minor == rhs.minor
+            and self.patch == rhs.patch
+        )
 
     def __ne__(self, rhs):
-        return self.major != rhs.major or self.minor != rhs.minor or self.patch != rhs.patch
+        return (
+            self.major != rhs.major
+            or self.minor != rhs.minor
+            or self.patch != rhs.patch
+        )
 
     @staticmethod
     def parse(version_str: str) -> Union["Semver", None]:

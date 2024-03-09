@@ -314,3 +314,10 @@ Don't need to implement provisioning but at least get clean/link commands to wor
 ## wezterm shell integration
 
 Automatically download wezterm.sh and source it in ~/.localrc or at least document this for WSL setup
+
+## Pip packages
+
+- Install:
+    - `black`
+    - `argcomplete`
+        - For `dot` CLI auto-completion
