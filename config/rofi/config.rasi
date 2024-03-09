@@ -1,14 +1,15 @@
+/* Rofi Configuration:
+ * https://github.com/davatorium/rofi/blob/next/CONFIG.md
+ *
+ * To generate an example config with all available options, run:
+ *     rofi -dump-config > config.rasi
+ */
 configuration {
-  /*
-  timeout {
-      action: "kb-cancel";
-      delay:  0;
-  }
-  filebrowser {
-      directories-first: true;
-      sorting-method:    "name";
-  }
-  */
+    modi: "window,run,drun,ssh,combi";
+
+    /* In v1.7.4 this option was renamed from `combi-modi` to `combi-modes`.
+     * Current Ubuntu still only has v1.7.1 but change this once we update. */
+    combi-modi: "window,run,drun";
 }
 
 @theme "base16"
