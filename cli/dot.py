@@ -18,7 +18,7 @@ def parse_args():
 
     add_command_parsers(parser)
 
-    if os.getenv("DBL_BASH_COMPLETION") == "1":
+    if os.getenv("DOT_BASH_COMPLETION") == "1":
         import argcomplete
 
         argcomplete.autocomplete(parser)
