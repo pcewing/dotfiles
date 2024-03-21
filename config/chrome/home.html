@@ -1,23 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark" />
+    <link rel="stylesheet" href="pico.min.css" />
+    <title>Home Page</title>
+
+    <style>
+        .quick-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .quick-link {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 200px;
+            height: 64px;
+            border: 1px solid var(--pico-primary);
+            border-radius: 5px;
+            margin: 10px;
+            text-decoration: none; /* Don't underline link text */
+            color: var(--pico-primary);
+        }
+
+        .vimium-cheat-sheet {
+            margin-top: 20px;
+        }
+
+        .vimium-cheat-sheet-table {
+            margin-bottom: 0px;
+        }
+    </style>
 </head>
 <body>
-    <!-- TODO: Implement a nice landing page for new web browser tabs -->
-
-    <!-- TODO: Find the resume HTML prototype we were working on. Not sure
-    which computer I was doing that on but it looks like I never pushed it to
-    any git repo. Use that as a reference for setting content width, centering
-    it, etc. Basically just for page layout basics.-->
-
-    <!-- TODO: Cheat sheet summary of Vimium commands like opening bookmarks, etc. -->
-
-    <!-- TODO: Links/cards to settings, bookmarks manager, etc? -->
-
-    <!-- TODO: Links/cards to common websites I use? Maybe we can auto-generate
-        something from bookmarks? -->
-    <a href="https://www.google.com">Google</a>
+    <main class="container content">
+        <div>
+            <h1>Quick Links</h1>
+            <article>
+                <div class="quick-links">
+                    <a class="quick-link" href="https://www.fastmail.com">Fastmail</a>
+                    <a class="quick-link" href="https://mail.google.com">Gmail</a>
+                    <a class="quick-link" href="https://outlook.live.com/mail">Outlook</a>
+                    <a class="quick-link" href="https://www.google.com">Google</a>
+                    <a class="quick-link" href="https://www.github.com">GitHub</a>
+                </div>
+            </article>
+        </div>
+        <div class="vimium-cheat-sheet">
+            <h1>Vimium Cheat Sheet</h1>
+            <article>
+                <table class="vimium-cheat-sheet-table">
+                    <tbody>
+                        <tr><td>?</td><td>Show help</td></tr>
+                        <tr><td>o</td><td>Open URL, bookmark or history entry in a new tab</td></tr>
+                        <tr><td>O</td><td>Open URL, bookmark or history entry</td></tr>
+                        <tr><td>b</td><td>Open a bookmark in a new tab</td></tr>
+                        <tr><td>B</td><td>Open a bookmark</td></tr>
+                    </tbody>
+                </table>
+            </article>
+        </div>
+    </main>
 </body>
 </html>
