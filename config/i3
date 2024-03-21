@@ -51,7 +51,7 @@ bindsym $mod+F1 mode "passthrough"
 bindsym $mod+space exec "rofi -show run"
 
 # combi launcher
-bindsym $mod+shift+space exec "rofi -modi combi"
+bindsym $mod+shift+space exec "rofi -show combi"
 
 # launch conky
 bindsym $mod+c exec "conky"
