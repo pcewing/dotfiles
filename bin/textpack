@@ -1,0 +1,132 @@
+#!/usr/bin/env python
+
+# This is a simple CLI tool to recursively flatten all of the text files in a
+# given directory into a single text file which can be useful in certain
+# situations, such as:
+# - Improves search/index performance due to reduced I/O
+# - Easier to copy things to/from an SSH or RDP session
+#     - Handy for copying my dotfiles over to remote sessions without needing
+#       to SCP them
+#
+# It also supports the opposite operation of unflattening a text file back to
+# the directory structure it came from.
+#
+# Example usage:
+#
+#     # Flatten dotfiles directory down to a text file
+#     textpack pack /home/pewing/dot /tmp/dot.txt
+#
+#     # Expand dotfiles text file back to a directory
+#     textpack unpack /tmp/dot.txt /tmp/dot
+
+import argparse
+import os
+import sys
+
+DELIM = "%%"
+FILE_DELIM = "TP_FILE"
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Simple tool to pack text files in a directory into a single file"
+    )
+    subparsers = parser.add_subparsers(help="CLI commands")
+
+    cmd_parser = subparsers.add_parser("pack", help="Pack files")
+    cmd_parser.add_argument("input_directory", help="Directory to pack")
+    cmd_parser.add_argument("output_file", help="File to write the textpack to")
+    cmd_parser.set_defaults(func=cmd_pack)
+
+    cmd_parser = subparsers.add_parser("unpack", help="Unpack files")
+    cmd_parser.add_argument("input_file", help="File to unpack")
+    cmd_parser.add_argument("output_directory", help="Output directory to unpack to")
+    cmd_parser.set_defaults(func=cmd_unpack)
+
+    args = parser.parse_args()
+    if "func" not in args:
+        parser.print_help()
+        exit(1)
+    return args
+
+
+# TODO: Use FileWalker
+def enumerate_files(dir):
+    results = []
+    for root, _, files in os.walk(dir):
+        for file in files:
+            results.append(os.path.join(root, file))
+    return results
+
+
+def read_file(file):
+    with open(file, "rb") as f:
+        return f.read().decode("utf-8")
+
+
+def pack(src_dir, files, output_file):
+    with open(output_file, "w") as ofs:
+        for file in files:
+            print(f"Packing file {file}")
+            rel_path = file.replace(f"{src_dir}/", "")
+            ofs.write(f"{DELIM} {FILE_DELIM} {rel_path} {DELIM}\n")
+            try:
+                text = read_file(os.path.join(src_dir, rel_path))
+                ofs.write(text.strip())
+                ofs.write("\n")
+            except UnicodeDecodeError:
+                print(f"Skipping file; invalid UTF-8")
+
+
+def unpack_file(output_dir, s):
+    tp_line, content = s.split("\n", 1)
+    path = tp_line.replace(f"{DELIM} {FILE_DELIM} ", "").replace(f" {DELIM}", "")
+    dst_path = os.path.join(output_dir, path)
+    dst_dir = os.path.dirname(dst_path)
+    if not os.path.isdir(dst_dir):
+        print("Creating directory: " + dst_dir)
+        os.makedirs(os.path.dirname(dst_path), exist_ok=True)
+    print("Unpacking file: " + dst_path)
+    with open(dst_path, "w") as f:
+        f.write(content)
+
+
+def unpack(file, dst_dir):
+    s = read_file(file)
+    substrs = []
+    while True:
+        start = substrs[len(substrs) - 1] + 1 if len(substrs) > 0 else 0
+        i = s.find(f"{DELIM} {FILE_DELIM} ", start)
+        if i == -1:
+            break
+        substrs.append(i)
+
+    for i in range(len(substrs)):
+        if i >= len(substrs) - 1:
+            unpack_file(dst_dir, s[substrs[i] :])
+        else:
+            unpack_file(dst_dir, s[substrs[i] : substrs[i + 1]])
+
+
+def cmd_pack(args):
+    input_directory = os.path.realpath(args.input_directory)
+    if not os.path.isdir(input_directory):
+        raise Exception(f"Input directory {input_directory} does not exist")
+    input_files = enumerate_files(input_directory)
+    output_file = args.output_file
+    pack(input_directory, input_files, output_file)
+
+
+def cmd_unpack(args):
+    file = os.path.realpath(args.input_file)
+    directory = os.path.realpath(args.output_directory)
+    unpack(file, directory)
+
+
+def main():
+    args = parse_args()
+    args.func(args)
+
+
+if __name__ == "__main__":
+    main()
