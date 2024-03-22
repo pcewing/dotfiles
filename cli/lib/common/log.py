@@ -3,6 +3,17 @@
 import logging
 import sys
 
+from logging import LogRecord
+from typing import Any, Optional, Union
+
+LogLevel = int
+LogHandler = Union[logging.StreamHandler, logging.FileHandler]
+LogHandlers = list[LogHandler]
+
+# TODO: Just make this a dictionary instead of a list of KVPs
+# LogData = dict[str, Any]
+LogDataKvp = tuple[str, Any]
+LogData = list[LogDataKvp]
 
 # fmt: off
 _LOG_LEVEL_STRINGS = {
@@ -23,15 +34,8 @@ _LOG_LEVEL_ABBREVIATIONS = {
 # fmt: on
 
 
-def is_string_list(var):
+def is_string_list(var: Any) -> bool:
     return isinstance(var, list) and all(isinstance(item, str) for item in var)
-
-
-def _log_level_from_str(log_level_str: str) -> int:
-    key = log_level_str.lower()
-    if key not in _LOG_LEVEL_STRINGS:
-        raise Exception("Invalid log level '{}'".format(key))
-    return _LOG_LEVEL_STRINGS[key]
 
 
 def _log_level_abbrev(level: int) -> str:
@@ -41,11 +45,11 @@ def _log_level_abbrev(level: int) -> str:
 
 
 class Formatter(logging.Formatter):
-    def formatTime(self, record, datefmt=None):
+    def formatTime(self, record: LogRecord, datefmt: Optional[str] = None) -> str:
         time = super(Formatter, self).formatTime(record, datefmt)
         return time.replace(",", ".")[11:]
 
-    def format(self, record):
+    def format(self, record: LogRecord) -> str:
         level_abbrev = _log_level_abbrev(record.levelno)
         record.level_abbrev = level_abbrev
         return super(Formatter, self).format(record)
@@ -57,8 +61,17 @@ class Log:
     _logger = None
 
     @staticmethod
-    def init(name, level, stdout=True, file=None):
-        handlers = []
+    def parse_level(level_str: str) -> LogLevel:
+        key = level_str.lower()
+        if key not in _LOG_LEVEL_STRINGS:
+            raise Exception("Invalid log level '{}'".format(key))
+        return _LOG_LEVEL_STRINGS[key]
+
+    @staticmethod
+    def init(
+        name: str, level: LogLevel, stdout: bool = True, file: Optional[str] = None
+    ) -> None:
+        handlers: LogHandlers = []
         if stdout:
             handlers.append(logging.StreamHandler(sys.stdout))
         if file is not None:
@@ -66,9 +79,6 @@ class Log:
 
         if len(handlers) <= 0:
             return
-
-        if isinstance(level, str):
-            level = _log_level_from_str(level)
 
         formatter = Formatter("%(level_abbrev)s %(asctime)s %(message)s")
 
@@ -82,43 +92,43 @@ class Log:
         Log._logger = logger
 
     @staticmethod
-    def debug(msg, data=[]):
+    def debug(msg: str, data: LogData = []) -> None:
         Log._log(logging.DEBUG, msg, data)
 
     @staticmethod
-    def info(msg, data=[]):
+    def info(msg: str, data: LogData = []) -> None:
         Log._log(logging.INFO, msg, data)
 
     @staticmethod
-    def warn(msg, data=[]):
+    def warn(msg: str, data: LogData = []) -> None:
         Log._log(logging.WARNING, msg, data)
 
     @staticmethod
-    def error(msg, data=[]):
+    def error(msg: str, data: LogData = []) -> None:
         Log._log(logging.ERROR, msg, data)
 
     @staticmethod
-    def fatal(msg, data=[]):
+    def fatal(msg: str, data: LogData = []) -> None:
         Log._log(logging.FATAL, msg, data)
 
     @staticmethod
-    def _log(level, msg, data=[]):
+    def _log(level: LogLevel, msg: str, data: LogData = []) -> None:
         if Log._logger is None:
             return
         Log._logger.log(level, Log._format_msg(msg, data))
 
     @staticmethod
-    def _format_msg(msg, data):
-        return msg + Log._format_kvps(data)
+    def _format_msg(msg: str, data: LogData) -> str:
+        return msg + Log._format_data(data)
 
     @staticmethod
-    def _format_kvps(kvps):
-        if len(kvps) == 0:
+    def _format_data(data: LogData) -> str:
+        if len(data) == 0:
             return ""
-        return f" {{ {', '.join([Log._format_kvp(kvp) for kvp in kvps])} }}"
+        return f" {{ {', '.join([Log._format_kvp(kvp) for kvp in data])} }}"
 
     @staticmethod
-    def _format_kvp(kvp):
+    def _format_kvp(kvp: LogDataKvp) -> str:
         if isinstance(kvp[1], str):
             return f'{kvp[0]} = "{kvp[1]}"'
         elif is_string_list(kvp[1]):

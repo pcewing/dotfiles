@@ -28,7 +28,7 @@ class Dir:
         return Dir._config
 
     @staticmethod
-    def home(reload=False) -> str:
+    def home(reload: bool = False) -> str:
         if reload or Dir._home is None:
             home = os.getenv("HOME")
             if home is None:
@@ -37,7 +37,7 @@ class Dir:
         return Dir._home
 
     @staticmethod
-    def downloads(reload=False) -> str:
+    def downloads() -> str:
         return os.path.join(Dir.home(), "Downloads")
 
     @staticmethod
