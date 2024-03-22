@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
 import os
+import sys
+import json
+from typing import Optional
 
 
 LSB_RELEASE_FILE = "/etc/lsb-release"
@@ -10,7 +13,7 @@ CENTOS_RELEASE_FILE = "/etc/centos-release"
 class DistroInformation:
     _data = None
 
-    def __init__(self, id, release, codename, description) -> None:
+    def __init__(self, id: str, release: str, codename: str, description: str) -> None:
         self.id = id
         self.release = release
         self.codename = codename
@@ -27,36 +30,39 @@ class DistroInformation:
         # fmt: on
 
     @staticmethod
-    def get() -> "DistroInformation":
+    def get() -> Optional["DistroInformation"]:
         if DistroInformation._data is None:
             DistroInformation._load_distro_info()
         return DistroInformation._data
 
     @staticmethod
-    def _load_distro_info():
+    def _load_distro_info() -> None:
         if os.path.isfile(LSB_RELEASE_FILE):
             DistroInformation._load_lsb_release_file()
         elif os.path.isfile(CENTOS_RELEASE_FILE):
             raise Exception("CentOS is not supported")
 
     @staticmethod
-    def _load_lsb_release_file():
-        vars = {
-            "DISTRIB_ID": None,
-            "DISTRIB_RELEASE": None,
-            "DISTRIB_CODENAME": None,
-            "DISTRIB_DESCRIPTION": None,
-        }
+    def _load_lsb_release_file() -> None:
+        required = set(
+            [
+                "DISTRIB_ID",
+                "DISTRIB_RELEASE",
+                "DISTRIB_CODENAME",
+                "DISTRIB_DESCRIPTION",
+            ]
+        )
 
+        # TODO: Use `/etc/os-release` instead which is a more common standard
+        vars: dict[str, str] = {}
         with open("/etc/lsb-release", "r") as f:
             for line in f:
-                (var, val) = line.strip().split("=")
-                if var in vars:
-                    vars[var] = val
+                (key, val) = line.strip().split("=")
+                if key in required:
+                    vars[key] = val
 
-        for var in vars:
-            if vars[var] is None:
-                raise Exception("Failed to construct DistroInformation")
+        if len(vars) != len(required):
+            raise Exception("Failed to construct DistroInformation")
 
         DistroInformation._data = DistroInformation(
             vars["DISTRIB_ID"],

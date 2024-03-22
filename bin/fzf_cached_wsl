@@ -12,7 +12,7 @@ import string
 import sys
 import threading
 
-from typing import Union
+from typing import Optional
 
 DOTFILES_DIR = os.getenv("DOTFILES")
 if DOTFILES_DIR is None:
@@ -20,15 +20,7 @@ if DOTFILES_DIR is None:
 sys.path.append(os.path.join(DOTFILES_DIR, "cli"))
 
 from lib.common.log import Log
-from lib.common.file_walker import (
-    FileWalkerFileNode,
-    FileWalkerDirectoryNode,
-    FileWalkerDirectoryHandlerResult,
-    FileWalkerFileHandlerResult,
-    FileWalkerEnumeration,
-    FileWalkerContext,
-    FileWalker,
-)
+from lib.common.file_walker import FileWalker
 
 PID_FILE = None
 
@@ -73,14 +65,14 @@ class FuzzyFileFinder:
     @staticmethod
     def find_files(directory, on_file):
         def handle_dir(
-            directory: FileWalkerDirectoryNode,
-        ) -> Union[None, FileWalkerDirectoryHandlerResult]:
+            directory: FileWalker.Directory,
+        ) -> Optional[FileWalker.DirectoryHandlerResult]:
             if directory.get_name() == ".git":
-                return FileWalkerDirectoryHandlerResult(skip=True)
+                return FileWalker.DirectoryHandlerResult(skip=True)
 
         def handle_file(
-            file: FileWalkerFileNode,
-        ) -> Union[None, FileWalkerFileHandlerResult]:
+            file: FileWalker.File,
+        ) -> Optional[FileWalker.FileHandlerResult]:
             name = file.get_name()
             if name.endswith(".pyc"):
                 return
@@ -145,7 +137,9 @@ def run():
     os.makedirs(tmp_dir, exist_ok=True)
 
     log_file = os.path.join(tmp_dir, "log.txt")
-    Log.init("fzf_cached_wsl", args.log_level, stdout=False, file=log_file)
+
+    log_level = Log.parse_level(args.log_level)
+    Log.init("fzf_cached_wsl", log_level, stdout=False, file=log_file)
 
     Log.info("fzf_cached_wsl started", [("cache", args.cache)])
 

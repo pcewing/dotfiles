@@ -33,7 +33,8 @@ def parse_args():
 def main():
     args = parse_args()
 
-    Log.init("dot", args.log_level)
+    log_level = Log.parse_level(args.log_level)
+    Log.init("dot", log_level)
 
     args.func(args)
 

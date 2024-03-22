@@ -13,3 +13,9 @@ clean:
 .PHONY: windows
 windows:
 	./dot.sh windows
+
+# Run mypy static type checker against Python files
+.PHONY: mypy
+mypy:
+	find . -iname '*.py' | xargs mypy --config-file ./mypy.ini
+	mypy --config-file ./mypy.ini ./bin/fzf_cached_wsl

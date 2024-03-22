@@ -2,108 +2,115 @@
 
 import os
 import json
+from typing import Callable, Optional
 
 from .log import Log
 
-
-# TODO: How does type hinting work for functions/lambda? I want to make
-# FileWalkerFileHandler and FileWalkerDirectoryHandler types and enforce them.
-
-
-class FileWalkerNode:
-    def __init__(self, root_directory: str, relative_path: str):
-        self._root = root_directory
-        self._dir = os.path.dirname(relative_path)
-        self._name = os.path.basename(relative_path)
-
-        # For optimization purposes, store these off to avoid further allocations
-        self._path_absolute = os.path.join(self._root, relative_path)
-        self._path_relative = relative_path
-
-    def get_root(self) -> str:
-        return self._root
-
-    def get_name(self) -> str:
-        return self._name
-
-    def get_relative_path(self) -> str:
-        return self._path_relative
-
-    def get_absolute_path(self) -> str:
-        return self._path_absolute
-
-    def __str__(self) -> str:
-        return json.dumps({"root": self._root, "dir": self._dir, "name": self._name})
-
-
-class FileWalkerFileNode(FileWalkerNode):
-    def __init__(self, root: str, file: str):
-        super().__init__(root, file)
-
-
-class FileWalkerDirectoryNode(FileWalkerNode):
-    def __init__(self, root: str, directory: str):
-        super().__init__(root, directory)
-
-
-class FileWalkerDirectoryHandlerResult:
-    def __init__(self, halt=False, skip=False):
-        self.halt = halt
-        self.skip = skip
-
-
-class FileWalkerFileHandlerResult:
-    def __init__(self, halt=False):
-        self.halt = halt
-
-
-class FileWalkerEnumeration:
-    def __init__(self):
-        self._files = []
-        self._directories = []
-
-    def add_file(self, file: FileWalkerFileNode) -> None:
-        self._files.append(file)
-
-    def add_directory(self, directory: FileWalkerDirectoryNode) -> None:
-        self._directories.append(directory)
-
-    def get_files(self) -> list[FileWalkerFileNode]:
-        return self._files
-
-    def get_directories(self) -> list[FileWalkerDirectoryNode]:
-        return self._directories
-
-    def get_nodes(self) -> list[FileWalkerNode]:
-        return self._files + self._directories
-
-
-class FileWalkerContext:
-    def __init__(self, root: str, file_handler=None, directory_handler=None):
-        self.root = root
-        self.file_handler = file_handler
-        self.directory_handler = directory_handler
-        self.halt = False
-        self.base_path = root + "/"
-
-
 class FileWalker:
-    @staticmethod
-    def walk(directory: str, file_handler=None, directory_handler=None) -> None:
-        ctx = FileWalkerContext(directory, file_handler, directory_handler)
-        FileWalker._walk(ctx, FileWalkerDirectoryNode(directory, ""))
+    class Node:
+        def __init__(self, root_directory: str, relative_path: str):
+            self._root = root_directory
+            self._dir = os.path.dirname(relative_path)
+            self._name = os.path.basename(relative_path)
+
+            # For optimization purposes, store these off to avoid further allocations
+            self._path_absolute = os.path.join(self._root, relative_path)
+            self._path_relative = relative_path
+
+        def get_root(self) -> str:
+            return self._root
+
+        def get_name(self) -> str:
+            return self._name
+
+        def get_relative_path(self) -> str:
+            return self._path_relative
+
+        def get_absolute_path(self) -> str:
+            return self._path_absolute
+
+        def __str__(self) -> str:
+            return json.dumps(
+                {"root": self._root, "dir": self._dir, "name": self._name}
+            )
+
+    class File(Node):
+        def __init__(self, root: str, file: str):
+            super().__init__(root, file)
+
+    class Directory(Node):
+        def __init__(self, root: str, directory: str):
+            super().__init__(root, directory)
+
+    class DirectoryHandlerResult:
+        def __init__(self, halt: bool = False, skip: bool = False) -> None:
+            self.halt = halt
+            self.skip = skip
+
+    class FileHandlerResult:
+        def __init__(self, halt: bool = False) -> None:
+            self.halt = halt
+
+    class Enumeration:
+        def __init__(self) -> None:
+            self._files: list['FileWalker.File'] = []
+            self._directories: list['FileWalker.Directory'] = []
+
+        def add_file(self, file: 'FileWalker.File') -> None:
+            self._files.append(file)
+
+        def add_directory(self, directory: 'FileWalker.Directory') -> None:
+            self._directories.append(directory)
+
+        def get_files(self) -> list['FileWalker.File']:
+            return self._files
+
+        def get_directories(self) -> list['FileWalker.Directory']:
+            return self._directories
+
+        def get_nodes(self) -> list['FileWalker.Node']:
+            # TODO: How do I make this one line without angering mypy?
+            nodes: list['FileWalker.Node']
+            nodes += self._files
+            nodes += self._directories
+            return nodes
+
+    FileHandler = Optional[Callable[[File], Optional[FileHandlerResult]]]
+    DirectoryHandler = Optional[Callable[[Directory], Optional[DirectoryHandlerResult]]]
+
+    class Context:
+        def __init__(
+            self,
+            root: str,
+            file_handler: 'FileWalker.FileHandler' = None,
+            directory_handler: 'FileWalker.DirectoryHandler' = None,
+        ):
+            self.root = root
+            self.file_handler = file_handler
+            self.directory_handler = directory_handler
+            self.halt = False
+            self.base_path = root + "/"
 
     @staticmethod
-    def _walk(ctx: FileWalkerContext, directory: FileWalkerDirectoryNode) -> None:
+    def walk(
+        directory: str,
+        file_handler: 'FileWalker.FileHandler' = None,
+        directory_handler: 'FileWalker.DirectoryHandler' = None,
+    ) -> None:
+        ctx = FileWalker.Context(directory, file_handler, directory_handler)
+        FileWalker._walk(ctx, FileWalker.Directory(directory, ""))
+
+    @staticmethod
+    def _walk(ctx: Context, directory: Directory) -> None:
         dir_entries = os.scandir(path=directory.get_absolute_path())
         for dir_entry in dir_entries:
             if ctx.halt:
                 break
             path_rel = dir_entry.path.replace(ctx.base_path, "")
             if dir_entry.is_dir(follow_symlinks=True):
-                FileWalker._handle_dir(ctx, FileWalkerDirectoryNode(ctx.root, path_rel))
+                FileWalker._handle_dir(ctx, FileWalker.Directory(ctx.root, path_rel))
             elif dir_entry.is_file(follow_symlinks=True):
-                FileWalker._handle_file(ctx, FileWalkerFileNode(ctx.root, path_rel))
+                FileWalker._handle_file(ctx, FileWalker.File(ctx.root, path_rel))
             else:
                 # TODO: This currently executes when we come across symlinks to
                 # targets that no longer exist. We should probably implement a
@@ -114,7 +121,7 @@ class FileWalker:
                 )
 
     @staticmethod
-    def _handle_dir(ctx: FileWalkerContext, directory: FileWalkerDirectoryNode):
+    def _handle_dir(ctx: Context, directory: Directory) -> None:
         # If no handler was provided, keep walking
         if ctx.directory_handler is None:
             FileWalker._walk(ctx, directory)
@@ -139,7 +146,7 @@ class FileWalker:
         FileWalker._walk(ctx, directory)
 
     @staticmethod
-    def _handle_file(ctx: FileWalkerContext, file: FileWalkerFileNode):
+    def _handle_file(ctx: Context, file: File) -> None:
         # If no handler was provided, there's nothing to do
         if ctx.file_handler is None:
             return
@@ -155,13 +162,13 @@ class FileWalker:
     @staticmethod
     def enumerate(
         directory: str, files: bool = True, directories: bool = True
-    ) -> FileWalkerEnumeration:
-        enumeration = FileWalkerEnumeration()
+    ) -> Enumeration:
+        enumeration = FileWalker.Enumeration()
 
-        def enumerate_file(file: FileWalkerFileNode):
+        def enumerate_file(file: 'FileWalker.File') -> None:
             enumeration.add_file(file)
 
-        def enumerate_directory(directory: FileWalkerDirectoryNode):
+        def enumerate_directory(directory: 'FileWalker.Directory') -> None:
             enumeration.add_directory(directory)
 
         file_handler = enumerate_file if files else None
