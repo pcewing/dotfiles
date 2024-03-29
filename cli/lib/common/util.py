@@ -104,3 +104,13 @@ def add_user_to_group(group: str, dry_run: bool) -> None:
         cmd = ["sudo", "usermod", "-aG", "docker", user.pw_name]
         if subprocess.call(cmd) != 0:
             raise Exception("Failed to add user to docker group")
+
+_HOME = None
+
+def home() -> str:
+    global _HOME
+    if _HOME is None:
+        _HOME = os.getenv("HOME")
+        if _HOME is None:
+            raise Exception("Missing HOME environment variable")
+    return _HOME

@@ -111,10 +111,9 @@ class FileWalker:
                 FileWalker._handle_dir(ctx, FileWalker.Directory(ctx.root, path_rel))
             elif dir_entry.is_file(follow_symlinks=True):
                 FileWalker._handle_file(ctx, FileWalker.File(ctx.root, path_rel))
+            elif dir_entry.is_symlink():
+                Log.debug("encountered symlink directory entry with non-existant target")
             else:
-                # TODO: This currently executes when we come across symlinks to
-                # targets that no longer exist. We should probably implement a
-                # mechanism to handle those.
                 Log.warn(
                     "encountered directory entry of unknown type",
                     [("path", dir_entry.path)],
