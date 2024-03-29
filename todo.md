@@ -321,3 +321,12 @@ Automatically download wezterm.sh and source it in ~/.localrc or at least docume
     - `black`
     - `argcomplete`
         - For `dot` CLI auto-completion
+
+## I3WM "Virtual Desktops"
+
+10 workspaces isn't always enough. It would be nice to do something that
+provides a similar workflow to virtual desktops on Windows. Like, 4 virtual
+desktops that each have 10 workspaces. Maybe as an MVP, have a keyboard
+shortcut that switches between the desktops and remaps keybindings accordingly.
+
+I've started noodling on a hacky PoC for this in `bin/i3-util.sh`

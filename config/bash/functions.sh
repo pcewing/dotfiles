@@ -363,73 +363,7 @@ function docker_pss() {
     column -t "$tempfile"
 }
 
-# It can be useful to have scripts that automatically update the entries in
-# ~/.fd_dirs, for example when maintaining multiple clones of a repo to work on
-# different branches simultaneously. So, this function looks for executable
-# scripts in ~/.config/fd/fd.d/ and then executes all of them.
-function fd_update() {
-    local fd_script
-
-    # No need to check if the directory exists or if it's empty because we're
-    # already ensuring the glob results are executable files before we try to
-    # run them which properly handles those cases.
-    for fd_script in "$HOME/.config/fd/fd.d"/*; do
-        if [ -f "$fd_script" ] && [ -x "$fd_script" ]; then
-            "$fd_script"
-        fi
-    done
-}
-
 # Fuzzy directory changer
-function fd() {
-    local query fd_dirs_file key value dir
-
-    installed "fzf" || return 1
-
-    fd_update
-
-    query=""
-    if [ -n "$1" ]; then
-        query="$1"
-    fi
-
-    fd_dirs_file="$HOME/.fd_dirs"
-
-    if [ ! -f "$fd_dirs_file" ]; then
-        cat << EOF > "$fd_dirs_file"
-# File format:
-# - name=path
-# - Blank lines and lines beginning with "#" are stripped
-
-# Examples
-example1=/home/paul/Documents
-EOF
-    fi
-
-    keys="$(
-        grep -vP '(^ *$)|(^#.*)' "$fd_dirs_file" | \
-        sed -e 's/=.*//g'
-    )"
-
-    key="$(echo "$keys" | fzf --query "$query" )"
-
-    value="$(
-        grep -P "^$key=.*$" "$fd_dirs_file" | \
-        sed -e 's/.*=//g'
-    )"
-
-    if [ -n "$value" ]; then
-        # Expand variables like $HOME
-        dir="$(eval echo "$value")"
-
-        if [ -d "$dir" ]; then
-            cd "$dir" || return 1
-        else
-            yell "ERROR: Directory \"$dir\" does not exist"
-        fi
-    fi
-}
-
 function fzfd() {
     local dir
     dir=$(find "${1:-.}" -path '*/\.*' -prune -o -type d -print 2>/dev/null \
@@ -444,29 +378,37 @@ function is_restart_required() {
     fi
 }
 
-function fd_add() {
-    local key
+function fd() {
+    local selection
 
-    key="$1"
-    if [ -z "$key" ]; then
-        # Get the full path to the current directory
-        key="$(pwd)"
-
-        # Replace $HOME with ~
-        key="${key/$HOME/\~}"
-    fi
-
-    if grep -E "^$key=" ~/.fd_dirs &>/dev/null; then
-        yell "ERROR: Key \"$key\" already exists in ~/.fd_dirs"
+    if ! selection="$("$DOTFILES/cli/dot.py" fd choose "$1")"; then
+        yell "ERROR: Directory selection failed"
         return 1
     fi
 
-    path="$( realpath "$(pwd)" )"
-    echo "${key}=${path}" >> ~/.fd_dirs
+    [ -z "$selection" ] && return 0
+
+    if [ ! -d "$selection" ]; then
+        yell "ERROR: Selected directory \"$selection\" does not exist"
+        return 1
+    fi
+    
+    if ! cd "$selection"; then
+        yell "ERROR: Failed to change directory to \"$selection\""
+        return 1
+    fi
+}
+
+function fd_add() {
+    "$DOTFILES/cli/dot.py" fd add
 }
 
 function fd_edit() {
-    nvim ~/.fd_dirs
+    "$DOTFILES/cli/dot.py" fd edit
+}
+
+function fd_update() {
+    "$DOTFILES/cli/dot.py" fd update
 }
 
 function dec_to_hex() {

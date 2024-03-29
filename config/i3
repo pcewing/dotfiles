@@ -10,8 +10,9 @@ exec_always "~/dot/bin/run_compositor.sh"
 exec_always "gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark"
 exec_always "gsettings set org.gnome.desktop.interface color-scheme prefer-dark"
 
-# windows modifier key
+# windows modifier key; get these from xmodmap
 set $mod Mod4
+set $alt mod1
 
 # set the font used in window chrome and bar
 font pango:Inconsolata 14
@@ -109,28 +110,33 @@ bindsym $mod+m floating toggle
 bindsym $mod+ctrl+m focus mode_toggle
 
 # switch to workspace
-bindsym $mod+y workspace 1
-bindsym $mod+u workspace 2
-bindsym $mod+i workspace 3
-bindsym $mod+o workspace 4
-bindsym $mod+p workspace 5
-bindsym $mod+6 workspace 6
-bindsym $mod+7 workspace 7
-bindsym $mod+8 workspace 8
-bindsym $mod+9 workspace 9
-bindsym $mod+0 workspace 10
+bindsym $mod+y exec i3-util.sh workspace 1
+bindsym $mod+u exec i3-util.sh workspace 2
+bindsym $mod+i exec i3-util.sh workspace 3
+bindsym $mod+o exec i3-util.sh workspace 4
+bindsym $mod+p exec i3-util.sh workspace 5
+bindsym $mod+6 exec i3-util.sh workspace 6
+bindsym $mod+7 exec i3-util.sh workspace 7
+bindsym $mod+8 exec i3-util.sh workspace 8
+bindsym $mod+9 exec i3-util.sh workspace 9
+bindsym $mod+0 exec i3-util.sh workspace 10
+
+bindsym $mod+$alt+y exec i3-util.sh desktop a
+bindsym $mod+$alt+u exec i3-util.sh desktop b
+bindsym $mod+$alt+i exec i3-util.sh desktop c
+bindsym $mod+$alt+o exec i3-util.sh desktop d
 
 # move focused container to workspace
-bindsym $mod+Shift+y move container to workspace 1
-bindsym $mod+Shift+u move container to workspace 2
-bindsym $mod+Shift+i move container to workspace 3
-bindsym $mod+Shift+o move container to workspace 4
-bindsym $mod+Shift+p move container to workspace 5
-bindsym $mod+Shift+6 move container to workspace 6
-bindsym $mod+Shift+7 move container to workspace 7
-bindsym $mod+Shift+8 move container to workspace 8
-bindsym $mod+Shift+9 move container to workspace 9
-bindsym $mod+Shift+0 move container to workspace 10
+bindsym $mod+Shift+y exec i3-util.sh move-container 1
+bindsym $mod+Shift+u exec i3-util.sh move-container 2
+bindsym $mod+Shift+i exec i3-util.sh move-container 3
+bindsym $mod+Shift+o exec i3-util.sh move-container 4
+bindsym $mod+Shift+p exec i3-util.sh move-container 5
+bindsym $mod+Shift+6 exec i3-util.sh move-container 6
+bindsym $mod+Shift+7 exec i3-util.sh move-container 7
+bindsym $mod+Shift+8 exec i3-util.sh move-container 8
+bindsym $mod+Shift+9 exec i3-util.sh move-container 9
+bindsym $mod+Shift+0 exec i3-util.sh move-container 10
 
 # move workspace
 bindsym $mod+Ctrl+h move workspace to output left
