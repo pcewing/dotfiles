@@ -179,7 +179,10 @@ bindsym --release $mod+Shift+Print exec "scrot -u -d 4 $HOME/Pictures/screenshot
 bindsym --release $mod+g exec "firefox 'https://gifcap.dev'"
 
 # force certain apps to specific workspaces
+# BC3 & BC4
 assign [class="Bcompare"] 5
+# BC5, eventually remove the above
+assign [class="Beyond Compare"] 5
 assign [class="zoom"] 7
 assign [class="Slack"] 8
 assign [class="discord"] 8
