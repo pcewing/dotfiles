@@ -477,3 +477,135 @@ function sdr() {
 
     svn diff --readonly --diff-cmd=bcompare_svnrev -r "$1:$2"
 }
+
+
+function tar_directory() {
+    local dir path name
+
+    dir="$1"
+
+    if [ -z "$dir" ] || [ ! -d "$dir" ]; then
+        yell "Usage: tar_directory <directory>"
+        return 1
+    fi
+
+    path="$(realpath $dir)"
+    name="$(basename $path)"
+
+    archive_path="/tmp/$name.tar.gz"
+
+    if ! tar -czvf "$archive_path" -C "$path" . ; then
+        yell "Failed to create archive"
+        return 1
+    fi
+
+    echo "Created archive: $archive_path"
+    echo "To extract it: "
+    echo "untar_directory $archive_path ${path}-copy"
+}
+
+function untar_directory() {
+    local archive_path dir_path
+
+    archive_path="$1"
+    dir_path="$2"
+
+    if [ -z "$archive_path" ] || [ -z "$dir_path" ]; then
+        yell "Usage: untar_directory <archive> <directory>"
+        return 1
+    fi
+
+    if [ ! -f "$archive_path" ]; then
+        yell "ERROR: Specified archive does not exist"
+        return 1
+    fi
+
+    if [ -e "$dir_path" ]; then
+        yell "ERROR: Specified directory path already exists"
+        return 1
+    fi
+
+    if ! mkdir -p "$dir_path"; then
+        yell "ERROR: Failed to create output directory"
+        return 1
+    fi
+
+    if ! tar -xzvf "$archive_path" -C "$dir_path"; then
+        yell "Failed to extract archive"
+        return 1
+    fi
+
+    echo "Extracted archive: $archive_path"
+    echo "To Directory:      $dir_path"
+}
+
+# Print the contents of an rpm package without extracting it.
+function rpm_ls() {
+    rpm -qlp "$1"
+}
+
+# Print the contents of a deb package without extracting it.
+function deb_ls() {
+    dpkg -c "$1"
+}
+
+# Completely restart bluetooth services
+#
+# I was having an issue at work where my headset would seemingly connect
+# successfully but pavucontrol showed that Pulse didn't have an output for
+# Bluetooth. I never bothered to fully debug but wrote up this quick function
+# to just restart everything which in most cases would get things working.
+#
+# To use it, disconnect headset first, run the function, and then re-connect
+# the headset.
+#
+# Hopefully when we move to Ubuntu 24.04 across devices which should be using
+# pipewire by default for audio this will no longer be an issue.
+function bluetooth_reset() {
+    local sleep_between_steps
+
+    if ! sudo -n true &> /dev/null; then
+        echo "Resetting Bluetooth requires elevating to root: "
+        if ! sudo echo "" > /dev/null; then
+            yell "ERROR: Failed to elevate to root, aborting..."
+            return 1
+        fi
+    fi
+
+    # This is an arbitrary number of seconds that I picked that seemed to be
+    # long enough for the function to consistently succeed. I'm sure there's a
+    # better solution than just sleeping but this is already janky so who cares.
+    sleep_between_steps="5"
+
+    echo "Killing blueman processes..."
+    killall blueman-applet &> /dev/null
+    killall blueman-tray &> /dev/null
+    killall blueman-manager &> /dev/null
+    sleep $sleep_between_steps
+
+    echo "Killing mpd..."
+    killall mpd > /dev/null
+    sleep $sleep_between_steps
+
+    echo "Stopping bluetooth service..."
+    sudo systemctl stop --now bluetooth
+    sleep $sleep_between_steps
+
+    echo "Killing pulseaudio..."
+    pulseaudio --kill
+    sleep $sleep_between_steps
+
+    echo "Starting pulseaudio..."
+    start-pulseaudio-x11 
+    sleep $sleep_between_steps
+
+    echo "Starting bluetooth service..."
+    sudo systemctl start bluetooth
+    sleep $sleep_between_steps
+
+    echo "Starting mpd..."
+    mpd
+    sleep $sleep_between_steps
+
+    echo "Bluetooth restarted!"
+}
