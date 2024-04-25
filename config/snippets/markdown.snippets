@@ -1,22 +1,40 @@
 snippet date "Today's date in the format: Monday 2021-01-01"
 `#!/usr/bin/env bash
-
 DAY=$(date +"%d")
 MONTH=$(date +"%m")
 YEAR=$(date +"%Y")
-DAY_OF_WEEK=
-
-DAY_STRING=""
 case "$(date +"%w")" in
-  "0")  DAY_STRING="Sunday"     ;;
-  "1")  DAY_STRING="Monday"     ;;
-  "2")  DAY_STRING="Tuesday"    ;;
-  "3")  DAY_STRING="Wednesday"  ;;
-  "4")  DAY_STRING="Thursday"   ;;
-  "5")  DAY_STRING="Friday"     ;;
-  "6")  DAY_STRING="Saturday"   ;;
+  "0")  echo "Sunday $YEAR-$MONTH-$DAY"     ;;
+  "1")  echo "Monday $YEAR-$MONTH-$DAY"     ;;
+  "2")  echo "Tuesday $YEAR-$MONTH-$DAY"    ;;
+  "3")  echo "Wednesday $YEAR-$MONTH-$DAY"  ;;
+  "4")  echo "Thursday $YEAR-$MONTH-$DAY"   ;;
+  "5")  echo "Friday $YEAR-$MONTH-$DAY"     ;;
+  "6")  echo "Saturday $YEAR-$MONTH-$DAY"   ;;
 esac
-
-echo "$DAY_STRING $YEAR-$MONTH-$DAY"
 `
+endsnippet
+
+snippet tmw "Tomorrow's date in the format: Monday 2021-01-01"
+`#!/usr/bin/env bash
+DAY=$(date -d "tomorrow" +"%d")
+MONTH=$(date -d "tomorrow" +"%m")
+YEAR=$(date -d "tomorrow" +"%Y")
+case "$(date -d "tomorrow" +"%w")" in
+  "0")  echo "Sunday $YEAR-$MONTH-$DAY"     ;;
+  "1")  echo "Monday $YEAR-$MONTH-$DAY"     ;;
+  "2")  echo "Tuesday $YEAR-$MONTH-$DAY"    ;;
+  "3")  echo "Wednesday $YEAR-$MONTH-$DAY"  ;;
+  "4")  echo "Thursday $YEAR-$MONTH-$DAY"   ;;
+  "5")  echo "Friday $YEAR-$MONTH-$DAY"     ;;
+  "6")  echo "Saturday $YEAR-$MONTH-$DAY"   ;;
+esac
+`
+endsnippet
+
+snippet standup "Template for standup notes"
+- Previously
+    - TODO
+- Today
+    - [ ] TODO
 endsnippet

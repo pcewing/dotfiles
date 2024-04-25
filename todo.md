@@ -330,3 +330,16 @@ desktops that each have 10 workspaces. Maybe as an MVP, have a keyboard
 shortcut that switches between the desktops and remaps keybindings accordingly.
 
 I've started noodling on a hacky PoC for this in `bin/i3-util.sh`
+
+## Python Linters
+
+- `mypy`
+    - Static type hint checking
+- `isort`
+    - Sort imports
+- `flake8`
+    - General linting (Warns about unused imports)
+- `black`
+    - Formatter
+
+Maybe have a single pre-commit script that runs all of the above in the right order?
