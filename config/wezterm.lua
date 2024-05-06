@@ -4,7 +4,26 @@ local act = wezterm.action
 
 local config = {}
 
+config.default_prog = {"bash"}
 config.default_domain = 'WSL:Ubuntu'
+
+config.launch_menu = {
+    {
+        label = "WSL",
+        args = {"bash"},
+        domain = 'DefaultDomain',
+    },
+    {
+        label = "Powershell",
+        args = {"powershell"},
+        domain = { DomainName = 'local' },
+    },
+    {
+        label = "Git Bash",
+        args = {"C:\\Program Files\\Git\\bin\\bash.exe", "-i", "-l"},
+        domain = { DomainName = 'local' },
+    },
+}
 
 -- Configure leader key; use the same leader as Kitty so they act similarly.
 -- timeout_milliseconds defaults to 1000 and can be omitted

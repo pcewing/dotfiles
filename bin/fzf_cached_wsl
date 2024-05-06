@@ -64,6 +64,23 @@ def parse_args():
 class FuzzyFileFinder:
     @staticmethod
     def find_files(directory, on_file):
+        ignore_patterns = []
+        ignore_file = os.path.join(directory, ".fzfignore")
+        if os.path.isfile(ignore_file):
+            ignore_file_content = None
+            with open(ignore_file, "r") as f:
+                ignore_file_content = f.read()
+            lines = list(
+                filter(
+                    lambda line: len(line) > 0,
+                    [line.strip() for line in ignore_file_content.split("\n")],
+                )
+            )
+            for line in lines:
+                if line.startswith("#"):
+                    continue
+                ignore_patterns.append(line)
+
         def handle_dir(
             directory: FileWalker.Directory,
         ) -> Optional[FileWalker.DirectoryHandlerResult]:
@@ -74,12 +91,12 @@ class FuzzyFileFinder:
             file: FileWalker.File,
         ) -> Optional[FileWalker.FileHandlerResult]:
             name = file.get_name()
-            if name.endswith(".pyc"):
-                return
-            elif name.endswith(".dll"):
-                return
-            elif name.endswith(".log"):
-                return
+            for ignore_pattern in ignore_patterns:
+                m = re.match(ignore_pattern, file.get_relative_path())
+                if m is not None:
+                    # Keep this commented out for performance except when debugging
+                    # Log.debug("ignoring file", [("ignore_pattern", ignore_pattern), ("file", file.get_relative_path())])
+                    return
 
             on_file(file.get_relative_path())
 
@@ -148,7 +165,7 @@ def run():
     cache_file = os.path.join(tmp_dir, f"{dir_hash}.txt")
     cache_exists = os.path.isfile(cache_file)
 
-    if cache_exists and already_running(tmp_dir):
+    if args.cache and cache_exists and already_running(tmp_dir):
         # TODO: How do we handle this? On one hand, it would be nice to just
         # stop and let the other process finish but we need to print something.
         # If there's no existing cache then we have nothing to print if we
@@ -190,6 +207,9 @@ def run():
     Log.info("fzf_cached_wsl finished")
 
 
+# TODO: Add a cleanup mechanism for when these do get orphaned due to process
+# being abnormally terminated or something. Maybe check the creation time on
+# the PID files and just nuke any that are obviously not still running.
 class PidFile:
     def __init__(self, directory, prefix):
         self._dir = directory
