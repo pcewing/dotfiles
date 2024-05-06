@@ -3,6 +3,7 @@
 import grp
 import os
 import pwd
+import shutil
 import subprocess
 import urllib.request
 from typing import Dict, List
@@ -114,3 +115,11 @@ def home() -> str:
         if _HOME is None:
             raise Exception("Missing HOME environment variable")
     return _HOME
+
+class Util:
+    @staticmethod
+    def rmdir(path: str, ignore_missing: bool = True) -> None:
+        try:
+            shutil.rmtree(path)
+        except FileNotFoundError:
+            pass
