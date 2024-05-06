@@ -117,6 +117,10 @@ if has('nvim')
     Plug 'ixru/nvim-markdown'
 endif
 
+if $NVIM_COPILOT_ENABLED == "1"
+    Plug 'github/copilot.vim'
+endif
+
 call plug#end()
 
 " Don't use smart indent in markdown files

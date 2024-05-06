@@ -3,7 +3,11 @@ set backspace=indent,eol,start    " Make backspace behave as expected in insert 
 set history=1000                  " Increase :cmdline history
 set visualbell                    " No sounds
 set laststatus=2                  " Always display the status line
-set clipboard=unnamed,unnamedplus " Use system clipboard if possible
+" There's currently a bug and this causes Visual Studio to frequently hang
+" which is super annoying so just disable system clipboard for now:
+" https://github.com/VsVim/VsVim/issues/3040
+"set clipboard=unnamed,unnamedplus " Use system clipboard if possible
+set clipboard=
 set cursorline                    " Add a visual indicator to the line the cursor is on
 
 " Indentation
