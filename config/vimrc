@@ -25,11 +25,7 @@ endif
 set backupdir=~/.vim/tmp//,.
 set directory=~/.vim/tmp//,.
 
-if has('nvim')
-    set laststatus=3              " Use global status line (Only supported in nvim 0.7+)
-else
-    set laststatus=2              " Always display the status line
-endif
+set laststatus=2              " Always display the status line
 
 " Indentation
 set autoindent
@@ -40,144 +36,13 @@ set softtabstop=4
 set tabstop=4
 set expandtab
 
+" Don't use smart indent in markdown files
+autocmd FileType markdown setlocal nosmartindent
+
 " Set the Leader key. I leave the leader key as '\' and remap ' ' to it
 " instead of setting ' ' as the leader. This is so that showcmd is actually
 " useful.
 map <Space> <Leader>
-
-" Install vim-plug automatically on Linux if it isn't already
-if has('unix')
-    if has('nvim')
-        if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
-            silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
-                \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-            autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-        endif
-    else
-        if empty(glob('~/.vim/autoload/plug.vim'))
-            silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-                \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-            autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-        endif
-    endif
-endif
-
-filetype plugin on
-
-" Load Plugins
-call plug#begin('~/.config/nvim/plugged')
-
-" Colorschemes
-Plug 'chriskempson/base16-vim'
-
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
-Plug 'junegunn/fzf.vim'
-"Plug 'elixir-lang/vim-elixir'
-"Plug 'slashmili/alchemist.vim'
-"Plug 'editorconfig/editorconfig-vim'
-"Plug 'Valloric/YouCompleteMe'
-
-Plug 'rodjek/vim-puppet'
-
-Plug 'fatih/vim-go'
-Plug 'OrangeT/vim-csharp'
-Plug 'mattn/emmet-vim'
-Plug 'tpope/vim-vinegar'
-Plug 'nvie/vim-flake8'
-Plug 'tikhomirov/vim-glsl'
-Plug 'martinda/Jenkinsfile-vim-syntax'
-Plug 'aklt/plantuml-syntax'
-Plug 'elubow/cql-vim'
-Plug 'tpope/vim-fugitive'
-Plug 'honza/vim-snippets'
-Plug 'igankevich/mesonic'
-Plug 'rhysd/vim-clang-format'
-
-if has('unix')
-    Plug 'sirver/UltiSnips'
-endif
-
-if has('nvim')
-    " New plugins to use neovim 0.5 features
-    Plug 'neovim/nvim-lspconfig'
-    " Sometimes the atuomatic :TSUpdate won't run successfully and then it
-    " won't rerun. If cryptic treesitter errors show up after running
-    " :PlugUpdate, try running :TSUpdate manually
-    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-    " The 'nvim-lua/completion-nvim' plugin is deprecated so I need to find a
-    " replacement. The two below are recommended by Neovim developers so we
-    " should try both and see which one we prefer.
-    Plug 'hrsh7th/nvim-cmp'
-    "Plug 'ms-jpq/coq_nvim'
-    Plug 'nvim-lua/popup.nvim'
-    Plug 'nvim-lua/plenary.nvim'
-    Plug 'glepnir/lspsaga.nvim'
-    Plug 'hoob3rt/lualine.nvim'
-    Plug 'nvim-telescope/telescope.nvim'
-    Plug 'ixru/nvim-markdown'
-endif
-
-if $NVIM_COPILOT_ENABLED == "1"
-    Plug 'github/copilot.vim'
-endif
-
-call plug#end()
-
-" Don't use smart indent in markdown files
-autocmd FileType markdown setlocal nosmartindent
-
-" TODO: Some plugins are nvim only; we should move plugin configuration into
-" their own files, like:
-" config/nvim/plugins/nvim-markdown.lua
-" config/nvim/plugins/UltiSnips.lua
-"
-" And then we can just do something like:
-" if has('nvim)
-"     luafile ~/dot/config/nvim/plugins/nvim-markdown.lua
-"     luafile ~/dot/config/nvim/plugins/UltiSnips.lua
-" endif
-
-" Configure nvim-markdown plugin
-
-let g:vim_markdown_frontmatter = 1
-
-" Disable some nvim-markdown mappings that either conflict with other plugins
-" or that I just don't want.
-
-" This is <tab> by default which conflicts with UltiSnips
-imap <Plug> <Plug>Markdown_Jump
-
-" Format the current C/C++ file with clang-format (Uses vim-clang-format plugin)
-let g:clang_format#detect_style_file = 1
-autocmd FileType c,cpp vnoremap <buffer><Leader>q :ClangFormat<CR>
-
-" Format the current Python file with black
-autocmd FileType python nnoremap <buffer><Leader>q :lua format_current_python_file()<CR>
-
-" UltiSnips insert mode mappings
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-j>"
-let g:UltiSnipsJumpBackwardTrigger="<c-k>"
-
-nnoremap <leader>ue :UltiSnipsEdit<CR>
-
-" FZF
-nnoremap <Leader>o :Files<CR>
-" Disabling this in favor of the telescope mappings below; however, `:Tags`
-" seems more performant than `:Telescope tags`, especially in large codebases,
-" so we may consider sticking to FZF for that.
-"nnoremap <leader>t :Tags<cr>
-
-" Telescope
-nnoremap <leader>tf :Telescope find_files<cr>
-nnoremap <leader>tt :Telescope tags<cr>
-nnoremap <leader>ts :Telescope lsp_dynamic_workspace_symbols<cr>
-nnoremap <leader>tg :Telescope live_grep<cr>
-nnoremap <leader>tb :Telescope buffers<cr>
-nnoremap <leader>th :Telescope help_tags<cr>
-
-" LSP
-nnoremap <leader>ls :LspStop<cr>
 
 nnoremap <Leader>m :make<CR>
 
@@ -239,6 +104,69 @@ nnoremap <silent> <leader>p :echo @%<cr>
 " Copy file path and line number of current line to clipboard
 nnoremap <silent> <leader>y :let @+ = join([expand('%'),  line(".")], ':')<cr>
 
+nnoremap <silent> <leader>x :e ~/.vimrc<cr>
+nnoremap <silent> <leader>r :source ~/.vimrc<cr>
+
+xnoremap <leader>n :normal<space>
+
+" Install vim-plug automatically on Linux if it isn't already
+if has('unix')
+    if empty(glob('~/.vim/autoload/plug.vim'))
+        silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+            \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    endif
+endif
+
+filetype plugin on
+
+" Load Plugins
+call plug#begin()
+
+" Colorschemes
+Plug 'chriskempson/base16-vim'
+
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
+Plug 'junegunn/fzf.vim'
+"Plug 'elixir-lang/vim-elixir'
+"Plug 'slashmili/alchemist.vim'
+"Plug 'editorconfig/editorconfig-vim'
+"Plug 'Valloric/YouCompleteMe'
+
+Plug 'rodjek/vim-puppet'
+
+Plug 'fatih/vim-go'
+Plug 'OrangeT/vim-csharp'
+Plug 'mattn/emmet-vim'
+Plug 'tpope/vim-vinegar'
+Plug 'nvie/vim-flake8'
+Plug 'tikhomirov/vim-glsl'
+Plug 'martinda/Jenkinsfile-vim-syntax'
+Plug 'aklt/plantuml-syntax'
+Plug 'elubow/cql-vim'
+Plug 'tpope/vim-fugitive'
+Plug 'honza/vim-snippets'
+Plug 'igankevich/mesonic'
+Plug 'rhysd/vim-clang-format'
+
+if has('unix')
+    Plug 'sirver/UltiSnips'
+endif
+
+if $VIM_COPILOT_ENABLED == "1"
+    Plug 'github/copilot.vim'
+endif
+
+call plug#end()
+
+" Format the current C/C++ file with clang-format (Uses vim-clang-format plugin)
+let g:clang_format#detect_style_file = 1
+autocmd FileType c,cpp vnoremap <buffer><Leader>q :ClangFormat<CR>
+
+" FZF
+nnoremap <Leader>o :Files<CR>
+nnoremap <leader>t :Tags<cr>
+
 " Start flavours - vimrc
 
 " Base16 Outrun Dark
@@ -256,31 +184,4 @@ else
     " On Non-Windows operating systems, use the host window's background. This
     " allows for transparency if the terminal emulator has that configured.
     hi Normal guibg=NONE ctermbg=NONE
-endif
-
-" Source lua files in Neovim
-if has('nvim')
-    luafile ~/dot/config/nvim/functions.lua
-    luafile ~/dot/config/nvim/lsp_clangd.lua
-    luafile ~/dot/config/nvim/lsp_gopls.lua
-    luafile ~/dot/config/nvim/lsp_jedi.lua
-    luafile ~/dot/config/nvim/treesitter.lua
-endif
-
-if has('nvim')
-    nnoremap <silent> <leader>x :e ~/dot/config/vimrc<cr>
-    nnoremap <silent> <leader>r :lua reload_config()<CR>
-else
-    nnoremap <silent> <leader>x :e ~/.vimrc<cr>
-    nnoremap <silent> <leader>r :source ~/.config/nvim/init.vim<cr>
-endif
-
-xnoremap <leader>n :normal<space>
-
-if has('nvim')
-lua << EOF
-if is_wsl() then
-    reload_lua_package('wsl')
-end
-EOF
 endif
