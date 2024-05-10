@@ -18,6 +18,13 @@ start = "# Start flavours - bashrc"
 end = "# End flavours - bashrc"
 
 [[items]]
+file = "$DOTFILES/config/nvim/lua/dot/theme.lua"
+template = "custom"
+subtemplate = "nvim"
+start = "    -- Start flavours - nvim"
+end = "    -- End flavours - nvim"
+
+[[items]]
 file = "$DOTFILES/config/vimrc"
 template = "custom"
 subtemplate = "vimrc"
