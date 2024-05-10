@@ -1,9 +1,14 @@
--- This file is responsible for configuring treesitter
-local TreesitterConfigs = require('nvim-treesitter.configs')
+local Log = require('dot.log')
 
 local M = {}
 
 function M.configure()
+    local status, TreesitterConfigs = pcall(require, 'nvim-treesitter.configs')
+    if not status  then
+        Log.warn('Failed to load nvim-treesitter.configs module')
+        return
+    end
+
     TreesitterConfigs.setup({
         highlight = {
             enable = true,

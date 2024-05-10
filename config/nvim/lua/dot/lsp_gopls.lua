@@ -1,8 +1,15 @@
--- This file is responsible for setting up the language server for Go
-
 local M = {}
 
+local Log = require('dot.log')
+local Map = require('dot.map')
+
 function M.configure()
+    local status, lspconfig = pcall(require, 'lspconfig')
+    if not status  then
+        Log.warn('Failed to load lspconfig module')
+        return
+    end
+
     -- Requires gopls which should be installed by default with Go
     if vim.fn.executable('gopls') ~= 1 then
         return
@@ -21,8 +28,6 @@ function M.configure()
         Map.nnoremapbs(buf, 'K',          '<Cmd>lua vim.lsp.buf.hover()<CR>')
         Map.nnoremapbs(buf, '<C-k>',      '<cmd>lua vim.lsp.buf.signature_help()<CR>')
     end
-
-    local lspconfig = require('lspconfig')
 
     -- https://github.com/neovim/nvim-lspconfig/tree/master/lua/lspconfig/server_configurations/gopls.lua
     lspconfig["gopls"].setup {

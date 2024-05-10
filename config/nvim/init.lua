@@ -19,7 +19,13 @@ local Settings  = require('dot.settings')
 local Theme     = require('dot.theme')
 local Util      = require('dot.util')
 
-Log.init(Log.levels.info, Util.path_join(Util.tmp_dir(), "nvim.log"))
+local tmp_dir = Util.tmp_dir()
+
+if not Util.directory_exists(tmp_dir) then
+    vim.fn.mkdir(tmp_dir, "p", "0775")
+end
+
+Log.init(Log.levels.info, Util.path_join(tmp_dir, "nvim.log"))
 Log.info('loading init.lua')
 
 Settings.init()
@@ -29,7 +35,7 @@ Globals.init()
 Theme.init()
 
 if Util.is_wsl() then
-    local Wsl = load('dot.wsl')
+    local Wsl = require('dot.wsl')
     Wsl.init()
 end
 
