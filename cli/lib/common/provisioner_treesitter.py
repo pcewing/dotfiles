@@ -87,9 +87,6 @@ class TreeSitterProvisioner(IComponentProvisioner):
             Log.info("Skipping download because file already exists", [("path", path)])
             return
 
-        # Make sure the directory we are downloading to exists
-        Shell.mkdir(os.path.dirname(path), True, False, self._args.dry_run)
-
         Log.info("Downloading tree-sitter release archive")
         Github.download_release_artifact(
             TREE_SITTER_GITHUB_ORG,
@@ -97,6 +94,9 @@ class TreeSitterProvisioner(IComponentProvisioner):
             version,
             os.path.basename(path),
             path,
+            True,
+            False,
+            False,
             self._args.dry_run,
         )
 

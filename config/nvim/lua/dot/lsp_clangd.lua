@@ -12,11 +12,18 @@ https://github.com/neovim/nvim-lspconfig/tree/master/lua/lspconfig/server_config
 
 local vim = vim
 
+local Log = require('dot.log')
 local Map = require('dot.map')
 
 local M = {}
 
 function M.configure()
+    local status, lspconfig = pcall(require, 'lspconfig')
+    if not status  then
+        Log.warn('Failed to load lspconfig module')
+        return
+    end
+
     -- Requires clangd LSP, to install:
     -- sudo apt-get install clangd-12
     -- sudo update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-12 100
@@ -60,8 +67,6 @@ function M.configure()
     -- unless debugging issues with the language server, in which case, set this to
     -- "trace" or "debug" instead of "off".
     vim.lsp.set_log_level("off")
-
-    local lspconfig = require('lspconfig')
 
     lspconfig["clangd"].setup {
         on_attach = on_attach,

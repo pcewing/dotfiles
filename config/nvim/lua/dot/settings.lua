@@ -1,4 +1,5 @@
 local Util = require('dot.util')
+local Log = require('dot.log')
 
 local M = {}
 
@@ -46,20 +47,16 @@ function M._indentation()
 end
 
 function M._directories()
-    local tmp_dir = Util.tmp_dir()
-
-    if not Util.directory_exists(tmp_dir) then
-        vim.fn.mkdir(tmp_dir, "p", "0775")
-    end
-
     -- Add a double slash on the path which instructs Neovim to create a unique
     -- directory for each editing session
     -- TODO: Should this be \\ on windows?
-    tmp_dir = tmp_dir .. "//"
+    local dir = Util.tmp_dir() .. "//"
+
+    Log.info('Setting backup dir to ' .. dir)
 
     -- Backup and swap directories; the double slashes are important here
-    vim.opt.backupdir = { tmp_dir, "." }
-    vim.opt.directory = { tmp_dir, "." }
+    vim.opt.backupdir = { dir, "." }
+    vim.opt.directory = { dir, "." }
 end
 
 function M.init()

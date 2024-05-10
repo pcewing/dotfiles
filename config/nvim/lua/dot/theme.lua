@@ -1,19 +1,22 @@
 local Util = require('dot.util')
+local Log = require('dot.log')
 
 local M = {}
 
-M.init = function()
+function M._color_scheme()
     -- Start flavours - nvim
-
-    -- Base16 Outrun Dark
-
-    -- Loads the scheme from:
-    -- https://github.com/chriskempson/base16-vim
-
-    vim.g.base16colorspace = 256
-    vim.cmd('colorscheme base16-outrun-dark')
+    local color_scheme = 'base16-outrun-dark'
     -- End flavours - nvim
 
+    vim.g.base16colorspace = 256
+
+    local status, _ = pcall(vim.cmd, 'colorscheme ' .. color_scheme)
+    if not status then
+        Log.warn('Colorscheme ' .. color_scheme .. ' is not installed')
+    end
+end
+
+function M._background()
     if Util.is_windows() then
         vim.opt.background = 'dark'
     else
@@ -24,6 +27,11 @@ M.init = function()
             ctermbg = 'NONE'
         })
     end
+end
+
+function M.init()
+    M._color_scheme()
+    M._background()
 end
 
 return M

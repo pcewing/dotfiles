@@ -2,7 +2,16 @@
 
 local M = {}
 
+local Log = require('dot.log')
+local Map = require('dot.map')
+
 function M.configure()
+    local status, lspconfig = pcall(require, 'lspconfig')
+    if not status  then
+        Log.warn('Failed to load lspconfig module')
+        return
+    end
+
     -- Requires Jedi LSP, to install:
     -- python -m pip install -U jedi-language-server
     if vim.fn.executable('jedi-language-server') ~= 1 then
@@ -19,8 +28,6 @@ function M.configure()
         Map.nnoremapbs(buf, 'K',     '<Cmd>lua vim.lsp.buf.hover()<CR>')
         Map.nnoremapbs(buf, '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
     end
-
-    local lspconfig = require('lspconfig')
 
     lspconfig["jedi_language_server"].setup {
         on_attach = on_attach,
