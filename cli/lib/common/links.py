@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
-import os
 import json
+import os
 from enum import Enum
 from typing import List  # , Self
 
-# from typing_extensions import Self
-
 from .dir import Dir
 from .log import Log
+
+# from typing_extensions import Self
 
 
 class LinkType(Enum):

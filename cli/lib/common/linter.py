@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
+import re
+
 from lib.common.dir import Dir
-from lib.common.log import Log
 from lib.common.file_walker import FileWalker
+from lib.common.log import Log
 from lib.common.util import sh
 
 

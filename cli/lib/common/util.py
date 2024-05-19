@@ -6,9 +6,7 @@ import pwd
 import shutil
 import subprocess
 import urllib.request
-from typing import Dict, List
-
-from .typing import StringOrNone
+from typing import List
 
 from .log import Log
 from .shell import Shell
@@ -109,7 +107,9 @@ def add_user_to_group(group: str, dry_run: bool) -> None:
         if subprocess.call(cmd) != 0:
             raise Exception("Failed to add user to docker group")
 
+
 _HOME = None
+
 
 def home() -> str:
     global _HOME
@@ -118,6 +118,7 @@ def home() -> str:
         if _HOME is None:
             raise Exception("Missing HOME environment variable")
     return _HOME
+
 
 class Util:
     @staticmethod

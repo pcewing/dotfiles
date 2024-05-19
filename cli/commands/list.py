@@ -2,8 +2,6 @@
 
 import argparse
 
-from lib.common.log import Log
-from lib.common.provisioner import ProvisionerArgs
 from lib.common.system_provisioner import SystemProvisioner
 
 

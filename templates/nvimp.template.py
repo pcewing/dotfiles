@@ -9,6 +9,7 @@ SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
 VERBOSE = False
 DRY_RUN = False
 
+
 def parse_args():
     parser = argparse.ArgumentParser(description="TODO")
     parser.add_argument("-o", "--output", default="TODO", help="TODO")

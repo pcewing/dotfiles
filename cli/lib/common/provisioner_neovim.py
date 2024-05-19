@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 
 import os
-import subprocess
 import re
+import subprocess
 from typing import Union
 
+from .alternatives import Alternatives
+from .dir import Dir
 from .github import Github
 from .log import Log
+from .pip import Pip
 from .provisioner import IComponentProvisioner, ProvisionerArgs
 from .semver import Semver
 from .shell import Shell
-from .dir import Dir
-from .pip import Pip
-from .alternatives import Alternatives
-
 
 NEOVIM_GITHUB_ORG = "neovim"
 NEOVIM_GITHUB_REPO = "neovim"

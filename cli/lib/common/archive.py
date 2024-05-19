@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 
-import json
-import urllib.request
-
-from .util import download_file, sh
-from .log import Log
 
 from enum import Enum
 from typing import Tuple
+
+from .log import Log
+from .util import sh
 
 
 class CompressionType(Enum):
@@ -74,7 +72,6 @@ class Archive:
             Log.info("skipping archive extraction due to --dry-run")
         else:
             sh(cmd)
-        pass
 
     @staticmethod
     def _infer_type_from_name(name: str) -> Tuple[ArchiveType, CompressionType]:

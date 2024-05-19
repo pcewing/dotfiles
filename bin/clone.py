@@ -17,14 +17,12 @@
 # For more details:
 #     clone.py -h
 
-import json
-import subprocess
-import os
 import argparse
-import urllib.request
-import base64
-import getpass
+import json
+import os
 import re
+import subprocess
+import urllib.request
 
 # IGNORE_ORGS is a list of orgs which should not be cloned.
 IGNORE_ORGS = ["hashicorp"]

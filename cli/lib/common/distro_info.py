@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
-import os
-import sys
 import json
+import os
 from typing import Optional
-
 
 LSB_RELEASE_FILE = "/etc/lsb-release"
 CENTOS_RELEASE_FILE = "/etc/centos-release"

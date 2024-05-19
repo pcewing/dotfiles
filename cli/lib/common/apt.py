@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
-import subprocess
 import json
-
+import subprocess
 from typing import List
 
 from .log import Log

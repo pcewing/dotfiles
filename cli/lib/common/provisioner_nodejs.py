@@ -1,25 +1,21 @@
 #!/usr/bin/env python
 
-import subprocess
 import os
-import re
-import urllib
+import subprocess
 
-from .distro_info import DistroInformation
-from .provisioner import IComponentProvisioner, ProvisionerArgs
-from .util import download_file, get_current_user, Util
 from .archive import Archive
 from .dir import Dir
-from .log import Log
-from .apt import Apt
-from .group import Group
 from .github import Github
-from .shell import Shell
+from .log import Log
+from .provisioner import IComponentProvisioner, ProvisionerArgs
 from .semver import Semver
+from .shell import Shell
 from .typing import StringOrNone
+from .util import download_file
 
 KITTY_GITHUB_ORG = "nodejs"
 KITTY_GITHUB_REPO = "node"
+
 
 class NodeJSProvisioner(IComponentProvisioner):
     def __init__(self, args: ProvisionerArgs) -> None:
@@ -31,12 +27,16 @@ class NodeJSProvisioner(IComponentProvisioner):
 
         # Get the currently installed nodejs version
         current_nodejs_version = NodeJSProvisioner._get_current_version()
-        Log.info("identified current nodejs version", [("version", current_nodejs_version)])
+        Log.info(
+            "identified current nodejs version", [("version", current_nodejs_version)]
+        )
 
         # Get latest nodejs version and convert to semver (I.E. "v22.2.0")
         latest_nodejs_release = Github.get_latest_release(org, repo)
         latest_nodejs_version = Semver.parse(latest_nodejs_release)
-        Log.info("identified latest nodejs version", [("version", latest_nodejs_version)])
+        Log.info(
+            "identified latest nodejs version", [("version", latest_nodejs_version)]
+        )
 
         # TODO: Make a utility function for this logic?
         if current_nodejs_version is None:
@@ -46,11 +46,12 @@ class NodeJSProvisioner(IComponentProvisioner):
                 f"nodejs {current_nodejs_version} is installed but {latest_nodejs_version} is available"
             )
         else:
-            Log.info(f"nodejs {latest_nodejs_version} is already installed, nothing to do")
+            Log.info(
+                f"nodejs {latest_nodejs_version} is already installed, nothing to do"
+            )
             return
 
         self._install(latest_nodejs_version)
-
 
     def _install(self, version: str) -> None:
         staging_dir = Dir.staging("nodejs", str(version))
@@ -61,10 +62,15 @@ class NodeJSProvisioner(IComponentProvisioner):
         nodejs_archive_path = f"{staging_dir}/{nodejs_archive_name}"
 
         # Download nodejs release tarball
-        download_file(nodejs_archive_url, nodejs_archive_path, False, False, self._args.dry_run)
+        download_file(
+            nodejs_archive_url, nodejs_archive_path, False, False, self._args.dry_run
+        )
 
         # Extract node tarball
-        Log.info("extracting nodejs release archive", [("archive", nodejs_archive_path), ("dst", staging_dir)])
+        Log.info(
+            "extracting nodejs release archive",
+            [("archive", nodejs_archive_path), ("dst", staging_dir)],
+        )
         Archive.extract(nodejs_archive_path, staging_dir, self._args.dry_run)
 
         # Move to install directory
@@ -78,7 +84,9 @@ class NodeJSProvisioner(IComponentProvisioner):
 
         nodejs_executables = ["corepack", "node", "npm", "npx"]
 
-        Log.info("creating nodejs executable symlinks", [("executables", nodejs_executables)])
+        Log.info(
+            "creating nodejs executable symlinks", [("executables", nodejs_executables)]
+        )
 
         # TODO: We should make a Symlink.create() method that handles deleting existing links and whatnot
         for exe in nodejs_executables:

@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 
 import os
-import subprocess
 import re
+import subprocess
 from typing import Union
 
-from .archive import Archive
+from .dir import Dir
 from .github import Github
 from .log import Log
 from .provisioner import IComponentProvisioner, ProvisionerArgs
 from .semver import Semver
 from .shell import Shell
-from .dir import Dir
 
 TREE_SITTER_GITHUB_ORG = "tree-sitter"
 TREE_SITTER_GITHUB_REPO = "tree-sitter"

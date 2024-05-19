@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
-import os
 import json
+import os
 from typing import Callable, Optional
 
 from .log import Log
+
 
 class FileWalker:
     class Node:
@@ -53,24 +54,24 @@ class FileWalker:
 
     class Enumeration:
         def __init__(self) -> None:
-            self._files: list['FileWalker.File'] = []
-            self._directories: list['FileWalker.Directory'] = []
+            self._files: list["FileWalker.File"] = []
+            self._directories: list["FileWalker.Directory"] = []
 
-        def add_file(self, file: 'FileWalker.File') -> None:
+        def add_file(self, file: "FileWalker.File") -> None:
             self._files.append(file)
 
-        def add_directory(self, directory: 'FileWalker.Directory') -> None:
+        def add_directory(self, directory: "FileWalker.Directory") -> None:
             self._directories.append(directory)
 
-        def get_files(self) -> list['FileWalker.File']:
+        def get_files(self) -> list["FileWalker.File"]:
             return self._files
 
-        def get_directories(self) -> list['FileWalker.Directory']:
+        def get_directories(self) -> list["FileWalker.Directory"]:
             return self._directories
 
-        def get_nodes(self) -> list['FileWalker.Node']:
+        def get_nodes(self) -> list["FileWalker.Node"]:
             # TODO: How do I make this one line without angering mypy?
-            nodes: list['FileWalker.Node']
+            nodes: list["FileWalker.Node"]
             nodes += self._files
             nodes += self._directories
             return nodes
@@ -82,8 +83,8 @@ class FileWalker:
         def __init__(
             self,
             root: str,
-            file_handler: 'FileWalker.FileHandler' = None,
-            directory_handler: 'FileWalker.DirectoryHandler' = None,
+            file_handler: "FileWalker.FileHandler" = None,
+            directory_handler: "FileWalker.DirectoryHandler" = None,
         ):
             self.root = root
             self.file_handler = file_handler
@@ -94,8 +95,8 @@ class FileWalker:
     @staticmethod
     def walk(
         directory: str,
-        file_handler: 'FileWalker.FileHandler' = None,
-        directory_handler: 'FileWalker.DirectoryHandler' = None,
+        file_handler: "FileWalker.FileHandler" = None,
+        directory_handler: "FileWalker.DirectoryHandler" = None,
     ) -> None:
         ctx = FileWalker.Context(directory, file_handler, directory_handler)
         FileWalker._walk(ctx, FileWalker.Directory(directory, ""))
@@ -112,7 +113,9 @@ class FileWalker:
             elif dir_entry.is_file(follow_symlinks=True):
                 FileWalker._handle_file(ctx, FileWalker.File(ctx.root, path_rel))
             elif dir_entry.is_symlink():
-                Log.debug("encountered symlink directory entry with non-existant target")
+                Log.debug(
+                    "encountered symlink directory entry with non-existant target"
+                )
             else:
                 Log.warn(
                     "encountered directory entry of unknown type",
@@ -164,10 +167,10 @@ class FileWalker:
     ) -> Enumeration:
         enumeration = FileWalker.Enumeration()
 
-        def enumerate_file(file: 'FileWalker.File') -> None:
+        def enumerate_file(file: "FileWalker.File") -> None:
             enumeration.add_file(file)
 
-        def enumerate_directory(directory: 'FileWalker.Directory') -> None:
+        def enumerate_directory(directory: "FileWalker.Directory") -> None:
             enumeration.add_directory(directory)
 
         file_handler = enumerate_file if files else None
