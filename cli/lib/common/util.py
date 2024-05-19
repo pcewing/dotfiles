@@ -12,10 +12,11 @@ from .log import Log
 from .shell import Shell
 
 
-def sh(cmd, check=False):
+def sh(cmd: list[str], check: bool = False) -> int:
     Log.debug(f"Executing shell command: {' '.join(cmd)}")
     if check:
         subprocess.check_call(cmd)
+        return 0
     else:
         return subprocess.call(cmd)
 

@@ -93,6 +93,6 @@ class Shell:
         os.chdir(path)
 
     @staticmethod
-    def _exec(cmd) -> None:
+    def _exec(cmd: list[str]) -> int:
         Log.debug("executing shell command", [("command", " ".join(cmd))])
         return subprocess.call(cmd)
