@@ -295,6 +295,12 @@ vim.lsp: require("vim.lsp.health").check()
 vim.lsp: Active Clients ~
 - No active clients
 ```
+
+## Node JS Provisioner
+
+Some parsers in nvim-treesitter require NodeJS, such as the Latex parser. So
+add a provisioner for it to the CLI.
+
 ## win32yank-wsl
 
 Add this to provision scripts?

@@ -13,7 +13,6 @@ def add_list_parser(subparsers: argparse._SubParsersAction) -> None:
 
 
 def cmd_list(args: argparse.Namespace) -> None:
-    provisioner = SystemProvisioner(ProvisionerArgs(False))
-    component_provisioners = provisioner.get_component_provisioners()
+    component_provisioners = SystemProvisioner.get_provisioner_list()
 
     Log.info(f"Component provisioners: [ {', '.join(component_provisioners)} ]")

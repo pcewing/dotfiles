@@ -15,6 +15,7 @@ from .provisioner_neovim import NeovimProvisioner
 from .provisioner_treesitter import TreeSitterProvisioner
 from .provisioner_ripgrep import RipgrepProvisioner
 from .provisioner_i3 import I3Provisioner
+from .provisioner_nodejs import NodeJSProvisioner
 
 
 # As of Python 3.7:
@@ -41,6 +42,7 @@ _COMPONENT_PROVISIONERS = {
     "tree-sitter":  TreeSitterProvisioner,
     "ripgrep":      RipgrepProvisioner,
     "i3":           I3Provisioner,
+    "nodejs":       NodeJSProvisioner,
     # TODO: install_cava        "$cache_dir"
     # TODO: install_youtube-dl  "$cache_dir" "$bin_dir"
     # TODO: install_wpr         "$cache_dir" "$bin_dir"
@@ -71,3 +73,7 @@ class SystemProvisioner(ISystemProvisioner):
         for component in component_provisioners:
             Log.info("provisioning component", [("component", component)])
             component_provisioners[component].provision()
+
+    @staticmethod
+    def get_provisioner_list() -> list[str]:
+        return _all_components()
