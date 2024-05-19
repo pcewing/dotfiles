@@ -11,6 +11,7 @@ _PIP_PACKAGES = {
         "flake8",
         "autoflake",
         "ruff",
+        "argcomplete",
     ],
 }
 

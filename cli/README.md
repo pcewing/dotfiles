@@ -4,7 +4,17 @@ This is a Python CLI tool for various dotfiles operations.
 
 ## Bash Auto-Completion (Requires Python 3.7+)
 
-**TODO:** Add this stuff to provisioner so this is all automatic.
+The `DotProvisioner` in the CLI automatically sets up Bash auto-completion so just run:
+
+```bash
+dot provision
+```
+
+Or:
+
+```bash
+dot provision dot
+```
 
 ### Manual Setup
 
@@ -36,19 +46,11 @@ shell automatically.
 
 ## Code Formatting
 
-The Python files in this repository are all formatted to the PEP8 standard
-using the [black](https://black.readthedocs.io/en/stable/).
+The Python files in this repository are all formatted using a few tools:
 
-**TODO:** Install this automatically via provisioner
+- [autoflake](https://github.com/PyCQA/autoflake): Removes unused imports
+- [isort](https://github.com/PyCQA/isort): Sorts imports
+- [black](https://black.readthedocs.io/en/stable/): Formats code
 
-Install `black` via:
-
-```bash
-python -m pip install black
-```
-
-Format files via:
-
-```bash
-find . -iname '*.py' | xargs black
-```
+The `dot tidy` CLI command will run these on the Python files in the
+repository.
