@@ -15,7 +15,7 @@ class Alternatives:
             [("link", link), ("name", name), ("path", path), ("priority", priority)],
         )
         if dry_run:
-            Log.info("Skip adding alternative due to --dry-run")
+            Log.info("skip adding alternative due to --dry-run")
             return
         cmd = []
         if sudo:
@@ -26,9 +26,9 @@ class Alternatives:
 
     @staticmethod
     def set(name: str, path: str, sudo: bool, dry_run: bool):
-        Log.info("Setting alternative", [("name", name), ("path", path)])
+        Log.info("setting alternative", [("name", name), ("path", path)])
         if dry_run:
-            Log.info("Skip setting alternative due to --dry-run")
+            Log.info("skip setting alternative due to --dry-run")
             return
         cmd = []
         if sudo:

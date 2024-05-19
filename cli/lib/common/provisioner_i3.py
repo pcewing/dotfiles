@@ -24,15 +24,15 @@ I3_GITHUB_REPO = "i3"
 # TODO: Move this somewhere so that all provisioners can share it since we've
 # duplicated this logic in several places.
 def _i3_prepare_install_dir(install_dir: str, create: bool, dry_run: bool) -> None:
-    Log.info("Deleting existing install directory if there is one")
+    Log.info("deleting existing install directory if there is one")
     Shell.rm(install_dir, True, True, True, dry_run)
 
     if create:
-        Log.info("Creating install directory", [("path", install_dir)])
+        Log.info("creating install directory", [("path", install_dir)])
         Shell.mkdir(install_dir, True, True, dry_run)
     else:
         base_install_dir = os.path.dirname(install_dir)
-        Log.info("Creating base install directory", [("path", base_install_dir)])
+        Log.info("creating base install directory", [("path", base_install_dir)])
         Shell.mkdir(base_install_dir, True, True, dry_run)
 
 

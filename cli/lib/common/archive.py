@@ -52,7 +52,7 @@ class Archive:
         ]
 
         if dry_run:
-            Log.info("Skipping archive extraction due to --dry-run")
+            Log.info("skipping archive extraction due to --dry-run")
         else:
             sh(cmd)
 
@@ -71,7 +71,7 @@ class Archive:
         ]
 
         if dry_run:
-            Log.info("Skipping archive extraction due to --dry-run")
+            Log.info("skipping archive extraction due to --dry-run")
         else:
             sh(cmd)
         pass
@@ -82,6 +82,8 @@ class Archive:
             return ArchiveType.TAR, CompressionType.GZIP
         elif name.lower().endswith(".gz"):
             return ArchiveType.NONE, CompressionType.GZIP
+        elif name.lower().endswith(".tar.xz"):
+            return ArchiveType.TAR, CompressionType.XZ
         elif name.lower().endswith(".txz"):
             return ArchiveType.TAR, CompressionType.XZ
         else:

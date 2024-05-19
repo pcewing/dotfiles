@@ -47,3 +47,11 @@ class Dir:
     @staticmethod
     def install(application: str, version: str) -> str:
         return os.path.join("/opt", application, version)
+
+    @staticmethod
+    def data() -> str:
+        return os.path.join(Dir.home(), ".local", "share", "dot")
+
+    @staticmethod
+    def tmp() -> str:
+        return os.path.join(Dir.home(), ".tmp", "dot")

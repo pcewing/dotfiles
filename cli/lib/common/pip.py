@@ -9,9 +9,9 @@ from ..common.log import Log
 class Pip:
     @staticmethod
     def install(packages: List[str], upgrade: bool, sudo: bool, dry_run: bool) -> None:
-        Log.info("Installing pip packages")
+        Log.info("installing pip packages")
         if dry_run:
-            Log.info("Skipping pip install due to --dry-run")
+            Log.info("skipping pip install due to --dry-run")
             return
 
         cmd = []
