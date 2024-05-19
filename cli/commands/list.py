@@ -15,4 +15,7 @@ def add_list_parser(subparsers: argparse._SubParsersAction) -> None:
 def cmd_list(args: argparse.Namespace) -> None:
     component_provisioners = SystemProvisioner.get_provisioner_list()
 
-    Log.info(f"Component provisioners: [ {', '.join(component_provisioners)} ]")
+    # Purposefully use print instead of Log here so output is nicer
+    print("Component provisioners:")
+    for component_provisioner in component_provisioners:
+        print(f"- {component_provisioner}")

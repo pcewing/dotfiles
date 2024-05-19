@@ -78,7 +78,7 @@ class NodeJSProvisioner(IComponentProvisioner):
 
         nodejs_executables = ["corepack", "node", "npm", "npx"]
 
-        Log.info("creating nodejs executable symlinks", [("executables", ",".join(nodejs_executables))])
+        Log.info("creating nodejs executable symlinks", [("executables", nodejs_executables)])
 
         # TODO: We should make a Symlink.create() method that handles deleting existing links and whatnot
         for exe in nodejs_executables:

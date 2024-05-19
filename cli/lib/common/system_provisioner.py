@@ -16,6 +16,7 @@ from .provisioner_treesitter import TreeSitterProvisioner
 from .provisioner_ripgrep import RipgrepProvisioner
 from .provisioner_i3 import I3Provisioner
 from .provisioner_nodejs import NodeJSProvisioner
+from .provisioner_pip import PipProvisioner
 
 
 # As of Python 3.7:
@@ -43,6 +44,7 @@ _COMPONENT_PROVISIONERS = {
     "ripgrep":      RipgrepProvisioner,
     "i3":           I3Provisioner,
     "nodejs":       NodeJSProvisioner,
+    "pip":          PipProvisioner,
     # TODO: install_cava        "$cache_dir"
     # TODO: install_youtube-dl  "$cache_dir" "$bin_dir"
     # TODO: install_wpr         "$cache_dir" "$bin_dir"

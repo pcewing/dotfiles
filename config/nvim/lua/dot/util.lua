@@ -41,20 +41,20 @@ function M.config_path()
     return M.path_join(M.config_dir(), "init.lua")
 end
 
-function M.reload_config(config)
-    if config == nil or not is_string(config) or string.len(config) == 0 then
-        config = M.config_path()
-    end
-
-    vim.cmd("luafile " .. config)
-end
-
 function M.is_int(n)
   return (type(n) == "number") and (math.floor(n) == n)
 end
 
 function M.is_string(n)
   return type(n) == "string"
+end
+
+function M.reload_config(config)
+    if config == nil or not M.is_string(config) or string.len(config) == 0 then
+        config = M.config_path()
+    end
+
+    vim.cmd("luafile " .. config)
 end
 
 function M.format_current_python_file()
@@ -75,7 +75,7 @@ function M.move_to_column(column)
     local curr = vim.api.nvim_win_get_cursor(0)[2]
 
     -- Make sure the target column is valid
-    if column == nil or not is_int(column) then
+    if column == nil or not M.is_int(column) then
         column = 80
     end
 
@@ -98,7 +98,6 @@ function M.move_to_column(column)
     vim.api.nvim_set_current_line(nline)
 end
 
-
 function M.close_tabs_to_right()
     local cur = vim.fn.tabpagenr()
     while cur < vim.fn.tabpagenr('$') do
@@ -112,7 +111,7 @@ function M.is_wsl()
 end
 
 function M.directory_exists(path)
-    return vim.fn.isdirectory(tmp_dir) ~= 0
+    return vim.fn.isdirectory(path) ~= 0
 end
 
 function M.file_exists(path)

@@ -14,9 +14,12 @@ from .log import Log
 from .shell import Shell
 
 
-def sh(cmd) -> None:
+def sh(cmd, check=False):
     Log.debug(f"Executing shell command: {' '.join(cmd)}")
-    return subprocess.call(cmd)
+    if check:
+        subprocess.check_call(cmd)
+    else:
+        return subprocess.call(cmd)
 
 
 def mkdir_p(path: str, dry_run: bool) -> None:
