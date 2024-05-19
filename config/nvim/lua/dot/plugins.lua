@@ -1,39 +1,13 @@
 local vim = vim
 local Plug = vim.fn["plug#"]
 
-local Util = require('dot.util')
-local Log = require('dot.log')
-local Map = require('dot.map')
+local Log           = require('dot.log')
+local Map           = require('dot.map')
+local Notifications = require('dot.notifications')
+local Util          = require('dot.util')
+local VimPlug       = require('dot.vim_plug')
 
 local M = {}
-
-local vim_plug = {
-    path = Util.path_join(Util.data_dir(), 'site', 'autoload', 'plug.vim'),
-    url = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-}
-
-function vim_plug.is_installed()
-    return Util.file_exists(vim_plug.path)
-end
-
-function vim_plug.install()
-    local curl_command = Util.str_join(' ', '!curl', '-fLo', vim_plug.path, '--create-dirs', vim_plug.url)
-    Log.info('Installing vim-plug: ' .. curl_command)
-    vim.cmd(curl_command)
-end
-
-function vim_plug.source()
-    local source_command = 'source ' .. vim_plug.path
-    Log.info('Sourcing vim-plug: ' .. source_command)
-    vim.cmd(source_command)
-end
-
-function vim_plug.install_plugins()
-    -- TODO: Untested and currently unused
-    local autocmd_command = 'PlugInstall --sync'
-    Log.info('Installing plugins: ' .. autocmd_command)
-    vim.cmd(autocmd_command)
-end
 
 local plugins = {
 --    copilot = {
@@ -180,14 +154,15 @@ local plugins = {
 }
 
 function M.init()
-    if not vim_plug.is_installed() then
-        vim_plug.install()
+    if not VimPlug.is_installed() then
+        Notifications.add("vim-plug is not installed; install it via `:lua install_vim_plug()`")
+        return
     end
 
     -- Ever since switching from init.vim to init.lua, it doesn't seem like
     -- Neovim autoloads the plug.vim file anymore. I'm not sure why and don't
     -- have time right now to dig into it so just manually source it for now.
-    vim_plug.source()
+    VimPlug.source()
 
     vim.call('plug#begin')
 

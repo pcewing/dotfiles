@@ -10,14 +10,14 @@ end
 
 _G.config_loaded = true
 
--- See the Util.load function in util.lua for why this is necessary
-local Globals   = require('dot.globals')
-local Log       = require('dot.log')
-local Mappings  = require('dot.mappings')
-local Plugins   = require('dot.plugins')
-local Settings  = require('dot.settings')
-local Theme     = require('dot.theme')
-local Util      = require('dot.util')
+local Globals       = require('dot.globals')
+local Log           = require('dot.log')
+local Mappings      = require('dot.mappings')
+local Notifications = require('dot.notifications')
+local Plugins       = require('dot.plugins')
+local Settings      = require('dot.settings')
+local Theme         = require('dot.theme')
+local Util          = require('dot.util')
 
 local tmp_dir = Util.tmp_dir()
 
@@ -37,6 +37,13 @@ Theme.init()
 if Util.is_wsl() then
     local Wsl = require('dot.wsl')
     Wsl.init()
+end
+
+if Notifications.any() then
+    Notifications.display()
+    vim.o.statusline = "Configuration errors occurred; see quickfix list for details"
+else
+    vim.o.statusline = "Configuration loaded successfully"
 end
 
 Log.info('finished loading init.lua')

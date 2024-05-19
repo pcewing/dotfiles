@@ -1,5 +1,6 @@
-local Util = require('dot.util')
-local Log = require('dot.log')
+local Log           = require('dot.log')
+local Notifications = require('dot.notifications')
+local Util          = require('dot.util')
 
 local M = {}
 
@@ -12,7 +13,7 @@ function M._color_scheme()
 
     local status, _ = pcall(vim.cmd, 'colorscheme ' .. color_scheme)
     if not status then
-        Log.warn('Colorscheme ' .. color_scheme .. ' is not installed')
+        Notifications.add('Colorscheme ' .. color_scheme .. ' is not installed; install it via `:PlugInstall`')
     end
 end
 

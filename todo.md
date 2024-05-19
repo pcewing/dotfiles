@@ -349,8 +349,3 @@ I've started noodling on a hacky PoC for this in `bin/i3-util.sh`
     - Formatter
 
 Maybe have a single pre-commit script that runs all of the above in the right order?
-
-## Nvim init.lua improvement
-
-Rather than automatically installing `vim-plug`, check if it's installed and if
-not, skip all plugin setup and just print a warning message.
