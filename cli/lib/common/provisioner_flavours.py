@@ -45,25 +45,25 @@ class FlavoursProvisioner(IComponentProvisioner):
 
         self._download_release_archive(latest_version, archive_path)
 
-        Log.info("Extracting flavours release archive")
+        Log.info("extracting flavours release archive")
         Archive.extract(archive_path, tmp_dir, self._args.dry_run)
 
-        Log.info("Deleting flavours release archive")
+        Log.info("deleting flavours release archive")
         Shell.rm(archive_path, False, False, False, self._args.dry_run)
 
-        Log.info("Creating base install directory", [("path", base_install_dir)])
+        Log.info("creating base install directory", [("path", base_install_dir)])
         Shell.mkdir(base_install_dir, True, True, self._args.dry_run)
 
-        Log.info("Deleting existing install directory if there is one")
+        Log.info("deleting existing install directory if there is one")
         Shell.rm(install_dir, True, True, True, self._args.dry_run)
 
-        Log.info("Moving temp directory to install location")
+        Log.info("moving temp directory to install location")
         Shell.mv(tmp_dir, install_dir, True, self._args.dry_run)
 
-        Log.info("Deleting existing symlink if there is one")
+        Log.info("deleting existing symlink if there is one")
         Shell.rm(symlink_path, False, True, True, self._args.dry_run)
 
-        Log.info("Creating symlink to executable in install directory")
+        Log.info("creating symlink to executable in install directory")
         Shell.ln(
             os.path.join(install_dir, "flavours"),
             symlink_path,
@@ -75,27 +75,30 @@ class FlavoursProvisioner(IComponentProvisioner):
 
     def _download_release_archive(self, version: str, path: str) -> None:
         if os.path.isfile(path):
-            Log.info("Skipping download because file already exists", [("path", path)])
+            Log.info("skipping download because file already exists", [("path", path)])
             return
 
         # Make sure the directory we are downloading to exists
         Shell.mkdir(os.path.dirname(path), True, False, self._args.dry_run)
 
-        Log.info("Downloading flavours release archive")
+        Log.info("downloading flavours release archive")
         Github.download_release_artifact(
             FLAVOURS_GITHUB_ORG,
             FLAVOURS_GITHUB_REPO,
             version,
             os.path.basename(path),
             path,
+            True,
+            False,
+            False,
             self._args.dry_run,
         )
 
     def _flavours_update(self) -> None:
-        Log.info("Running flavours update")
+        Log.info("running flavours update")
 
         if self._args.dry_run:
-            Log.info("Skipping flavours update due to --dry-run")
+            Log.info("skipping flavours update due to --dry-run")
             return
 
         p = subprocess.Popen(

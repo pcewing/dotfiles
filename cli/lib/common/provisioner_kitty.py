@@ -22,8 +22,14 @@ class KittyProvisioner(IComponentProvisioner):
         self._args = args
 
     def provision(self) -> None:
+        Log.info("foo")
+        return
+
         latest_release = Github.get_latest_release(KITTY_GITHUB_ORG, KITTY_GITHUB_REPO)
         latest_version = Semver.parse(latest_release)
+
+        Log.info("foo")
+        return
 
         current_version = KittyProvisioner._get_current_version()
         if current_version is None:
@@ -45,7 +51,7 @@ class KittyProvisioner(IComponentProvisioner):
         symlink_path_kitty = "/usr/local/bin/kitty"
         symlink_path_kitten = "/usr/local/bin/kitten"
 
-        Log.info("Downloading kitty release archive")
+        Log.info("downloading kitty release archive")
         Github.download_release_artifact(
             KITTY_GITHUB_ORG,
             KITTY_GITHUB_REPO,
@@ -58,26 +64,26 @@ class KittyProvisioner(IComponentProvisioner):
             self._args.dry_run,
         )
 
-        Log.info("Extracting kitty release archive")
+        Log.info("extracting kitty release archive")
         Archive.extract(archive_path, tmp_dir, self._args.dry_run)
 
-        Log.info("Deleting kitty release archive")
+        Log.info("deleting kitty release archive")
         Shell.rm(archive_path, False, False, False, self._args.dry_run)
 
-        Log.info("Creating base install directory", [("path", base_install_dir)])
+        Log.info("creating base install directory", [("path", base_install_dir)])
         Shell.mkdir(base_install_dir, True, True, self._args.dry_run)
 
-        Log.info("Deleting existing install directory if there is one")
+        Log.info("deleting existing install directory if there is one")
         Shell.rm(install_dir, True, True, True, self._args.dry_run)
 
-        Log.info("Moving temp directory to install location")
+        Log.info("moving temp directory to install location")
         Shell.mv(tmp_dir, install_dir, True, self._args.dry_run)
 
-        Log.info("Deleting existing symlinks")
+        Log.info("deleting existing symlinks")
         Shell.rm(symlink_path_kitty, False, True, True, self._args.dry_run)
         Shell.rm(symlink_path_kitten, False, True, True, self._args.dry_run)
 
-        Log.info("Creating symlinks to executables in install directory")
+        Log.info("creating symlinks to executables in install directory")
         Shell.ln(
             os.path.join(install_dir, "bin/kitty"),
             symlink_path_kitty,

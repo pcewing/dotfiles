@@ -36,24 +36,26 @@ function vim_plug.install_plugins()
 end
 
 local plugins = {
-    copilot = {
-        init = function()
-            if os.getenv("NVIM_COPILOT_ENABLED") == "1" then
-                Plug('github/copilot.vim')
-                Log.info("copilot plugin enabled")
-            else
-                Log.info("copilot plugin disabled")
-            end
-        end,
-        configure = function()
-            Log.info("configuring copilot plugin")
-            vim.g.copilot_filetypes = {
-                -- Don't enable copilot in markdown files; it generally makes
-                -- bad predictions and conflicts with UltiSnips tab completion
-                markdown = false
-            }
-        end
-    },
+--    copilot = {
+--        init = function()
+--            if os.getenv("NVIM_COPILOT_ENABLED") == "1" then
+--                Plug('github/copilot.vim')
+--                Log.info("copilot plugin enabled")
+--            else
+--                Log.info("copilot plugin disabled")
+--            end
+--        end,
+--        configure = function()
+--            if os.getenv("NVIM_COPILOT_ENABLED") == "1" then
+--                Log.info("configuring copilot plugin")
+--                vim.g.copilot_filetypes = {
+--                    -- Don't enable copilot in markdown files; it generally makes
+--                    -- bad predictions and conflicts with UltiSnips tab completion
+--                    markdown = false
+--                }
+--            end
+--        end
+--    },
 
     fzf = {
         init = function()

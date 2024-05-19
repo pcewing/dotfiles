@@ -20,15 +20,15 @@ TREE_SITTER_GITHUB_REPO = "tree-sitter"
 # TODO: Move this somewhere so that all provisioners can share it since we've
 # duplicated this logic in several places
 def prepare_install_dir(install_dir: str, create: bool, dry_run: bool) -> None:
-    Log.info("Deleting existing install directory if there is one")
+    Log.info("deleting existing install directory if there is one")
     Shell.rm(install_dir, True, True, True, dry_run)
 
     if create:
-        Log.info("Creating install directory", [("path", install_dir)])
+        Log.info("creating install directory", [("path", install_dir)])
         Shell.mkdir(install_dir, True, True, dry_run)
     else:
         base_install_dir = os.path.dirname(install_dir)
-        Log.info("Creating base install directory", [("path", base_install_dir)])
+        Log.info("creating base install directory", [("path", base_install_dir)])
         Shell.mkdir(base_install_dir, True, True, dry_run)
 
 
@@ -70,24 +70,24 @@ class TreeSitterProvisioner(IComponentProvisioner):
 
         prepare_install_dir(install_dir, True, self._args.dry_run)
 
-        Log.info("Moving executable to installation directory")
+        Log.info("moving executable to installation directory")
         Shell.mv(exe_path_staging, exe_path_install, True, self._args.dry_run)
 
-        Log.info("Making file executable")
+        Log.info("making file executable")
         Shell.chmod("+x", exe_path_install, True, self._args.dry_run)
 
-        Log.info("Deleting existing symlink if there is one")
+        Log.info("deleting existing symlink if there is one")
         Shell.rm(symlink_path, False, True, True, self._args.dry_run)
 
-        Log.info("Creating symlink to executable in install directory")
+        Log.info("creating symlink to executable in install directory")
         Shell.ln(exe_path_install, symlink_path, True, self._args.dry_run)
 
     def _download_release_zip(self, version: str, path: str) -> None:
         if os.path.isfile(path):
-            Log.info("Skipping download because file already exists", [("path", path)])
+            Log.info("skipping download because file already exists", [("path", path)])
             return
 
-        Log.info("Downloading tree-sitter release archive")
+        Log.info("downloading tree-sitter release archive")
         Github.download_release_artifact(
             TREE_SITTER_GITHUB_ORG,
             TREE_SITTER_GITHUB_REPO,
@@ -102,9 +102,9 @@ class TreeSitterProvisioner(IComponentProvisioner):
 
     @staticmethod
     def _unzip_executable(zip_path: str, dry_run: bool) -> None:
-        Log.info("Unzipping zip file", [("path", zip_path)])
+        Log.info("unzipping zip file", [("path", zip_path)])
         if dry_run:
-            Log.info("Skipping apt update due to --dry-run")
+            Log.info("skipping apt update due to --dry-run")
         else:
             if subprocess.call(["gunzip", zip_path]) != 0:
                 raise Exception("Failed to unzip tree-sitter executable")

@@ -20,52 +20,52 @@ def sh(cmd) -> None:
 
 
 def mkdir_p(path: str, dry_run: bool) -> None:
-    Log.info("Creating directory:", [("path", path)])
+    Log.info("creating directory:", [("path", path)])
 
     if dry_run:
-        Log.info("Skipping directory creation due to --dry-run")
+        Log.info("skipping directory creation due to --dry-run")
     else:
         os.makedirs(path, exist_ok=True)
 
 
 def sudo_mkdir_p(path: str, dry_run: bool) -> None:
-    Log.info("Creating directory:", [("path", path)])
+    Log.info("creating directory:", [("path", path)])
 
     if dry_run:
-        Log.info("Skipping directory creation due to --dry-run")
+        Log.info("skipping directory creation due to --dry-run")
     else:
         if sh(["sudo", "mkdir", "-p", path]) != 0:
             raise Exception("Failed to create directory")
 
 
 def sudo_rmdir(path: str, dry_run: bool) -> None:
-    Log.info("Deleting directory:", [("path", path)])
+    Log.info("deleting directory:", [("path", path)])
 
     if dry_run:
-        Log.info("Skipping directory deletion due to --dry-run")
+        Log.info("skipping directory deletion due to --dry-run")
     else:
         if sh(["sudo", "rm", "-rf", path]) != 0:
             raise Exception("Failed to delete directory")
 
 
 def sudo_mvdir(src: str, dst: str, dry_run: bool) -> None:
-    Log.info("Moving directory:", [("from", src), ("to", dst)])
+    Log.info("moving directory:", [("from", src), ("to", dst)])
 
     if dry_run:
-        Log.info("Skipping directory move due to --dry-run")
+        Log.info("skipping directory move due to --dry-run")
     else:
         if sh(["sudo", "mv", src, dst]) != 0:
             raise Exception("Failed to move directory")
 
 
 def download_file(url: str, path: str, sudo: bool, force: bool, dry_run: bool) -> None:
+    Log.info("downloading file", [("url", url), ("path", path)])
+
     if os.path.isfile(path) and not force:
         Log.info(
             "skipping download", [("path", path), ("reason", "file already exists")]
         )
         return
-
-    Log.info("downloading file", [("url", url), ("path", path)])
 
     # Make sure the directory we are downloading to exists
     Shell.mkdir(os.path.dirname(path), True, sudo, dry_run)
@@ -100,7 +100,7 @@ def add_user_to_group(group: str, dry_run: bool) -> None:
 
     Log.info(f'Adding user {user} to group "{group}"')
     if dry_run:
-        Log.info("Skipping adding to group due to --dry-run")
+        Log.info("skipping adding to group due to --dry-run")
     else:
         cmd = ["sudo", "usermod", "-aG", "docker", user.pw_name]
         if subprocess.call(cmd) != 0:
@@ -122,4 +122,5 @@ class Util:
         try:
             shutil.rmtree(path)
         except FileNotFoundError:
+            # TODO: Actually use ignore_missing
             pass

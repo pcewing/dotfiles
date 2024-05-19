@@ -30,9 +30,9 @@ class Shell:
 
     @staticmethod
     def rm(path: str, recursive: bool, force: bool, sudo: bool, dry_run: bool) -> None:
-        Log.info("Removing file or directory", [("path", path)])
+        Log.info("removing file or directory", [("path", path)])
         if dry_run:
-            Log.info("Skipping removal due to --dry-run")
+            Log.info("skipping removal due to --dry-run")
             return
 
         cmd = ["sudo"] if sudo else []
@@ -47,10 +47,10 @@ class Shell:
 
     @staticmethod
     def mv(src: str, dst: str, sudo: bool, dry_run: bool) -> None:
-        Log.info("Moving file or directory", [("from", src), ("to", dst)])
+        Log.info("moving file or directory", [("from", src), ("to", dst)])
 
         if dry_run:
-            Log.info("Skipping directory move due to --dry-run")
+            Log.info("skipping directory move due to --dry-run")
             return
 
         cmd = ["sudo"] if sudo else []
@@ -60,10 +60,10 @@ class Shell:
 
     @staticmethod
     def ln(src: str, dst: str, sudo: bool, dry_run: bool) -> None:
-        Log.info("Creating symbolic link", [("source", src), ("target", dst)])
+        Log.info("creating symbolic link", [("source", src), ("target", dst)])
 
         if dry_run:
-            Log.info("Skipping symbolic link creation due to --dry-run")
+            Log.info("skipping symbolic link creation due to --dry-run")
             return
 
         cmd = ["sudo"] if sudo else []
@@ -73,10 +73,10 @@ class Shell:
 
     @staticmethod
     def chmod(mod: str, file: str, sudo: bool, dry_run: bool) -> None:
-        Log.info("Changing file permissions", [("file", file), ("permissions", mod)])
+        Log.info("changing file permissions", [("file", file), ("permissions", mod)])
 
         if dry_run:
-            Log.info("Skipping file permission update creation due to --dry-run")
+            Log.info("skipping file permission update creation due to --dry-run")
             return
 
         cmd = ["sudo"] if sudo else []

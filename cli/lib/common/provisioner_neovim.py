@@ -51,28 +51,28 @@ class NeovimProvisioner(IComponentProvisioner):
 
         self._download_release_appimage(latest_version, appimage_path)
 
-        Log.info("Deleting existing install directory if there is one")
+        Log.info("deleting existing install directory if there is one")
         Shell.rm(install_dir, True, True, True, self._args.dry_run)
 
-        Log.info("Creating install directory", [("path", install_dir)])
+        Log.info("creating install directory", [("path", install_dir)])
         Shell.mkdir(install_dir, True, True, self._args.dry_run)
 
-        Log.info("Moving appimage to install location")
+        Log.info("moving appimage to install location")
         Shell.mv(appimage_path, install_path, True, self._args.dry_run)
 
-        Log.info("Making appimage file executable")
+        Log.info("making appimage file executable")
         Shell.chmod("+x", install_path, False, self._args.dry_run)
 
-        Log.info("Deleting existing symlink")
+        Log.info("deleting existing symlink")
         Shell.rm(symlink_path, False, True, True, self._args.dry_run)
 
-        Log.info("Creating symlinks to executables in install directory")
+        Log.info("creating symlinks to executables in install directory")
         Shell.ln(install_path, symlink_path, True, self._args.dry_run)
 
-        Log.info("Installing pynvim python modules")
+        Log.info("installing pynvim python modules")
         Pip.install(["pynvim"], True, True, self._args.dry_run)
 
-        Log.info("Updating alternatives to use nvim")
+        Log.info("updating alternatives to use nvim")
         Alternatives.install(
             "/usr/bin/vi", "vi", symlink_path, 60, True, self._args.dry_run
         )
@@ -88,19 +88,22 @@ class NeovimProvisioner(IComponentProvisioner):
 
     def _download_release_appimage(self, version: str, path: str) -> None:
         if os.path.isfile(path):
-            Log.info("Skipping download because file already exists", [("path", path)])
+            Log.info("skipping download because file already exists", [("path", path)])
             return
 
         # Make sure the directory we are downloading to exists
         Shell.mkdir(os.path.dirname(path), True, False, self._args.dry_run)
 
-        Log.info("Downloading neovim release appimage")
+        Log.info("downloading neovim release appimage")
         Github.download_release_artifact(
             NEOVIM_GITHUB_ORG,
             NEOVIM_GITHUB_REPO,
             version,
             os.path.basename(path),
             path,
+            True,
+            False,
+            False,
             self._args.dry_run,
         )
 
