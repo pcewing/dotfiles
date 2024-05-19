@@ -11,6 +11,7 @@ from .provisioner_kitty import KittyProvisioner
 from .provisioner_neovim import NeovimProvisioner
 from .provisioner_nodejs import NodeJSProvisioner
 from .provisioner_pip import PipProvisioner
+from .provisioner_dot import DotProvisioner
 from .provisioner_ripgrep import RipgrepProvisioner
 from .provisioner_treesitter import TreeSitterProvisioner
 
@@ -40,6 +41,7 @@ _COMPONENT_PROVISIONERS = {
     "i3":           I3Provisioner,
     "nodejs":       NodeJSProvisioner,
     "pip":          PipProvisioner,
+    "dot":          DotProvisioner,
     # TODO: install_cava        "$cache_dir"
     # TODO: install_youtube-dl  "$cache_dir" "$bin_dir"
     # TODO: install_wpr         "$cache_dir" "$bin_dir"

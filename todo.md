@@ -296,22 +296,9 @@ vim.lsp: Active Clients ~
 - No active clients
 ```
 
-## Node JS Provisioner
-
-Some parsers in nvim-treesitter require NodeJS, such as the Latex parser. So
-add a provisioner for it to the CLI.
-
 ## win32yank-wsl
 
 Add this to provision scripts?
-
-## Add utils to provision python 
-
-Install `black` in provision script
-
-## fzf_cached_wsl -> Python
-
-Convert this to Python which will make killing existing processes easier
 
 ## Windows support in Python CLI
 
@@ -320,13 +307,6 @@ Don't need to implement provisioning but at least get clean/link commands to wor
 ## wezterm shell integration
 
 Automatically download wezterm.sh and source it in ~/.localrc or at least document this for WSL setup
-
-## Pip packages
-
-- Install:
-    - `black`
-    - `argcomplete`
-        - For `dot` CLI auto-completion
 
 ## I3WM "Virtual Desktops"
 
@@ -337,9 +317,8 @@ shortcut that switches between the desktops and remaps keybindings accordingly.
 
 I've started noodling on a hacky PoC for this in `bin/i3-util.sh`
 
-## Python Linters
+## Python Tidy/Lint
 
-- [ ] Finish implementing `Linter` class in CLI.
 - [ ] Look into `ruff` since it may replace several other dependencies and also
       claims to be much faster
 - [ ] Set up a pre-commit hook to ensure files are always linted?
