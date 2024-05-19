@@ -5,12 +5,12 @@ import subprocess
 from typing import Union
 
 from .archive import Archive
+from .dir import Dir
 from .github import Github
 from .log import Log
 from .provisioner import IComponentProvisioner, ProvisionerArgs
 from .semver import Semver
 from .shell import Shell
-from .dir import Dir
 
 FLAVOURS_GITHUB_ORG = "Misterio77"
 FLAVOURS_GITHUB_REPO = "flavours"

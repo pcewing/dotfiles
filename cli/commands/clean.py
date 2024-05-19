@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
 import argparse
-import os
 
-from lib.common.log import Log
 from lib.common.links import Links
+from lib.common.log import Log
 
 
 def add_clean_parser(subparsers: argparse._SubParsersAction) -> None:

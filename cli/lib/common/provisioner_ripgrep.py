@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
 import os
-import subprocess
 import re
+import subprocess
 from typing import Union
 
+from .apt import Apt
+from .dir import Dir
 from .github import Github
 from .log import Log
 from .provisioner import IComponentProvisioner, ProvisionerArgs
 from .semver import Semver
-from .dir import Dir
-from .apt import Apt
 
 RIPGREP_GITHUB_ORG = "BurntSushi"
 RIPGREP_GITHUB_REPO = "ripgrep"

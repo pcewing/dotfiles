@@ -1,21 +1,17 @@
 #!/usr/bin/env python
 
 import os
-import subprocess
 import re
-from typing import Union, Tuple
+import subprocess
+from typing import Tuple, Union
 
+from .apt import Apt
+from .git import Git
 from .github import Github
 from .log import Log
 from .provisioner import IComponentProvisioner, ProvisionerArgs
 from .semver import Semver
 from .shell import Shell
-from .dir import Dir
-from .apt import Apt
-from .pip import Pip
-from .alternatives import Alternatives
-from .git import Git
-
 
 I3_GITHUB_ORG = "i3"
 I3_GITHUB_REPO = "i3"

@@ -2,7 +2,6 @@
 
 import logging
 import sys
-
 from logging import LogRecord
 from typing import Any, Optional, Union
 

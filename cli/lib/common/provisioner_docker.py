@@ -4,14 +4,14 @@ import os
 import re
 import urllib
 
-from .distro_info import DistroInformation
-from .provisioner import IComponentProvisioner, ProvisionerArgs
-from .util import download_file, get_current_user
-from .dir import Dir
 from .apt import Apt
+from .dir import Dir
+from .distro_info import DistroInformation
 from .group import Group
-from .shell import Shell
+from .provisioner import IComponentProvisioner, ProvisionerArgs
 from .semver import Semver
+from .shell import Shell
+from .util import download_file, get_current_user
 
 
 class DockerPackage:

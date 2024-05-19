@@ -21,7 +21,6 @@
 
 import argparse
 import os
-import sys
 
 DELIM = "%%"
 FILE_DELIM = "TP_FILE"

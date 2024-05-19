@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from .provisioner import IComponentProvisioner, ProvisionerArgs
 from .pip import Pip
+from .provisioner import IComponentProvisioner, ProvisionerArgs
 
 _PIP_PACKAGES = {
     "core": [
