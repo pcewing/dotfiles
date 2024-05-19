@@ -339,13 +339,9 @@ I've started noodling on a hacky PoC for this in `bin/i3-util.sh`
 
 ## Python Linters
 
-- `mypy`
-    - Static type hint checking
-- `isort`
-    - Sort imports
-- `flake8`
-    - General linting (Warns about unused imports)
-- `black`
-    - Formatter
-
-Maybe have a single pre-commit script that runs all of the above in the right order?
+- [ ] Finish implementing `Linter` class in CLI.
+- [ ] Look into `ruff` since it may replace several other dependencies and also
+      claims to be much faster
+- [ ] Set up a pre-commit hook to ensure files are always linted?
+    - [ ] Probably can't do this without significant work to fix all static
+          typing

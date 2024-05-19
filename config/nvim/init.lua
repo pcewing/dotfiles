@@ -42,8 +42,6 @@ end
 if Notifications.any() then
     Notifications.display()
     vim.o.statusline = "Configuration errors occurred; see quickfix list for details"
-else
-    vim.o.statusline = "Configuration loaded successfully"
 end
 
 Log.info('finished loading init.lua')
