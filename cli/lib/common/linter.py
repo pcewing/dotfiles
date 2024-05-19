@@ -10,8 +10,23 @@ from lib.common.file_walker import FileWalker
 from lib.common.log import Log
 from lib.common.util import Util, sh
 
-
 class Linter:
+    class Error:
+        def __init__(self, file, msg):
+            self.file = file
+            self.msg = msg
+
+        @staticmethod
+        def untidy(file):
+            return Linter.Error(file, "file is not tidy")
+
+        @staticmethod
+        def incorrect_type_hints(file):
+            return Linter.Error(file, "incorrect static type hints")
+
+        def __str__(self) -> str:
+            return f"{self.file}: {self.msg}"
+
     @staticmethod
     def lint(files: list[str]) -> None:
         if len(files) == 0:
@@ -20,8 +35,17 @@ class Linter:
         Util.rmdir(Linter._tmp_dir())
         os.makedirs(Linter._tmp_dir())
 
+        errors = []
         for file in files:
-            Linter._lint(file)
+            errors += Linter._lint(file)
+
+        if len(errors) == 0:
+            return
+
+        for error in errors:
+            print(error)
+
+        raise Exception("Linter errors encountered")
 
     @staticmethod
     def tidy(files: list[str], dry_run: bool) -> None:
@@ -32,9 +56,13 @@ class Linter:
             Linter._tidy(file, dry_run)
 
     @staticmethod
-    def _lint(file: str) -> None:
-        Linter._ensure_tidy(file)
-        Linter._ensure_static_typing(file)
+    def _lint(file: str) -> list["Linter.Error"]:
+        errors = []
+        if not Linter._ensure_tidy(file):
+            errors.append(Linter.Error.untidy(file))
+        if not Linter._ensure_static_typing(file):
+            errors.append(Linter.Error.incorrect_type_hints(file))
+        return errors
 
     @staticmethod
     def _tidy(file: str, dry_run: bool) -> None:
@@ -84,18 +112,16 @@ class Linter:
             sh(["black", file], check=True)
 
     @staticmethod
-    def _ensure_tidy(file: str) -> None:
+    def _ensure_tidy(file: str) -> bool:
         dst = os.path.join(Linter._tmp_dir(), os.path.basename(file))
         shutil.copyfile(file, dst)
         Linter.tidy([dst], False)
-        if Linter._file_md5(file) != Linter._file_md5(dst):
-            raise Exception(f"File is not tidy: {file}")
+        return Linter._file_md5(file) == Linter._file_md5(dst)
 
     @staticmethod
-    def _ensure_static_typing(file: str) -> None:
+    def _ensure_static_typing(file: str) -> bool:
         mypy_cmd = ["mypy", "--config-file", os.path.join(Dir.dot(), "mypy.ini"), file]
-        if sh(mypy_cmd) != 0:
-            raise Exception(f"File does not have correct static type hints: {file}")
+        return sh(mypy_cmd) == 0
 
     @staticmethod
     def _tmp_dir() -> str:
