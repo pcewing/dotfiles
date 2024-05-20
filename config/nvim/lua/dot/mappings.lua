@@ -34,10 +34,12 @@ end
 function M._buffers()
     Map.nnoremap('<Leader>bn', ':bn<CR>')
     Map.nnoremap('<Leader>bp', ':bp<CR>')
-    Map.nnoremap('<Leader>be', ':Ex<CR>')
     Map.nnoremap('<Leader>bf', ':n<Space>')
     Map.nnoremap('<Leader>bd', ':bd<CR>')
     Map.nnoremap('<leader>bl', ':ls<cr>:buffer<space>')
+
+    -- TODO: This has nothing to do with buffers
+    Map.nnoremap('<Leader>be', ':Ex<CR>')
 end
 
 function M._quickfix()

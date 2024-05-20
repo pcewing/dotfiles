@@ -26,7 +26,7 @@ if not Util.directory_exists(tmp_dir) then
 end
 
 Log.init(Log.levels.info, Util.path_join(tmp_dir, "nvim.log"))
-Log.info('loading init.lua')
+Log.debug('loading init.lua')
 
 Settings.init()
 Plugins.init()
@@ -44,4 +44,4 @@ if Notifications.any() then
     vim.o.statusline = "Configuration errors occurred; see quickfix list for details"
 end
 
-Log.info('finished loading init.lua')
+Log.debug('finished loading init.lua')
