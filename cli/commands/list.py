@@ -2,7 +2,7 @@
 
 import argparse
 
-from lib.common.system_provisioner import SystemProvisioner
+from lib.provision.system_provisioner import SystemProvisioner
 
 
 def add_list_parser(subparsers: argparse._SubParsersAction) -> None:

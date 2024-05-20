@@ -8,7 +8,7 @@ from lib.common.apt import Apt
 from lib.common.dir import Dir
 from lib.common.distro_info import DistroInformation
 from lib.common.group import Group
-from lib.common.provisioner import IComponentProvisioner, ProvisionerArgs
+from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 from lib.common.semver import Semver
 from lib.common.shell import Shell
 from lib.common.util import download_file, get_current_user

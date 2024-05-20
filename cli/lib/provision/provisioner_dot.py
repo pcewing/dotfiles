@@ -3,7 +3,7 @@
 import os
 import subprocess
 
-from lib.common.provisioner import IComponentProvisioner, ProvisionerArgs
+from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 from lib.common.shell import Shell
 from lib.common.dir import Dir
 from lib.common.log import Log
