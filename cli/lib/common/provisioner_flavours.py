@@ -4,13 +4,13 @@ import os
 import subprocess
 from typing import Union
 
-from .archive import Archive
-from .dir import Dir
-from .github import Github
-from .log import Log
-from .provisioner import IComponentProvisioner, ProvisionerArgs
-from .semver import Semver
-from .shell import Shell
+from lib.common.archive import Archive
+from lib.common.dir import Dir
+from lib.common.github import Github
+from lib.common.log import Log
+from lib.common.provisioner import IComponentProvisioner, ProvisionerArgs
+from lib.common.semver import Semver
+from lib.common.shell import Shell
 
 FLAVOURS_GITHUB_ORG = "Misterio77"
 FLAVOURS_GITHUB_REPO = "flavours"

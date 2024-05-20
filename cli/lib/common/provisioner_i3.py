@@ -5,13 +5,15 @@ import re
 import subprocess
 from typing import Tuple, Union
 
-from .apt import Apt
-from .git import Git
-from .github import Github
-from .log import Log
-from .provisioner import IComponentProvisioner, ProvisionerArgs
-from .semver import Semver
-from .shell import Shell
+from lib.common.apt import Apt
+from lib.common.git import Git
+from lib.common.github import Github
+from lib.common.log import Log
+from lib.common.provisioner import IComponentProvisioner, ProvisionerArgs
+from lib.common.semver import Semver
+from lib.common.shell import Shell
+from lib.provision.tag import Tags
+from lib.provision.symlink import Symlink
 
 I3_GITHUB_ORG = "i3"
 I3_GITHUB_REPO = "i3"
@@ -52,9 +54,14 @@ def _i3_build(dry_run: bool):
 
 class I3Provisioner(IComponentProvisioner):
     def __init__(self, args: ProvisionerArgs) -> None:
+        super().__init__()
         self._args = args
 
     def provision(self) -> None:
+        if not self._args.tags.has(Tags.x11):
+            Log.info("skipping i3 provisioner", [("reason", "x11 tag not present")])
+            return
+
         latest_tag_name, latest_tag_version = I3Provisioner._get_latest_tag()
         current_version = I3Provisioner._get_current_version()
         print(current_version)
@@ -143,10 +150,12 @@ class I3Provisioner(IComponentProvisioner):
         for exe in executables:
             source = os.path.join(install_dir, exe)
             target = os.path.join("/usr/local/bin", os.path.basename(source))
-            if not os.path.isfile(source):
-                raise Exception(f"Symlink source doesn't exist: {source}")
-            Shell.rm(target, False, True, True, self._args.dry_run)
-            Shell.ln(source, target, True, self._args.dry_run)
+            Symlink.create(
+                source=source,
+                target=target,
+                sudo=True,
+                dry_run=self._args.dry_run,
+            )
 
     @staticmethod
     def _get_latest_tag() -> Tuple[str, Semver]:

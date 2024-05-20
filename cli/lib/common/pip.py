@@ -3,7 +3,7 @@
 import subprocess
 from typing import List
 
-from ..common.log import Log
+from lib.common.log import Log
 
 
 class Pip:

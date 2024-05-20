@@ -5,8 +5,8 @@ import os
 from enum import Enum
 from typing import List  # , Self
 
-from .dir import Dir
-from .log import Log
+from lib.common.dir import Dir
+from lib.common.log import Log
 
 # from typing_extensions import Self
 

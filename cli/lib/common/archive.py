@@ -4,8 +4,8 @@
 from enum import Enum
 from typing import Tuple
 
-from .log import Log
-from .util import sh
+from lib.common.log import Log
+from lib.common.util import sh
 
 
 class CompressionType(Enum):

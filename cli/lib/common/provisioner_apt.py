@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from .apt import Apt
-from .provisioner import IComponentProvisioner, ProvisionerArgs
+from lib.common.apt import Apt
+from lib.common.provisioner import IComponentProvisioner, ProvisionerArgs
 
 # fmt: off
 APT_PACKAGES = {

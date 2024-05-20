@@ -3,15 +3,15 @@
 import os
 import subprocess
 
-from .archive import Archive
-from .dir import Dir
-from .github import Github
-from .log import Log
-from .provisioner import IComponentProvisioner, ProvisionerArgs
-from .semver import Semver
-from .shell import Shell
-from .typing import StringOrNone
-from .util import download_file
+from lib.common.archive import Archive
+from lib.common.dir import Dir
+from lib.common.github import Github
+from lib.common.log import Log
+from lib.common.provisioner import IComponentProvisioner, ProvisionerArgs
+from lib.common.semver import Semver
+from lib.common.shell import Shell
+from lib.common.typing import StringOrNone
+from lib.common.util import download_file
 
 KITTY_GITHUB_ORG = "nodejs"
 KITTY_GITHUB_REPO = "node"

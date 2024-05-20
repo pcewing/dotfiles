@@ -2,10 +2,12 @@
 
 from abc import ABC, abstractmethod
 
+from lib.provision.tag import Tags
 
 class ProvisionerArgs:
-    def __init__(self, dry_run):
-        self.dry_run = dry_run
+    def __init__(self, dry_run: bool, tags: Tags) -> None:
+        self.dry_run: bool = dry_run
+        self.tags: Tags = tags
 
 
 class IProvisioner(ABC):
@@ -15,8 +17,9 @@ class IProvisioner(ABC):
 
 
 class IComponentProvisioner(IProvisioner):
-    pass
-
+    def __init__(self) -> None:
+        pass
 
 class ISystemProvisioner(IProvisioner):
-    pass
+    def __init__(self) -> None:
+        pass
