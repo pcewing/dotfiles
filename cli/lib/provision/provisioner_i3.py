@@ -9,7 +9,7 @@ from lib.common.apt import Apt
 from lib.common.git import Git
 from lib.common.github import Github
 from lib.common.log import Log
-from lib.common.provisioner import IComponentProvisioner, ProvisionerArgs
+from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 from lib.common.semver import Semver
 from lib.common.shell import Shell
 from lib.provision.tag import Tags

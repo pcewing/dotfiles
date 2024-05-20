@@ -2,18 +2,18 @@
 
 
 from lib.common.log import Log
-from lib.common.provisioner import ISystemProvisioner, ProvisionerArgs
-from lib.common.provisioner_apt import AptProvisioner
-from lib.common.provisioner_docker import DockerProvisioner
-from lib.common.provisioner_flavours import FlavoursProvisioner
-from lib.common.provisioner_i3 import I3Provisioner
-from lib.common.provisioner_kitty import KittyProvisioner
-from lib.common.provisioner_neovim import NeovimProvisioner
-from lib.common.provisioner_nodejs import NodeJSProvisioner
-from lib.common.provisioner_pip import PipProvisioner
-from lib.common.provisioner_dot import DotProvisioner
-from lib.common.provisioner_ripgrep import RipgrepProvisioner
-from lib.common.provisioner_treesitter import TreeSitterProvisioner
+from lib.provision.provisioner import ISystemProvisioner, ProvisionerArgs
+from lib.provision.provisioner_apt import AptProvisioner
+from lib.provision.provisioner_docker import DockerProvisioner
+from lib.provision.provisioner_flavours import FlavoursProvisioner
+from lib.provision.provisioner_i3 import I3Provisioner
+from lib.provision.provisioner_kitty import KittyProvisioner
+from lib.provision.provisioner_neovim import NeovimProvisioner
+from lib.provision.provisioner_nodejs import NodeJSProvisioner
+from lib.provision.provisioner_pip import PipProvisioner
+from lib.provision.provisioner_dot import DotProvisioner
+from lib.provision.provisioner_ripgrep import RipgrepProvisioner
+from lib.provision.provisioner_treesitter import TreeSitterProvisioner
 
 # As of Python 3.7:
 # > The insertion-order preservation nature of dict objects has been declared

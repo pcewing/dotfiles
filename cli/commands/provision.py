@@ -5,8 +5,8 @@ import os
 
 from lib.common.distro_info import DistroInformation
 from lib.common.log import Log
-from lib.common.provisioner import ProvisionerArgs
-from lib.common.system_provisioner import SystemProvisioner
+from lib.provision.provisioner import ProvisionerArgs
+from lib.provision.system_provisioner import SystemProvisioner
 from lib.provision.tag import Tags
 
 

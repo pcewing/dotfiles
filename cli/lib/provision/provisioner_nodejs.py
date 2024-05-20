@@ -7,7 +7,7 @@ from lib.common.archive import Archive
 from lib.common.dir import Dir
 from lib.common.github import Github
 from lib.common.log import Log
-from lib.common.provisioner import IComponentProvisioner, ProvisionerArgs
+from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 from lib.common.semver import Semver
 from lib.common.shell import Shell
 from lib.common.typing import StringOrNone
