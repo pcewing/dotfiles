@@ -42,6 +42,10 @@ Improvements I'd like to make to my dotfiles.
 
 ## Python CLI
 
+### Logging Noise
+
+We should change most of the logs to debug to reduce noise in the output.
+
 ### Bootstrapper
 
 Write a shell script to bootstrap so that `dot` can be run.

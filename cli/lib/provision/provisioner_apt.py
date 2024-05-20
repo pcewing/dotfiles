@@ -2,6 +2,7 @@
 
 from lib.common.apt import Apt
 from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
+from lib.provision.tag import Tags
 
 # fmt: off
 APT_PACKAGES = {
@@ -96,9 +97,11 @@ class AptProvisioner(IComponentProvisioner):
             APT_PACKAGES["core"]
             + APT_PACKAGES["cli-tools"]
             + APT_PACKAGES["python-3"]
-            + APT_PACKAGES["gui-tools"]
-            + APT_PACKAGES["media"]
-            + APT_PACKAGES["gaming"]
         )
+
+        if self._args.tags.has(Tags.x11):
+            packages += APT_PACKAGES["gui-tools"]
+            packages += APT_PACKAGES["media"]
+            packages += APT_PACKAGES["gaming"]
 
         Apt.install(packages, self._args.dry_run)
