@@ -5,12 +5,12 @@ import re
 import subprocess
 from typing import Union
 
-from .apt import Apt
-from .dir import Dir
-from .github import Github
-from .log import Log
-from .provisioner import IComponentProvisioner, ProvisionerArgs
-from .semver import Semver
+from lib.common.apt import Apt
+from lib.common.dir import Dir
+from lib.common.github import Github
+from lib.common.log import Log
+from lib.common.provisioner import IComponentProvisioner, ProvisionerArgs
+from lib.common.semver import Semver
 
 RIPGREP_GITHUB_ORG = "BurntSushi"
 RIPGREP_GITHUB_REPO = "ripgrep"

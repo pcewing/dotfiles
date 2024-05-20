@@ -2,7 +2,7 @@
 
 import subprocess
 
-from .log import Log
+from lib.common.log import Log
 
 
 class Group:

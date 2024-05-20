@@ -4,7 +4,7 @@ import json
 import os
 from typing import Callable, Optional
 
-from .log import Log
+from lib.common.log import Log
 
 
 class FileWalker:
