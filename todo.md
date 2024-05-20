@@ -2,6 +2,36 @@
 
 Improvements I'd like to make to my dotfiles.
 
+## Table of Contents
+
+- [Misc](#misc)
+- [Python CLI](#python-cli)
+    - [Bootstrapper](#bootstrapper)
+    - [Provisioner Groups or Tags](#provisioner-groups-or-tags)
+    - [Provisioner Command Logging](#provisioner-command-logging)
+    - [Check for Updates Feature](#check-for-updates-feature)
+    - [Code Cleanup](#code-cleanup)
+    - [Necessary Pip Packages](#necessary-pip-packages)
+- [FZF Bash Integration](#fzf-bash-integration)
+- [win32yank-wsl](#win32yank-wsl)
+- [Windows support in Python CLI](#windows-support-in-python-cli)
+- [wezterm shell integration](#wezterm-shell-integration)
+- [I3WM "Virtual Desktops"](#i3wm-"virtual-desktops")
+- [Python Tidy/Lint](#python-tidy/lint)
+- [Don't symlink vim to neovim](#don't-symlink-vim-to-neovim)
+- [Neovim Healtheck](#neovim-healtheck)
+- [Errors](#errors)
+    - [nvim-lua/completion-nvim](#nvim-lua/completion-nvim)
+    - [nvim-telescope/telescope.nvim](#nvim-telescope/telescope.nvim)
+- [Warnings](#warnings)
+    - [glepnir/lspsaga.nvim](#glepnir/lspsaga.nvim)
+    - [nvim-treesitter/nvim-treesitter](#nvim-treesitter/nvim-treesitter)
+    - [Providers](#providers)
+    - [nvim-telescope/telescope.nvim](#nvim-telescope/telescope.nvim)
+    - [neovim/nvim-lspconfig](#neovim/nvim-lspconfig)
+
+## Misc
+
 - [ ] Detect WSL in Neovim/provisionar/etc
     - [ ] Just look for a `WSL_DISTRO_NAME` environment variable
 - [ ] Python CLI with shell bootstrapper
@@ -140,35 +170,57 @@ python3 -m pip install typing_extensions
 Also needs to be installed as root if the script elevates
 sudo python3 -m pip install typing_extensions
 
-## Install ripgrep
-
-This is a requirement for live grep in the Telescope Neovim plugin so we should
-make sure it's always installed.
-
-Just download the `.deb` from the latest release and install it in `/opt` like
-we do for other tools:
-
-```
-https://github.com/BurntSushi/ripgrep/releases/tag/14.1.0
-```
-
-```
-ripgrep_14.1.0-1_amd64.deb
-```
-
 ## FZF Bash Integration
 
 `~/.fzf.bash` doesn't exist for me, maybe because I'm installing via apt. I'd
 like that so I can get fzf `ctrl+r` functionality so update the provision
 script to set that up correctly.
 
+## win32yank-wsl
+
+Add this to provision scripts?
+
+## Windows support in Python CLI
+
+- Don't need to implement full provisioning but at least get clean/link commands to work on Windows
+- Might be nice to have a script to provision WezTerm on Windows
+
+## wezterm shell integration
+
+Automatically download wezterm.sh and source it in ~/.localrc or at least document this for WSL setup
+
+## I3WM "Virtual Desktops"
+
+10 workspaces isn't always enough. It would be nice to do something that
+provides a similar workflow to virtual desktops on Windows. Like, 4 virtual
+desktops that each have 10 workspaces. Maybe as an MVP, have a keyboard
+shortcut that switches between the desktops and remaps keybindings accordingly.
+
+I've started noodling on a hacky PoC for this in `bin/i3-util.sh`
+
+## Python Tidy/Lint
+
+- [ ] Look into `ruff` since it may replace several other dependencies and also
+      claims to be much faster
+- [ ] Set up a pre-commit hook to ensure files are always linted?
+    - [ ] Probably can't do this without significant work to fix all static
+          typing
+
+## Don't symlink vim to neovim
+
+Now that we've split our configs let's not link `vi` and `vim` to Neovim.
+
+## Visual Studio Key Bindings
+
+Figure out a way to version control these properly?
+
 ## Neovim Healtheck
 
 - In nvim, run `:healthcheck` and go through the errors/warnings:
 
-## Errors
+### Errors
 
-### nvim-lua/completion-nvim
+#### nvim-lua/completion-nvim
 
 ```
 completion: require("completion.health").check()
@@ -192,7 +244,7 @@ snippet source ~
 - ERROR Your snippet source is not available! Possible values are: UltiSnips, Neosnippet, vim-vsnip, snippets.nvim
 ```
 
-### nvim-telescope/telescope.nvim
+#### nvim-telescope/telescope.nvim
 
 ```
 ==============================================================================
@@ -209,9 +261,9 @@ Checking external dependencies ~
 ===== Installed extensions ===== ~
 ```
 
-## Warnings
+### Warnings
 
-### glepnir/lspsaga.nvim
+#### glepnir/lspsaga.nvim
 
 ```
 ==============================================================================
@@ -223,7 +275,7 @@ Lspsaga.nvim report ~
 - OK tree-sitter `markdown_inline` parser found
 ```
 
-### nvim-treesitter/nvim-treesitter
+#### nvim-treesitter/nvim-treesitter
 
 ```
 ==============================================================================
@@ -238,7 +290,7 @@ Installation ~
 - OK Neovim was compiled with tree-sitter runtime ABI version 14 (required >=13). Parsers must be compatible with runtime ABI.
 ```
 
-### Providers
+#### Providers
 
 Is there a way we can say we intentionally don't want these providers to get
 the warnings to go away?
@@ -264,7 +316,7 @@ Perl provider (optional) ~
     - You may disable this provider (and warning) by adding `let g:loaded_perl_provider = 0` to your init.vim
 ```
 
-### nvim-telescope/telescope.nvim
+#### nvim-telescope/telescope.nvim
 
 ```
 ==============================================================================
@@ -281,7 +333,7 @@ Checking external dependencies ~
 ===== Installed extensions ===== ~
 ```
 
-### neovim/nvim-lspconfig
+#### neovim/nvim-lspconfig
 
 ```
 ==============================================================================
@@ -296,31 +348,3 @@ vim.lsp: Active Clients ~
 - No active clients
 ```
 
-## win32yank-wsl
-
-Add this to provision scripts?
-
-## Windows support in Python CLI
-
-Don't need to implement provisioning but at least get clean/link commands to work on Windows
-
-## wezterm shell integration
-
-Automatically download wezterm.sh and source it in ~/.localrc or at least document this for WSL setup
-
-## I3WM "Virtual Desktops"
-
-10 workspaces isn't always enough. It would be nice to do something that
-provides a similar workflow to virtual desktops on Windows. Like, 4 virtual
-desktops that each have 10 workspaces. Maybe as an MVP, have a keyboard
-shortcut that switches between the desktops and remaps keybindings accordingly.
-
-I've started noodling on a hacky PoC for this in `bin/i3-util.sh`
-
-## Python Tidy/Lint
-
-- [ ] Look into `ruff` since it may replace several other dependencies and also
-      claims to be much faster
-- [ ] Set up a pre-commit hook to ensure files are always linted?
-    - [ ] Probably can't do this without significant work to fix all static
-          typing
