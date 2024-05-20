@@ -3,7 +3,7 @@
 import os
 import subprocess
 
-from .log import Log
+from lib.common.log import Log
 
 
 # I originally used these instead of Python's native facilities because it was
@@ -59,15 +59,15 @@ class Shell:
             raise Exception("Failed to move file or directory")
 
     @staticmethod
-    def ln(src: str, dst: str, sudo: bool, dry_run: bool) -> None:
-        Log.info("creating symbolic link", [("source", src), ("target", dst)])
+    def ln(source: str, target: str, sudo: bool, dry_run: bool) -> None:
+        Log.info("creating symbolic link", [("source", source), ("target", target)])
 
         if dry_run:
             Log.info("skipping symbolic link creation due to --dry-run")
             return
 
         cmd = ["sudo"] if sudo else []
-        cmd += ["ln", "-s", src, dst]
+        cmd += ["ln", "-s", source, target]
         if Shell._exec(cmd) != 0:
             raise Exception("Failed to create symbolic link")
 

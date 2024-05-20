@@ -4,7 +4,7 @@ import json
 import subprocess
 from typing import List
 
-from .log import Log
+from lib.common.log import Log
 
 APT_LIST_TIMEOUT_SECONDS = 30
 

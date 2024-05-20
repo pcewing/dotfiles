@@ -3,10 +3,10 @@
 import os
 import subprocess
 
-from .provisioner import IComponentProvisioner, ProvisionerArgs
-from .shell import Shell
-from .dir import Dir
-from .log import Log
+from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
+from lib.common.shell import Shell
+from lib.common.dir import Dir
+from lib.common.log import Log
 
 # TODO: Move this to somewhere in lib
 def _write_file(path: str, content: str, sudo: bool, dry_run: bool) -> None:

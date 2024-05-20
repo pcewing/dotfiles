@@ -8,8 +8,8 @@ import subprocess
 import urllib.request
 from typing import List
 
-from .log import Log
-from .shell import Shell
+from lib.common.log import Log
+from lib.common.shell import Shell
 
 
 def sh(cmd: list[str], check: bool = False) -> int:

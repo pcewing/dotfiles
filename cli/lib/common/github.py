@@ -3,7 +3,7 @@
 import json
 import urllib.request
 
-from .util import download_file
+from lib.common.util import download_file
 
 
 class Github:

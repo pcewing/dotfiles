@@ -5,14 +5,14 @@ import re
 import subprocess
 from typing import Union
 
-from .alternatives import Alternatives
-from .dir import Dir
-from .github import Github
-from .log import Log
-from .pip import Pip
-from .provisioner import IComponentProvisioner, ProvisionerArgs
-from .semver import Semver
-from .shell import Shell
+from lib.common.alternatives import Alternatives
+from lib.common.dir import Dir
+from lib.common.github import Github
+from lib.common.log import Log
+from lib.common.pip import Pip
+from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
+from lib.common.semver import Semver
+from lib.common.shell import Shell
 
 NEOVIM_GITHUB_ORG = "neovim"
 NEOVIM_GITHUB_REPO = "neovim"
