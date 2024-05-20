@@ -52,7 +52,7 @@ function M._directories()
     -- TODO: Should this be \\ on windows?
     local dir = Util.tmp_dir() .. "//"
 
-    Log.info('Setting backup dir to ' .. dir)
+    Log.debug('Setting backup dir to ' .. dir)
 
     -- Backup and swap directories; the double slashes are important here
     vim.opt.backupdir = { dir, "." }
