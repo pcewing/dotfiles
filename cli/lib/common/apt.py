@@ -117,7 +117,7 @@ class Apt:
 
     @staticmethod
     def install(packages: List[str], dry_run: bool) -> None:
-        Log.info("installing apt packages", [("packages", packages)])
+        Log.info("installing apt packages", [("packages", sorted(packages))])
         if dry_run:
             Log.info("skipping apt install due to --dry-run")
             return
