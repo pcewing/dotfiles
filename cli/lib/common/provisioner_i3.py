@@ -52,9 +52,14 @@ def _i3_build(dry_run: bool):
 
 class I3Provisioner(IComponentProvisioner):
     def __init__(self, args: ProvisionerArgs) -> None:
+        super().__init__()
         self._args = args
 
     def provision(self) -> None:
+        if "x11" not in self._args.tags:
+            Log.info("skipping i3 provisioner", [("reason", "x11 tag not present")])
+            return
+
         latest_tag_name, latest_tag_version = I3Provisioner._get_latest_tag()
         current_version = I3Provisioner._get_current_version()
         print(current_version)

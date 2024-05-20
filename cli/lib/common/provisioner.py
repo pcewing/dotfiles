@@ -4,8 +4,9 @@ from abc import ABC, abstractmethod
 
 
 class ProvisionerArgs:
-    def __init__(self, dry_run):
+    def __init__(self, dry_run, tags):
         self.dry_run = dry_run
+        self.tags = tags
 
 
 class IProvisioner(ABC):
@@ -15,8 +16,9 @@ class IProvisioner(ABC):
 
 
 class IComponentProvisioner(IProvisioner):
-    pass
-
+    def __init__(self) -> None:
+        pass
 
 class ISystemProvisioner(IProvisioner):
-    pass
+    def __init__(self) -> None:
+        pass

@@ -32,7 +32,9 @@ from .provisioner_treesitter import TreeSitterProvisioner
 # fmt: off
 _COMPONENT_PROVISIONERS = {
     "apt":          AptProvisioner,
-    "docker":       DockerProvisioner,
+    # TODO: Commenting out for now because this is WIP; currently raises an
+    # exception when Docker isn't already installed
+    #"docker":       DockerProvisioner,
     "kitty":        KittyProvisioner,
     "flavours":     FlavoursProvisioner,
     "neovim":       NeovimProvisioner,
