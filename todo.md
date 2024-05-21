@@ -35,6 +35,14 @@ Improvements I'd like to make to my dotfiles.
 
 ## Python CLI
 
+### Implement More Provisioners
+
+Add a "proprietary" tag for:
+
+- Insync
+- Beyond Compare 4 / 5
+- Parsec
+
 ### Logging Noise
 
 We should change most of the logs to debug to reduce noise in the output.
