@@ -22,14 +22,8 @@ class KittyProvisioner(IComponentProvisioner):
         self._args = args
 
     def provision(self) -> None:
-        Log.info("foo")
-        return
-
         latest_release = Github.get_latest_release(KITTY_GITHUB_ORG, KITTY_GITHUB_REPO)
         latest_version = Semver.parse(latest_release)
-
-        Log.info("foo")
-        return
 
         current_version = KittyProvisioner._get_current_version()
         if current_version is None:
