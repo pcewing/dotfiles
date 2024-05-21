@@ -13,7 +13,6 @@ Improvements I'd like to make to my dotfiles.
     - [Code Cleanup](#code-cleanup)
     - [Necessary Pip Packages](#necessary-pip-packages)
 - [FZF Bash Integration](#fzf-bash-integration)
-- [win32yank-wsl](#win32yank-wsl)
 - [Windows support in Python CLI](#windows-support-in-python-cli)
 - [wezterm shell integration](#wezterm-shell-integration)
 - [I3WM "Virtual Desktops"](#i3wm-"virtual-desktops")
@@ -179,10 +178,6 @@ sudo python3 -m pip install typing_extensions
 `~/.fzf.bash` doesn't exist for me, maybe because I'm installing via apt. I'd
 like that so I can get fzf `ctrl+r` functionality so update the provision
 script to set that up correctly.
-
-## win32yank-wsl
-
-Add this to provision scripts?
 
 ## Windows support in Python CLI
 

@@ -78,6 +78,25 @@ def download_file(url: str, path: str, sudo: bool, force: bool, dry_run: bool) -
         urllib.request.urlretrieve(url, path)
 
 
+def write_file(path: str, content: str, sudo: bool, dry_run: bool) -> None:
+    Shell.mkdir(
+        path=os.path.dirname(path),
+        exist_ok=True,
+        sudo=sudo,
+        dry_run=dry_run,
+    )
+
+    Log.info("creating file", [("path", path), ("sudo", sudo)])
+
+    if dry_run:
+        Log.info("skipping file creation", [("reason", "dry run")])
+        return
+
+    # TODO: Handle sudo
+    with open(path, "w") as f:
+        f.write(content)
+
+
 def get_current_user() -> pwd.struct_passwd:
     return pwd.getpwuid(os.getuid())
 

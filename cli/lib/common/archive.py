@@ -18,6 +18,7 @@ class ArchiveType(Enum):
     UNKNOWN = 1
     TAR = 2
     NONE = 3
+    ZIP = 4
 
 
 class Archive:
@@ -28,6 +29,7 @@ class Archive:
         extraction_funcs = {
             ArchiveType.TAR: Archive._extract_tar,
             ArchiveType.NONE: Archive._decompress,
+            ArchiveType.ZIP: Archive._unzip,
         }
 
         extraction_funcs[archive_type](path, compression_type, dst_dir, dry_run)
@@ -51,6 +53,20 @@ class Archive:
 
         if dry_run:
             Log.info("skipping archive extraction due to --dry-run")
+        else:
+            sh(cmd)
+
+    def _unzip(
+        path: str, compression_type: CompressionType, dst_dir: str, dry_run: bool
+    ) -> None:
+        Log.info("unzipping archive", [("path", path), ("dst_dir", dst_dir)])
+
+        cmd = ["unzip", "-o", path, "-d", dst_dir]
+
+        # Compression type is currently ignored for zip files
+
+        if dry_run:
+            Log.info("skipping zip file extraction", [("reason", "dry run")])
         else:
             sh(cmd)
 
@@ -83,5 +99,7 @@ class Archive:
             return ArchiveType.TAR, CompressionType.XZ
         elif name.lower().endswith(".txz"):
             return ArchiveType.TAR, CompressionType.XZ
+        elif name.lower().endswith(".zip"):
+            return ArchiveType.ZIP, CompressionType.NONE
         else:
             raise Exception("Failed to infer archive file type")

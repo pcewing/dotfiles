@@ -14,6 +14,7 @@ from lib.provision.provisioner_pip import PipProvisioner
 from lib.provision.provisioner_dot import DotProvisioner
 from lib.provision.provisioner_ripgrep import RipgrepProvisioner
 from lib.provision.provisioner_treesitter import TreeSitterProvisioner
+from lib.provision.provisioner_win32yank import Win32YankProvisioner
 
 # As of Python 3.7:
 # > The insertion-order preservation nature of dict objects has been declared
@@ -44,6 +45,7 @@ _COMPONENT_PROVISIONERS = {
     "nodejs":       NodeJSProvisioner,
     "pip":          PipProvisioner,
     "dot":          DotProvisioner,
+    "win32yank":    Win32YankProvisioner,
     # TODO: install_cava        "$cache_dir"
     # TODO: install_youtube-dl  "$cache_dir" "$bin_dir"
     # TODO: install_wpr         "$cache_dir" "$bin_dir"

@@ -21,7 +21,7 @@ class FlavoursProvisioner(IComponentProvisioner):
         self._args = args
 
     def provision(self) -> None:
-        latest_version = Github.get_latest_release("Misterio77", "flavours")
+        latest_version = Github.get_latest_release(FLAVOURS_GITHUB_ORG, FLAVOURS_GITHUB_REPO)
         latest_version = Semver.parse(latest_version)
 
         current_version = FlavoursProvisioner._get_current_version()
