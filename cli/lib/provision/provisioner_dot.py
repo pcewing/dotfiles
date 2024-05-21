@@ -7,32 +7,14 @@ from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 from lib.common.shell import Shell
 from lib.common.dir import Dir
 from lib.common.log import Log
-
-# TODO: Move this to somewhere in lib
-def _write_file(path: str, content: str, sudo: bool, dry_run: bool) -> None:
-    Shell.mkdir(
-        path=os.path.dirname(path),
-        exist_ok=True,
-        sudo=sudo,
-        dry_run=dry_run,
-    )
-
-    Log.info("creating file", [("path", path), ("sudo", sudo)])
-
-    if dry_run:
-        Log.info("skipping file creation", [("reason", "dry run")])
-        return
-
-    # TODO: Handle sudo
-    with open(path, "w") as f:
-        f.write(content)
+from lib.common.util import write_file
 
 class DotProvisioner(IComponentProvisioner):
     def __init__(self, args: ProvisionerArgs) -> None:
         self._args = args
 
     def provision(self) -> None:
-        _write_file(
+        write_file(
             os.path.join(Dir.home(), ".bash_completion.d", "dot.bash"),
             self._generate_dot_cli_completion_script(),
             sudo=False,
