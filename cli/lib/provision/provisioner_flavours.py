@@ -8,9 +8,9 @@ from lib.common.archive import Archive
 from lib.common.dir import Dir
 from lib.common.github import Github
 from lib.common.log import Log
-from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 from lib.common.semver import Semver
 from lib.common.shell import Shell
+from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 
 FLAVOURS_GITHUB_ORG = "Misterio77"
 FLAVOURS_GITHUB_REPO = "flavours"
@@ -21,7 +21,9 @@ class FlavoursProvisioner(IComponentProvisioner):
         self._args = args
 
     def provision(self) -> None:
-        latest_version = Github.get_latest_release(FLAVOURS_GITHUB_ORG, FLAVOURS_GITHUB_REPO)
+        latest_version = Github.get_latest_release(
+            FLAVOURS_GITHUB_ORG, FLAVOURS_GITHUB_REPO
+        )
         latest_version = Semver.parse(latest_version)
 
         current_version = FlavoursProvisioner._get_current_version()

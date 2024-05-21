@@ -8,9 +8,9 @@ from typing import Union
 from lib.common.dir import Dir
 from lib.common.github import Github
 from lib.common.log import Log
-from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 from lib.common.semver import Semver
 from lib.common.shell import Shell
+from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 
 TREE_SITTER_GITHUB_ORG = "tree-sitter"
 TREE_SITTER_GITHUB_REPO = "tree-sitter"

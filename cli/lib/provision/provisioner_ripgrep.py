@@ -9,8 +9,8 @@ from lib.common.apt import Apt
 from lib.common.dir import Dir
 from lib.common.github import Github
 from lib.common.log import Log
-from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 from lib.common.semver import Semver
+from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 
 RIPGREP_GITHUB_ORG = "BurntSushi"
 RIPGREP_GITHUB_REPO = "ripgrep"

@@ -1,18 +1,17 @@
 #!/usr/bin/env python
 
 import os
-import subprocess
 from typing import Union
 
 from lib.common.archive import Archive
 from lib.common.dir import Dir
 from lib.common.github import Github
 from lib.common.log import Log
-from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 from lib.common.semver import Semver
 from lib.common.shell import Shell
-from lib.provision.tag import Tags
 from lib.common.util import write_file
+from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
+from lib.provision.tag import Tags
 
 WIN32YANK_GITHUB_ORG = "equalsraf"
 WIN32YANK_GITHUB_REPO = "win32yank"
@@ -24,7 +23,9 @@ class Win32YankProvisioner(IComponentProvisioner):
 
     def provision(self) -> None:
         if not self._args.tags.has(Tags.wsl):
-            Log.info("skipping win32yank provisioner", [("reason", "wsl tag not present")])
+            Log.info(
+                "skipping win32yank provisioner", [("reason", "wsl tag not present")]
+            )
             return
 
         # There's an open issue as of implementing this on 2024-05-20 where
@@ -35,7 +36,9 @@ class Win32YankProvisioner(IComponentProvisioner):
         # construct the path to the version file.
         self._install_dir = f"/mnt/c/bin/"
 
-        latest_version = Github.get_latest_release(WIN32YANK_GITHUB_ORG, WIN32YANK_GITHUB_REPO)
+        latest_version = Github.get_latest_release(
+            WIN32YANK_GITHUB_ORG, WIN32YANK_GITHUB_REPO
+        )
         latest_version = Semver.parse(latest_version)
 
         # TODO: Gross but theres' no way to get the version from the
@@ -107,7 +110,10 @@ class Win32YankProvisioner(IComponentProvisioner):
         self._write_version_file(version)
 
     def _write_version_file(self, version: str) -> None:
-        Log.info("writing version file", [("path", self._version_file_path()), ("version", version)])
+        Log.info(
+            "writing version file",
+            [("path", self._version_file_path()), ("version", version)],
+        )
         write_file(
             path=self._version_file_path(),
             content=str(version),

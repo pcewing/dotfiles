@@ -9,11 +9,11 @@ from lib.common.apt import Apt
 from lib.common.git import Git
 from lib.common.github import Github
 from lib.common.log import Log
-from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 from lib.common.semver import Semver
 from lib.common.shell import Shell
-from lib.provision.tag import Tags
+from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 from lib.provision.symlink import Symlink
+from lib.provision.tag import Tags
 
 I3_GITHUB_ORG = "i3"
 I3_GITHUB_REPO = "i3"

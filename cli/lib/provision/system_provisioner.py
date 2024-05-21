@@ -4,14 +4,13 @@
 from lib.common.log import Log
 from lib.provision.provisioner import ISystemProvisioner, ProvisionerArgs
 from lib.provision.provisioner_apt import AptProvisioner
-from lib.provision.provisioner_docker import DockerProvisioner
+from lib.provision.provisioner_dot import DotProvisioner
 from lib.provision.provisioner_flavours import FlavoursProvisioner
 from lib.provision.provisioner_i3 import I3Provisioner
 from lib.provision.provisioner_kitty import KittyProvisioner
 from lib.provision.provisioner_neovim import NeovimProvisioner
 from lib.provision.provisioner_nodejs import NodeJSProvisioner
 from lib.provision.provisioner_pip import PipProvisioner
-from lib.provision.provisioner_dot import DotProvisioner
 from lib.provision.provisioner_ripgrep import RipgrepProvisioner
 from lib.provision.provisioner_treesitter import TreeSitterProvisioner
 from lib.provision.provisioner_win32yank import Win32YankProvisioner

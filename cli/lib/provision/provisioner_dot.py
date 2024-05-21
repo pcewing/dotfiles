@@ -3,11 +3,11 @@
 import os
 import subprocess
 
-from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
-from lib.common.shell import Shell
 from lib.common.dir import Dir
 from lib.common.log import Log
 from lib.common.util import write_file
+from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
+
 
 class DotProvisioner(IComponentProvisioner):
     def __init__(self, args: ProvisionerArgs) -> None:
@@ -32,10 +32,14 @@ class DotProvisioner(IComponentProvisioner):
         Log.info("generating dot cli completion script", [("command", " ".join(cmd))])
 
         if self._args.dry_run:
-            Log.info("skipping dot cli completion script generation", [("reason", "dry run")])
+            Log.info(
+                "skipping dot cli completion script generation", [("reason", "dry run")]
+            )
             return ""
 
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        p = subprocess.Popen(
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+        )
         output, _ = p.communicate()
         if p.returncode != 0:
             print(p)

@@ -10,6 +10,7 @@ from lib.common.file_walker import FileWalker
 from lib.common.log import Log
 from lib.common.util import Util, sh
 
+
 class Linter:
     class Error:
         def __init__(self, file, msg):
