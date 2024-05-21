@@ -12,7 +12,16 @@ function M.configure()
     TreesitterConfigs.setup({
         highlight = {
             enable = true,
-            disable = {},
+            disable = {
+                -- As of 2024-05-21, treesitter syntax highlighting for
+                -- Markdown files has been causing problems so just disable it
+                -- and use the built-in regex syntax highlighting. I'm doing
+                -- this instead of removing it entirely from the list below
+                -- because there are warnings in `:checkhealth` for lspsaga if
+                -- markdown and markdown_inline aren't installed.
+                "markdown",
+            },
+            additional_vim_regex_highlighting = false,
         },
         indent = {
             enable = false,
@@ -58,10 +67,8 @@ function M.configure()
             "latex",
             "lua",
             "make",
-            -- TODO: This seems to have broken so disable it for now. Between the
-            -- default Vim markdown syntax script and the nvim-markdown plugin, we
-            -- don't really need this anyways.
-            --"markdown",
+            "markdown",
+            "markdown_inline",
             "meson",
             "proto",
             "puppet",
