@@ -49,6 +49,7 @@ def add_provision_parser(subparsers: argparse._SubParsersAction) -> None:
     )
     parser.set_defaults(func=cmd_provision)
 
+
 def cmd_provision(args: argparse.Namespace) -> None:
     if os.getuid() == 0:
         raise Exception("do not run as root")
@@ -64,7 +65,7 @@ def cmd_provision(args: argparse.Namespace) -> None:
         ],
     )
 
-    tags = Tags.parse(args.tags) if isinstance(args.tags, str) else args.tags 
+    tags = Tags.parse(args.tags) if isinstance(args.tags, str) else args.tags
 
     provisioner_args = ProvisionerArgs(args.dry_run, tags)
     provisioner = SystemProvisioner(provisioner_args, args.components)

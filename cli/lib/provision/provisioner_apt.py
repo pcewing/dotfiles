@@ -94,9 +94,7 @@ class AptProvisioner(IComponentProvisioner):
         Apt.upgrade(self._args.dry_run)
 
         packages = (
-            APT_PACKAGES["core"]
-            + APT_PACKAGES["cli-tools"]
-            + APT_PACKAGES["python-3"]
+            APT_PACKAGES["core"] + APT_PACKAGES["cli-tools"] + APT_PACKAGES["python-3"]
         )
 
         if self._args.tags.has(Tags.x11):

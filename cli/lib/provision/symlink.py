@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-from lib.common.shell import Shell
 from lib.common.log import Log
+from lib.common.shell import Shell
+
 
 class Symlink:
     @staticmethod

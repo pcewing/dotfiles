@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 
 from lib.provision.tag import Tags
 
+
 class ProvisionerArgs:
     def __init__(self, dry_run: bool, tags: Tags) -> None:
         self.dry_run: bool = dry_run
@@ -19,6 +20,7 @@ class IProvisioner(ABC):
 class IComponentProvisioner(IProvisioner):
     def __init__(self) -> None:
         pass
+
 
 class ISystemProvisioner(IProvisioner):
     def __init__(self) -> None:

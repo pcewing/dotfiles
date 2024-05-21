@@ -2,6 +2,7 @@
 
 from lib.common.os import OperatingSystem
 
+
 class Tag:
     def __init__(self, name: str) -> None:
         self.name = name
