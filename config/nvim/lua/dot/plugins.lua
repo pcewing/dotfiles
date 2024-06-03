@@ -18,9 +18,21 @@ local plugins = {
             Plug('github/copilot.vim')
         end,
         configure = function()
+            -- Don't use tab to accept Copilot suggestions which conflicts with
+            -- snippets. Not using my Map.imap() function here because it
+            -- doesn't support passing through the `replace_keycodes` and `expr`
+            -- options. (TODO: Add that support)
+            -- I'm not sure why those are necessary but this is copied from:
+            -- https://github.com/github/copilot.vim/blob/53d3091be388ff1edacdb84421ccfa19a446a84d/doc/copilot.txt#L119-L132
+            vim.keymap.set('i', '<C-J>', 'copilot#Accept("\\<CR>")', {
+                expr = true,
+                replace_keycodes = false
+            })
+            vim.g.copilot_no_tab_map = true
+
             vim.g.copilot_filetypes = {
                 -- Don't enable copilot in markdown files; it generally makes
-                -- bad predictions and conflicts with UltiSnips tab completion
+                -- bad predictions
                 markdown = false
             }
         end
