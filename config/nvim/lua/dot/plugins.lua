@@ -10,26 +10,33 @@ local VimPlug       = require('dot.vim_plug')
 local M = {}
 
 local plugins = {
---    copilot = {
---        init = function()
---            if os.getenv("NVIM_COPILOT_ENABLED") == "1" then
---                Plug('github/copilot.vim')
---                Log.info("copilot plugin enabled")
---            else
---                Log.info("copilot plugin disabled")
---            end
---        end,
---        configure = function()
---            if os.getenv("NVIM_COPILOT_ENABLED") == "1" then
---                Log.info("configuring copilot plugin")
---                vim.g.copilot_filetypes = {
---                    -- Don't enable copilot in markdown files; it generally makes
---                    -- bad predictions and conflicts with UltiSnips tab completion
---                    markdown = false
---                }
---            end
---        end
---    },
+    copilot = {
+        is_enabled = function()
+            return os.getenv("NVIM_COPILOT_ENABLED") == "1"
+        end,
+        init = function()
+            Plug('github/copilot.vim')
+        end,
+        configure = function()
+            -- Don't use tab to accept Copilot suggestions which conflicts with
+            -- snippets. Not using my Map.imap() function here because it
+            -- doesn't support passing through the `replace_keycodes` and `expr`
+            -- options. (TODO: Add that support)
+            -- I'm not sure why those are necessary but this is copied from:
+            -- https://github.com/github/copilot.vim/blob/53d3091be388ff1edacdb84421ccfa19a446a84d/doc/copilot.txt#L119-L132
+            vim.keymap.set('i', '<C-J>', 'copilot#Accept("\\<CR>")', {
+                expr = true,
+                replace_keycodes = false
+            })
+            vim.g.copilot_no_tab_map = true
+
+            vim.g.copilot_filetypes = {
+                -- Don't enable copilot in markdown files; it generally makes
+                -- bad predictions
+                markdown = false
+            }
+        end
+    },
 
     fzf = {
         init = function()
@@ -167,17 +174,46 @@ function M.init()
     vim.call('plug#begin')
 
     for plugin_name, plugin in pairs(plugins) do
-        if plugin.init then
-            plugin.init()
-        end
+        M._init_plugin(plugin_name, plugin)
     end
 
     vim.call('plug#end')
 
     for plugin_name, plugin in pairs(plugins) do
-        if plugin.configure then
-            plugin.configure()
-        end
+        M._configure_plugin(plugin_name, plugin)
+    end
+end
+
+function M._init_plugin(plugin_name, plugin)
+    if plugin.is_enabled ~= nil and not plugin.is_enabled() then
+        Log.debug('skip initializing ' .. plugin_name .. ' plugin because it is disabled')
+        return
+    end
+
+    Log.debug('initializing ' .. plugin_name .. ' plugin')
+
+    if plugin.init == nil then
+        Log.warn('plugin ' .. plugin_name .. ' has no init function')
+        Notifications.add('plugin ' .. plugin_name .. ' has no init function')
+        return
+    end
+
+    init_result = plugin.init()
+    if init_result == nil or init_result == true then
+        plugin.initialized = true
+    end
+end
+
+function M._configure_plugin(plugin_name, plugin)
+    if plugin.initialized == nil or not plugin.initialized then
+        Log.debug('skip configuring ' .. plugin_name .. ' plugin because it is not initialized')
+        return
+    end
+
+    Log.debug('configuring ' .. plugin_name .. ' plugin')
+
+    if plugin.configure ~= nil then
+        plugin.configure()
     end
 end
 

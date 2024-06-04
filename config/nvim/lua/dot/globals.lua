@@ -1,7 +1,19 @@
+local vim = vim
+
 local Util    = require('dot.util')
 local VimPlug = require('dot.vim_plug')
 
 local M = {}
+
+function M._create_command(name, fn, opts)
+    vim.api.nvim_create_user_command(name, fn, opts)
+end
+
+function M._create_commands(commands)
+    for _, command in ipairs(commands) do
+        M._create_command(unpack(command))
+    end
+end
 
 function M.init()
     _G.close_tabs_to_right        = Util.close_tabs_to_right
@@ -12,6 +24,11 @@ function M.init()
     _G.reload_config              = Util.reload_config
 
     _G.install_vim_plug           = VimPlug.install
+
+    M._create_commands({
+        { 'ReloadConfig',     Util.reload_config,       {} },
+        { 'CloseTabsToRight', Util.close_tabs_to_right, {} }
+    })
 end
 
 return M
