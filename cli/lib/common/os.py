@@ -16,6 +16,9 @@ class OperatingSystem:
     def is_linux(self) -> bool:
         return self._name == "linux"
 
+    def is_macos(self) -> bool:
+        return self._name == "macos"
+
     def is_wsl(self) -> bool:
         return os.getenv("WSL_DISTRO_NAME") is not None
 
@@ -25,5 +28,7 @@ class OperatingSystem:
             return OperatingSystem("windows")
         elif os.name == "posix" and os.uname().sysname.lower() == "linux":
             return OperatingSystem("linux")
+        elif os.name == "posix" and os.uname().sysname.lower() == "darwin":
+            return OperatingSystem("macos")
         else:
             raise Exception("Unsupported OS")

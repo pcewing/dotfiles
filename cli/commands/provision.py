@@ -4,6 +4,7 @@ import argparse
 import os
 
 from lib.common.distro_info import DistroInformation
+from lib.common.os import OperatingSystem
 from lib.common.log import Log
 from lib.provision.provisioner import ProvisionerArgs
 from lib.provision.system_provisioner import SystemProvisioner
@@ -54,16 +55,16 @@ def cmd_provision(args: argparse.Namespace) -> None:
     if os.getuid() == 0:
         raise Exception("do not run as root")
 
-    distro = DistroInformation.get()
-
-    Log.info(
-        "provisioning system",
-        [
-            ("distro.id", distro.id),
-            ("distro.release", distro.release),
-            ("distro.codename", distro.codename),
-        ],
-    )
+    if OperatingSystem.get().is_linux():
+        distro = DistroInformation.get()
+        Log.info(
+            "provisioning system",
+            [
+                ("distro.id", distro.id),
+                ("distro.release", distro.release),
+                ("distro.codename", distro.codename),
+            ],
+        )
 
     tags = Tags.parse(args.tags) if isinstance(args.tags, str) else args.tags
 

@@ -6,9 +6,6 @@ function M._tabs()
     -- Open current file in a second tab and make it the last tab
     Map.nnoremap('<leader><tab>c', ':tab split<CR>:tabm<CR>')
 
-    -- Fuzzy find opener for windows/tabs
-    Map.nnoremap('<leader><tab>o', ':Windows<cr>')
-
     -- Next/Previous
     Map.nnoremap('<leader><tab>n', ':tabnext<cr>')
     Map.nnoremap('<leader><tab>p', ':tabprevious<cr>')

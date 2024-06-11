@@ -98,7 +98,7 @@ function nvimp() {
 }
 
 # Download the audio from a YouTube video as an MP3 file
-function yt-mp3() {
+function yt_mp3() {
     installed "youtube-dl" || return 1
 
     youtube-dl -x --audio-format "mp3" "$1"
@@ -429,11 +429,11 @@ function hex_to_dec() {
     echo "0x$1 -> $((16#$1))"
 }
 
-function dot-cd() {
+function dot_cd() {
     cd "$DOTFILES" || return 1
 }
 
-function dot-push() {
+function dot_push() {
     local cwd
     cwd="$(pwd)"
     cd "$DOTFILES" || return 1
@@ -441,7 +441,7 @@ function dot-push() {
     cd "$cwd" || return 1
 }
 
-function dot-pull() {
+function dot_pull() {
     local cwd
     cwd="$(pwd)"
     cd "$DOTFILES" || return 1

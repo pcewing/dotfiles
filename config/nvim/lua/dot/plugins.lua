@@ -44,11 +44,16 @@ local plugins = {
             Plug('junegunn/fzf.vim')
         end,
         configure = function()
-            -- We should remove this eventually in favor of the below
             Map.nnoremap('<Leader>o', ':Files<CR>')
+            Map.nnoremap('<leader>O', ':tabnew<cr>:Files<cr>')
 
+            -- Fuzzy find opener for windows/tabs
+            Map.nnoremap('<leader><tab>o', ':Windows<cr>')
+
+            -- We should remove the above eventually in favor of these
             Map.nnoremap('<leader>ft', ':Tags<cr>')
             Map.nnoremap('<leader>fo', ':Files<cr>')
+            Map.nnoremap('<leader>f<tab>', ':Windows<cr>')
         end
     },
 
