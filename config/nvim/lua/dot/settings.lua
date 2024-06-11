@@ -18,7 +18,6 @@ function M._base()
     vim.opt.splitright = true                         -- When splitting vertically, the new pane should be on the right
     vim.opt.splitbelow = true                         -- When splitting horizontally, the new pane should be on the bottom
     vim.opt.ruler = true                              -- Show the line & column number at cursor
-    vim.opt.pastetoggle = '<F2>'                      -- Toggle auto-indenting for code paste
     vim.opt.clipboard = "unnamed,unnamedplus"         -- Use system clipboard if possible
     vim.opt.cursorline = true                         -- Add a visual indicator to the line the cursor is on
     vim.opt.joinspaces = false                        -- Don't insert an extra space after periods when joining lines

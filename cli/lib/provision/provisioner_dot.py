@@ -5,6 +5,7 @@ import subprocess
 
 from lib.common.dir import Dir
 from lib.common.log import Log
+from lib.common.os import OperatingSystem
 from lib.common.util import write_file
 from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 
