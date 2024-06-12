@@ -217,6 +217,9 @@ Now that we've split our configs let's not link `vi` and `vim` to Neovim.
 
 Figure out a way to version control these properly?
 
+Vim VS keyboard overrides:
+- <ctrl+r> redo
+
 ## Neovim Healtheck
 
 - In nvim, run `:healthcheck` and go through the errors/warnings:
