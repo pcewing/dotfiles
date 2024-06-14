@@ -8,6 +8,7 @@ from .link import add_link_parser
 from .lint import add_lint_parser
 from .list import add_list_parser
 from .provision import add_provision_parser
+from .status import add_status_parser
 from .tidy import add_tidy_parser
 
 
@@ -20,4 +21,5 @@ def add_command_parsers(parser: argparse.ArgumentParser) -> None:
     add_lint_parser(subparsers)
     add_list_parser(subparsers)
     add_provision_parser(subparsers)
+    add_status_parser(subparsers)
     add_tidy_parser(subparsers)
