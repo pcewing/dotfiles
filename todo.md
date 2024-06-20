@@ -215,10 +215,28 @@ Now that we've split our configs let's not link `vi` and `vim` to Neovim.
 
 ## Visual Studio Key Bindings
 
-Figure out a way to version control these properly?
+Long term: Figure out a way to version control these properly
 
-Vim VS keyboard overrides:
-- <ctrl+r> redo
+Short term: Document how to set things up the way I like them
+
+- Install `VsVim` extension
+- Reset keyboard shortcuts to default 
+    - Open the `Tools -> Options...` menu
+    - Navigate to `Environment -> Keyboard` in the left-hand side
+    - At the top, select `(Default)` from the first drop-down and click the
+      `Reset` button
+- Select `VsVim` keyboard shortcut overrides
+    - Open the `Tools -> Options...` menu
+    - Navigate to `VsVim -> Keyboard` in the left-hand side
+    - For the following keyboard shortcuts, select `VsVim` in the `Handled by`
+      drop-down
+        - `Ctrl+]` (Go to definition)
+        - `Ctrl+I` (Traverse down jumpstack)
+        - `Ctrl+O` (Traverse up jumpstack)
+        - `Ctrl+R` (Redo)
+        - `Ctrl+D` Scroll down half a page
+        - `Ctrl+U` Scroll up half a page
+        - `Ctrl+V` Visual selection mode
 
 ## Neovim Healtheck
 
