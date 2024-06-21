@@ -35,6 +35,26 @@ Improvements I'd like to make to my dotfiles.
 
 ## Python CLI
 
+### Git Sync Command
+
+Implement a simple `dot git-sync` command and a git alias to it like `git sync`
+that does something like:
+
+```
+- Check if there are commits missing from upstream
+- If there are, pull
+- If there are merge conflicts, abort and print an error
+    - These should be handled manually
+- If the merge is clean, continue on
+- Add all local changes
+- Commit local changes
+- Push
+```
+
+This is for repositories like my notes where I basically just always want to
+keep everything in sync and don't use branches. Optionally, accept a parameter
+for commit message.
+
 ### Implement More Provisioners
 
 Add a "proprietary" tag for:
@@ -231,10 +251,10 @@ Short term: Document how to set things up the way I like them
     - For the following keyboard shortcuts, select `VsVim` in the `Handled by`
       drop-down
         - `Ctrl+]` (Go to definition)
+        - `Ctrl+D` Scroll down half a page
         - `Ctrl+I` (Traverse down jumpstack)
         - `Ctrl+O` (Traverse up jumpstack)
         - `Ctrl+R` (Redo)
-        - `Ctrl+D` Scroll down half a page
         - `Ctrl+U` Scroll up half a page
         - `Ctrl+V` Visual selection mode
 
