@@ -15,6 +15,7 @@ from lib.common.typing import StringOrNone
 #   easier but now it's just way too verbose and annoying
 # - Add a more descriptive help message
 # - Break up main function so this is more readable
+# - Add a '-m/--message' flag to allow users to specify a commit message
 
 def add_git_sync_parser(subparsers: argparse._SubParsersAction) -> None:
     parser = subparsers.add_parser(
