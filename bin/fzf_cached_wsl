@@ -1,15 +1,38 @@
 #!/usr/bin/env python
 
+# This script provides a fuzzy file finder that caches results for performance.
+# In a normal Linux environment, this isn't really necessary but on WSL, where
+# file I/O is miserably slow, it's pretty helpful.
+#
+# The tl;dr of what this does:
+# - Checks if a cache file exists
+#   - If it does, reads and prints the contents of the cache file to stdout
+#     immediately and then pre-populates a set of enumerated files
+#   - If not, initializes an empty set of enumerated files
+# - Enumerates all files in the directory
+#   - If the file is not in the set, prints it to stdout and adds it to the set
+# - Writes the enumerated files to a new cache file
+#   - To avoid naming collisions with other instances that may be running in
+#     parallel, the cache files are named as follows:
+#     - <cache_id>-<timestamp>-<random_token>.txt
+#   - At the end of a successful run, the script will delete cache files that
+#     already existed when it began
+#     - This can be disabled via the `--no-tidy` flag
+#
+# Not that a drawback of this approach is that files that are deleted on disk
+# may persist indefinitely in the cache; however, this is a tradeoff for
+# performance. To manually clean up the cache, run the tool with the `--clean`
+# flag.
+
 import argparse
+import glob
 import hashlib
 import os
 import random
 import re
-import shutil
-import signal
 import string
 import sys
-import threading
+import time
 from typing import Optional
 
 DOTFILES_DIR = os.getenv("DOTFILES")
@@ -17,23 +40,10 @@ if DOTFILES_DIR is None:
     raise Exception("DOTFILES environment variable not specified")
 sys.path.append(os.path.join(DOTFILES_DIR, "cli"))
 
+from lib.common.dir import Dir
 from lib.common.file_walker import FileWalker
 from lib.common.log import Log
 from lib.common.util import Util
-
-PID_FILE = None
-
-
-def signal_handler(sig, frame):
-    PID_FILE.delete()
-
-    default_handler = None
-    if sig == signal.SIGTERM:
-        default_handler = signal.default_term_handler
-    elif sig == signal.SIGINT:
-        default_handler = signal.default_int_handler
-    if default_handler is not None:
-        default_handler(sig, frame)
 
 
 def parse_args():
@@ -56,6 +66,12 @@ def parse_args():
         "--directory",
         default=os.getcwd(),
         help="Directory to find files in",
+    )
+    parser.add_argument(
+        "--no-tidy",
+        dest="tidy",
+        action="store_false",
+        help="Disable the tidying mechanism that removes old cache files",
     )
     parser.add_argument(
         "-C",
@@ -112,133 +128,114 @@ class FuzzyFileFinder:
         )
 
 
-def update_cache(directory: str, cache_file: str, quiet: bool):
-    random_string = "".join(random.choices(string.ascii_lowercase + string.digits, k=8))
-    tmpfile = f"/tmp/{random_string}.txt"
-    with open(tmpfile, "w") as f:
+class Cache:
+    def __init__(
+        self, tmp_directory: str, directory: str, use_existing: bool, tidy: bool
+    ) -> None:
+        self._tmp_directory = tmp_directory
+        self._directory = directory
+        self._use_existing = use_existing
+        self._should_tidy = tidy
 
-        def on_file(relative_path):
-            if not quiet:
-                print(relative_path)
-            f.write(relative_path + "\n")
+        self._cache_id = Cache._get_cache_id(directory)
+        Log.info("cache id determined", [("cache_id", self._cache_id)])
 
-        FuzzyFileFinder.find_files(directory, on_file)
-    shutil.move(tmpfile, cache_file)
+        self._existing_cache_files = self._get_existing_cache_files(
+            self._tmp_directory, self._cache_id
+        )
+        Log.info(
+            "scanned existing cache files",
+            [
+                ("count", len(self._existing_cache_files)),
+                ("files", self._existing_cache_files),
+            ],
+        )
 
+        self._cached_files = set()
 
-def run_async(directory: str, cache_file: str):
-    Log.info("reading cached results")
-    results = None
-    with open(cache_file, "r") as f:
-        results = f.read()
+    def update(self) -> None:
+        self._cached_files = self._load()
+        self._enumerate()
+        self._update()
+        if self._should_tidy:
+            self._tidy()
 
-    Log.info("initiating asynchronous cache update")
-    thread = threading.Thread(target=update_cache, args=(directory, cache_file, True))
-    thread.start()
+    def _enumerate(self) -> None:
+        Log.info("enumerating and printing files")
+        FuzzyFileFinder.find_files(self._directory, self._on_file)
 
-    Log.info("printing cached results")
-    print(results)
+    def _on_file(self, relative_path):
+        # Only add/print files we don't already know about
+        if relative_path not in self._cached_files:
+            print(relative_path)
+            self._cached_files.add(relative_path)
 
-    Log.info("waiting for asynchronous cache update to complete")
-    thread.join()
+    def _update(self) -> None:
+        cache_content = "\n".join(self._cached_files) + "\n"
 
+        timestamp = time.monotonic_ns()
+        random_token = "".join(
+            random.choices(string.ascii_lowercase + string.digits, k=8)
+        )
 
-def run_sync(directory: str, cache_file: str):
-    Log.info("synchronously refreshing cache and printing results")
-    update_cache(directory, cache_file, False)
+        cache_file_name = f"{self._cache_id}-{timestamp}-{random_token}.txt"
+        cache_file_path = os.path.join(self._tmp_directory, cache_file_name)
 
+        with open(cache_file_path, "w") as f:
+            f.write(cache_content)
 
-def already_running(tmp_dir: str):
-    return PID_FILE.exists(ignore_self=True)
+    def _tidy(self) -> None:
+        for cache_file in self._existing_cache_files:
+            Log.info("removing old cache file", [("cache_file", cache_file)])
+            try:
+                os.remove(cache_file)
+            except FileNotFoundError:
+                pass
 
+    # If caching is enabled and the cache file exists, load the cache from that
+    # file, print its contents to stdout, and return the files in the cache. If
+    # caching is disabled or the cache file does not exist, this will early out and
+    # return None.
+    def _load(self) -> set[str]:
+        if not self._use_existing:
+            Log.info("skipping cache load", [("reason", "--no-cache flag specified")])
+            return set()
 
-def run(args, tmp_dir: str):
-    Log.info(
-        "fzf_cached_wsl started", [("cache", args.cache), ("directory", args.directory)]
-    )
+        if len(self._existing_cache_files) == 0:
+            Log.info("skipping cache load", [("reason", "cache file does not exist")])
+            return set()
 
-    dir_hash = hashlib.sha1(args.directory.encode("utf-8")).hexdigest()
-    cache_file = os.path.join(tmp_dir, f"{dir_hash}.txt")
+        cache_file = self._existing_cache_files[0]
+        Log.info("loading cache from file", [("cache_file", cache_file)])
 
-    Log.info("cache file path resolved", [("cache_file", cache_file)])
-
-    cache_exists = os.path.isfile(cache_file)
-
-    if args.cache and cache_exists and already_running(tmp_dir):
-        # TODO: How do we handle this? On one hand, it would be nice to just
-        # stop and let the other process finish but we need to print something.
-        # If there's no existing cache then we have nothing to print if we
-        # stop. On the other hand it would be nice if the "newest" process ran
-        # and killed the older processes so that the resulting cache is more
-        # up-to-date with any file changes that may have occurred in between.
-        #
-        # Also, if we just kill another running instance but that instance was
-        # synchronously updating, we are going to halt any further results it
-        # may have shown.
-        #
-        # Maybe each process just writes a `xxxx.pid` file when it starts and
-        # we can see if any exist. If one exists and the cache also already
-        # exists, just print the cache and let that other process finish and
-        # update the cache. If one exists and the cache doesn't exist, let both
-        # processes run and race to update the cache? We could also add a third
-        # mode where we print results but don't update the cache so the two
-        # don't race but then a third instance wouldn't know what "mode" the
-        # other instances are running in so that would further complicate
-        # things.
-        #
-        # I think the simplest optimization that will cover most cases is:
-        # - If another instance is already running and the cache file exists,
-        #   print the cache and exit without updating it again
-        Log.info("another instance already running, printing cache")
+        cache_file_content = None
         with open(cache_file, "r") as f:
-            print(f.read())
-            return
+            cache_file_content = f.read()
 
-    Log.info(
-        "initializing cache file", [("path", cache_file), ("exists", cache_exists)]
-    )
+        Log.info("printing existing cache contents to stdout")
+        print(cache_file_content)
 
-    if args.cache and cache_exists:
-        run_async(args.directory, cache_file)
-    else:
-        run_sync(args.directory, cache_file)
+        return Cache._parse_cached_files(cache_file_content)
 
-    Log.info("fzf_cached_wsl finished")
+    @staticmethod
+    def _get_existing_cache_files(tmp_dir: str, cache_id: str) -> list[str]:
+        existing_cache_files = glob.glob(f"{tmp_dir}/{cache_id}-*.txt")
 
+        def get_file_timestamp(file: str) -> int:
+            return int(file.split("-")[1])
 
-# TODO: Add a cleanup mechanism for when these do get orphaned due to process
-# being abnormally terminated or something. Maybe check the creation time on
-# the PID files and just nuke any that are obviously not still running.
-class PidFile:
-    def __init__(self, directory, prefix):
-        self._dir = directory
-        self._prefix = prefix
+        # Sort the files by timestamp descending
+        existing_cache_files.sort(key=lambda f: get_file_timestamp(f), reverse=True)
+        return existing_cache_files
 
-        self._pid = str(os.getpid())
-        self._name = f"{self._prefix}-{self._pid}.pid"
-        self._path = os.path.join(self._dir, self._name)
+    @staticmethod
+    def _get_cache_id(directory: str) -> str:
+        return hashlib.sha1(directory.encode("utf-8")).hexdigest()
 
-    def create(self):
-        with open(self._path, "w") as f:
-            f.write(self._pid)
-
-    def delete(self):
-        try:
-            os.remove(self._path)
-        except FileNotFoundError:
-            pass
-
-    def exists(self, ignore_self=False):
-        files = os.listdir(self._dir)
-        for file in files:
-            if file == self._name:
-                if ignore_self:
-                    continue
-                else:
-                    return True
-            if file.startswith(self._prefix):
-                return True
-        return False
+    @staticmethod
+    def _parse_cached_files(cache_file_content: str) -> set[str]:
+        lines = [l.strip() for l in cache_file_content.split("\n")]
+        return set([l for l in lines if l != ""])
 
 
 def clean(tmp_dir: str):
@@ -253,9 +250,11 @@ def main():
     args = parse_args()
     log_level = Log.parse_level(args.log_level)
 
-    tmp_dir = os.path.join(os.getenv("HOME"), ".tmp/fzf_cached_wsl")
+    tmp_dir = os.path.join(Dir.home(), ".tmp", "fzf_cached_wsl")
     os.makedirs(tmp_dir, exist_ok=True)
 
+    # Log to stdout if we're just cleaning up files, otherwise log to a file so
+    # we can print the fuzzy finder results to stdout
     if args.clean:
         Log.init("fzf_cached_wsl", log_level)
         clean(tmp_dir)
@@ -264,18 +263,14 @@ def main():
     log_file = os.path.join(tmp_dir, "log.txt")
     Log.init("fzf_cached_wsl", log_level, stdout=False, file=log_file)
 
-    pid_file = PidFile(tmp_dir, "fzf-cached-wsl")
-    pid_file.create()
+    Log.info(
+        "fzf_cached_wsl started", [("cache", args.cache), ("directory", args.directory)]
+    )
 
-    global PID_FILE
-    PID_FILE = pid_file
-    signal.signal(signal.SIGTERM, signal_handler)
-    signal.signal(signal.SIGINT, signal_handler)
+    cache = Cache(tmp_dir, args.directory, args.cache, args.tidy)
+    cache.update()
 
-    try:
-        run(args, tmp_dir)
-    finally:
-        pid_file.delete()
+    Log.info("fzf_cached_wsl finished")
 
 
 if __name__ == "__main__":
