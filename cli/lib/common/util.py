@@ -146,5 +146,5 @@ class Util:
         try:
             shutil.rmtree(path)
         except FileNotFoundError:
-            # TODO: Actually use ignore_missing
-            pass
+            if not ignore_missing:
+                raise
