@@ -29,6 +29,36 @@ config.launch_menu = {
 -- timeout_milliseconds defaults to 1000 and can be omitted
 config.leader = { key = ' ', mods = 'CTRL' }
 
+local switch_to_git_bash = function(window, pane)
+  -- Save a reference to the current tab so we can close it after
+  -- creating the new tab
+  local existing_tab = window:active_tab()
+
+  -- Launch Git Bash in a new tab
+  window:perform_action(
+    act.SpawnCommandInNewTab {
+      args = { "C:\\Program Files\\Git\\bin\\bash.exe", "-i", "-l" },
+      domain = { DomainName = 'local' },
+    },
+    pane
+  )
+
+  -- The new tab is automatically focused, save a reference it is as well
+  local new_tab = window:active_tab()
+
+  -- Set the active tab's title to "Git Bash"
+  new_tab:set_title("Git Bash")
+
+  -- Gross but it seems like there's only an action to close the current
+  -- tab and I can't find a way from lua to close a specific tab. So,
+  -- activate the old tab, close it, and then re-activate the new tab
+  existing_tab:activate()
+  window:perform_action(
+      wezterm.action.CloseCurrentTab { confirm = false },
+      pane
+  )
+end
+
 -- Key bindings
 config.keys = {
   { key = '\\', mods = 'LEADER', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' }, },
@@ -57,6 +87,8 @@ config.keys = {
   { key = 'k',          mods = 'LEADER', action = act.ActivatePaneDirection 'Up', },
   { key = 'DownArrow',  mods = 'LEADER', action = act.ActivatePaneDirection 'Down', },
   { key = 'j',          mods = 'LEADER', action = act.ActivatePaneDirection 'Down', },
+
+  { key = 'g', mods = 'LEADER', action = wezterm.action_callback(switch_to_git_bash), },
 }
 
 -- This is super annoying to me so disable it
