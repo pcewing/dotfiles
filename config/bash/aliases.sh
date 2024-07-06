@@ -134,6 +134,7 @@ if _is_installed 'git'; then
     set_alias '0' 'gdm'     'git difftool -t "meld" -d'
     set_alias '0' 'gaa'     'git add --all'
     set_alias '0' 'gaad'    'git add --all --dry-run'
+    set_alias '0' 'grpull'  'git pull --rebase origin $(gbc)'
     set_alias '0' 'gpull'   'git pull origin $(gbc)'
     set_alias '0' 'gpush'   'git push origin $(gbc)'
     set_alias '0' 'grv'     'git remote -v'
