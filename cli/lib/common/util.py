@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
-import grp
 import os
-import pwd
 import shutil
 import subprocess
 import urllib.request
@@ -97,37 +95,7 @@ def write_file(path: str, content: str, sudo: bool, dry_run: bool) -> None:
         f.write(content)
 
 
-def get_current_user() -> pwd.struct_passwd:
-    return pwd.getpwuid(os.getuid())
-
-
-def get_user_groups(user: pwd.struct_passwd) -> List[str]:
-    # Get the groups that the user is in
-    groups = [g.gr_name for g in grp.getgrall() if user.pw_name in g.gr_mem]
-
-    # Append the user's default group
-    gid = pwd.getpwnam(user.pw_name).pw_gid
-    groups.append(grp.getgrgid(gid).gr_name)
-    return groups
-
-
-def add_user_to_group(group: str, dry_run: bool) -> None:
-    user = get_current_user()
-
-    groups = set(get_user_groups(user))
-    if group in groups:
-        Log.info(f'User {user.pw_name} is already in group "{group}", skipping add')
-        return
-
-    Log.info(f'Adding user {user} to group "{group}"')
-    if dry_run:
-        Log.info("skipping adding to group due to --dry-run")
-    else:
-        cmd = ["sudo", "usermod", "-aG", "docker", user.pw_name]
-        if subprocess.call(cmd) != 0:
-            raise Exception("Failed to add user to docker group")
-
-
+# TODO: Remove and use Dir.home() everywhere instead
 _HOME = None
 
 

@@ -53,6 +53,10 @@ We should change most of the logs to debug to reduce noise in the output.
     - [ ] Maybe put bootstrapper in a Gist so it's easier to grab on a new
           system and have it set up git ssh keys, clone the dotfiles repo, etc?
 
+- Things it needs:
+    - Install Python and pip packages
+        - `python -m pip install --user --upgrade argcomplete`
+
 ### Provisioner Groups or Tags
 
 It would be nice to have "groups" of provisioners so it's easy to
