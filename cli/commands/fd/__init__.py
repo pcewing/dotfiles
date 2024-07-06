@@ -93,9 +93,13 @@ def cmd_fd_choose(args: argparse.Namespace) -> None:
 
     stdin = "\n".join(entries.keys())
 
+    selected_key = None
     cmd = ["fzf", "--query", args.query]
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE, text=True)
-    selected_key = p.communicate(input=stdin)[0].strip()
+    try:
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE, text=True)
+        selected_key = p.communicate(input=stdin)[0].strip()
+    except FileNotFoundError as e:
+        raise Exception("FZF not installed or not in PATH") from e
 
     if p.returncode != 0:
         return
