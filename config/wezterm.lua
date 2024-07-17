@@ -4,6 +4,36 @@ local act = wezterm.action
 
 local config = {}
 
+function get_shell(tab_info)
+    local shell = ''
+    if tab_info.active_pane.domain_name == "local" then
+        shell = '(Git Bash) '
+    elseif tab_info.active_pane.domain_name == "WSL:Ubuntu" then
+        shell = '(WSL) '
+    end
+    return shell
+end
+
+wezterm.on('format-window-title', function(tab, pane, tabs, panes, config)
+    local index = ''
+    if #tabs > 1 then
+        index = string.format('[%d/%d] ', tab.tab_index + 1, #tabs)
+    end
+    return index .. get_shell(tab) .. tab.active_pane.title
+end)
+
+function tab_title(tab_info)
+    local title = tab_info.tab_title
+    if title and #title > 0 then
+        return title
+    end
+    return tab_info.active_pane.title
+end
+
+wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_width)
+    return get_shell(tab) .. tab_title(tab)
+end)
+
 config.default_prog = {"bash"}
 config.default_domain = 'WSL:Ubuntu'
 
