@@ -609,3 +609,17 @@ function bluetooth_reset() {
 
     echo "Bluetooth restarted!"
 }
+
+function set_volume()
+{
+    installed "amixer" || return 1
+
+    local volume
+    volume="$1"
+
+    if [ "$volume" = "" ]; then
+        volume="25"
+    fi
+
+    amixer -D pulse sset Master "${volume}%"
+}
