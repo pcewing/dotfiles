@@ -5,6 +5,11 @@ local VimPlug = require('dot.vim_plug')
 
 local M = {}
 
+function M._move_to_column(opts)
+    local column = tonumber(opts.args)
+    Util.move_to_column(column)
+end
+
 function M._create_command(name, fn, opts)
     vim.api.nvim_create_user_command(name, fn, opts)
 end
@@ -27,7 +32,8 @@ function M.init()
 
     M._create_commands({
         { 'ReloadConfig',     Util.reload_config,       {} },
-        { 'CloseTabsToRight', Util.close_tabs_to_right, {} }
+        { 'CloseTabsToRight', Util.close_tabs_to_right, {} },
+        { 'MoveToColumn',     M._move_to_column,        { nargs = 1 } }
     })
 end
 
