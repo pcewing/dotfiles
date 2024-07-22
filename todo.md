@@ -33,6 +33,10 @@ Improvements I'd like to make to my dotfiles.
 
 - [ ] Clean up Neovim Healthcheck (**Neovim Healtheck** section)
 
+## XP Submodule
+
+Use `xp` as a submodule to DRY our Python.
+
 ## Python CLI
 
 ### Git Sync Command
