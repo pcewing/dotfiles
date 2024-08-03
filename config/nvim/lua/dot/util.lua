@@ -136,4 +136,38 @@ function M.copy_file_and_line()
     vim.fn.setreg('+', file_and_line)
 end
 
+--[[
+  Truncates a string from the center if it exceeds the specified maximum
+  length.
+
+  The string is truncated by removing characters from the middle and replacing
+  them with two periods ('..') if the length of the input string exceeds the
+  specified maximum length. The resulting truncated string will have a total
+  length not exceeding the max_length parameter.
+
+  Example:
+    truncate_center("VeryLongFileName.cpp", 12) => "VeryL..e.cpp"
+
+  Parameters:
+    str (string): The input string to be truncated.
+    max_length (number): The maximum allowed length for the resulting string.
+
+  Returns:
+    string: The possibly truncated string.
+]]
+function M.truncate_center(str, max_length)
+    local length = #str
+    if length <= max_length then
+        return str
+    else
+        local part_length = math.floor((max_length - 2) / 2)
+        return str:sub(1, part_length) .. ".." .. str:sub(length - part_length + 1, length)
+    end
+end
+
+-- Returns whether or not a buffer contains unsaved changes
+function M.is_buffer_modified(buffer_index)
+    return vim.fn.getbufvar(buffer_index, '&modified') == 1
+end
+
 return M
