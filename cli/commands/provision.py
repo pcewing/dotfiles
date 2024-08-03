@@ -52,10 +52,10 @@ def add_provision_parser(subparsers: argparse._SubParsersAction) -> None:
 
 
 def cmd_provision(args: argparse.Namespace) -> None:
-    if os.getuid() == 0:
-        raise Exception("do not run as root")
-
     if OperatingSystem.get().is_linux():
+        if os.getuid() == 0:
+            raise Exception("do not run as root")
+
         distro = DistroInformation.get()
         Log.info(
             "provisioning system",

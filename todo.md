@@ -205,16 +205,27 @@ python3 -m pip install typing_extensions
 Also needs to be installed as root if the script elevates
 sudo python3 -m pip install typing_extensions
 
+### Windows Support
+
+- Don't need to implement full provisioning but at least get clean/link commands to work on Windows
+- Might be nice to have a script to provision WezTerm on Windows
+- Remove dot.sh and Makefile (Except maybe for bootstrapping)
+
+- Make sure the following is added to path before running `dot provision cli`
+    - `C:\Users\pewing\AppData\Roaming\Python\Python310\Scripts`
+    - Update version in the path as necessary
+    - Tools install via Pip aren't automatically added to PATH like they are on Linux
+    - TODO: Actually this is just broken altogether, the following fails when run directly in Git Bash:
+        - `register-python-argcomplete --external-argcomplete-script $HOME/dot/cli/dot.py dot`
+        - So it may just not play nicely with windows
+        - For now, maybe just copy it from Linux and update the paths?
+
+
 ## FZF Bash Integration
 
 `~/.fzf.bash` doesn't exist for me, maybe because I'm installing via apt. I'd
 like that so I can get fzf `ctrl+r` functionality so update the provision
 script to set that up correctly.
-
-## Windows support in Python CLI
-
-- Don't need to implement full provisioning but at least get clean/link commands to work on Windows
-- Might be nice to have a script to provision WezTerm on Windows
 
 ## wezterm shell integration
 
