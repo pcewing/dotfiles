@@ -26,7 +26,7 @@ class DotProvisioner(IComponentProvisioner):
         cmd = [
             "register-python-argcomplete",
             "--external-argcomplete-script",
-            os.path.join(Dir.dot(), "cli/dot.py"),
+            os.path.join(Dir.dot(), "cli", "dot.py"),
             "dot",
         ]
 
