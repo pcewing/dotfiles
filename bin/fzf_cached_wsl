@@ -85,7 +85,21 @@ def parse_args():
 class FuzzyFileFinder:
     @staticmethod
     def find_files(directory, on_file):
-        ignore_patterns = []
+        # TODO: It would be cool to support .fzfignore files in sub-directories
+        # but that gets a little more complicated because we'd need to layer
+        # them on top of each other while recursively descending and then
+        # remove them as we traverse back up. Definitely possible but just
+        # requires more effort than I want to put in right now.
+
+        # TODO: I don't think these need to be separated, we can probably just
+        # have a single list of ignore patterns that match on either files or
+        # directories. There may be times where we want a pattern to only match
+        # against one or the other but I can't think of any specific examples
+        # right now. It is kind of nice in the .fzfignore file to see which
+        # patterns are expected to match against directories though. Anyways,
+        # leaving them separate for now but can revisit later.
+        file_ignore_patterns = []
+        dir_ignore_patterns = []
         ignore_file = os.path.join(directory, ".fzfignore")
         if os.path.isfile(ignore_file):
             ignore_file_content = None
@@ -98,25 +112,37 @@ class FuzzyFileFinder:
                 )
             )
             for line in lines:
-                if line.startswith("#"):
+                if line.lstrip().startswith("#") or line.strip() == "":
                     continue
-                ignore_patterns.append(line)
+                elif line.lower().startswith("d "):
+                    dir_ignore_patterns.append(line[2:])
+                else:
+                    file_ignore_patterns.append(line)
 
         def handle_dir(
             directory: FileWalker.Directory,
         ) -> Optional[FileWalker.DirectoryHandlerResult]:
-            if directory.get_name() == ".git":
+            name = directory.get_name()
+            if name == ".git":
                 return FileWalker.DirectoryHandlerResult(skip=True)
+            for ignore_pattern in dir_ignore_patterns:
+                path_rel = directory.get_relative_path()
+                m = re.match(ignore_pattern, path_rel)
+                if m is not None:
+                    # Keep this commented out for performance except when debugging
+                    # Log.debug("ignoring directory", [("ignore_pattern", ignore_pattern), ("dir", path_rel)])
+                    return FileWalker.DirectoryHandlerResult(skip=True)
 
         def handle_file(
             file: FileWalker.File,
         ) -> Optional[FileWalker.FileHandlerResult]:
             name = file.get_name()
-            for ignore_pattern in ignore_patterns:
-                m = re.match(ignore_pattern, file.get_relative_path())
+            for ignore_pattern in file_ignore_patterns:
+                path_rel = file.get_relative_path()
+                m = re.match(ignore_pattern, path_rel)
                 if m is not None:
                     # Keep this commented out for performance except when debugging
-                    # Log.debug("ignoring file", [("ignore_pattern", ignore_pattern), ("file", file.get_relative_path())])
+                    # Log.debug("ignoring file", [("ignore_pattern", ignore_pattern), ("file", path_rel)])
                     return
 
             on_file(file.get_relative_path())
