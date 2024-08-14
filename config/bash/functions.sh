@@ -623,3 +623,20 @@ function set_volume()
 
     amixer -D pulse sset Master "${volume}%"
 }
+
+function _git_bash()
+{
+    local wezterm_exe="/mnt/c/Program Files/WezTerm/wezterm-gui.exe"
+    local wezterm_args=(
+        "start"
+        "--domain" "local"
+    )
+
+    local bash_exe="C:\\Program Files\\Git\\bin\\bash.exe"
+    local bash_args=(
+        "-i" # Interactive
+        "-l" # Login shell
+    )
+
+    "$wezterm_exe" "${wezterm_args[@]}" -- "$bash_exe" "${bash_args[@]}" &
+}
