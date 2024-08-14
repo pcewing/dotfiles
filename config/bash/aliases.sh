@@ -228,3 +228,8 @@ fi
 if _is_installed 'parsecd'; then
     set_alias '0' 'parsec' 'parsecd app_daemon=1'
 fi
+
+# Alias for WSL to open a new WezTerm window with a Git Bash shell
+if _is_wsl; then
+    set_alias '0' 'git-bash' '_git_bash'
+fi
