@@ -58,80 +58,205 @@ function M._directories()
     vim.opt.directory = { dir, "." }
 end
 
-function M._generate_tabline_tab_label(tab_index)
-    local max_filename_length = 48
+function M._get_tab_info(i)
+    -- Check whether or not the tab is selected
+    local is_selected = false
+    if i == vim.fn.tabpagenr() then
+        is_selected = true
+    end
 
-    local s = ""
+    local buflist = vim.fn.tabpagebuflist(i)
+    local winnr = vim.fn.tabpagewinnr(i)
 
-    local buflist = vim.fn.tabpagebuflist(tab_index)
-    local winnr = vim.fn.tabpagewinnr(tab_index)
-    local bufname = vim.fn.fnamemodify(vim.fn.bufname(buflist[winnr]), ":t")
-    bufname = Util.truncate_center(bufname, max_filename_length)
+    -- The title is the name of the file currently open in the buffer focused
+    -- within the tab. If it doesn't have one because it's an unsaved buffer,
+    -- fall back to UNSAVED
+    local title = vim.fn.fnamemodify(vim.fn.bufname(buflist[winnr]), ":t")
+    if #title == 0 then
+        title = "UNSAVED"
+    end
 
+    -- Check if any buffers open in the tab are modified and need to be save
     local is_modified = false
     for _, i in ipairs(buflist) do
         if Util.is_buffer_modified(i) then
-            Log.info("buffer " .. i .. " is modified")
+            Log.debug("buffer " .. i .. " is modified")
             is_modified = true
             break
         end
     end
 
-    -- Add an indicator if any buffer in the tab has unsaved changes
-    if is_modified then
-        Log.info("Adding modified indicator")
-        s = s .. "+"
-    else
-        s = s .. " "
-    end
-
-    -- Add the tab index so it's easier to navigate to specific tabs
-    s = s .. "[" .. tab_index .. "]"
-
-    -- Append the focused buffer's truncated file name or if it doesn't have
-    -- one just label it UNSAVED
-    if #bufname > 0 then
-        return s .. " " .. bufname
-    else
-        return  s .. " UNSAVED"
-    end
+    return {
+        title = title,
+        index = i,
+        is_modified = is_modified,
+        is_selected = is_selected
+    }
 end
 
-function M._generate_tabline_tab(i)
+function M._format_tabline_tab(tab)
     local s = ""
 
-    -- Set whether or not the tab is selected
-    if i == vim.fn.tabpagenr() then
-        s = s .. '%#TabLineSel#'
-    else
-        s = s .. '%#TabLine#'
-    end
+    -- Format the modified indicator
+    s = s .. (tab["is_modified"] and "+" or " ")
 
-    -- Set the tab page number for navigation
-    s = s .. '%' .. i .. 'T'
+    -- Format the tab index
+    s = s .. "[" .. tab["index"] .. "] "
 
-    -- Set the tab label
-    s = s .. " " .. M._generate_tabline_tab_label(i) .. " "
+    -- Format the tab title
+    s = s .. tab["title"]
 
     return s
 end
 
+function M._format_tabline_no_truncation(tabs)
+    local s = ""
+    for i, tab in pairs(tabs) do
+        -- Separate tabs with a space
+        if i > 1 then
+            s = s .. " "
+        end
+        -- Set the tab metadata
+        s = s .. (tab["is_selected"] and "%#TabLineSel#" or "%#TabLine#")
+        s = s .. "%" .. tab["index"] .. "T"
+
+        s = s .. M._format_tabline_tab(tab)
+    end
+    return s .. '%#TabLineFill#%T'
+end
+
+-- The "Basic" truncation strategy is to hide all of the tabs that don't fit on
+-- the tabline and put an indicator on the right of how many more tabs there
+-- are. I Personallly like this better than squishing each tab down. I'd rather
+-- the first N tabs be readable and just hide the ones that don't fit than make
+-- them all less readable.
+function M._format_tabline_basic_truncation(tabs, truncation)
+    -- TODO: We could merge this loop with the one below and do this in one
+    -- pass but I'm too lazy right now
+    local tab_contents = {}
+    for i, tab in pairs(tabs) do
+        local meta = (tab["is_selected"] and "%#TabLineSel#" or "%#TabLine#")
+        meta = meta .. "%" .. tab["index"] .. "T"
+
+        local label = M._format_tabline_tab(tab)
+
+        tab_contents[i] = {
+            meta = meta,
+            label = label
+        }
+    end
+
+    local suffix_base_len = #" ... (x more)"
+    local current_length = 0
+    local truncate_index = 0
+    for i, tab_content in pairs(tab_contents) do
+        -- First, check if we can even fit the truncation suffix. It could be
+        -- longer than the tab label if the file in the tab has a very short
+        -- name. If this won't fit, then we actually need to start truncating
+        -- at the previous tab
+        local remaining_tabs = (#tabs - i) + 1
+        local suffix_len = suffix_base_len + math.floor(remaining_tabs / 10)
+        if (current_length + suffix_len) > truncation["max_length"] then
+            truncate_index = math.max(0, i - 1)
+            break
+        end
+
+        -- Separate tabs with a space
+        local separator = ""
+        if i > 1 then
+            separator = " "
+        end
+
+        local tab_len = #tab_content["label"] + #separator
+
+        -- If appending this label would exceed the max length, start
+        -- truncating at this tab
+        if (current_length + tab_len) > truncation["max_length"] then
+            truncate_index = i
+            break
+        end
+
+        current_length = current_length + tab_len
+    end
+
+    -- Now that we know where to start truncating, format the tabline
+    local s = ""
+    for i, tab_content in pairs(tab_contents) do
+        if i >= truncate_index then
+            break
+        end
+        if i > 1 then
+            s = s .. " "
+        end
+        s = s .. tab_content["meta"] .. tab_content["label"]
+    end
+
+    -- Align the truncation suffix to the right
+    s = s .. "%="
+
+    -- Fill any extra space and disassociate the following text from the last tab
+    s = s .. "%#TabLineFill#%T"
+
+    -- Append the truncation suffix
+    local truncated_tabs = (#tabs - truncate_index) + 1
+    s = s .. "... (" .. tostring(truncated_tabs) .. " more)"
+
+    return s
+end
+
+function M._format_tabline(tabs, truncation)
+    if truncation["strategy"] == "Basic" then
+        return M._format_tabline_basic_truncation(tabs, truncation)
+    else
+        return M._format_tabline_no_truncation(tabs)
+    end
+end
+
+-- Tabline generation is done in two steps. The first step collects all of the
+-- tab information and the second step formats the tabline. The reason is that
+-- we need to be able to check the total length and truncate appropriately.
+-- That's harder to do when the string contains characters that are actually
+-- printed, like the `%#TabLine#` tokens. So instead, we need to gather all of
+-- the desired tab labels, sum their lengths, choose a truncation strategy, and
+-- then format everything using that strategy.
 function M._generate_tabline()
-    local s = ""
-
+    -- Get all of the tab information
+    local tabs = {}
     for i = 1, vim.fn.tabpagenr('$') do
-        s = s .. M._generate_tabline_tab(i)
+        tabs[i] = M._get_tab_info(i)
     end
 
-    -- After the last tab fill with TabLineFill and reset tab page nr
-    s = s .. '%#TabLineFill#%T'
+    -- The length of the tab label prefix (I.E. "+[1] "), which can vary if the
+    -- tab index is multiple digits. Ignoring the case of >100 tabs; I never
+    -- use that many and there would be no good way to format that anyways
+    local prefix_length = #tabs >= 10 and 6 or 5
 
-    -- Right-align the label to close the current tab page
-    if vim.fn.tabpagenr('$') > 1 then
-        s = s .. '%=%#TabLine#%999Xclose'
+    local total_length = 0
+    for _, tab in ipairs(tabs) do
+        local title_len = #tab["title"]
+        local tab_len = title_len + prefix_length
+        total_length = total_length + tab_len
     end
 
-    return s
+    -- We separate tabs with a space so account for that as well
+    total_length = total_length + #tabs - 1
+
+    local truncation = {
+        strategy = "None",
+        total_length = total_length,
+        max_length = vim.o.columns,
+        amount = 0,
+        amount_per_tab = 0,
+    }
+
+    -- Handle truncating if the tabline is too long
+    if total_length > truncation["max_length"] then
+        truncation["strategy"] = "Basic"
+        truncation["amount"] = truncation["total_length"] - truncation["max_length"]
+        truncation["amount_per_tab"] = truncation["amount"] - #tabs
+    end
+
+    return M._format_tabline(tabs, truncation)
 end
 
 function M._tab_line()
