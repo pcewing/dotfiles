@@ -15,17 +15,32 @@ class Config:
 
     @staticmethod
     def load() -> dict[str, str]:
-        try:
-            with open(Config._path(), "r") as f:
-                return json.loads(f.read())
-        except FileNotFoundError:
-            return {}
+        if not os.path.exists(Config._path()):
+            Config._init()
+        with open(Config._path(), "r") as f:
+            return json.loads(f.read())
+
+    @staticmethod
+    def _init() -> None:
+        os.makedirs(os.path.dirname(Config._path()), exist_ok=True)
+        with open(Config._path(), "w") as f:
+            f.write(json.dumps(Config._default(), indent="    "))
 
     @staticmethod
     def _path():
         if Config._PATH is None:
             Config._PATH = f"{home()}/.config/fd/config.json"
         return Config._PATH
+
+    @staticmethod
+    def _default() -> dict[str, any]:
+        return {
+            "update": {
+                "git_search_paths": [
+                    "~/src"
+                ]
+            }
+        }
 
 
 RegistryEntry = dict[str, str]
