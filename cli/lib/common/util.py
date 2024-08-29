@@ -20,7 +20,7 @@ def sh(cmd: list[str], check: bool = False) -> int:
 
 
 def mkdir_p(path: str, dry_run: bool) -> None:
-    Log.info("creating directory:", [("path", path)])
+    Log.info("creating directory:", {"path": path})
 
     if dry_run:
         Log.info("skipping directory creation due to --dry-run")
@@ -29,7 +29,7 @@ def mkdir_p(path: str, dry_run: bool) -> None:
 
 
 def sudo_mkdir_p(path: str, dry_run: bool) -> None:
-    Log.info("creating directory:", [("path", path)])
+    Log.info("creating directory:", {"path": path})
 
     if dry_run:
         Log.info("skipping directory creation due to --dry-run")
@@ -39,7 +39,7 @@ def sudo_mkdir_p(path: str, dry_run: bool) -> None:
 
 
 def sudo_rmdir(path: str, dry_run: bool) -> None:
-    Log.info("deleting directory:", [("path", path)])
+    Log.info("deleting directory:", {"path": path})
 
     if dry_run:
         Log.info("skipping directory deletion due to --dry-run")
@@ -49,7 +49,7 @@ def sudo_rmdir(path: str, dry_run: bool) -> None:
 
 
 def sudo_mvdir(src: str, dst: str, dry_run: bool) -> None:
-    Log.info("moving directory:", [("from", src), ("to", dst)])
+    Log.info("moving directory:", {"from": src, "to": dst})
 
     if dry_run:
         Log.info("skipping directory move due to --dry-run")
@@ -59,7 +59,7 @@ def sudo_mvdir(src: str, dst: str, dry_run: bool) -> None:
 
 
 def download_file(url: str, path: str, sudo: bool, force: bool, dry_run: bool) -> None:
-    Log.info("downloading file", [("url", url), ("path", path)])
+    Log.info("downloading file", {"url": url, "path": path})
 
     if os.path.isfile(path) and not force:
         Log.info(
@@ -71,7 +71,7 @@ def download_file(url: str, path: str, sudo: bool, force: bool, dry_run: bool) -
     Shell.mkdir(os.path.dirname(path), True, sudo, dry_run)
 
     if dry_run:
-        Log.info("skipping download", [("path", path), ("reason", "dry run")])
+        Log.info("skipping download", {"path": path, "reason": "dry run"})
     else:
         urllib.request.urlretrieve(url, path)
 
@@ -84,10 +84,10 @@ def write_file(path: str, content: str, sudo: bool, dry_run: bool) -> None:
         dry_run=dry_run,
     )
 
-    Log.info("creating file", [("path", path), ("sudo", sudo)])
+    Log.info("creating file", {"path": path, "sudo": sudo})
 
     if dry_run:
-        Log.info("skipping file creation", [("reason", "dry run")])
+        Log.info("skipping file creation", {"reason": "dry run"})
         return
 
     # TODO: Handle sudo

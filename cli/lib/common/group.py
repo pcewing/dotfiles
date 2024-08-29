@@ -8,14 +8,14 @@ from lib.common.log import Log
 class Group:
     @staticmethod
     def add_user(group: str, user: str, dry_run: bool) -> None:
-        Log.info("adding user to group", [("user", user), ("group", group)])
+        Log.info("adding user to group", {"user": user, "group": group})
 
         if Group._is_user_in_group(group, user):
-            Log.info("skipping adding user", [("reason", "already a member")])
+            Log.info("skipping adding user", {"reason": "already a member"})
             return
 
         if dry_run:
-            Log.info("skipping adding user", [("reason", "dry run")])
+            Log.info("skipping adding user", {"reason": "dry run"})
         else:
             cmd = ["sudo", "usermod", "-aG", group, user]
             if subprocess.call(cmd) != 0:

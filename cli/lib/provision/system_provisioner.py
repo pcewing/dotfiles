@@ -73,7 +73,7 @@ class SystemProvisioner(ISystemProvisioner):
             )
 
         for component in component_provisioners:
-            Log.info("provisioning component", [("component", component)])
+            Log.info("provisioning component", {"component": component})
             component_provisioners[component].provision()
 
     @staticmethod

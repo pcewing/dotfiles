@@ -53,7 +53,7 @@ class FlavoursProvisioner(IComponentProvisioner):
         Log.info("deleting flavours release archive")
         Shell.rm(archive_path, False, False, False, self._args.dry_run)
 
-        Log.info("creating base install directory", [("path", base_install_dir)])
+        Log.info("creating base install directory", {"path": base_install_dir})
         Shell.mkdir(base_install_dir, True, True, self._args.dry_run)
 
         Log.info("deleting existing install directory if there is one")
@@ -77,7 +77,7 @@ class FlavoursProvisioner(IComponentProvisioner):
 
     def _download_release_archive(self, version: str, path: str) -> None:
         if os.path.isfile(path):
-            Log.info("skipping download because file already exists", [("path", path)])
+            Log.info("skipping download because file already exists", {"path": path})
             return
 
         # Make sure the directory we are downloading to exists

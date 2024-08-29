@@ -26,18 +26,18 @@ def _i3_prepare_install_dir(install_dir: str, create: bool, dry_run: bool) -> No
     Shell.rm(install_dir, True, True, True, dry_run)
 
     if create:
-        Log.info("creating install directory", [("path", install_dir)])
+        Log.info("creating install directory", {"path": install_dir})
         Shell.mkdir(install_dir, True, True, dry_run)
     else:
         base_install_dir = os.path.dirname(install_dir)
-        Log.info("creating base install directory", [("path", base_install_dir)])
+        Log.info("creating base install directory", {"path": base_install_dir})
         Shell.mkdir(base_install_dir, True, True, dry_run)
 
 
 def _i3_bootstrap(dry_run: bool):
     Log.info("bootstrapping i3")
     if dry_run:
-        Log.info("skipping i3 bootstrap", [("reason", "dry run")])
+        Log.info("skipping i3 bootstrap", {"reason": "dry run"})
         return
     if subprocess.call(["meson", ".."]) != 0:
         raise Exception("meson returned non-zero exit code")
@@ -46,7 +46,7 @@ def _i3_bootstrap(dry_run: bool):
 def _i3_build(dry_run: bool):
     Log.info("building i3")
     if dry_run:
-        Log.info("skipping i3 build", [("reason", "dry run")])
+        Log.info("skipping i3 build", {"reason": "dry run"})
         return
     if subprocess.call(["ninja"]) != 0:
         raise Exception("ninja returned non-zero exit code")
@@ -59,7 +59,7 @@ class I3Provisioner(IComponentProvisioner):
 
     def provision(self) -> None:
         if not self._args.tags.has(Tags.x11):
-            Log.info("skipping i3 provisioner", [("reason", "x11 tag not present")])
+            Log.info("skipping i3 provisioner", {"reason": "x11 tag not present"})
             return
 
         latest_tag_name, latest_tag_version = I3Provisioner._get_latest_tag()

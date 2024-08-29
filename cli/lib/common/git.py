@@ -134,10 +134,10 @@ class GitRepository:
         self._path = path
 
     def checkout(self, target: str, dry_run: bool) -> None:
-        Log.debug("checking out git target", [("target", target)])
+        Log.debug("checking out git target", {"target": target})
 
         if dry_run:
-            Log.debug("skipping git checkout", [("reason", "dry run")])
+            Log.debug("skipping git checkout", {"reason": "dry run"})
             return
 
         cmd = [
@@ -155,9 +155,9 @@ class GitRepository:
 class Git:
     @staticmethod
     def clone(url: str, path: str, dry_run: bool) -> GitRepository:
-        Log.debug("cloning git repository", [("url", url, "path", path)])
+        Log.debug("cloning git repository", {"url": url, "path": path})
         if dry_run:
-            Log.debug("skipping git clone", [("reason", "dry run")])
+            Log.debug("skipping git clone", {"reason": "dry run"})
         else:
             if subprocess.call(["git", "clone", url, path]) != 0:
                 raise Exception("Failed to clone git repository")
@@ -240,13 +240,13 @@ class Git:
 
     @staticmethod
     def push(remote: str, branch: str) -> None:
-        Log.debug("pushing to remote", [("remote", remote), ("branch", branch)])
+        Log.debug("pushing to remote", {"remote": remote, "branch": branch})
         cmd = ["git", "push", remote, branch]
         subprocess.check_call(cmd)
 
     @staticmethod
     def pull(remote: str, branch: str, rebase: bool = False) -> None:
-        Log.debug("pulling from remote", [("remote", remote), ("branch", branch)])
+        Log.debug("pulling from remote", {"remote": remote, "branch": branch})
         cmd = ["git", "pull"]
         if rebase:
             cmd.append("--rebase")
@@ -255,15 +255,15 @@ class Git:
 
     @staticmethod
     def create_branch(name: str) -> None:
-        Log.debug("creating a new branch", [("name", name)])
+        Log.debug("creating a new branch", {"name": name})
         subprocess.check_call(["git", "branch", name])
 
     @staticmethod
     def checkout(target: str) -> None:
-        Log.debug("checking out target (branch/hash/tag)", [("target", target)])
+        Log.debug("checking out target (branch/hash/tag)", {"target": target})
         subprocess.check_call(["git", "checkout", target])
 
     @staticmethod
     def cherry_pick(hash: str) -> None:
-        Log.debug("cherry-picking commit", [("hash", hash)])
+        Log.debug("cherry-picking commit", {"hash": hash})
         subprocess.check_call(["git", "cherry-pick", hash])

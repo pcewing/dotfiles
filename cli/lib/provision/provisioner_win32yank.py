@@ -82,7 +82,7 @@ class Win32YankProvisioner(IComponentProvisioner):
         Log.info("extracting win32yank release archive")
         Archive.extract(self._archive_path, self._staging_dir, self._args.dry_run)
 
-        Log.info("creating win32yank install directory", [("path", self._install_dir)])
+        Log.info("creating win32yank install directory", {"path": self._install_dir})
         Shell.mkdir(
             path=self._install_dir,
             exist_ok=True,
@@ -122,7 +122,7 @@ class Win32YankProvisioner(IComponentProvisioner):
         )
 
     def _read_version_file(self) -> Union[str, None]:
-        Log.info("reading version file", [("path", self._version_file_path())])
+        Log.info("reading version file", {"path": self._version_file_path()})
         if not os.path.isfile(self._version_file_path()):
             return None
         with open(self._version_file_path(), "r") as f:

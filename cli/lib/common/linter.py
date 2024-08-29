@@ -93,7 +93,7 @@ class Linter:
 
     @staticmethod
     def _remove_unused_imports(file: str, dry_run: bool) -> None:
-        Log.info("removing unused imports", [("file", file)])
+        Log.info("removing unused imports", {"file": file})
         if not dry_run:
             sh(
                 ["autoflake", "--in-place", "--remove-all-unused-imports", file],
@@ -102,13 +102,13 @@ class Linter:
 
     @staticmethod
     def _sort_imports(file: str, dry_run: bool) -> None:
-        Log.info("sorting imports", [("file", file)])
+        Log.info("sorting imports", {"file": file})
         if not dry_run:
             sh(["isort", file], check=True)
 
     @staticmethod
     def _format_file(file: str, dry_run: bool) -> None:
-        Log.info("formatting file", [("file", file)])
+        Log.info("formatting file", {"file": file})
         if not dry_run:
             sh(["black", file], check=True)
 

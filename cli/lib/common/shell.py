@@ -12,10 +12,10 @@ from lib.common.log import Log
 class Shell:
     @staticmethod
     def mkdir(path: str, exist_ok: bool, sudo: bool, dry_run: bool) -> None:
-        Log.info("creating directory", [("path", path)])
+        Log.info("creating directory", {"path": path})
 
         if dry_run:
-            Log.info("skipping directory creation", [("reason", "dry run")])
+            Log.info("skipping directory creation", {"reason": "dry run"})
             return
 
         cmd = []
@@ -30,7 +30,7 @@ class Shell:
 
     @staticmethod
     def rm(path: str, recursive: bool, force: bool, sudo: bool, dry_run: bool) -> None:
-        Log.info("removing file or directory", [("path", path)])
+        Log.info("removing file or directory", {"path": path})
         if dry_run:
             Log.info("skipping removal due to --dry-run")
             return
@@ -47,7 +47,7 @@ class Shell:
 
     @staticmethod
     def mv(src: str, dst: str, sudo: bool, dry_run: bool) -> None:
-        Log.info("moving file or directory", [("from", src), ("to", dst)])
+        Log.info("moving file or directory", {"from": src, "to": dst})
 
         if dry_run:
             Log.info("skipping directory move due to --dry-run")
@@ -60,7 +60,7 @@ class Shell:
 
     @staticmethod
     def ln(source: str, target: str, sudo: bool, dry_run: bool) -> None:
-        Log.info("creating symbolic link", [("source", source), ("target", target)])
+        Log.info("creating symbolic link", {"source": source, "target": target})
 
         if dry_run:
             Log.info("skipping symbolic link creation due to --dry-run")
@@ -73,7 +73,7 @@ class Shell:
 
     @staticmethod
     def chmod(mod: str, file: str, sudo: bool, dry_run: bool) -> None:
-        Log.info("changing file permissions", [("file", file), ("permissions", mod)])
+        Log.info("changing file permissions", {"file": file, "permissions": mod})
 
         if dry_run:
             Log.info("skipping file permission update creation due to --dry-run")
@@ -86,13 +86,13 @@ class Shell:
 
     @staticmethod
     def cd(path: str, dry_run: bool) -> None:
-        Log.info("changing directory", [("path", path)])
+        Log.info("changing directory", {"path": path})
         if dry_run:
-            Log.info("skipping directory change", [("reason", "dry run")])
+            Log.info("skipping directory change", {"reason": "dry run"})
             return
         os.chdir(path)
 
     @staticmethod
     def _exec(cmd: list[str]) -> int:
-        Log.debug("executing shell command", [("command", " ".join(cmd))])
+        Log.debug("executing shell command", {"command": " ".join(cmd)})
         return subprocess.call(cmd)
