@@ -59,14 +59,14 @@ class Archive:
     def _unzip(
         path: str, compression_type: CompressionType, dst_dir: str, dry_run: bool
     ) -> None:
-        Log.info("unzipping archive", [("path", path), ("dst_dir", dst_dir)])
+        Log.info("unzipping archive", {"path": path, "dst_dir": dst_dir})
 
         cmd = ["unzip", "-o", path, "-d", dst_dir]
 
         # Compression type is currently ignored for zip files
 
         if dry_run:
-            Log.info("skipping zip file extraction", [("reason", "dry run")])
+            Log.info("skipping zip file extraction", {"reason": "dry run"})
         else:
             sh(cmd)
 

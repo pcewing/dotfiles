@@ -30,7 +30,7 @@ class DotProvisioner(IComponentProvisioner):
             "dot",
         ]
 
-        Log.info("generating dot cli completion script", [("command", " ".join(cmd))])
+        Log.info("generating dot cli completion script", {"command": " ".join(cmd)})
 
         if self._args.dry_run:
             Log.info(

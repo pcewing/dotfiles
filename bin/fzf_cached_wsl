@@ -130,7 +130,7 @@ class FuzzyFileFinder:
                 m = re.match(ignore_pattern, path_rel)
                 if m is not None:
                     # Keep this commented out for performance except when debugging
-                    # Log.debug("ignoring directory", [("ignore_pattern", ignore_pattern), ("dir", path_rel)])
+                    # Log.debug("ignoring directory", {"ignore_pattern": ignore_pattern, "dir": path_rel})
                     return FileWalker.DirectoryHandlerResult(skip=True)
 
         def handle_file(
@@ -142,7 +142,7 @@ class FuzzyFileFinder:
                 m = re.match(ignore_pattern, path_rel)
                 if m is not None:
                     # Keep this commented out for performance except when debugging
-                    # Log.debug("ignoring file", [("ignore_pattern", ignore_pattern), ("file", path_rel)])
+                    # Log.debug("ignoring file", {"ignore_pattern": ignore_pattern, "file": path_rel})
                     return
 
             on_file(file.get_relative_path())
@@ -164,7 +164,7 @@ class Cache:
         self._should_tidy = tidy
 
         self._cache_id = Cache._get_cache_id(directory)
-        Log.info("cache id determined", [("cache_id", self._cache_id)])
+        Log.info("cache id determined", {"cache_id": self._cache_id})
 
         self._existing_cache_files = self._get_existing_cache_files(
             self._tmp_directory, self._cache_id
@@ -212,7 +212,7 @@ class Cache:
 
     def _tidy(self) -> None:
         for cache_file in self._existing_cache_files:
-            Log.info("removing old cache file", [("cache_file", cache_file)])
+            Log.info("removing old cache file", {"cache_file": cache_file})
             try:
                 os.remove(cache_file)
             except FileNotFoundError:
@@ -224,15 +224,15 @@ class Cache:
     # return None.
     def _load(self) -> set[str]:
         if not self._use_existing:
-            Log.info("skipping cache load", [("reason", "--no-cache flag specified")])
+            Log.info("skipping cache load", {"reason": "--no-cache flag specified"})
             return set()
 
         if len(self._existing_cache_files) == 0:
-            Log.info("skipping cache load", [("reason", "cache file does not exist")])
+            Log.info("skipping cache load", {"reason": "cache file does not exist"})
             return set()
 
         cache_file = self._existing_cache_files[0]
-        Log.info("loading cache from file", [("cache_file", cache_file)])
+        Log.info("loading cache from file", {"cache_file": cache_file})
 
         cache_file_content = None
         with open(cache_file, "r") as f:
@@ -266,7 +266,7 @@ class Cache:
 
 def clean(tmp_dir: str):
     try:
-        Log.info("removing existing tmp directory", [("tmp_dir", tmp_dir)])
+        Log.info("removing existing tmp directory", {"tmp_dir": tmp_dir})
         Util.rmdir(tmp_dir)
     except FileNotFoundError:
         pass

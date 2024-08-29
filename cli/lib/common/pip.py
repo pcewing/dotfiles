@@ -14,7 +14,7 @@ class Pip:
         sudo: bool = False,
         dry_run: bool = True,
     ) -> None:
-        Log.info("installing pip packages", [("packages", packages)])
+        Log.info("installing pip packages", {"packages": packages})
         if dry_run:
             Log.info("skipping pip install due to --dry-run")
             return

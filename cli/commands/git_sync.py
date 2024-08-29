@@ -58,7 +58,7 @@ def find_common_commit(local_commits: list[GitCommit], remote_commits: list[GitC
         raise Exception("Failed to find a common commit between the local and remote repositories")
 
     common_commit = local_commits[local_commit_index]
-    Log.info("common commit found", [("hash", common_commit.hash), ("message", common_commit.message)])
+    Log.info("common commit found", {"hash": common_commit.hash, "message": common_commit.message})
 
     return local_commit_index, remote_commit_index
 

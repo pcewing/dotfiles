@@ -65,7 +65,7 @@ class Link:
                 )
             os.remove(self.dst)
 
-        Log.info(f"Creating symlink", [("source", self.src), ("target", self.dst)])
+        Log.info(f"Creating symlink", {"source": self.src, "target": self.dst})
         os.symlink(self.src, self.dst)
 
     def delete(self) -> None:

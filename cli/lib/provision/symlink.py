@@ -7,10 +7,10 @@ from lib.common.shell import Shell
 class Symlink:
     @staticmethod
     def create(source: str, target: str, sudo: bool, dry_run: bool) -> None:
-        Log.info("creating symlink", [("source", source), ("target", target)])
+        Log.info("creating symlink", {"source": source, "target": target})
 
         if dry_run:
-            Log.info("skipping symlink creation", [("reason", "dry run")])
+            Log.info("skipping symlink creation", {"reason": "dry run"})
             return
 
         if not os.path.isfile(source):

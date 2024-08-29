@@ -23,11 +23,11 @@ def prepare_install_dir(install_dir: str, create: bool, dry_run: bool) -> None:
     Shell.rm(install_dir, True, True, True, dry_run)
 
     if create:
-        Log.info("creating install directory", [("path", install_dir)])
+        Log.info("creating install directory", {"path": install_dir})
         Shell.mkdir(install_dir, True, True, dry_run)
     else:
         base_install_dir = os.path.dirname(install_dir)
-        Log.info("creating base install directory", [("path", base_install_dir)])
+        Log.info("creating base install directory", {"path": base_install_dir})
         Shell.mkdir(base_install_dir, True, True, dry_run)
 
 
@@ -83,7 +83,7 @@ class TreeSitterProvisioner(IComponentProvisioner):
 
     def _download_release_zip(self, version: str, path: str) -> None:
         if os.path.isfile(path):
-            Log.info("skipping download because file already exists", [("path", path)])
+            Log.info("skipping download because file already exists", {"path": path})
             return
 
         Log.info("downloading tree-sitter release archive")
@@ -101,7 +101,7 @@ class TreeSitterProvisioner(IComponentProvisioner):
 
     @staticmethod
     def _unzip_executable(zip_path: str, dry_run: bool) -> None:
-        Log.info("unzipping zip file", [("path", zip_path)])
+        Log.info("unzipping zip file", {"path": zip_path})
         if dry_run:
             Log.info("skipping apt update due to --dry-run")
         else:

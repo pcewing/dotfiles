@@ -26,7 +26,7 @@ class Alternatives:
 
     @staticmethod
     def set(name: str, path: str, sudo: bool, dry_run: bool):
-        Log.info("setting alternative", [("name", name), ("path", path)])
+        Log.info("setting alternative", {"name": name, "path": path})
         if dry_run:
             Log.info("skip setting alternative due to --dry-run")
             return

@@ -53,7 +53,7 @@ class NeovimProvisioner(IComponentProvisioner):
         Log.info("deleting existing install directory if there is one")
         Shell.rm(install_dir, True, True, True, self._args.dry_run)
 
-        Log.info("creating install directory", [("path", install_dir)])
+        Log.info("creating install directory", {"path": install_dir})
         Shell.mkdir(install_dir, True, True, self._args.dry_run)
 
         Log.info("moving appimage to install location")
@@ -87,7 +87,7 @@ class NeovimProvisioner(IComponentProvisioner):
 
     def _download_release_appimage(self, version: str, path: str) -> None:
         if os.path.isfile(path):
-            Log.info("skipping download because file already exists", [("path", path)])
+            Log.info("skipping download because file already exists", {"path": path})
             return
 
         # Make sure the directory we are downloading to exists

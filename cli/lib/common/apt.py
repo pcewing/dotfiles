@@ -117,7 +117,7 @@ class Apt:
 
     @staticmethod
     def install(packages: List[str], dry_run: bool) -> None:
-        Log.info("installing apt packages", [("packages", sorted(packages))])
+        Log.info("installing apt packages", {"packages": sorted(packages)})
         if dry_run:
             Log.info("skipping apt install due to --dry-run")
             return
@@ -133,7 +133,7 @@ class Apt:
             [("packages", "[ " + ", ".join(deb_files) + " ]")],
         )
         if dry_run:
-            Log.info("skipping install", [("reason", "dry run")])
+            Log.info("skipping install", {"reason": "dry run"})
         else:
             if subprocess.call(cmd) != 0:
                 raise Exception("Failed to install packages")

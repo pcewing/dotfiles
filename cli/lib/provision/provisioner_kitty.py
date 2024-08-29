@@ -64,7 +64,7 @@ class KittyProvisioner(IComponentProvisioner):
         Log.info("deleting kitty release archive")
         Shell.rm(archive_path, False, False, False, self._args.dry_run)
 
-        Log.info("creating base install directory", [("path", base_install_dir)])
+        Log.info("creating base install directory", {"path": base_install_dir})
         Shell.mkdir(base_install_dir, True, True, self._args.dry_run)
 
         Log.info("deleting existing install directory if there is one")
