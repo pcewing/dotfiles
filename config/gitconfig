@@ -8,6 +8,7 @@
     ss  = status
     co = checkout
     cob = checkout -b
+    cot = checkout --track
     br = branch -v
     cont = rebase --continue
     rv = remote -v
