@@ -1,0 +1,44 @@
+snippet eq "Inline equation"
+\( $1 \)
+endsnippet
+
+snippet fn "Function i.e. f(x)"
+$1\xPar{$2}
+endsnippet
+
+snippet equation* "Equation without label"
+\begin{equation*}
+	$1
+\end{equation*}
+endsnippet
+
+snippet equation "Equation with label"
+\begin{equation}
+    \label{eq:$1}
+    $2
+\end{equation*}
+
+Using (\ref{eq:$1})...
+endsnippet
+
+snippet ( "Parenthesis"
+\xPar{$1}
+endsnippet
+
+snippet gathered "Centered multiline equation"
+\begin{gathered}
+	$1 \\\\
+	$2
+\end{gathered}
+endsnippet
+
+snippet figure "Figure"
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{$3.png}
+    \caption{$1}
+    \label{fig:$2}
+\end{figure}
+
+...as shown in Figure \ref{fig:$2}.
+endsnippet

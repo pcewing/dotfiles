@@ -10,6 +10,10 @@ function M._move_to_column(opts)
     Util.move_to_column(column)
 end
 
+function M._reload_snippets(commands)
+    vim.cmd('call UltiSnips#RefreshSnippets()')
+end
+
 function M._create_command(name, fn, opts)
     vim.api.nvim_create_user_command(name, fn, opts)
 end
@@ -33,7 +37,8 @@ function M.init()
     M._create_commands({
         { 'ReloadConfig',     Util.reload_config,       {} },
         { 'CloseTabsToRight', Util.close_tabs_to_right, {} },
-        { 'MoveToColumn',     M._move_to_column,        { nargs = 1 } }
+        { 'MoveToColumn',     M._move_to_column,        { nargs = 1 } },
+        { 'ReloadSnippets',   M._reload_snippets,       {} },
     })
 end
 
