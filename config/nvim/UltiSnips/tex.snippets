@@ -26,7 +26,7 @@ endsnippet
 
 snippet equation "Equation with label"
 \begin{equation}
-    \label{eq:$1}
+    \xLabelEq{$1}
     $2
 \end{equation}
 
@@ -53,7 +53,7 @@ snippet figure "Figure"
     \centering
     \includegraphics[width=0.5\textwidth]{$3.png}
     \caption{$1}
-    \label{fig:$2}
+    \xLabelFig{$2}
 \end{figure}
 
 ...as shown in Figure \ref{fig:$2}.
@@ -85,7 +85,6 @@ snippet graph "Graph figure using Tikz"
         \end{axis}
     \end{tikzpicture}
     \caption{#1}
-    \label{fig:#2}
+    \xLabelFig{#2}
 \end{figure}
 endsnippet
-
