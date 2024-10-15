@@ -9,10 +9,8 @@ LogLevel = int
 LogHandler = Union[logging.StreamHandler, logging.FileHandler]
 LogHandlers = list[LogHandler]
 
-# TODO: Just make this a dictionary instead of a list of KVPs
-# LogData = dict[str, Any]
+LogData = dict[str, Any]
 LogDataKvp = tuple[str, Any]
-LogData = list[LogDataKvp]
 
 # fmt: off
 _LOG_LEVEL_STRINGS = {
@@ -91,27 +89,27 @@ class Log:
         Log._logger = logger
 
     @staticmethod
-    def debug(msg: str, data: LogData = []) -> None:
+    def debug(msg: str, data: LogData = {}) -> None:
         Log._log(logging.DEBUG, msg, data)
 
     @staticmethod
-    def info(msg: str, data: LogData = []) -> None:
+    def info(msg: str, data: LogData = {}) -> None:
         Log._log(logging.INFO, msg, data)
 
     @staticmethod
-    def warn(msg: str, data: LogData = []) -> None:
+    def warn(msg: str, data: LogData = {}) -> None:
         Log._log(logging.WARNING, msg, data)
 
     @staticmethod
-    def error(msg: str, data: LogData = []) -> None:
+    def error(msg: str, data: LogData = {}) -> None:
         Log._log(logging.ERROR, msg, data)
 
     @staticmethod
-    def fatal(msg: str, data: LogData = []) -> None:
+    def fatal(msg: str, data: LogData = {}) -> None:
         Log._log(logging.FATAL, msg, data)
 
     @staticmethod
-    def _log(level: LogLevel, msg: str, data: LogData = []) -> None:
+    def _log(level: LogLevel, msg: str, data: LogData = {}) -> None:
         if Log._logger is None:
             return
         Log._logger.log(level, Log._format_msg(msg, data))
@@ -124,7 +122,7 @@ class Log:
     def _format_data(data: LogData) -> str:
         if len(data) == 0:
             return ""
-        return f" {{ {', '.join([Log._format_kvp(kvp) for kvp in data])} }}"
+        return f" {{ {', '.join([Log._format_kvp(kvp) for kvp in data.items()])} }}"
 
     @staticmethod
     def _format_kvp(kvp: LogDataKvp) -> str:
