@@ -33,6 +33,13 @@ snippet equation "Equation with label"
 Using \xRefEq{$1}...
 endsnippet
 
+snippet align* "Aligned multi-line equation without label"
+\begin{align*}
+	x &= 1 \\\\
+	y &= 2
+\end{align*}
+endsnippet
+
 #snippet frac "Fraction"
 #\frac{$1}{$2}
 #endsnippet
@@ -50,7 +57,7 @@ endsnippet
 
 snippet cases "Centered multiline equation"
 \begin{cases}
-    1 & foo \\
+    1 & foo \\\\
     0 & bar
 \end{cases}
 endsnippet

@@ -4,6 +4,7 @@ Improvements I'd like to make to my dotfiles.
 
 ## Table of Contents
 
+- [High Priority](#high-priority)
 - [Misc](#misc)
 - [Python CLI](#python-cli)
     - [Bootstrapper](#bootstrapper)
@@ -28,6 +29,16 @@ Improvements I'd like to make to my dotfiles.
     - [Providers](#providers)
     - [nvim-telescope/telescope.nvim](#nvim-telescope/telescope.nvim)
     - [neovim/nvim-lspconfig](#neovim/nvim-lspconfig)
+
+## High Priority
+
+UltiSnips freezes sometimes in Neovim which is really annoying and was marked as won't fix because it's specific to Neovim:
+
+https://github.com/SirVer/ultisnips/issues/1381
+
+We should switch to another snippet plugin, maybe `vim-vsnip` since I see that's what someone else did:
+
+https://github.com/Sangdol/vimrc/commit/b6c5cf06b761b17d5b39c39a2ae9ad584f48761a
 
 ## Misc
 
