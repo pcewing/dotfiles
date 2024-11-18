@@ -18,6 +18,22 @@ snippet fn "Function i.e. f(x)"
 \xFunc{$1}{$2}
 endsnippet
 
+snippet par "Wrap math term in parenthesis"
+\xPar{$1}
+endsnippet
+
+snippet pip "Wrap math term in pipes"
+\xPip{$1}
+endsnippet
+
+snippet brk "Wrap math term in square brackets"
+\xBrk{$1}
+endsnippet
+
+snippet brc "Wrap math term in curly braces"
+\xBrc{$1}
+endsnippet
+
 snippet equation* "Equation without label"
 \begin{equation*}
 	$1
@@ -49,8 +65,10 @@ snippet align "Aligned equation with label"
 Using \xRefEq{$1}...
 endsnippet
 
+# TODO: Collides with the frac snippet in the default LaTeX snippets. Look into
+# whether or not there's a way to always prioritize snippets from this file.
 #snippet frac "Fraction"
-#\frac{$1}{$2}
+#	\frac{$1}{$2}
 #endsnippet
 
 snippet ( "Parenthesis"
@@ -62,6 +80,13 @@ snippet gathered "Centered multiline equation"
 	$1 \\\\
 	$2
 \end{gathered}
+endsnippet
+
+snippet aligned "Aligned multiline equation"
+\begin{aligned}
+	$1 \\\\
+	$2 
+\end{aligned}
 endsnippet
 
 snippet cases "Math Equation with Multiple Cases"
