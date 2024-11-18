@@ -40,6 +40,15 @@ snippet align* "Aligned multi-line equation without label"
 \end{align*}
 endsnippet
 
+snippet align "Aligned equation with label"
+\begin{align}
+    \xLabelEq{$1}
+    $2
+\end{align}
+
+Using \xRefEq{$1}...
+endsnippet
+
 #snippet frac "Fraction"
 #\frac{$1}{$2}
 #endsnippet
@@ -55,7 +64,7 @@ snippet gathered "Centered multiline equation"
 \end{gathered}
 endsnippet
 
-snippet cases "Centered multiline equation"
+snippet cases "Math Equation with Multiple Cases"
 \begin{cases}
     1 & foo \\\\
     0 & bar
