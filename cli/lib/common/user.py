@@ -3,8 +3,8 @@
 import os
 import subprocess
 
-from lib.common.os import OperatingSystem
 from lib.common.log import Log
+from lib.common.os import OperatingSystem
 
 
 # TODO: Created this without realizing group.py already exists, merge the two
@@ -57,7 +57,7 @@ class User:
             )
 
     def _get_groups_linux(self) -> List[str]:
-        import pwd, grp
+        import grp
 
         # Get the groups that the user is in
         groups = [g for g in grp.getgrall() if self._name in g.gr_mem]

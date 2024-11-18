@@ -4,8 +4,8 @@ import argparse
 import os
 
 from lib.common.distro_info import DistroInformation
-from lib.common.os import OperatingSystem
 from lib.common.log import Log
+from lib.common.os import OperatingSystem
 from lib.provision.provisioner import ProvisionerArgs
 from lib.provision.system_provisioner import SystemProvisioner
 from lib.provision.tag import Tags

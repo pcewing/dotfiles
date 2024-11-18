@@ -34,13 +34,7 @@ class Config:
 
     @staticmethod
     def _default() -> dict[str, any]:
-        return {
-            "update": {
-                "git_search_paths": [
-                    "~/src"
-                ]
-            }
-        }
+        return {"update": {"git_search_paths": ["~/src"]}}
 
 
 RegistryEntry = dict[str, str]
@@ -111,7 +105,9 @@ def cmd_fd_choose(args: argparse.Namespace) -> None:
     selected_key = None
     cmd = ["fzf", "--query", args.query]
     try:
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE, text=True)
+        p = subprocess.Popen(
+            cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE, text=True
+        )
         selected_key = p.communicate(input=stdin)[0].strip()
     except FileNotFoundError as e:
         raise Exception("FZF not installed or not in PATH") from e

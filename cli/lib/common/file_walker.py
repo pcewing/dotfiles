@@ -71,7 +71,7 @@ class FileWalker:
 
         def get_nodes(self) -> list["FileWalker.Node"]:
             # TODO: How do I make this one line without angering mypy?
-            nodes: list["FileWalker.Node"]
+            nodes: list["FileWalker.Node"] = []
             nodes += self._files
             nodes += self._directories
             return nodes

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-import random
-import string
 import argparse
 import json
+import random
+import string
 
-from lib.common.log import Log
 from lib.common.git import Git, GitCommit
+from lib.common.log import Log
 from lib.common.typing import StringOrNone
 
 # TODO: Initial rough implementation is does and a few main cases are tested
@@ -17,26 +17,33 @@ from lib.common.typing import StringOrNone
 # - Break up main function so this is more readable
 # - Add a '-m/--message' flag to allow users to specify a commit message
 
+
 def add_git_sync_parser(subparsers: argparse._SubParsersAction) -> None:
     parser = subparsers.add_parser(
         "git-sync",
         # TODO: Add a more descriptive help message
         help="Simple sync to a remote git repository",
     )
-    parser.add_argument("-d", "--dry-run", action="store_true", help="Dry run the command")
-    parser.add_argument("-v", "--verbose", action="store_true", help="Extra verbose output")
+    parser.add_argument(
+        "-d", "--dry-run", action="store_true", help="Dry run the command"
+    )
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="Extra verbose output"
+    )
     parser.set_defaults(func=cmd_git_sync)
 
 
 def generate_temporary_branch_name(length: int = 8):
     characters = string.ascii_lowercase + string.digits
-    random_string = ''.join(random.choice(characters) for _ in range(length))
+    random_string = "".join(random.choice(characters) for _ in range(length))
     return f"temp-{random_string}"
 
 
 # Find the most recent matching commit between the local and remote
 # repositories. Returns the index into both arrays of that commit.
-def find_common_commit(local_commits: list[GitCommit], remote_commits: list[GitCommit]) -> tuple[int, int]:
+def find_common_commit(
+    local_commits: list[GitCommit], remote_commits: list[GitCommit]
+) -> tuple[int, int]:
     remote_commits_dict = {}
     for i in range(len(remote_commits)):
         remote_commit = remote_commits[i]
@@ -55,10 +62,15 @@ def find_common_commit(local_commits: list[GitCommit], remote_commits: list[GitC
         break
 
     if remote_commit_index is None:
-        raise Exception("Failed to find a common commit between the local and remote repositories")
+        raise Exception(
+            "Failed to find a common commit between the local and remote repositories"
+        )
 
     common_commit = local_commits[local_commit_index]
-    Log.info("common commit found", {"hash": common_commit.hash, "message": common_commit.message})
+    Log.info(
+        "common commit found",
+        {"hash": common_commit.hash, "message": common_commit.message},
+    )
 
     return local_commit_index, remote_commit_index
 
@@ -140,7 +152,9 @@ def cmd_git_sync(args: argparse.Namespace) -> None:
         print_commits(remote_commits)
 
     # Find the most recent matching commit between the local and remote
-    local_commit_index, remote_commit_index = find_common_commit(local_commits, remote_commits)
+    local_commit_index, remote_commit_index = find_common_commit(
+        local_commits, remote_commits
+    )
 
     print(
         local_commit_index,
@@ -184,5 +198,5 @@ def cmd_git_sync(args: argparse.Namespace) -> None:
 
 
 def print_commits(commits: list[GitCommit]):
-    d = { "commits": [c.to_dict() for c in commits] }
+    d = {"commits": [c.to_dict() for c in commits]}
     print(json.dumps(d, indent=4))

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import json
-import re
 import subprocess
 
 from lib.common.log import Log
@@ -34,7 +33,8 @@ class GitStatus:
 
     def is_commit_required(self) -> bool:
         return (
-            self.is_add_required() or (len(self.staged_modified) + len(self.staged_added)) > 0
+            self.is_add_required()
+            or (len(self.staged_modified) + len(self.staged_added)) > 0
         )
 
     @staticmethod
