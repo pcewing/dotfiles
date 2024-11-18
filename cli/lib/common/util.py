@@ -4,7 +4,6 @@ import os
 import shutil
 import subprocess
 import urllib.request
-from typing import List
 
 from lib.common.log import Log
 from lib.common.shell import Shell
