@@ -139,11 +139,15 @@ class FuzzyFileFinder:
             name = file.get_name()
             for ignore_pattern in file_ignore_patterns:
                 path_rel = file.get_relative_path()
-                m = re.match(ignore_pattern, path_rel)
-                if m is not None:
-                    # Keep this commented out for performance except when debugging
-                    # Log.debug("ignoring file", {"ignore_pattern": ignore_pattern, "file": path_rel})
-                    return
+                try:
+                    m = re.match(ignore_pattern, path_rel)
+                    if m is not None:
+                        # Keep this commented out for performance except when debugging
+                        # Log.debug("ignoring file", {"ignore_pattern": ignore_pattern, "file": path_rel})
+                        return
+                except:
+                    print("ignore_pattern = {}, path_rel = {}".format(ignore_pattern, path_rel))
+                    raise
 
             on_file(file.get_relative_path())
 
