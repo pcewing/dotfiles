@@ -171,10 +171,10 @@ class Cache:
         )
         Log.info(
             "scanned existing cache files",
-            [
-                ("count", len(self._existing_cache_files)),
-                ("files", self._existing_cache_files),
-            ],
+            {
+                "count": len(self._existing_cache_files),
+                "files": self._existing_cache_files,
+            },
         )
 
         self._cached_files = set()
@@ -290,7 +290,11 @@ def main():
     Log.init("fzf_cached_wsl", log_level, stdout=False, file=log_file)
 
     Log.info(
-        "fzf_cached_wsl started", [("cache", args.cache), ("directory", args.directory)]
+        "fzf_cached_wsl started",
+        {
+            "cache": args.cache,
+            "directory": args.directory,
+        }
     )
 
     cache = Cache(tmp_dir, args.directory, args.cache, args.tidy)

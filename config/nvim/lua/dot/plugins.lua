@@ -7,6 +7,39 @@ local Notifications = require('dot.notifications')
 local Util          = require('dot.util')
 local VimPlug       = require('dot.vim_plug')
 
+-- TODO: Copy/pasted from ChatGPT, find the right place for this and read
+-- through it
+-- Function to list snippets and allow FZF selection
+function ShowSnippets()
+  local filetype = vim.bo.filetype  -- Get the current filetype
+  local snippets = vim.fn["UltiSnips#SnippetsInCurrentScope"](1)  -- Get available snippets
+
+  -- If no snippets available, notify the user
+  if vim.tbl_isempty(snippets) then
+    print("No snippets available for this filetype.")
+    return
+  end
+
+  -- Prepare snippets for FZF display
+  local fzf_snippets = {}
+  for trigger, info in pairs(snippets) do
+    local description = info.description or ""
+    table.insert(fzf_snippets, trigger .. " - " .. description)
+  end
+
+  -- Use FZF to select a snippet
+  vim.fn["fzf#run"]({
+    source = fzf_snippets,
+    sink = function(choice)
+      if choice then
+        local snippet_trigger = choice:match("^(%S+)")
+        vim.cmd("call UltiSnips#ExpandSnippetOrJump()")
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(snippet_trigger, true, false, true), 'm', true)
+      end
+    end
+  })
+end
+
 local M = {}
 
 local plugins = {
@@ -49,6 +82,11 @@ local plugins = {
 
             Map.nnoremap('<leader>ft', ':Tags<cr>')
             Map.nnoremap('<leader>fo', ':Files<cr>')
+
+            -- TODO: Copy/pasted from ChatGPT, clean up to use the Map module
+            -- like above
+            -- Map the function to a keybinding (e.g., <leader>s)
+            vim.api.nvim_set_keymap("n", "<leader>fs", "<cmd>lua ShowSnippets()<CR>", { noremap = true, silent = true })
         end
     },
 
@@ -90,6 +128,7 @@ local plugins = {
             vim.g.UltiSnipsJumpBackwardTrigger = "<c-k>"
 
             Map.nnoremaps('<leader>ue', ':UltiSnipsEdit<CR>')
+
         end
     },
 

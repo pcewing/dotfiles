@@ -70,6 +70,28 @@ This is for repositories like my notes where I basically just always want to
 keep everything in sync and don't use branches. Optionally, accept a parameter
 for commit message.
 
+#### Progress
+
+I started on this but it probably isn't bullet-proof yet. What it does:
+
+- If there are local changes that need to be committed
+    - Create a temporary branch and resolve/commit the changes in it
+    - This is a bit complicated and might be bug prone
+- Fetch from all remotes
+- Detect the most recent matching commit between the local and remote
+- Get the number of commits the local repository is missing from remote and
+  vice versa
+- Pull remote commits if there are any missing from local
+- If there were local changes, cherry-pick them from the temp branch
+- If remote is missing any local commits, push
+
+One thing I might want to change is to push the temporary branch to remote. I
+just encountered an issue where I ran the sync command on my desktop PC and I
+think it errored and I forgot to go back and resolve it. Now, working on my
+laptop, I'm missing those changes. Had I at least pushed the temp branch, I
+could have pulled it down and fixed it on my laptop but since I'm travelling
+I'm just out of luck.
+
 ### Implement More Provisioners
 
 Add a "proprietary" tag for:
