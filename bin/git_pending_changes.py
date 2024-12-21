@@ -35,16 +35,19 @@ def run_command(cmd: list[str]) -> list[str]:
 
 class GitRepoStatus:
     def __init__(self, dir: str) -> None:
+        self._dir = dir
+
         # TODO: Differentiate between staged and unstaged and add other file
         # statuses
         self.modified_files: list[str] = []
         self.untracked_files: list[str] = []
+
         self.deleted_files: list[str] = []
 
-        lines = run_command(["git", "-C", dir, "status", "--short"])
+        lines = run_command(["git", "-C", self._dir, "status", "--short"])
 
         for line in lines:
-            file_status, file_path = line.split(" ")
+            file_status, file_path = line.split(" ", 1)
             file_status = file_status.strip().lower()
             file_path = file_path.strip().lower()
 
@@ -56,8 +59,11 @@ class GitRepoStatus:
                 self.untracked_files.append(file_path)
             else:
                 raise Exception(
-                    f"Unknown file status; dir = {dir}, file_status = {file_status}"
+                    f"Unknown file status; dir = {self._dir}, file_status = {file_status}"
                 )
+
+    def print_full_status(self) -> None:
+        subprocess.call(["git", "-C", self._dir, "status"])
 
 
 def parse_args() -> argparse.Namespace:
@@ -92,8 +98,9 @@ def handle_git_repository(dir: str) -> None:
     if not has_uncommitted_changes(status):
         return
 
-    # TODO: Expand on this, like print a nice status summary
-    print(dir)
+    print("\n================================================================================")
+    print("Repository: " + dir + "\n")
+    status.print_full_status()
 
 
 def handle_dir(
