@@ -288,6 +288,8 @@ function go_test_coverage() {
     fi
 }
 
+# Converts a files binary contents to a nice hex representation and opens that
+# in Neovim.
 function viewhex {
     installed "xxd" "nvim" || return 1
 
@@ -311,6 +313,50 @@ function viewhex {
     else
         return 1
     fi
+}
+
+# This function reads a file and outputs a condensed text hex representation of
+# its binary contents. For example, given the file hello.txt containing just
+# the text:
+#
+#     Hello world, I am here and my name is Paul!
+#
+# The function can be used as follows:
+#
+#     tohex "hello.txt" "hello.hex.txt"
+#
+# As a result, hello.hex.txt will be created containing the following text:
+#
+#     48656c6c6f20776f726c642c204920616d206865726520616e64206d79206e616d65206973205061
+#     756c210a
+#
+# Each line will contain up to 80 characters representing 40 bytes of data.
+# This can be used to copy a binary file across an SSH session without SCP.
+function tohex() {
+    installed "hexdump" "od" || return 1
+
+    local input_file="$1"
+    local output_file="$2"
+
+    # All of these work. The first two are effectively the same and don't add
+    # any whitespace between bytes. The third adds a space between each byte in
+    # the hex output.
+    #hexdump -ve '1/1 "%.2x"' "$input_file" > "$output_file"
+    hexdump -ve '40/1 "%.2x" 1 "\n"' "$input_file" > "$output_file"
+    #od -tx1 -An -v "$input_file" > "$output_file"
+}
+
+# This function simply reverses the operation performed by tohex(). Given the
+# text hex representation, it will output the original file.
+#
+# Example: tohex "hello.hex.txt" "hello.txt"
+function fromhex() {
+    installed "xxd" || return 1
+
+    local input_file="$1"
+    local output_file="$2"
+
+    xxd -p -r "$input_file" "$output_file"
 }
 
 function git_show_tool {
@@ -479,6 +525,7 @@ function sdr() {
 }
 
 
+# TODO: Allow specifying the output path
 function tar_directory() {
     local dir path name
 
