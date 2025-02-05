@@ -12,7 +12,12 @@ class Alternatives:
     ):
         Log.info(
             "Adding alternative",
-            [("link", link), ("name", name), ("path", path), ("priority", priority)],
+            {
+                "link": link,
+                "name": name,
+                "path": path,
+                "priority": priority,
+            },
         )
         if dry_run:
             Log.info("skip adding alternative due to --dry-run")
