@@ -59,11 +59,11 @@ def cmd_provision(args: argparse.Namespace) -> None:
         distro = DistroInformation.get()
         Log.info(
             "provisioning system",
-            [
-                ("distro.id", distro.id),
-                ("distro.release", distro.release),
-                ("distro.codename", distro.codename),
-            ],
+            {
+                "distro.id": distro.id,
+                "distro.release": distro.release,
+                "distro.codename": distro.codename,
+            },
         )
 
     tags = Tags.parse(args.tags) if isinstance(args.tags, str) else args.tags

@@ -40,7 +40,7 @@ class NeovimProvisioner(IComponentProvisioner):
             return
 
         tmp_dir = f"{Dir.home()}/Downloads/neovim/{latest_version}"
-        appimage_filename = "nvim.appimage"
+        appimage_filename = "nvim-linux-x86_64.appimage"
         appimage_path = os.path.join(tmp_dir, appimage_filename)
 
         base_install_dir = "/opt/neovim"
