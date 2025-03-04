@@ -130,7 +130,9 @@ class Apt:
 
         Log.info(
             "installing deb packages",
-            [("packages", "[ " + ", ".join(deb_files) + " ]")],
+            {
+                "packages": "[ " + ", ".join(deb_files) + " ]",
+            }
         )
         if dry_run:
             Log.info("skipping install", {"reason": "dry run"})

@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import os
+
 from lib.common.log import Log
 from lib.common.shell import Shell
 

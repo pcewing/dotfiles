@@ -33,7 +33,7 @@ class DotProvisioner(IComponentProvisioner):
 
         if self._args.dry_run:
             Log.info(
-                "skipping dot cli completion script generation", [("reason", "dry run")]
+                "skipping dot cli completion script generation", {"reason": "dry run"}
             )
             return ""
 
