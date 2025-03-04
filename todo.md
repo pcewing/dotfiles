@@ -92,6 +92,13 @@ laptop, I'm missing those changes. Had I at least pushed the temp branch, I
 could have pulled it down and fixed it on my laptop but since I'm travelling
 I'm just out of luck.
 
+### Provisioner Output
+
+Better display which provisioners passed, failed, or didn't run because right
+now if something fails half-way through it's very annoying to figure out where
+to start again. GitHub's rate limiting seems pretty aggressive so re-running
+the whole thing fails due to 403 errors.
+
 ### Implement More Provisioners
 
 Add a "proprietary" tag for:

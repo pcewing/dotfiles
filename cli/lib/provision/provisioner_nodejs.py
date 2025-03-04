@@ -28,14 +28,20 @@ class NodeJSProvisioner(IComponentProvisioner):
         # Get the currently installed nodejs version
         current_nodejs_version = NodeJSProvisioner._get_current_version()
         Log.info(
-            "identified current nodejs version", [("version", current_nodejs_version)]
+            "identified current nodejs version",
+            {
+                "version": current_nodejs_version,
+            }
         )
 
         # Get latest nodejs version and convert to semver (I.E. "v22.2.0")
         latest_nodejs_release = Github.get_latest_release(org, repo)
         latest_nodejs_version = Semver.parse(latest_nodejs_release)
         Log.info(
-            "identified latest nodejs version", [("version", latest_nodejs_version)]
+            "identified latest nodejs version",
+            {
+                "version": latest_nodejs_version,
+            }
         )
 
         # TODO: Make a utility function for this logic?
@@ -69,7 +75,7 @@ class NodeJSProvisioner(IComponentProvisioner):
         # Extract node tarball
         Log.info(
             "extracting nodejs release archive",
-            [("archive", nodejs_archive_path), ("dst", staging_dir)],
+            { "archive": nodejs_archive_path, "dst": staging_dir },
         )
         Archive.extract(nodejs_archive_path, staging_dir, self._args.dry_run)
 
@@ -85,7 +91,7 @@ class NodeJSProvisioner(IComponentProvisioner):
         nodejs_executables = ["corepack", "node", "npm", "npx"]
 
         Log.info(
-            "creating nodejs executable symlinks", [("executables", nodejs_executables)]
+            "creating nodejs executable symlinks", { "executables": nodejs_executables }
         )
 
         # TODO: We should make a Symlink.create() method that handles deleting existing links and whatnot

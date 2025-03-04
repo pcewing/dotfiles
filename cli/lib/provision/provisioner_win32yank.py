@@ -24,7 +24,7 @@ class Win32YankProvisioner(IComponentProvisioner):
     def provision(self) -> None:
         if not self._args.tags.has(Tags.wsl):
             Log.info(
-                "skipping win32yank provisioner", [("reason", "wsl tag not present")]
+                "skipping win32yank provisioner", {"reason": "wsl tag not present"}
             )
             return
 

@@ -115,7 +115,7 @@ class FlavoursProvisioner(IComponentProvisioner):
         if p.wait() != 0:
             Log.warn(
                 "Flavours update returned non-zero exit code",
-                [("exit_code", exit_code)],
+                {"exit_code": exit_code},
             )
 
     @staticmethod

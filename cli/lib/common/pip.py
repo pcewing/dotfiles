@@ -22,7 +22,7 @@ class Pip:
         cmd = []
 
         if sudo:
-            cmd.append("sudo")
+            cmd += ["sudo", "-i"]
 
         cmd += ["python", "-m", "pip", "install"]
 
