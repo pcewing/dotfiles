@@ -43,6 +43,9 @@ https://github.com/Sangdol/vimrc/commit/b6c5cf06b761b17d5b39c39a2ae9ad584f48761a
 ## Misc
 
 - [ ] Clean up Neovim Healthcheck (**Neovim Healtheck** section)
+- [ ] Change path address bar behavior in Nautilus?
+    - `dconf write /org/gnome/nautilus/preferences/always-use-location-entry true`
+    - Not sure if I actually like this, just need to remember the `Ctrl + l` hotkey
 
 ## XP Submodule
 
