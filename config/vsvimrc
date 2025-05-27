@@ -82,11 +82,22 @@ nnoremap <leader>vs :vsc Edit.GoToSymbol<cr>
 nnoremap <leader>vr :vsc Edit.GoToRecentFile<cr>
 nnoremap <leader>vt :vsc Edit.GoToType<cr>
 
-" Add gvim as an External Tool as described in this guide:
+" To use this mapping, add gvim to Visual Studio as an External Tool
+"
+" The steps below were taken from the following guide:
 " https://vim.fandom.com/wiki/Integrate_gvim_with_Visual_Studio
 "
-" Make sure it's at index 4 in the list (1-based) or change this to the
-" corresponding index
+" 1. In the Visual Studio top menu, navigate to `Tools > External Tools...`
+" 2. Click `Add` to create a new external tool
+" 3. Fill in the fields as follows:
+"     - Title: `&Vim`
+"     - Command: `C:\Program Files (x86)\Vim\vim82\gvim.exe`
+"         - Set this to the actual path to `gvim.exe`
+"     - Arguments:
+"         - `--servername gVimStudio --remote-silent +"execute 'normal! $(CurLine)G$(CurCol)|'" "$(ItemPath)" `
+"
+" Ensure that the newly added `&Vim` external tool is the 4th item in the list
+" or change this to the corresponding index
 nnoremap <leader>vv :vsc Tools.ExternalCommand4<CR>
 
 " Map Visual Studio's native jump behavior which are decent equivalents to the
