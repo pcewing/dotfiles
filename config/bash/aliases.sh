@@ -214,7 +214,8 @@ if _is_installed 'docker'; then
 fi
 
 if _is_installed 'python'; then
-    set_alias '0' 'serve' 'python -m SimpleHTTPServer'
+    #set_alias '0' 'serve' 'python -m SimpleHTTPServer'
+    set_alias '0' 'serve' 'python -m http.server'
 fi
 
 # On Ubuntu, the system-supplied open file dialog can be very slow to open.

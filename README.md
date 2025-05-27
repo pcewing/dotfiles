@@ -125,6 +125,8 @@ Some remaining items to tackle in regards to theming:
 
 ## Windows 10
 
+**TODO**: This doesn't exist anymore? Fix link...
+
 For setup steps on Windows 10, see:
 
 [windows_setup.md](./windows_setup.md)

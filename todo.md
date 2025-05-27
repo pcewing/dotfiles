@@ -295,7 +295,17 @@ I've started noodling on a hacky PoC for this in `bin/i3-util.sh`
 
 Now that we've split our configs let's not link `vi` and `vim` to Neovim.
 
-## Visual Studio Key Bindings
+## Visual Studio
+
+(The TODO here is to put all of this in a proper document)
+
+### Extensions
+
+- VsVim
+- Struct Layout
+- Smart Command Line Arguments VS2022
+
+### Visual Studio Key Bindings
 
 Long term: Figure out a way to version control these properly
 
@@ -319,6 +329,24 @@ Short term: Document how to set things up the way I like them
         - `Ctrl+R` (Redo)
         - `Ctrl+U` Scroll up half a page
         - `Ctrl+V` Visual selection mode
+
+### Disable CodeLens Annotations
+
+These are the things above functions that say:
+
+```
+2 references | Bob Smith, 123 days ago | 1 author, 3 changes
+```
+
+I find them really annoying because I always think there are extra whitespace lines that need to be removed
+
+To disable CodeLens:
+1. Go to Tools > Options.
+2. Expand the Text Editor section.
+3. Select All Languages (or C# specifically if you only want to disable it for that).
+4. Go to CodeLens.
+5. Uncheck Enable CodeLens.
+6. Click OK.
 
 ## Neovim Healtheck
 
