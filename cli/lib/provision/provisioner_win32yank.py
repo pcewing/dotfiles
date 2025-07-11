@@ -112,7 +112,7 @@ class Win32YankProvisioner(IComponentProvisioner):
     def _write_version_file(self, version: str) -> None:
         Log.info(
             "writing version file",
-            [("path", self._version_file_path()), ("version", version)],
+            {"path": self._version_file_path(), "version": version},
         )
         write_file(
             path=self._version_file_path(),
