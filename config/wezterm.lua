@@ -4,11 +4,23 @@ local act = wezterm.action
 
 local config = {}
 
+function get_wsl_domain()
+    -- This should match the entry in the list output by `wsl --list` that
+    -- should be used as the default domain
+    local wsl_domain_name = os.getenv("WEZTERM_WSL_DOMAIN")
+    if not wsl_domain_name or wsl_domain_name == "" then
+        wsl_domain_name = "WSL:Ubuntu"
+    else
+        wsl_domain_name = "WSL:" .. wsl_domain_name
+    end
+    return wsl_domain_name
+end
+
 function get_shell(tab_info)
     local shell = ''
     if tab_info.active_pane.domain_name == "local" then
         shell = '(Git Bash) '
-    elseif tab_info.active_pane.domain_name == "WSL:Ubuntu" then
+    elseif tab_info.active_pane.domain_name == get_wsl_domain() then
         shell = '(WSL) '
     end
     return shell
@@ -35,7 +47,7 @@ wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_wid
 end)
 
 config.default_prog = {"bash"}
-config.default_domain = 'WSL:Ubuntu'
+config.default_domain = get_wsl_domain()
 
 config.launch_menu = {
     {
