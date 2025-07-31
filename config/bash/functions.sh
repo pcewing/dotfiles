@@ -687,3 +687,21 @@ function _git_bash()
 
     "$wezterm_exe" "${wezterm_args[@]}" -- "$bash_exe" "${bash_args[@]}" &
 }
+
+function merge_pdfs()
+{
+    installed "pdftk" || return 1
+
+    local input1="$1"
+    local input2="$2"
+    local output="$3"
+
+    if [ -z "$input1" ] || [ -z "$input2" ] || [ -z "$output" ]; then
+        echo "Usage: merge_pdfs <input1> <input2> <output>"
+        echo ""
+        echo "Example: merge_pdfs statement.pdf receipt.pdf statement_and_receipt.pdf"
+        return 1
+    fi
+
+    pdftk "$input1" "$input2" cat output "$output"
+}
