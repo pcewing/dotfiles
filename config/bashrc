@@ -57,6 +57,15 @@ fi
 export DOT_BASH_COMPLETION="1"
 source "$HOME/.bash_completion.d/dot.bash"
 
+# TODO: This is a gross hack but it fixes an issue when using scp. Once I have
+# more time to dig into the proper fix we should clean up.
+SKIP_BASE16="0"
+if [ -n "$SSH_CONNECTION" ] && [ -z "$SSH_TTY" ]; then
+    SKIP_BASE16="1"
+fi
+
+if [ "$SKIP_BASE16" = "0" ]; then
+
 # Base16 color scheme
 base16_shell_dir="$HOME/.config/base16-shell"
 [ ! -d "$base16_shell_dir" ] && \
@@ -78,4 +87,10 @@ BASE16_SHELL="$HOME/.config/base16-shell/"
 
 eval "base16_outrun-dark"
 # End flavours - bashrc
+
+fi
+
+# TODO: I think this was automatically appended and I didn't notice and
+# accidentally committed it. We should put this somewhere that makes more
+# sense.
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
