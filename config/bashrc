@@ -57,38 +57,18 @@ fi
 export DOT_BASH_COMPLETION="1"
 source "$HOME/.bash_completion.d/dot.bash"
 
-# TODO: This is a gross hack but it fixes an issue when using scp. Once I have
-# more time to dig into the proper fix we should clean up.
-SKIP_BASE16="0"
-if [ -n "$SSH_CONNECTION" ] && [ -z "$SSH_TTY" ]; then
-    SKIP_BASE16="1"
-fi
-
-if [ "$SKIP_BASE16" = "0" ]; then
-
-# Base16 color scheme
-base16_shell_dir="$HOME/.config/base16-shell"
-[ ! -d "$base16_shell_dir" ] && \
-    git clone "https://github.com/chriskempson/base16-shell.git" \
-        "$base16_shell_dir"
-
-BASE16_SHELL_SET_BACKGROUND=true
-if uname | grep -i 'linux' &>/dev/null; then
-    BASE16_SHELL_SET_BACKGROUND=false
-fi
-BASE16_SHELL="$HOME/.config/base16-shell/"
-[ -n "$PS1" ] && \
-    [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
-        source "$BASE16_SHELL/profile_helper.sh"
+# Initialize base16 color system
+. "$DOTFILES/config/bash/base16.sh"
         
+# TODO: Move this into base16.sh. Will need to adjust our flavours configs
 # Start flavours - bashrc
 
 # Base16 Outrun Dark
 
-eval "base16_outrun-dark"
-# End flavours - bashrc
-
+if command -v "base16_outrun-dark" >/dev/null 2>&1; then
+    eval "base16_outrun-dark"
 fi
+# End flavours - bashrc
 
 # TODO: I think this was automatically appended and I didn't notice and
 # accidentally committed it. We should put this somewhere that makes more
