@@ -3,7 +3,7 @@
 import os
 import re
 import subprocess
-from typing import Union
+from typing import Tuple, Union
 
 from lib.common.archive import Archive
 from lib.common.dir import Dir
@@ -11,6 +11,7 @@ from lib.common.github import Github
 from lib.common.log import Log
 from lib.common.semver import Semver
 from lib.common.shell import Shell
+from lib.common.version_cache import VersionCache
 from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 
 KITTY_GITHUB_ORG = "kovidgoyal"
@@ -22,26 +23,25 @@ class KittyProvisioner(IComponentProvisioner):
         self._args = args
 
     def provision(self) -> None:
-        latest_release = Github.get_latest_release(KITTY_GITHUB_ORG, KITTY_GITHUB_REPO)
-        latest_version = Semver.parse(latest_release)
+        target_release, target_version = KittyProvisioner._get_target_version()
 
         current_version = KittyProvisioner._get_current_version()
         if current_version is None:
             Log.info(f"Kitty is not installed")
-        elif current_version < latest_version:
+        elif current_version < target_version:
             Log.info(
-                f"Kitty {current_version} is installed but {latest_version} is available"
+                f"Kitty {current_version} is installed but {target_version} is available"
             )
         else:
-            Log.info(f"Kitty {latest_version} is already installed, nothing to do")
+            Log.info(f"Kitty {target_version} is already installed, nothing to do")
             return
 
-        tmp_dir = f"{Dir.home()}/Downloads/kitty/{latest_version}"
-        archive_filename = f"kitty-{latest_release.replace('v', '')}-x86_64.txz"
+        tmp_dir = f"{Dir.home()}/Downloads/kitty/{target_version}"
+        archive_filename = f"kitty-{target_release.replace('v', '')}-x86_64.txz"
         archive_path = os.path.join(tmp_dir, archive_filename)
 
         base_install_dir = "/opt/kitty"
-        install_dir = f"/opt/kitty/{latest_version}"
+        install_dir = f"/opt/kitty/{target_version}"
         symlink_path_kitty = "/usr/local/bin/kitty"
         symlink_path_kitten = "/usr/local/bin/kitten"
 
@@ -49,7 +49,7 @@ class KittyProvisioner(IComponentProvisioner):
         Github.download_release_artifact(
             KITTY_GITHUB_ORG,
             KITTY_GITHUB_REPO,
-            latest_release,
+            target_release,
             archive_filename,
             archive_path,
             True,
@@ -109,3 +109,35 @@ class KittyProvisioner(IComponentProvisioner):
             return Semver.parse(m.group(1))
         except FileNotFoundError as e:
             return None
+
+    @staticmethod
+    def _get_target_version() -> Tuple[str, Semver]:
+        cached_version = VersionCache.get_version("kitty")
+        if cached_version is not None:
+            Log.info(
+                "using cached kitty version",
+                {
+                    "version": cached_version["version"],
+                    "last_attempt": cached_version.get("last_attempt"),
+                },
+            )
+            return cached_version["version"], Semver.parse(cached_version["version"])
+
+        try:
+            latest_release = Github.get_latest_release(KITTY_GITHUB_ORG, KITTY_GITHUB_REPO)
+            latest_version = Semver.parse(latest_release)
+        except Exception as e:
+            VersionCache.add_failed_attempt(
+                "kitty",
+                str(e),
+                source=f"github:{KITTY_GITHUB_ORG}/{KITTY_GITHUB_REPO}",
+            )
+            raise
+
+        VersionCache.update_version(
+            "kitty",
+            latest_release,
+            f"github:{KITTY_GITHUB_ORG}/{KITTY_GITHUB_REPO}",
+        )
+
+        return latest_release, latest_version

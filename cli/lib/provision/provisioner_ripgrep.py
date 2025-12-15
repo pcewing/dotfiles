@@ -3,13 +3,14 @@
 import os
 import re
 import subprocess
-from typing import Union
+from typing import Tuple, Union
 
 from lib.common.apt import Apt
 from lib.common.dir import Dir
 from lib.common.github import Github
 from lib.common.log import Log
 from lib.common.semver import Semver
+from lib.common.version_cache import VersionCache
 from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 
 RIPGREP_GITHUB_ORG = "BurntSushi"
@@ -21,9 +22,7 @@ class RipgrepProvisioner(IComponentProvisioner):
         self._args = args
 
     def provision(self) -> None:
-        latest_release = Github.get_latest_release(
-            RIPGREP_GITHUB_ORG, RIPGREP_GITHUB_REPO
-        )
+        latest_release, _ = RipgrepProvisioner._get_target_version()
 
         # TODO: Standardize and share this behavior since it's the same in most provisioners
         # Maybe have like a `get_action` function on provisioners that returns one of three possible actions:
@@ -76,3 +75,37 @@ class RipgrepProvisioner(IComponentProvisioner):
             return Semver.parse(m.group(1))
         except FileNotFoundError as e:
             return None
+
+    @staticmethod
+    def _get_target_version() -> Tuple[str, Semver]:
+        cached_version = VersionCache.get_version("ripgrep")
+        if cached_version is not None:
+            Log.info(
+                "using cached ripgrep version",
+                {
+                    "version": cached_version["version"],
+                    "last_attempt": cached_version.get("last_attempt"),
+                },
+            )
+            return cached_version["version"], Semver.parse(cached_version["version"])
+
+        try:
+            latest_release = Github.get_latest_release(
+                RIPGREP_GITHUB_ORG, RIPGREP_GITHUB_REPO
+            )
+            latest_version = Semver.parse(latest_release)
+        except Exception as e:
+            VersionCache.add_failed_attempt(
+                "ripgrep",
+                str(e),
+                source=f"github:{RIPGREP_GITHUB_ORG}/{RIPGREP_GITHUB_REPO}",
+            )
+            raise
+
+        VersionCache.update_version(
+            "ripgrep",
+            latest_release,
+            f"github:{RIPGREP_GITHUB_ORG}/{RIPGREP_GITHUB_REPO}",
+        )
+
+        return latest_release, latest_version

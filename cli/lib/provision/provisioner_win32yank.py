@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os
-from typing import Union
+from typing import Tuple, Union
 
 from lib.common.archive import Archive
 from lib.common.dir import Dir
@@ -10,6 +10,7 @@ from lib.common.log import Log
 from lib.common.semver import Semver
 from lib.common.shell import Shell
 from lib.common.util import write_file
+from lib.common.version_cache import VersionCache
 from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 from lib.provision.tag import Tags
 
@@ -36,10 +37,7 @@ class Win32YankProvisioner(IComponentProvisioner):
         # construct the path to the version file.
         self._install_dir = f"/mnt/c/bin/"
 
-        latest_version = Github.get_latest_release(
-            WIN32YANK_GITHUB_ORG, WIN32YANK_GITHUB_REPO
-        )
-        latest_version = Semver.parse(latest_version)
+        _, target_version = Win32YankProvisioner._get_target_version()
 
         # TODO: Gross but theres' no way to get the version from the
         # executable. It doesn't have a `--version` flag and the
@@ -50,15 +48,15 @@ class Win32YankProvisioner(IComponentProvisioner):
         current_version = self._get_current_version()
         if current_version is None:
             Log.info(f"Win32Yank is not installed")
-        elif current_version < latest_version:
+        elif current_version < target_version:
             Log.info(
-                f"Win32Yank {current_version} is installed but {latest_version} is available"
+                f"Win32Yank {current_version} is installed but {target_version} is available"
             )
         else:
-            Log.info(f"Win32Yank {latest_version} is already installed, nothing to do")
+            Log.info(f"Win32Yank {target_version} is already installed, nothing to do")
             return
 
-        self._install(latest_version)
+        self._install(target_version)
 
     def _install(self, version: str) -> None:
         self._staging_dir = Dir.staging("win32yank", str(version))
@@ -136,3 +134,38 @@ class Win32YankProvisioner(IComponentProvisioner):
         if version_str is None:
             return None
         return Semver.parse(version_str)
+
+    @staticmethod
+    def _get_target_version() -> Tuple[str, Semver]:
+        cached_version = VersionCache.get_version("win32yank")
+        if cached_version is not None:
+            Log.info(
+                "using cached win32yank version",
+                {
+                    "version": cached_version["version"],
+                    "last_attempt": cached_version.get("last_attempt"),
+                },
+            )
+            return cached_version["version"], Semver.parse(cached_version["version"])
+
+        try:
+            latest_release = Github.get_latest_release(
+                WIN32YANK_GITHUB_ORG, WIN32YANK_GITHUB_REPO
+            )
+            latest_version = Semver.parse(latest_release)
+        except Exception as e:
+            VersionCache.add_failed_attempt(
+                "win32yank",
+                str(e),
+                source=f"github:{WIN32YANK_GITHUB_ORG}/{WIN32YANK_GITHUB_REPO}",
+            )
+            raise
+
+        VersionCache.update_version(
+            "win32yank",
+            latest_release,
+            f"github:{WIN32YANK_GITHUB_ORG}/{WIN32YANK_GITHUB_REPO}",
+        )
+
+        return latest_release, latest_version
+
