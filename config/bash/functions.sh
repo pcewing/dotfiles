@@ -401,6 +401,26 @@ function webp_to_jpg() {
     echo "Successfully converted $webp_file to $jpg_file"
 }
 
+# Converts an image file from jpg to png format.
+function jpg_to_png() {
+    installed "convert" || return 1
+
+    local jpg_file="$1"
+    local png_file="$2"
+
+    if [[ -z "$jpg_file" || -z "$png_file" ]]; then
+        1>&2 echo "Usage: jpg_to_png path_to_img.jpg path_to_img.png"
+        return 1
+    fi
+
+    if ! convert "$jpg_file" "$png_file"; then
+        1>&2 echo "ERROR: failed to convert jpg file $jpg_file to png format"
+        return 1
+    fi
+
+    echo "Successfully converted $jpg_file to $png_file"
+}
+
 function docker_pss() {
     local tempfile
     tempfile="$(mktemp)"
