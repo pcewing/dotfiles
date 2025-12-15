@@ -3,3 +3,4 @@ gitconfig_local
 *.zwc
 *.swp
 *.pyc
+version_cache.json5

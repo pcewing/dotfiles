@@ -73,11 +73,15 @@ fi
 
 # Sorted, human-readable disk usage by depth
 if _is_installed 'du'; then
-    set_alias '0' 'du1' 'du -hd1 2>/dev/null | sort -hr'
-    set_alias '0' 'du2' 'du -hd2 2>/dev/null | sort -hr'
-    set_alias '0' 'du3' 'du -hd3 2>/dev/null | sort -hr'
-    set_alias '0' 'du4' 'du -hd4 2>/dev/null | sort -hr'
-    set_alias '0' 'du5' 'du -hd5 2>/dev/null | sort -hr'
+    set_alias '0' 'du1' 'du -hd1 2>/dev/null | sort -h'
+    set_alias '0' 'du2' 'du -hd2 2>/dev/null | sort -h'
+    set_alias '0' 'du3' 'du -hd3 2>/dev/null | sort -h'
+    set_alias '0' 'du4' 'du -hd4 2>/dev/null | sort -h'
+    set_alias '0' 'du5' 'du -hd5 2>/dev/null | sort -h'
+    set_alias '0' 'du6' 'du -hd6 2>/dev/null | sort -h'
+    set_alias '0' 'du7' 'du -hd7 2>/dev/null | sort -h'
+    set_alias '0' 'du8' 'du -hd8 2>/dev/null | sort -h'
+    set_alias '0' 'du9' 'du -hd9 2>/dev/null | sort -h'
 fi
 
 # Ranger aliases

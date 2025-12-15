@@ -3,13 +3,14 @@
 import os
 import re
 import subprocess
-from typing import Union
+from typing import Tuple, Union
 
 from lib.common.dir import Dir
 from lib.common.github import Github
 from lib.common.log import Log
 from lib.common.semver import Semver
 from lib.common.shell import Shell
+from lib.common.version_cache import VersionCache
 from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 
 TREE_SITTER_GITHUB_ORG = "tree-sitter"
@@ -36,23 +37,23 @@ class TreeSitterProvisioner(IComponentProvisioner):
         self._args = args
 
     def provision(self) -> None:
-        latest_version = TreeSitterProvisioner._get_latest_release()
+        _, target_version = TreeSitterProvisioner._get_target_version()
 
         current_version = TreeSitterProvisioner._get_current_version()
         if current_version is None:
             Log.info(f"tree-sitter is not installed")
-        elif current_version < latest_version:
+        elif current_version < target_version:
             Log.info(
-                f"tree-sitter {current_version} is installed but {latest_version} is available"
+                f"tree-sitter {current_version} is installed but {target_version} is available"
             )
         else:
             Log.info(
-                f"tree-sitter {latest_version} is already installed, nothing to do"
+                f"tree-sitter {target_version} is already installed, nothing to do"
             )
             return
 
-        staging_dir = Dir.staging("tree-sitter", str(latest_version))
-        install_dir = Dir.install("tree-sitter", str(latest_version))
+        staging_dir = Dir.staging("tree-sitter", str(target_version))
+        install_dir = Dir.install("tree-sitter", str(target_version))
 
         exe_name = "tree-sitter-linux-x64"
         exe_path_staging = os.path.join(staging_dir, exe_name)
@@ -63,7 +64,7 @@ class TreeSitterProvisioner(IComponentProvisioner):
 
         symlink_path = "/usr/local/bin/tree-sitter"
 
-        self._download_release_zip(str(latest_version), zip_path_staging)
+        self._download_release_zip(str(target_version), zip_path_staging)
 
         TreeSitterProvisioner._unzip_executable(zip_path_staging, self._args.dry_run)
 
@@ -109,13 +110,33 @@ class TreeSitterProvisioner(IComponentProvisioner):
                 raise Exception("Failed to unzip tree-sitter executable")
 
     @staticmethod
-    def _get_latest_release() -> Semver:
-        releases = Github.get_releases(TREE_SITTER_GITHUB_ORG, TREE_SITTER_GITHUB_REPO)
-        tags = [r["tag_name"] for r in releases]
-        tags = filter(lambda t: "pre-release" not in t, tags)
-        tags = [Semver.parse(t) for t in tags]
-        tags = sorted(tags, reverse=True)
-        return tags[0]
+    def _get_latest_release() -> Tuple[str, Semver]:
+        releases = Github.get_releases(
+            TREE_SITTER_GITHUB_ORG,
+            TREE_SITTER_GITHUB_REPO,
+        )
+
+        # Collect (tag, semver) pairs, skipping pre-releases
+        parsed: list[Tuple[str, Semver]] = []
+        for r in releases:
+            tag = r.get("tag_name")
+            if not tag:
+                continue
+            if "pre-release" in tag:
+                continue
+
+            semver = Semver.parse(tag)
+            if semver is None:
+                continue
+
+            parsed.append((tag, semver))
+
+        if not parsed:
+            raise RuntimeError("No valid semver releases found")
+
+        # Sort by Semver descending
+        parsed.sort(key=lambda x: x[1], reverse=True)
+        return parsed[0]
 
     @staticmethod
     def _get_current_version() -> Union[str, None]:
@@ -135,3 +156,40 @@ class TreeSitterProvisioner(IComponentProvisioner):
             return Semver.parse(m.group(1))
         except FileNotFoundError as e:
             return None
+
+    @staticmethod
+    def _get_target_version() -> Tuple[str, Semver]:
+        # TODO: v0.26+ doesn't work on Ubuntu 22.04 due to glibc version
+        # issues, so force v0.25 for now. We could do something like `if
+        # ubuntu_major_version < 24` but I didn't bother
+        Log.warn("forcing tree-sitter version 0.25.10 due to compatibility issues")
+        return "v0.25.10", Semver.parse("v0.25.10")
+
+        cached_version = VersionCache.get_version("tree-sitter")
+        if cached_version is not None:
+            Log.info(
+                "using cached tree-sitter version",
+                {
+                    "version": cached_version["version"],
+                    "last_attempt": cached_version.get("last_attempt"),
+                },
+            )
+            return cached_version["version"], Semver.parse(cached_version["version"])
+
+        try:
+            latest_release, latest_version = TreeSitterProvisioner._get_latest_release()
+        except Exception as e:
+            VersionCache.add_failed_attempt(
+                "tree-sitter",
+                str(e),
+                source=f"github:{TREE_SITTER_GITHUB_ORG}/{TREE_SITTER_GITHUB_REPO}",
+            )
+            raise
+
+        VersionCache.update_version(
+            "tree-sitter",
+            latest_release,
+            f"github:{TREE_SITTER_GITHUB_ORG}/{TREE_SITTER_GITHUB_REPO}",
+        )
+
+        return latest_release, latest_version

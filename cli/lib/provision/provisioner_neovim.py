@@ -3,7 +3,7 @@
 import os
 import re
 import subprocess
-from typing import Union
+from typing import Tuple, Union
 
 from lib.common.alternatives import Alternatives
 from lib.common.dir import Dir
@@ -12,6 +12,7 @@ from lib.common.log import Log
 from lib.common.pip import Pip
 from lib.common.semver import Semver
 from lib.common.shell import Shell
+from lib.common.version_cache import VersionCache
 from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 
 NEOVIM_GITHUB_ORG = "neovim"
@@ -23,32 +24,29 @@ class NeovimProvisioner(IComponentProvisioner):
         self._args = args
 
     def provision(self) -> None:
-        latest_version = Github.get_latest_release(
-            NEOVIM_GITHUB_ORG, NEOVIM_GITHUB_REPO
-        )
-        latest_version = Semver.parse(latest_version)
+        target_release, target_version = NeovimProvisioner._get_target_version()
 
         current_version = NeovimProvisioner._get_current_version()
         if current_version is None:
             Log.info(f"Neovim is not installed")
-        elif current_version < latest_version:
+        elif current_version < target_version:
             Log.info(
-                f"Neovim {current_version} is installed but {latest_version} is available"
+                f"Neovim {current_version} is installed but {target_version} is available"
             )
         else:
-            Log.info(f"Neovim {latest_version} is already installed, nothing to do")
+            Log.info(f"Neovim {target_version} is already installed, nothing to do")
             return
 
-        tmp_dir = f"{Dir.home()}/Downloads/neovim/{latest_version}"
+        tmp_dir = f"{Dir.home()}/Downloads/neovim/{target_version}"
         appimage_filename = "nvim-linux-x86_64.appimage"
         appimage_path = os.path.join(tmp_dir, appimage_filename)
 
         base_install_dir = "/opt/neovim"
-        install_dir = f"/opt/neovim/{latest_version}"
+        install_dir = f"/opt/neovim/{target_version}"
         install_path = os.path.join(install_dir, appimage_filename)
         symlink_path = "/usr/local/bin/nvim"
 
-        self._download_release_appimage(latest_version, appimage_path)
+        self._download_release_appimage(target_version, appimage_path)
 
         Log.info("deleting existing install directory if there is one")
         Shell.rm(install_dir, True, True, True, self._args.dry_run)
@@ -124,3 +122,37 @@ class NeovimProvisioner(IComponentProvisioner):
             return Semver.parse(m.group(1))
         except FileNotFoundError as e:
             return None
+
+    @staticmethod
+    def _get_target_version() -> Tuple[str, Semver]:
+        cached_version = VersionCache.get_version("neovim")
+        if cached_version is not None:
+            Log.info(
+                "using cached neovim version",
+                {
+                    "version": cached_version["version"],
+                    "last_attempt": cached_version.get("last_attempt"),
+                },
+            )
+            return cached_version["version"], Semver.parse(cached_version["version"])
+
+        try:
+            latest_release = Github.get_latest_release(
+                NEOVIM_GITHUB_ORG, NEOVIM_GITHUB_REPO
+            )
+            latest_version = Semver.parse(latest_release)
+        except Exception as e:
+            VersionCache.add_failed_attempt(
+                "neovim",
+                str(e),
+                source=f"github:{NEOVIM_GITHUB_ORG}/{NEOVIM_GITHUB_REPO}",
+            )
+            raise
+
+        VersionCache.update_version(
+            "neovim",
+            latest_release,
+            f"github:{NEOVIM_GITHUB_ORG}/{NEOVIM_GITHUB_REPO}",
+        )
+
+        return latest_release, latest_version

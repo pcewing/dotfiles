@@ -2,6 +2,7 @@
 
 import os
 import subprocess
+from typing import Tuple
 
 from lib.common.archive import Archive
 from lib.common.dir import Dir
@@ -11,10 +12,11 @@ from lib.common.semver import Semver
 from lib.common.shell import Shell
 from lib.common.typing import StringOrNone
 from lib.common.util import download_file
+from lib.common.version_cache import VersionCache
 from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 
-KITTY_GITHUB_ORG = "nodejs"
-KITTY_GITHUB_REPO = "node"
+NODEJS_GITHUB_ORG = "nodejs"
+NODEJS_GITHUB_REPO = "node"
 
 
 class NodeJSProvisioner(IComponentProvisioner):
@@ -22,9 +24,6 @@ class NodeJSProvisioner(IComponentProvisioner):
         self._args = args
 
     def provision(self) -> None:
-        org = "nodejs"
-        repo = "node"
-
         # Get the currently installed nodejs version
         current_nodejs_version = NodeJSProvisioner._get_current_version()
         Log.info(
@@ -34,30 +33,22 @@ class NodeJSProvisioner(IComponentProvisioner):
             }
         )
 
-        # Get latest nodejs version and convert to semver (I.E. "v22.2.0")
-        latest_nodejs_release = Github.get_latest_release(org, repo)
-        latest_nodejs_version = Semver.parse(latest_nodejs_release)
-        Log.info(
-            "identified latest nodejs version",
-            {
-                "version": latest_nodejs_version,
-            }
-        )
+        target_release, target_version = NodeJSProvisioner._get_target_version()
 
         # TODO: Make a utility function for this logic?
         if current_nodejs_version is None:
             Log.info(f"nodejs is not installed")
-        elif current_nodejs_version < latest_nodejs_version:
+        elif current_nodejs_version < target_version:
             Log.info(
-                f"nodejs {current_nodejs_version} is installed but {latest_nodejs_version} is available"
+                f"nodejs {current_nodejs_version} is installed but {target_version} is available"
             )
         else:
             Log.info(
-                f"nodejs {latest_nodejs_version} is already installed, nothing to do"
+                f"nodejs {target_version} is already installed, nothing to do"
             )
             return
 
-        self._install(latest_nodejs_version)
+        self._install(target_version)
 
     def _install(self, version: str) -> None:
         staging_dir = Dir.staging("nodejs", str(version))
@@ -118,3 +109,35 @@ class NodeJSProvisioner(IComponentProvisioner):
             return Semver.parse(version_str)
         except FileNotFoundError as e:
             return None
+
+    @staticmethod
+    def _get_target_version() -> Tuple[str, Semver]:
+        cached_version = VersionCache.get_version("nodejs")
+        if cached_version is not None:
+            Log.info(
+                "using cached nodejs version",
+                {
+                    "version": cached_version["version"],
+                    "last_attempt": cached_version.get("last_attempt"),
+                },
+            )
+            return cached_version["version"], Semver.parse(cached_version["version"])
+
+        try:
+            latest_release = Github.get_latest_release(NODEJS_GITHUB_ORG, NODEJS_GITHUB_REPO)
+            latest_version = Semver.parse(latest_release)
+        except Exception as e:
+            VersionCache.add_failed_attempt(
+                "nodejs",
+                str(e),
+                source=f"github:{NODEJS_GITHUB_ORG}/{NODEJS_GITHUB_REPO}",
+            )
+            raise
+
+        VersionCache.update_version(
+            "nodejs",
+            latest_release,
+            f"github:{NODEJS_GITHUB_ORG}/{NODEJS_GITHUB_REPO}",
+        )
+
+        return latest_release, latest_version

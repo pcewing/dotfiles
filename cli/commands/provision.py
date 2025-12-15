@@ -2,10 +2,13 @@
 
 import argparse
 import os
+from pathlib import Path
 
+from lib.common.dir import Dir
 from lib.common.distro_info import DistroInformation
 from lib.common.log import Log
 from lib.common.os import OperatingSystem
+from lib.common.version_cache import VersionCache
 from lib.provision.provisioner import ProvisionerArgs
 from lib.provision.system_provisioner import SystemProvisioner
 from lib.provision.tag import Tags
@@ -44,6 +47,24 @@ def add_provision_parser(subparsers: argparse._SubParsersAction) -> None:
         help="Comma delimited list of tags that influence provisioner behavior [x11|wsl]",
     )
     parser.add_argument(
+        "--no-version-cache",
+        dest="version_cache",
+        action="store_false",
+        default=True,
+        help="Disable the version cache when checking for latest versions",
+    )
+    parser.add_argument(
+        "--version-cache-max-age-days",
+        type=int,
+        default=7,
+        metavar="DAYS",
+        help=(
+            "Maximum age (in days) for cached version entries. "
+            "If the cached entry is older than this, the script will attempt "
+            "to refresh it from the source (default: 7 days)."
+        ),
+    )
+    parser.add_argument(
         "components",
         nargs="*",
         help="The components to provision; if omitted, all components are provisioned",
@@ -67,6 +88,12 @@ def cmd_provision(args: argparse.Namespace) -> None:
         )
 
     tags = Tags.parse(args.tags) if isinstance(args.tags, str) else args.tags
+
+    VersionCache.init(
+        args.version_cache,
+        Path(os.path.join(Dir.dot(), "version_cache.json5")),
+        args.version_cache_max_age_days,
+    )
 
     provisioner_args = ProvisionerArgs(args.dry_run, tags)
     provisioner = SystemProvisioner(provisioner_args, args.components)

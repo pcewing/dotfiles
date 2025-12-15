@@ -11,6 +11,7 @@ from lib.common.github import Github
 from lib.common.log import Log
 from lib.common.semver import Semver
 from lib.common.shell import Shell
+from lib.common.version_cache import VersionCache
 from lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 from lib.provision.symlink import Symlink
 from lib.provision.tag import Tags
@@ -62,17 +63,16 @@ class I3Provisioner(IComponentProvisioner):
             Log.info("skipping i3 provisioner", {"reason": "x11 tag not present"})
             return
 
-        latest_tag_name, latest_tag_version = I3Provisioner._get_latest_tag()
+        target_tag_name, target_tag_version = I3Provisioner._get_target_version()
         current_version = I3Provisioner._get_current_version()
-        print(current_version)
         if current_version is None:
             Log.info(f"i3 is not installed")
-        elif current_version < latest_tag_version:
+        elif current_version < target_tag_version:
             Log.info(
-                f"i3 {current_version} is installed but {latest_tag_version} is available"
+                f"i3 {current_version} is installed but {target_tag_version} is available"
             )
         else:
-            Log.info(f"i3 {latest_tag_version} is already installed, nothing to do")
+            Log.info(f"i3 {target_tag_version} is already installed, nothing to do")
             return
 
         # TODO: i3-gaps was merged into i3 as of release 4.22 but the version
@@ -113,20 +113,20 @@ class I3Provisioner(IComponentProvisioner):
         )
 
         url = f"https://www.github.com/{I3_GITHUB_ORG}/{I3_GITHUB_REPO}"
-        staging_dir = f"/home/pewing/.tmp/i3/{latest_tag_name}"
+        staging_dir = f"/home/pewing/.tmp/i3/{target_tag_name}"
         build_dir = os.path.join(staging_dir, "build")
         cwd = os.getcwd()
 
         Shell.rm(staging_dir, True, True, False, self._args.dry_run)
         repo = Git.clone(url, staging_dir, self._args.dry_run)
-        repo.checkout(latest_tag_name, self._args.dry_run)
+        repo.checkout(target_tag_name, self._args.dry_run)
         Shell.mkdir(build_dir, True, False, self._args.dry_run)
         Shell.cd(build_dir, self._args.dry_run)
         _i3_bootstrap(self._args.dry_run)
         _i3_build(self._args.dry_run)
         Shell.cd(cwd, self._args.dry_run)
 
-        install_dir = os.path.join("/opt/i3", latest_tag_name)
+        install_dir = os.path.join("/opt/i3", target_tag_name)
 
         _i3_prepare_install_dir(install_dir, False, self._args.dry_run)
         Shell.mv(staging_dir, install_dir, True, self._args.dry_run)
@@ -186,3 +186,34 @@ class I3Provisioner(IComponentProvisioner):
             return Semver.parse(m.group(1))
         except FileNotFoundError as e:
             return None
+
+    @staticmethod
+    def _get_target_version() -> Tuple[str, Semver]:
+        cached_version = VersionCache.get_version("i3")
+        if cached_version is not None:
+            Log.info(
+                "using cached i3 version",
+                {
+                    "version": cached_version["version"],
+                    "last_attempt": cached_version.get("last_attempt"),
+                },
+            )
+            return cached_version["version"], Semver.parse(cached_version["version"])
+
+        try:
+            latest_tag_name, latest_tag_version = I3Provisioner._get_latest_tag()
+        except Exception as e:
+            VersionCache.add_failed_attempt(
+                "i3",
+                str(e),
+                source=f"github:{I3_GITHUB_ORG}/{I3_GITHUB_REPO}",
+            )
+            raise
+
+        VersionCache.update_version(
+            "i3",
+            latest_tag_name,
+            f"github:{I3_GITHUB_ORG}/{I3_GITHUB_REPO}",
+        )
+
+        return latest_tag_name, latest_tag_version
