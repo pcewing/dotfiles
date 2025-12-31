@@ -5,9 +5,13 @@
   home.homeDirectory = "/home/pewing";
   home.stateVersion = "24.05";
 
+  imports = [
+    ./dotfiles-links.nix
+  ];
+
   home.packages = with pkgs; [
     git
-    neovim
+    #neovim # Don't install this here because it will collide with the `programs.neovim.enable` below
     ripgrep
     fd
     tmux
