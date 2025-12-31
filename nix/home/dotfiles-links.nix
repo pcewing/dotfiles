@@ -48,7 +48,7 @@ let
 
     # individual files under ~/.config
     (mk ".config/kitty/kitty.conf"         "kitty.conf")
-    (mk ".config/alacritty/alacritty.yml"  "alacritty/alacritty.yml")
+    (mk ".config/alacritty/alacritty.yml"  "alacritty.yml")
     (mk ".config/alacritty/base16.yml"     "alacritty/base16.yml")
     (mk ".config/alacritty/linux.yml"      "alacritty/linux.yml")
     (mk ".config/wezterm/wezterm.lua"      "wezterm.lua")
