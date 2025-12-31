@@ -5,3 +5,9 @@
 source "$DOTFILES/config/bash/core.sh"
 
 _is_installed "google-chrome" && export BROWSER="/usr/bin/google-chrome"
+
+# TODO: Move this to env script
+# Nix (single-user) - load Nix profile into PATH
+if [ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
+  . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+fi
