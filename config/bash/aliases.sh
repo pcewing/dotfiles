@@ -34,9 +34,6 @@ function set_alias() {
     alias "$name=$command"
 }
 
-# Dotfiles CLI
-set_alias '1' 'dot'                 '$DOTFILES/cli/dot.py'
-
 # Edit/reload bash configs
 set_alias '0' 'aliases'             '$EDITOR $DOTFILES/config/bash/aliases.sh'
 set_alias '0' 'functions'           '$EDITOR $DOTFILES/config/bash/functions.sh'

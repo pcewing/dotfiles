@@ -88,6 +88,7 @@ apt_bootstrap() {
     ca-certificates
     curl
     git
+    locate
     xz-utils
   )
 
