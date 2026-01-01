@@ -20,8 +20,7 @@ is_wsl() {
 #################################
 # config knobs (safe defaults)
 #################################
-REPO_URL_DEFAULT="https://github.com/pewing/dotfiles.git"
-REPO_DIR_DEFAULT="$HOME/dot"
+DOTFILES_DIR_DEFAULT="$HOME/dot"
 
 # This becomes your "attribute"/machine selector.
 # Examples later: core, desktop, gaming, server, wsl
@@ -29,29 +28,25 @@ MACHINE_DEFAULT="core"
 
 usage() {
   cat <<EOF
-Usage: $0 [--repo URL] [--dir PATH] [--machine NAME] [--no-upgrade]
+Usage: $0 [--dir PATH] [--machine NAME] [--no-upgrade]
 
-  --repo       Git repo containing your Nix/Home Manager config
-               (default: $REPO_URL_DEFAULT)
-  --dir        Where to clone it (default: $REPO_DIR_DEFAULT)
+  --dir        Where to clone it (default: $DOTFILES_DIR_DEFAULT)
   --machine    Home Manager target to apply (default: $MACHINE_DEFAULT)
   --no-upgrade Skip apt-get dist-upgrade (default is to run it)
 
 Examples:
-  $0 --repo https://github.com/pcewing/dotfiles.git --machine desktop
+  $0 --machine desktop
   $0 --machine wsl
 EOF
 }
 
-REPO_URL="$REPO_URL_DEFAULT"
-REPO_DIR="$REPO_DIR_DEFAULT"
+DOTFILES_DIR="$DOTFILES_DIR_DEFAULT"
 MACHINE="$MACHINE_DEFAULT"
 DO_UPGRADE=1
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --repo)     REPO_URL="$2"; shift 2;;
-    --dir)      REPO_DIR="$2"; shift 2;;
+    --dir)      DOTFILES_DIR="$2"; shift 2;;
     --machine)  MACHINE="$2"; shift 2;;
     --no-upgrade) DO_UPGRADE=0; shift;;
     -h|--help)  usage; exit 0;;
@@ -129,24 +124,6 @@ enable_nix_experimental() {
 }
 
 #################################
-# repo sync
-#################################
-# TODO: I think we can delete this. The plan is to put this bootstrap script in
-# my dotfiles repo so this script doesn't need to try to pull/clone/etc because
-# it will already be set up.
-sync_repo() {
-  echo "[bootstrap] Syncing config repo..."
-
-  if [[ -d "$REPO_DIR/.git" ]]; then
-    try git -C "$REPO_DIR" fetch --prune
-    try git -C "$REPO_DIR" pull --ff-only
-  else
-    try mkdir -p "$(dirname "$REPO_DIR")"
-    try git clone "$REPO_URL" "$REPO_DIR"
-  fi
-}
-
-#################################
 # apply home-manager
 #################################
 apply_home_manager() {
@@ -158,7 +135,7 @@ apply_home_manager() {
   # We'll create that flake next.
   try nix --extra-experimental-features "nix-command flakes" \
     run "github:nix-community/home-manager" -- \
-    switch -b hm-bak --flake "$REPO_DIR/nix#$MACHINE"
+    switch -b hm-bak --flake "$DOTFILES_DIR/nix#$MACHINE"
 }
 
 #################################
@@ -174,7 +151,6 @@ main() {
   install_nix_if_needed
   source_nix_profile
   enable_nix_experimental
-  #sync_repo
   apply_home_manager
 
   echo "[bootstrap] Done."
@@ -182,4 +158,3 @@ main() {
 }
 
 main "$@"
-
