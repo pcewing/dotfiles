@@ -737,3 +737,14 @@ hm-switch()
         run github:nix-community/home-manager -- \
         switch -b hm-bak --flake "$DOTFILES/nix#$machine"
 }
+
+str_contains()
+    string="$1"
+    substring="$2"
+    if test "${string#*$substring}" != "$string"
+    then
+        return 0    # $substring is in $string
+    else
+        return 1    # $substring is not in $string
+    fi
+}

@@ -4,25 +4,21 @@
 
 export DOTFILES="$HOME/dot"
 
-contains() {
-    string="$1"
-    substring="$2"
-    if test "${string#*$substring}" != "$string"
-    then
-        return 0    # $substring is in $string
-    else
-        return 1    # $substring is not in $string
-    fi
+is_in_path() {
+    case ":$PATH:" in
+        *":$1:"*) return 0 ;;
+        *)        return 1 ;;
+    esac
 }
 
 add_to_path() {
-    p="$1"
-    export PATH="${p}:${PATH}"
+    PATH=$1${PATH:+":$PATH"}
+    export PATH
 }
 
+# TODO: Should we only add to path if the directory exists? Could make it an optional argument.
 try_add_to_path() {
-    p="$1"
-    contains "$PATH" "$p" || add_to_path "$p"
+    is_in_path "$1" || add_to_path "$1"
 }
 
 try_add_to_path "/usr/local/bin"
@@ -39,12 +35,11 @@ try_add_to_path "$HOME/go"
 try_add_to_path "$HOME/.mix/escripts"
 try_add_to_path "$HOME/box/bin"
 
-# Nix (single-user) - load Nix profile into PATH
-if [ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
-    echo "[config/env] Sourcing nix profile script" >> "/home/pewing/temp4.txt"
-  . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+if [ -n "${WSL_DISTRO_NAME-}" ]; then
+    try_add_to_path "/mnt/c/bin"
 fi
 
-if [ ! "$WSL_DISTRO_NAME" = "" ]; then
-    try_add_to_path "/mnt/c/bin"
+# Nix (single-user) - load Nix profile into PATH
+if [ -r "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
+  . "$HOME/.nix-profile/etc/profile.d/nix.sh"
 fi
