@@ -1,10 +1,7 @@
 { config, lib, ... }:
 
 let
-  # core.nix is at ./nix/home/core.nix
-  # config/ is at ./config (sibling to nix/)
-  # so from ./nix/home/* => ../../config
-  dotConfigDir = ../../config;
+  dotConfigDir = ../../../config;
 
   link = { dst, srcPath }:
     if lib.hasPrefix ".config/" dst then
