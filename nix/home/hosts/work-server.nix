@@ -7,6 +7,5 @@
 
   imports = [
     ../features/core.nix
-    ../features/desktop.nix
   ];
 }
