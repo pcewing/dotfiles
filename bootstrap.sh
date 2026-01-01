@@ -22,37 +22,60 @@ is_wsl() {
 #################################
 DOTFILES_DIR_DEFAULT="$HOME/dot"
 
-# This becomes your "attribute"/machine selector.
-# Examples later: core, desktop, gaming, server, wsl
-MACHINE_DEFAULT="core"
-
 usage() {
   cat <<EOF
-Usage: $0 [--dir PATH] [--machine NAME] [--no-upgrade]
+Usage: $0 [--dir PATH] [--nix-host NAME] [--no-upgrade]
 
   --dir        Where to clone it (default: $DOTFILES_DIR_DEFAULT)
-  --machine    Home Manager target to apply (default: $MACHINE_DEFAULT)
+  --nix-host   Home Manager target to apply
   --no-upgrade Skip apt-get dist-upgrade (default is to run it)
 
 Examples:
-  $0 --machine desktop
-  $0 --machine wsl
+  $0 --nix-host personal-desktop
 EOF
 }
 
 DOTFILES_DIR="$DOTFILES_DIR_DEFAULT"
-MACHINE="$MACHINE_DEFAULT"
+NIX_HOST=""
 DO_UPGRADE=1
+
+nix_hosts() {
+    ls "$DOTFILES_DIR/nix/home/hosts" | sed 's/\.nix$//'
+}
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --dir)      DOTFILES_DIR="$2"; shift 2;;
-    --machine)  MACHINE="$2"; shift 2;;
-    --no-upgrade) DO_UPGRADE=0; shift;;
-    -h|--help)  usage; exit 0;;
+    --dir)          DOTFILES_DIR="$2"; shift 2;;
+    --nix-host)     NIX_HOST="$2"; shift 2;;
+    --no-upgrade)   DO_UPGRADE=0; shift;;
+    -h|--help)      usage; exit 0;;
     *) die "Unknown argument: $1";;
   esac
 done
+
+source_localrc() {
+    local localrc_path="$HOME/.localrc"
+
+    if [ -f "$localrc_path" ]; then
+        echo "[bootstrap] (source_localrc) Sourcing localrc from path $localrc_path"
+        source "$HOME/.localrc"
+    else
+        echo "[bootstrap] (source_localrc) Localrc path '$localrc_path' doesn't exist; skipping."
+    fi
+}
+
+validate_nix_host() {
+    if [ -z "$NIX_HOST" ]; then
+        yell "[bootstrap] (validate_nix_host) Error: NIX_HOST is not set."
+        yell "Either specify the --nix-host argument or export this variable in your ~/.localrc file. Available hosts:"
+        yell "$(nix_hosts)"
+        exit 1
+    fi
+
+    if [ ! -e "$DOTFILES_DIR/nix/home/hosts/$NIX_HOST.nix" ]; then
+        die "NIX_HOST '$NIX_HOST' is not valid. Available hosts: $(nix_hosts)"
+    fi
+}
 
 #################################
 # apt bootstrap (minimal)
@@ -127,15 +150,15 @@ enable_nix_experimental() {
 # apply home-manager
 #################################
 apply_home_manager() {
-  echo "[bootstrap] Applying Home Manager target: $MACHINE"
+  echo "[bootstrap] Applying Home Manager target: $NIX_HOST"
 
   # Assumes your repo will contain a flake with:
-  # homeConfigurations.<machine>
+  # homeConfigurations.<nixHost>
   #
   # We'll create that flake next.
   try nix --extra-experimental-features "nix-command flakes" \
     run "github:nix-community/home-manager" -- \
-    switch -b hm-bak --flake "$DOTFILES_DIR/nix#$MACHINE"
+    switch -b hm-bak --flake "$DOTFILES_DIR/nix#$NIX_HOST"
 }
 
 # Setting the default terminal and editor via `update-alternatives` is a
@@ -202,6 +225,8 @@ main() {
     echo "[bootstrap] Detected WSL environment."
   fi
 
+  source_localrc
+  validate_nix_host
   apt_bootstrap
   install_nix_if_needed
   source_nix_profile
