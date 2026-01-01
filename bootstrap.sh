@@ -138,6 +138,61 @@ apply_home_manager() {
     switch -b hm-bak --flake "$DOTFILES_DIR/nix#$MACHINE"
 }
 
+# Setting the default terminal and editor via `update-alternatives` is a
+# system-wide action so we need to do that here after we've applied the Nix
+# configuration
+set_default_terminal_and_editor() {
+  echo "[bootstrap] Setting system defaults via update-alternatives..."
+
+  # Ensure nix is on PATH in this script:
+  source_nix_profile
+
+  local kitty_path nvim_path
+  kitty_path="$(command -v kitty || true)"
+  nvim_path="$(command -v nvim || true)"
+
+  if [[ -n "$kitty_path" ]]; then
+    try sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator "$kitty_path" 50
+    try sudo update-alternatives --set x-terminal-emulator "$kitty_path"
+  else
+    yell "[bootstrap] kitty not found on PATH; skipping terminal alternative"
+  fi
+
+  if [[ -n "$nvim_path" ]]; then
+    try sudo update-alternatives --install /usr/bin/vi vi "$nvim_path" 60
+    try sudo update-alternatives --set vi "$nvim_path"
+    try sudo update-alternatives --install /usr/bin/vim vim "$nvim_path" 60
+    try sudo update-alternatives --set vim "$nvim_path"
+    try sudo update-alternatives --install /usr/bin/editor editor "$nvim_path" 60
+    try sudo update-alternatives --set editor "$nvim_path"
+  else
+    yell "[bootstrap] nvim not found on PATH; skipping editor alternatives"
+  fi
+}
+
+install_session_desktop_files() {
+  echo "[bootstrap] Installing session desktop files..."
+
+  local dot="$DOTFILES_DIR"
+  local xs_src="$dot/config/xsession.desktop"
+  local xs_dst="/usr/share/xsessions/xsession.desktop"
+
+  local sway_src="$dot/config/sway-user.desktop"
+  local sway_dst="/usr/share/wayland-sessions/sway-user.desktop"
+
+  if [[ -f "$xs_src" ]]; then
+    try sudo install -m 0644 "$xs_src" "$xs_dst"
+  else
+    yell "[bootstrap] Missing $xs_src; skipping xsession.desktop"
+  fi
+
+  if [[ -f "$sway_src" ]]; then
+    try sudo install -m 0644 "$sway_src" "$sway_dst"
+  else
+    yell "[bootstrap] Missing $sway_src; skipping sway-user.desktop"
+  fi
+}
+
 #################################
 # main
 #################################
@@ -152,6 +207,8 @@ main() {
   source_nix_profile
   enable_nix_experimental
   apply_home_manager
+  set_default_terminal_and_editor
+  install_session_desktop_files
 
   echo "[bootstrap] Done."
   echo "Tip: if something goes sideways, Home Manager supports rollback."
