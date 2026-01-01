@@ -4,20 +4,16 @@
 
 export DOTFILES="$HOME/dot"
 
-contains() {
-    string="$1"
-    substring="$2"
-    if test "${string#*$substring}" != "$string"
-    then
-        return 0    # $substring is in $string
-    else
-        return 1    # $substring is not in $string
-    fi
+is_in_path() {
+    case ":$PATH:" in
+        *":$1:"*) return 0 ;;
+        *)        return 1 ;;
+    esac
 }
 
 append_to_path() {
-    p="$1"
-    export PATH="${p}:${PATH}"
+    PATH=$1${PATH:+":$PATH"}
+    export PATH
 }
 
 prepend_to_path() {
@@ -26,13 +22,11 @@ prepend_to_path() {
 }
 
 try_append_to_path() {
-    p="$1"
-    contains "$PATH" "$p" || append_to_path "$p"
+    is_in_path "$1" || append_to_path "$1"
 }
 
 try_prepend_to_path() {
-    p="$1"
-    contains "$PATH" "$p" || prepend_to_path "$p"
+    is_in_path "$1" || prepend_to_path "$1"
 }
 
 try_append_to_path "/usr/local/bin"
@@ -53,13 +47,7 @@ try_append_to_path "$HOME/box/bin"
 # the pyenv stuff below? Maybe stick to one?
 try_prepend_to_path "$HOME/.venv/default/bin"
 
-# Nix (single-user) - load Nix profile into PATH
-if [ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
-    echo "[config/env] Sourcing nix profile script" >> "/home/pewing/temp4.txt"
-  . "$HOME/.nix-profile/etc/profile.d/nix.sh"
-fi
-
-if [ ! "$WSL_DISTRO_NAME" = "" ]; then
+if [ -n "${WSL_DISTRO_NAME-}" ]; then
     try_append_to_path "/mnt/c/bin"
 fi
 
@@ -70,4 +58,9 @@ if [ -d "$HOME/.pyenv" ]; then
     export PYENV_ROOT="$HOME/.pyenv"
     [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
     eval "$(pyenv init - bash)"
+fi
+
+# Nix (single-user) - load Nix profile into PATH
+if [ -r "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
+  . "$HOME/.nix-profile/etc/profile.d/nix.sh"
 fi
