@@ -739,8 +739,9 @@ hm-switch()
 }
 
 str_contains()
-    string="$1"
-    substring="$2"
+{
+    local string="$1"
+    local substring="$2"
     if test "${string#*$substring}" != "$string"
     then
         return 0    # $substring is in $string

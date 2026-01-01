@@ -17,11 +17,34 @@
     in
     {
       homeConfigurations = {
-        core = home-manager.lib.homeManagerConfiguration {
+        personal-desktop = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
-          modules = [
-            ./home/core.nix
-          ];
+          modules = [ ./home/hosts/personal-desktop.nix ];
+        };
+
+        work-desktop = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [ ./home/hosts/work-desktop.nix ];
+        };
+
+        personal-wsl = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [ ./home/hosts/personal-wsl.nix ];
+        };
+
+        work-wsl = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [ ./home/hosts/work-wsl.nix ];
+        };
+
+        personal-server = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [ ./home/hosts/personal-server.nix ];
+        };
+
+        work-server = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [ ./home/hosts/work-server.nix ];
         };
       };
     };
