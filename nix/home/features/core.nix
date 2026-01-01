@@ -66,11 +66,18 @@
     #########
     # Python
     #########
-    # TODO: Let's thoroughly test Python since this is a hairy and important one
     python3
     python3Packages.pip
     python3Packages.pynvim
     python3Packages.mpd2
+    python3Packages.black
+    python3Packages.mypy
+    python3Packages.isort
+    python3Packages.flake8
+    python3Packages.autoflake
+    python3Packages.ruff
+    python3Packages.argcomplete
+    python3Packages.json5
 
     #################
     # Search / utils
