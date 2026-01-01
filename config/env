@@ -39,6 +39,12 @@ try_add_to_path "$HOME/go"
 try_add_to_path "$HOME/.mix/escripts"
 try_add_to_path "$HOME/box/bin"
 
+# Nix (single-user) - load Nix profile into PATH
+if [ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
+    echo "[config/env] Sourcing nix profile script" >> "/home/pewing/temp4.txt"
+  . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+fi
+
 if [ ! "$WSL_DISTRO_NAME" = "" ]; then
     try_add_to_path "/mnt/c/bin"
 fi
