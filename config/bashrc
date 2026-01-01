@@ -36,6 +36,15 @@ none="\[\033[00m\]"
 
 PS1="${white}[${green}\u${white}@${blue}\H${white}:${yellow}\w${white}] "
 
+# Bash auto-completion for dotfiles CLI
+# TODO: Do we really need this environment variable? Or maybe we can default
+# the Python script to have it enabled and just use an environment variable to
+# disable when necessary
+export DOT_BASH_COMPLETION="1"
+if [ -f "$HOME/.config/bash/completions/dot" ]; then
+  source "$HOME/.config/bash/completions/dot"
+fi
+
 # Node.js configuration
 if [ -d "$HOME/.nvm" ]; then
     export NVM_DIR="$HOME/.nvm"
@@ -52,10 +61,6 @@ fi
 if _is_installed "rust"; then
     [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 fi
-
-# Bash auto-completion for dotfiles CLI
-export DOT_BASH_COMPLETION="1"
-source "$HOME/.bash_completion.d/dot.bash"
 
 # Initialize base16 color system
 . "$DOTFILES/config/bash/base16.sh"

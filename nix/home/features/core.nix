@@ -1,34 +1,39 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
+let
+  py = pkgs.python3.withPackages (ps: with ps; [
+    pip
+    pynvim
+    mpd2
+    black
+    mypy
+    isort
+    flake8
+    autoflake
+    argcomplete
+    json5
+  ]);
+in
 {
   imports = [
     ./dotfiles-links.nix
   ];
 
-  # User-level defaults (safe; still OK if your dotfiles set these too)
   home.sessionVariables = {
     EDITOR = "nvim";
     VISUAL = "nvim";
   };
 
-  # Needed for things like steam (and a few other packages you may want later).
   nixpkgs.config.allowUnfree = true;
 
   home.packages = with pkgs; [
     #################################
     # Core utilities
     #################################
-    # TODO: apt-utils?
-    cacert # apt: ca-certificates
-    #curl # TODO: Don't think we need this here since the bootstrap script installs it system-wide
+    cacert
     wget
     gnupg
     jq
-    # TODO: software-properties-common
-    # TODO: apt-file
-    # TODO: libfuse
-    # TODO: Make sure this works
-    # “locate” equivalent (note: the database update is typically system-level)
     plocate
     fzf
     nettools
@@ -55,29 +60,7 @@
     #################
     # C/C++ tooling
     #################
-    # TODO: Installing both this and `gcc` causes an issue because they both
-    # provide the same colliding ld.bfd file. For now, just only install
-    # clang-tools but not the full compiler toolchain. We can try to figure out
-    # how to have both side-by-side later on or maybe just make a different
-    # profile for clang
-    #clang
     clang-tools
-
-    #########
-    # Python
-    #########
-    python3
-    python3Packages.pip
-    python3Packages.pynvim
-    python3Packages.mpd2
-    python3Packages.black
-    python3Packages.mypy
-    python3Packages.isort
-    python3Packages.flake8
-    python3Packages.autoflake
-    python3Packages.ruff
-    python3Packages.argcomplete
-    python3Packages.json5
 
     #################
     # Search / utils
@@ -88,9 +71,44 @@
     # Theming tool
     #################
     flavours
+
+    #################
+    # Python environment (ONE interpreter w/ all tools)
+    #################
+    py
+
+    # Ruff is a Rust tool, top-level package
+    ruff
+  ];
+
+  # Provide a stable `dot` command that always uses the nix Python env
+  home.file.".local/bin/dot" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env bash
+      exec "${py}/bin/python" "$HOME/dot/cli/dot.py" "$@"
+    '';
+  };
+
+  # Ensure ~/.local/bin is on PATH so `dot` is found
+  home.sessionPath = [
+    "$HOME/.local/bin"
   ];
 
   programs.git.enable = true;
   programs.neovim.enable = true;
   programs.home-manager.enable = true;
+
+  # Optional: generate a static completion file during activation
+  home.activation.dotArgcomplete =
+    lib.hm.dag.entryAfter ["writeBoundary"] ''
+      if [ -x "$HOME/dot/cli/dot.py" ]; then
+        mkdir -p "$HOME/.config/bash/completions"
+        # Use the same python env as `dot` to guarantee argcomplete is available
+        "${py}/bin/register-python-argcomplete" \
+          --external-argcomplete-script "$HOME/dot/cli/dot.py" dot \
+          > "$HOME/.config/bash/completions/dot"
+      fi
+    '';
 }
+
