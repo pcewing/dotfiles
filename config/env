@@ -15,30 +15,53 @@ contains() {
     fi
 }
 
-add_to_path() {
+append_to_path() {
     p="$1"
     export PATH="${p}:${PATH}"
 }
 
-try_add_to_path() {
+prepend_to_path() {
     p="$1"
-    contains "$PATH" "$p" || add_to_path "$p"
+    export PATH="${PATH}:${p}"
 }
 
-try_add_to_path "/usr/local/bin"
-try_add_to_path "/usr/local/sbin"
-try_add_to_path "$HOME/bin"
-try_add_to_path "$HOME/.flatpak_aliases"
-try_add_to_path "$HOME/.local/bin"
-try_add_to_path "$DOTFILES/bin"
-try_add_to_path "$HOME/.rvm/bin"
-try_add_to_path "$HOME/.npm-global/bin"
-try_add_to_path "/usr/local/go/bin"
-try_add_to_path "$HOME/go/bin"
-try_add_to_path "$HOME/go"
-try_add_to_path "$HOME/.mix/escripts"
-try_add_to_path "$HOME/box/bin"
+try_append_to_path() {
+    p="$1"
+    contains "$PATH" "$p" || append_to_path "$p"
+}
+
+try_prepend_to_path() {
+    p="$1"
+    contains "$PATH" "$p" || prepend_to_path "$p"
+}
+
+try_append_to_path "/usr/local/bin"
+try_append_to_path "/usr/local/sbin"
+try_append_to_path "$HOME/bin"
+try_append_to_path "$HOME/.flatpak_aliases"
+try_append_to_path "$HOME/.local/bin"
+try_append_to_path "$DOTFILES/bin"
+try_append_to_path "$HOME/.rvm/bin"
+try_append_to_path "$HOME/.npm-global/bin"
+try_append_to_path "/usr/local/go/bin"
+try_append_to_path "$HOME/go/bin"
+try_append_to_path "$HOME/go"
+try_append_to_path "$HOME/.mix/escripts"
+try_append_to_path "$HOME/box/bin"
+
+# TODO: Make sure this matches the path we used. Also, do we need both this and
+# the pyenv stuff below? Maybe stick to one?
+try_prepend_to_path "$HOME/.venv/default/bin"
 
 if [ ! "$WSL_DISTRO_NAME" = "" ]; then
-    try_add_to_path "/mnt/c/bin"
+    try_append_to_path "/mnt/c/bin"
+fi
+
+# TODO: Not sure if this is the right place for this or if improvements could
+# be made. Fine for now but we can probably use try_prepend_to_path or whatever.
+# If a pyenv installation exists, initialize it
+if [ -d "$HOME/.pyenv" ]; then
+    export PYENV_ROOT="$HOME/.pyenv"
+    [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+    eval "$(pyenv init - bash)"
 fi
