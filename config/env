@@ -53,6 +53,12 @@ try_append_to_path "$HOME/box/bin"
 # the pyenv stuff below? Maybe stick to one?
 try_prepend_to_path "$HOME/.venv/default/bin"
 
+# Nix (single-user) - load Nix profile into PATH
+if [ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
+    echo "[config/env] Sourcing nix profile script" >> "/home/pewing/temp4.txt"
+  . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+fi
+
 if [ ! "$WSL_DISTRO_NAME" = "" ]; then
     try_append_to_path "/mnt/c/bin"
 fi

@@ -725,3 +725,15 @@ function merge_pdfs()
 
     pdftk "$input1" "$input2" cat output "$output"
 }
+
+hm-switch()
+{
+    local machine
+    # TODO
+    #machine="$(hostname -s)"
+    machine="core"
+
+    nix --extra-experimental-features "nix-command flakes" \
+        run github:nix-community/home-manager -- \
+        switch -b hm-bak --flake "$DOTFILES/nix#$machine"
+}
