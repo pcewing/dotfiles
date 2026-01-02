@@ -29,6 +29,7 @@ Usage: $0 [--dir PATH] [--nix-host NAME] [--no-upgrade]
   --dir        Where to clone it (default: $DOTFILES_DIR_DEFAULT)
   --nix-host   Home Manager target to apply
   --no-upgrade Skip apt-get dist-upgrade (default is to run it)
+  --no-apt     Skip all apt-get steps
 
 Examples:
   $0 --nix-host personal-desktop
@@ -38,6 +39,7 @@ EOF
 DOTFILES_DIR="$DOTFILES_DIR_DEFAULT"
 NIX_HOST=""
 DO_UPGRADE=1
+DO_APT=1
 
 nix_hosts() {
     ls "$DOTFILES_DIR/nix/home/hosts" | sed 's/\.nix$//'
@@ -48,6 +50,7 @@ while [[ $# -gt 0 ]]; do
     --dir)          DOTFILES_DIR="$2"; shift 2;;
     --nix-host)     NIX_HOST="$2"; shift 2;;
     --no-upgrade)   DO_UPGRADE=0; shift;;
+    --no-apt)       DO_APT=0; shift;;
     -h|--help)      usage; exit 0;;
     *) die "Unknown argument: $1";;
   esac
@@ -81,6 +84,12 @@ validate_nix_host() {
 # apt bootstrap (minimal)
 #################################
 apt_bootstrap() {
+  if [[ ! "$DO_APT" -eq 1 ]]; then
+    echo "[bootstrap] (apt_bootstrap) Skipping apt steps because --no-apt was specified..."
+    try sudo apt-get dist-upgrade -y
+    return
+  fi
+
   echo "[bootstrap] Installing minimal prerequisites via apt..."
 
   # You can expand this later, but keep it small.
