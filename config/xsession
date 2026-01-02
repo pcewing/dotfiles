@@ -56,4 +56,7 @@ mkdir -p "$logdir"
 "$HOME/dot/bin/cleanup_logs.sh"
 i3logfile="$logdir/i3_$(date +"%Y%m%d_%H%M%S").log"
 echo "Starting at $(date)" >> "$i3logfile"
-exec /usr/local/bin/i3 -V -d all >> "$i3logfile"
+# TODO: Nix doesn't install at that path. This shouldn't need to be an absolute
+# path since we've sourced the `config/env` script
+#exec /usr/local/bin/i3 -V -d all &>> "$i3logfile"
+exec i3 -V -d all &>> "$i3logfile"
