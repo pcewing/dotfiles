@@ -175,8 +175,8 @@
     lib.hm.dag.entryAfter ["writeBoundary"] ''
       if [ -x "$HOME/dot/cli/dot.py" ]; then
         mkdir -p "$HOME/.config/bash/completions"
-        # Use register-python-argcomplete from PATH (unified Python env)
-        register-python-argcomplete \
+        # Use the unified Python environment directly
+        ${config.myPython.environment}/bin/register-python-argcomplete \
           --external-argcomplete-script "$HOME/dot/cli/dot.py" dot \
           > "$HOME/.config/bash/completions/dot"
       fi
