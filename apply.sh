@@ -151,20 +151,23 @@ apt_bootstrap() {
 
   # You can expand this later, but keep it small.
   local pkgs=(
+    apt-file
     ca-certificates
     curl
     git
-    locate
-    xz-utils
     jq
+    libfuse
+    locate
+    software-properties-common
+    xz-utils
   )
 
   # Add role-specific packages based on host configuration
   if host_has_role "desktop"; then
     pkgs+=(
-      kitty
       i3
       i3status
+      kitty
     )
   fi
 

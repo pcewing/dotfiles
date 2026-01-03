@@ -1,3 +1,26 @@
+# Notes taken while setting up Laptop on 2026-01-01
+
+```
+# Install Git
+sudo apt install -y git
+
+# Paste in SSH key
+vi ~/.ssh/id_ed25519
+vi ~/.ssh/id_ed25519.pub
+
+# Add SSH key to agent
+chmod 700 ~/.ssh/id_ed25519*
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+
+# Clone dotfiles
+git clone git@github.com:pcewing/dotfiles.git dot
+
+# Export NIX_HOST variable in .localrc file. Replace personal-desktop with the
+# appropriate host type.
+echo "export NIX_HOST=\"personal-desktop\"" >> ~/.localrc
+```
+
 # Notes from fresh install of Ubuntu 24.04 on main gaming desktop on 2026-01-03
 
 sudo apt -y update && sudo apt -y upgrade
