@@ -35,7 +35,7 @@ vi ~/.ssh/id_ed25519.pub
 
 Add the the SSH key to the agent:
 ```
-chmod 700 ~/.ssh/id_ed25519*
+chmod 600 ~/.ssh/id_ed25519*
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 ```
