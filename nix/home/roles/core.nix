@@ -2,8 +2,8 @@
 
 {
   imports = [
-    ./dotfiles-links.nix
-    ./python-environment.nix
+    ../lib/dotfiles-links.nix
+    ../lib/python-environment.nix
   ];
 
   # Declare Python packages needed by core

@@ -43,14 +43,16 @@ flavours update all      # Required first time setup
 
 ### Nix Configuration (`nix/`)
 - `flake.nix` - Entry point; generates Home Manager configurations from `hosts.json`
-- `hosts.json` - Defines hosts and their feature sets (core, desktop, gaming, wsl)
-- `home/features/` - Modular Home Manager feature files:
+- `hosts.json` - Defines hosts and their roles (core, desktop, gaming, wsl)
+- `home/roles/` - Host-type configurations (Ansible-style naming):
   - `core.nix` - Base packages (neovim, git, fzf, tmux, Python tools)
   - `desktop.nix` - GUI packages (i3, kitty, rofi, mpd, media tools)
   - `gaming.nix` - Gaming packages
   - `wsl.nix` - WSL-specific configuration
+- `home/lib/` - Shared modules imported by roles:
   - `dotfiles-links.nix` - Maps config files from `config/` to home directory
   - `python-environment.nix` - Builds unified Python environment
+- `home/features/` - Specific feature modules (e.g., docker) that can be shared across roles
 
 ### Configuration Files (`config/`)
 Application configs that get linked to home directory via Home Manager:
@@ -73,7 +75,7 @@ Standalone scripts: `set-theme`, `i3-util.sh`, `startup.sh`, `fuzzy-fm`, etc.
 
 - `apply.sh` - Bootstrap script for fresh installs (installs Nix, applies Home Manager)
 - `links.json` - Legacy dotfile symlink mappings (now mostly handled by `dotfiles-links.nix`)
-- `nix/hosts.json` - Host definitions with features; drives the entire Nix configuration
+- `nix/hosts.json` - Host definitions with roles; drives the entire Nix configuration
 
 ## Code Style
 

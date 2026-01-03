@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./python-environment.nix
+    ../lib/python-environment.nix
   ];
 
   # Declare Python packages needed by desktop

@@ -18,9 +18,9 @@
       # Load host definitions from JSON
       hostsData = builtins.fromJSON (builtins.readFile ./hosts.json);
       
-      # Convert feature name to module path
-      featureToModule = feature: ./home/features/${feature}.nix;
-      
+      # Convert role name to module path
+      roleToModule = role: ./home/roles/${role}.nix;
+
       # Generate a home-manager configuration for a single host
       mkHostConfig = hostName: hostConfig:
         home-manager.lib.homeManagerConfiguration {
@@ -30,8 +30,8 @@
               home.username = hostConfig.username;
               home.homeDirectory = "/home/${hostConfig.username}";
               home.stateVersion = "24.05";
-              
-              imports = map featureToModule hostConfig.features;
+
+              imports = map roleToModule hostConfig.roles;
             }
           ];
         };
