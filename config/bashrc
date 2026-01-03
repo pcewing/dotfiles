@@ -17,6 +17,9 @@ src_if_exists() {
 declare -a sources=(
     "$HOME/.fzf.bash"
     "$HOME/.localrc"
+
+    # No need to filter this out on non-WSL hosts because Nix won't link it
+    "$HOME/.wslrc"
 )
 
 for i in "${sources[@]}"; do

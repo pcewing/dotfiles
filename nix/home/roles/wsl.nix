@@ -49,4 +49,13 @@ in
         echo "win32yank $WIN32YANK_VERSION already installed"
       fi
     '';
+
+    # TODO: Link the file ../../../config/wslrc to ~/.wslrc
+    # Probably don't use the dotfiles-links.nix file since we only want this on
+    # WSL? Unless there's a good way to add it to the `items` array for WSL
+    # only
+
+    # TODO: Add an activation script to download this wezterm.sh file from github:
+    # https://raw.githubusercontent.com/wez/wezterm/main/assets/shell-integration/wezterm.sh
+    # and put it at the path: "$HOME/wezterm.sh"
 }
