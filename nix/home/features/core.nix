@@ -7,16 +7,19 @@
   ];
 
   # Declare Python packages needed by core
-  myPython.packages = with pkgs.python3Packages; [
-    pip
-    pynvim
-    black
-    mypy
-    isort
-    flake8
-    autoflake
-    argcomplete
-    json5
+  myPython.packageFns = [
+    (ps: with ps; [
+      pip
+      pynvim
+      mpd2
+      black
+      mypy
+      isort
+      flake8
+      autoflake
+      argcomplete
+      json5
+    ])
   ];
 
   home.sessionVariables = {
@@ -164,7 +167,6 @@
       nodejs # needed for copilot + some LSP tooling
     ];
   };
-
 
   programs.home-manager.enable = true;
 
