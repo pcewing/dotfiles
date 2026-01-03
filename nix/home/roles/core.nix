@@ -3,6 +3,8 @@
 let
   wpr = pkgs.callPackage ../packages/wpr.nix { };
   nvim-markdown = pkgs.callPackage ../packages/nvim-markdown.nix { };
+  cql-vim = pkgs.callPackage ../packages/cql-vim.nix { };
+  mesonic = pkgs.callPackage ../packages/mesonic.nix { };
 in
 {
   imports = [
@@ -128,9 +130,6 @@ in
       popup-nvim
   
       nvim-treesitter.withAllGrammars
-      # If we want to trim this down, we could do something like this:
-      #nvim-treesitter.withPlugins (p: [ p.c p.java ]))
-      # And copy what we used to have in our treesitter.lua file. But just installing all grammars is fine for now.
   
       ultisnips
       vim-snippets
@@ -152,13 +151,9 @@ in
       vim-glsl
       Jenkinsfile-vim-syntax
       plantuml-syntax
-      # This isn't the right name in Nix but I use Cassandra so
-      # infrequently I'm just commenting this out. We can fix if we ever need
-      # it again.
-      #cql-vim
+      cql-vim
       vim-fugitive
-      # Also doesn't appear to have a nix package yet
-      #mesonic
+      mesonic
   
       nvim-cmp
       lspsaga-nvim
