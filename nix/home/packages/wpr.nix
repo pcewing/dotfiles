@@ -8,7 +8,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://s3-us-west-2.amazonaws.com/pcewing-wpr/releases/${version}/wpr.${version}.linux-amd64.tar.gz";
-    sha256 = "1azc0kdfw899zsac4jk69wlr93fy8i0lglshm0llhy42ny9pv6vp";
+    sha256 = "sha256-YuJBoD8JWn1+fBMYdihIRz7qxpM+T+WmC3ruL2TcHWM=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook ];
