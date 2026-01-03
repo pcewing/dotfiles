@@ -2,24 +2,18 @@
 
 set -euo pipefail
 
-# TODO: Comment cleanup throughout
-
-#################################
-# tiny helpers (like your script)
-#################################
 yell() { >&2 echo "$*"; }
 die()  { yell "ERROR: $*"; exit 1; }
 try()  { "$@" || die "Command failed: $*"; }
 
-# TODO: This name makes no sense. This returns true if the cmd is installed,
-# implying that we would NOT need it. Rename to is_installed or something
-need_cmd() {
+is_cmd_installed() {
   command -v "$1" >/dev/null 2>&1 || return 1
 }
 
+# This is also defined in config/bash/core.sh so we could probably source that
+# instead but just duplicate it for now
 is_wsl() {
-  # Simple heuristic; good enough for now
-  grep -qi microsoft /proc/version 2>/dev/null
+    [ -n "$WSL_DISTRO_NAME" ] && return 0 || return 1
 }
 
 #################################
@@ -27,7 +21,7 @@ is_wsl() {
 #################################
 DOTFILES_DIR_DEFAULT="$HOME/dot"
 STATE_FILE="$HOME/.local/state/dotfiles/apply.json"
-APT_UPDATE_MAX_AGE_SECONDS=86400  # 24 hours
+APT_UPDATE_MAX_AGE_SECONDS=86400 # 24 hours
 
 usage() {
   cat <<EOF
@@ -366,7 +360,7 @@ apt_bootstrap() {
 # nix install / init
 #################################
 install_nix_if_needed() {
-  if need_cmd nix; then
+  if is_cmd_installed nix; then
     echo "[bootstrap] nix already installed."
     return 0
   fi
@@ -378,7 +372,7 @@ install_nix_if_needed() {
 
 source_nix_profile() {
   # Make nix available in the current shell, even right after install.
-  if need_cmd nix; then
+  if is_cmd_installed nix; then
     return 0
   fi
 
@@ -392,7 +386,7 @@ source_nix_profile() {
     source "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
   fi
 
-  need_cmd nix || die "nix still not on PATH after sourcing profile."
+  is_cmd_installed nix || die "nix still not on PATH after sourcing profile."
 }
 
 enable_nix_experimental() {
