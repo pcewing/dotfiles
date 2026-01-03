@@ -61,6 +61,11 @@
     calcurse
 
     #################
+    # Nix tooling
+    #################
+    nixfmt-rfc-style
+
+    #################
     # C/C++ tooling
     #################
     clang-tools

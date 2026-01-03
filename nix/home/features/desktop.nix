@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   imports = [
@@ -59,7 +59,9 @@
     # Music tooling (desktop-y)
     #########################
     mpd
-    ncmpcpp
+    (ncmpcpp.override {
+        visualizerSupport = true;
+    })
     cava
 
     #########################
@@ -72,4 +74,10 @@
     #########################
     bcompare
   ];
+
+    # Make sure mpd runtime directories exist or it will complain on the first
+    # startup
+    home.activation.createMpdDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        mkdir -p "$HOME/.mpd/playlists" "$HOME/.local/share/mpd"
+    '';
 }
