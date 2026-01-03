@@ -15,7 +15,6 @@ src_if_exists() {
 }
 
 declare -a sources=(
-    "$HOME/.fzf.bash"
     "$HOME/.localrc"
 
     # No need to filter this out on non-WSL hosts because Nix won't link it
@@ -25,6 +24,12 @@ declare -a sources=(
 for i in "${sources[@]}"; do
     src_if_exists  "$i"
 done
+
+# Source fzf shell integrations if we have them
+if command -v fzf-share >/dev/null; then
+  source "$(fzf-share)/key-bindings.bash"
+  source "$(fzf-share)/completion.bash"
+fi
 
 # Prompt
 black="\[\033[30m\]"

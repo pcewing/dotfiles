@@ -128,12 +128,6 @@ is still valid.
 like that so I can get fzf `ctrl+r` functionality so update the provision
 script to set that up correctly.
 
-## wezterm shell integration
-
-Automatically download wezterm.sh and source it in ~/.localrc or at least
-document this for WSL setup. There's a TODO for this in the setup_wsl.md file
-too.
-
 ## Python Tidy/Lint
 
 - [ ] Look into `ruff` since it may replace several other dependencies and also
