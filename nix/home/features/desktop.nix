@@ -9,7 +9,10 @@
     ########################
     # nixGL for OpenGL support
     ########################
-    nixgl.auto.nixGLDefault
+    nixgl.nixGLIntel
+    nixgl.nixGLNvidia
+    nixgl.nixVulkanIntel
+    nixgl.nixVulkanNvidia
 
     ########################
     # Desktop / GUI utilities
