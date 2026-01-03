@@ -40,6 +40,11 @@
     xdotool
     libwebp
 
+    # Even though kitty is our primary terminal emulator now, install urxvt as
+    # a backup because kitty's dependence on 3D acceleration has been
+    # problematic in the past
+    rxvt-unicode
+
     ########
     # Media
     ########
@@ -65,5 +70,6 @@
     # Proprietary Software
     #########################
     bcompare
+    google-chrome
   ];
 }
