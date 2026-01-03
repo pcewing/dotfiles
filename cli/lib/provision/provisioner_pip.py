@@ -21,6 +21,9 @@ class PipProvisioner(IComponentProvisioner):
         self._args = args
 
     def provision(self) -> None:
+        # TODO: This breaks on Ubuntu 24.04 because Pip packages installed system-wide need to be installed via:
+        # apt install python3-foo
+        return
         packages = _PIP_PACKAGES["core"]
         Pip.install(
             packages=packages,

@@ -65,9 +65,7 @@ source "$HOME/.bash_completion.d/dot.bash"
 
 # Base16 Outrun Dark
 
-if command -v "base16_outrun-dark" >/dev/null 2>&1; then
-    eval "base16_outrun-dark"
-fi
+eval "base16_outrun-dark"
 # End flavours - bashrc
 
 # TODO: I think this was automatically appended and I didn't notice and

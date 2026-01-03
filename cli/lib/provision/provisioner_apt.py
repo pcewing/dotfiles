@@ -77,10 +77,10 @@ APT_PACKAGES = {
         "easytag",             # Edit ID3 Tags on MP3 files
         "blueman",             # Bluetooth device support
     ],
-    "gaming": [
-        "steam",
-        "steam-devices",
-    ],
+    #"gaming": [
+    #    "steam",
+    #    "steam-devices",
+    #],
 }
 # fmt: on
 
@@ -100,6 +100,6 @@ class AptProvisioner(IComponentProvisioner):
         if self._args.tags.has(Tags.x11):
             packages += APT_PACKAGES["gui-tools"]
             packages += APT_PACKAGES["media"]
-            packages += APT_PACKAGES["gaming"]
+            #packages += APT_PACKAGES["gaming"]
 
         Apt.install(packages, self._args.dry_run)
