@@ -827,10 +827,28 @@ git_diff_with()
         return 1
     fi
 
+    # TODO: Find a cleaner way to always get back to the previous working
+    # directory. Maybe just execute all of this in a sub-shell?
+
+    if ! git reset --hard; then
+        cd -
+        yell "ERROR: TODO31"
+        return 1
+    fi
+
+    if ! git clean -fdx; then
+        cd -
+        yell "ERROR: TODO32"
+        return 1
+    fi
+
     if ! git checkout "$diff_target"; then
+        cd -
         yell "ERROR: TODO3"
         return 1
     fi
+
+    cd -
 
     local bcompare_exe
     # TODO: If WSL else...

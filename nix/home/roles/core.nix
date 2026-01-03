@@ -4,6 +4,7 @@
   imports = [
     ../lib/dotfiles-links.nix
     ../lib/python-environment.nix
+    ../features/development.nix
   ];
 
   # Declare Python packages needed by core
