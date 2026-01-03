@@ -8,9 +8,11 @@
 # $ cd ~/dot/config
 # $ shellcheck --shell=dash -x ./env ./xsession
 
-# Add user-defined fonts
-xset +fp /home/paul/.fonts
-xset fp rehash
+# Add user-defined fonts (only if directory exists)
+if [ -d "$HOME/.fonts" ]; then
+  xset +fp "$HOME/.fonts"
+  xset fp rehash
+fi
 
 # Disable bell
 xset -b
@@ -47,8 +49,17 @@ ulimit -c unlimited
 
 # Set up environment variables
 # shellcheck source=./env
-. "$HOME/dot/config/env"
-echo "Path = $PATH" > "$HOME/test.txt"
+if [ -f "$HOME/dot/config/env" ]; then
+  . "$HOME/dot/config/env"
+  echo "Sourced env, Path = $PATH" >> "$HOME/xsession-debug.log"
+else
+  echo "ERROR: $HOME/dot/config/env not found" >> "$HOME/xsession-debug.log"
+fi
+
+# Wrap exec in a function so we can redirect its output cleanly
+exec_i3() {
+    exec i3 -V -d all
+}
 
 # Start i3 and log output
 logdir="$HOME/.logs"
@@ -56,7 +67,18 @@ mkdir -p "$logdir"
 "$HOME/dot/bin/cleanup_logs.sh"
 i3logfile="$logdir/i3_$(date +"%Y%m%d_%H%M%S").log"
 echo "Starting at $(date)" >> "$i3logfile"
-# TODO: Nix doesn't install at that path. This shouldn't need to be an absolute
-# path since we've sourced the `config/env` script
-#exec /usr/local/bin/i3 -V -d all &>> "$i3logfile"
-exec i3 -V -d all &>> "$i3logfile"
+echo "PATH: $PATH" >> "$i3logfile"
+echo "Checking for i3: $(command -v i3 2>&1)" >> "$i3logfile"
+
+# Try to start i3 and log any errors
+if command -v i3 >/dev/null 2>&1; then
+  echo "Found i3 at: $(command -v i3)" >> "$i3logfile"
+  echo "DISPLAY is: $DISPLAY" >> "$i3logfile"
+  exec_i3 >> "$i3logfile" 2>&1
+else
+  echo "ERROR: i3 not found in PATH" >> "$i3logfile"
+  echo "PATH was: $PATH" >> "$i3logfile"
+  # Try to show a notification
+  notify-send "X Session Failed" "i3 not found in PATH" 2>/dev/null || true
+  exit 1
+fi
