@@ -39,6 +39,7 @@
     wl-clipboard
     xdotool
     libwebp
+    arandr
 
     # Even though kitty is our primary terminal emulator now, install urxvt as
     # a backup because kitty's dependence on 3D acceleration has been
@@ -70,6 +71,5 @@
     # Proprietary Software
     #########################
     bcompare
-    google-chrome
   ];
 }

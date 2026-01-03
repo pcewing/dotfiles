@@ -2,6 +2,9 @@
 
 This repository contains my dotfiles!
 
+**TODO:** Add description of new Nix setup. Move manual setup into another doc
+file(s) maybe?
+
 ## Manual Setup
 
 A few things I haven't bothered to automate.
@@ -43,10 +46,14 @@ Without this, clock time in Windows will be off.
 The following aren't in apt and need to be installed manually:
 
 - Chrome
-- Beyond Compare
 - Insync
+    - https://www.insynchq.com/downloads/linux
+    - `insync start`
+    - Set sync location to: `$HOME/box`
 - Discord
-- RuneLite
+- Visual Studio Code
+- Beyond Compare*
+- RuneLite*
 
 **Note:** Chrome, Beyond Compare, and RuneLite are availabe in Nix so if we stick with our
 Nix configs, those don't need to be manually installed. Discord is available
@@ -62,6 +69,9 @@ Alacritty is not yet in the default Ubuntu apt repositories:
 sudo add-apt-repository ppa:mmstick76/alacritty
 sudo apt update
 ```
+
+I rarely use Alacritty due to issues that the developers refuse to fix due to
+strange philosophies so eh, maybe just don't install it.
 
 ## Theming
 

@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
+
+# TODO: Comment cleanup throughout
 
 #################################
 # tiny helpers (like your script)
