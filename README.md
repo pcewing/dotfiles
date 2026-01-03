@@ -48,6 +48,14 @@ The following aren't in apt and need to be installed manually:
 - Discord
 - RuneLite
 
+**Note:** Chrome, Beyond Compare, and RuneLite are availabe in Nix so if we stick with our
+Nix configs, those don't need to be manually installed. Discord is available
+but given that it stops working the second an update is available, it's
+probably easier to just download it via the official `.deb`. Similarly, Insync
+is available but there's a known bug with the tray icon not rendering correctly
+and since this already requires manual configuration the first time it runs
+anyways, installing it manually isn't a big deal.
+
 Alacritty is not yet in the default Ubuntu apt repositories:
 
 ```bash
