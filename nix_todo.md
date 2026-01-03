@@ -19,3 +19,10 @@ place registration should automatically happen:
 https://www.scootersoftware.com/kb/linuxtips
 
 Maybe we can have Nix do that?
+
+4. Other software
+
+- Docker
+- NodeJS?
+- Golang?
+- Rust?
