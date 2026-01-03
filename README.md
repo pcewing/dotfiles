@@ -57,6 +57,11 @@ sudo apt update
 
 ## Theming
 
+**NOTE:** This is not quite accurate after switching to Nix and home-manager.
+Now, dotfiles are effectively copied to their target location instead of
+symlinked so when `set-theme` updates them, the changes won't take affect until
+the next time Nix configuration is applied.
+
 To make it easier to re-theme everything at once, I use
 [base16](https://github.com/chriskempson/base16) and
 [flavours](https://github.com/Misterio77/flavours). See:
