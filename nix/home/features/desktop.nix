@@ -1,13 +1,16 @@
 { pkgs, ... }:
 
-let
-  # Desktop Python environment with py3status and its dependencies
-  desktopPy = pkgs.python3.withPackages (ps: with ps; [
-    py3status
-    mpd2  # Required by py3status mpd_status module
-  ]);
-in
 {
+  imports = [
+    ./python-environment.nix
+  ];
+
+  # Declare Python packages needed by desktop
+  myPython.packages = with pkgs.python3Packages; [
+    py3status
+    mpd2
+  ];
+
   home.sessionVariables = {
     TERMINAL = "kitty";
   };
@@ -60,10 +63,5 @@ in
     # Proprietary Software
     #########################
     bcompare
-
-    #########################
-    # Desktop Python environment
-    #########################
-    desktopPy
   ];
 }
