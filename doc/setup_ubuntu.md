@@ -112,36 +112,30 @@ Without this, clock time in Windows will be off.
 
 ### Applications to Manually Install
 
-The following aren't in apt and need to be installed manually:
+The following should be installed manually:
 
 - Chrome
+    - Reason: This is in Nix but when I tried using the Nix package, it just
+      crashes immediately and I didn't feel like debugging it. Most likely 3D
+      acceleration issues like i3wm and kitty had.
 - Insync
-    - https://www.insynchq.com/downloads/linux
-    - `insync start`
-    - Set sync location to: `$HOME/box`
+    - Download URL: https://www.insynchq.com/downloads/linux
+    - Setup:
+        - `insync start`
+        - Remember to set sync location to: `$HOME/box`
+    - Reason: Insync is available in Nix but there's a known bug with the tray
+      icon not rendering correctly. Given this already requires a fair amount
+      of manual setup to authenticate and map desired folders, installing it
+      manually is fine.
 - Discord
+    - Reason: Discord stops working as soon as an upstream update is available
+      so it's easier to just install it via the official `.deb` and keep it
+      updated that way
 - Visual Studio Code
-- Beyond Compare*
-- RuneLite*
-
-**Note:** Chrome, Beyond Compare, and RuneLite are availabe in Nix so if we stick with our
-Nix configs, those don't need to be manually installed. Discord is available
-but given that it stops working the second an update is available, it's
-probably easier to just download it via the official `.deb`. Similarly, Insync
-is available but there's a known bug with the tray icon not rendering correctly
-and since this already requires manual configuration the first time it runs
-anyways, installing it manually isn't a big deal.
-
-Alacritty is not yet in the default Ubuntu apt repositories:
-
-```bash
-sudo add-apt-repository ppa:mmstick76/alacritty
-sudo apt update
-```
-
-I rarely use Alacritty due to issues that the developers refuse to fix due to
-strange philosophies so eh, maybe just don't install it.
+    - Probably could get this from Nix, I just didn't give it a proper go
 
 ## WSL
 
-See [setup_wsl.md][./setup_wsl.md].
+If this is a WSL machine, follow the additional setup steps here:
+
+[setup_wsl.md][./setup_wsl.md]
