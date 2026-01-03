@@ -80,3 +80,75 @@ cd ~/dot
 - .gitconfig_local
     - Can we just make a new email solely for git that we can put in the public repo?
         - Like, `git@pcewing.com`?
+
+
+**FROM README**
+
+
+### Git
+
+Create `~/.gitconfig_local` like:
+
+```
+[user]
+	email = paul@foo.com
+	name = Paul Ewing
+```
+
+### Wallpaper Rotater
+
+If using `wpr`, create `~/.config/wpr/config.json` like:
+
+```json
+{
+    "WallpaperDir": "/home/username/Pictures/Wallpapers",
+    "DisplayCount": 1,
+    "Interval":120
+}
+```
+
+### Dual Boot Clock Fix
+
+If dual booting with Windows, set hardware clock to local time:
+
+```bash
+timedatectl set-local-rtc 1
+```
+
+Without this, clock time in Windows will be off.
+
+### Applications to Manually Install
+
+The following aren't in apt and need to be installed manually:
+
+- Chrome
+- Insync
+    - https://www.insynchq.com/downloads/linux
+    - `insync start`
+    - Set sync location to: `$HOME/box`
+- Discord
+- Visual Studio Code
+- Beyond Compare*
+- RuneLite*
+
+**Note:** Chrome, Beyond Compare, and RuneLite are availabe in Nix so if we stick with our
+Nix configs, those don't need to be manually installed. Discord is available
+but given that it stops working the second an update is available, it's
+probably easier to just download it via the official `.deb`. Similarly, Insync
+is available but there's a known bug with the tray icon not rendering correctly
+and since this already requires manual configuration the first time it runs
+anyways, installing it manually isn't a big deal.
+
+Alacritty is not yet in the default Ubuntu apt repositories:
+
+```bash
+sudo add-apt-repository ppa:mmstick76/alacritty
+sudo apt update
+```
+
+I rarely use Alacritty due to issues that the developers refuse to fix due to
+strange philosophies so eh, maybe just don't install it.
+
+## WSL
+
+See [setup_wsl.md][./setup_wsl.md].
