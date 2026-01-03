@@ -26,6 +26,8 @@ is_wsl() {
 # config knobs (safe defaults)
 #################################
 DOTFILES_DIR_DEFAULT="$HOME/dot"
+STATE_FILE="$HOME/.local/state/dotfiles/apply.json"
+APT_UPDATE_MAX_AGE_SECONDS=86400  # 24 hours
 
 usage() {
   cat <<EOF
@@ -46,14 +48,193 @@ NIX_HOST=""
 DO_UPGRADE=1
 DO_APT=1
 
-# If jq isn't installed, we will run this very early in the script. Keep track
-# of whether or not we've done it so we don't waste time doing it again
-APT_UPDATE_COMPLETE="0"
-
 # Track if docker was installed during this run so that we can print a reminder
 # at the end to either reboot or log out and back in for the group change to
 # take effect
 DOCKER_INSTALLED="0"
+
+#################################
+# apt update caching
+#################################
+
+# Get the last apt update timestamp from the state file
+# Returns empty string if not found
+get_apt_last_update() {
+  if [[ ! -f "$STATE_FILE" ]]; then
+    echo ""
+    return
+  fi
+  # Use basic grep/sed if jq isn't available yet
+  if command -v jq >/dev/null 2>&1; then
+    jq -r '.apt_last_update // empty' "$STATE_FILE" 2>/dev/null || echo ""
+  else
+    # Fallback: extract with grep/sed (works for simple JSON)
+    grep -o '"apt_last_update":[0-9]*' "$STATE_FILE" 2>/dev/null | sed 's/.*://' || echo ""
+  fi
+}
+
+# Write the current timestamp to the state file
+set_apt_last_update() {
+  local timestamp
+  timestamp="$(date +%s)"
+
+  mkdir -p "$(dirname "$STATE_FILE")"
+
+  if command -v jq >/dev/null 2>&1; then
+    # Use jq to update/create the JSON file
+    if [[ -f "$STATE_FILE" ]]; then
+      local tmp
+      tmp="$(mktemp)"
+      jq ".apt_last_update = $timestamp" "$STATE_FILE" > "$tmp" && mv "$tmp" "$STATE_FILE"
+    else
+      echo "{\"apt_last_update\": $timestamp}" > "$STATE_FILE"
+    fi
+  else
+    # Simple fallback without jq
+    echo "{\"apt_last_update\": $timestamp}" > "$STATE_FILE"
+  fi
+}
+
+# Check if apt update is stale (older than APT_UPDATE_MAX_AGE_SECONDS)
+# Returns 0 (true) if stale or missing, 1 (false) if fresh
+is_apt_update_stale() {
+  local last_update
+  last_update="$(get_apt_last_update)"
+
+  if [[ -z "$last_update" ]]; then
+    return 0  # No record, consider stale
+  fi
+
+  local now age
+  now="$(date +%s)"
+  age=$((now - last_update))
+
+  if [[ $age -ge $APT_UPDATE_MAX_AGE_SECONDS ]]; then
+    return 0  # Stale
+  else
+    return 1  # Fresh
+  fi
+}
+
+# Run apt-get update only if the cache is stale
+apt_update_if_stale() {
+  if is_apt_update_stale; then
+    local last_update age_hours
+    last_update="$(get_apt_last_update)"
+    if [[ -n "$last_update" ]]; then
+      age_hours=$(( ($(date +%s) - last_update) / 3600 ))
+      echo "[bootstrap] apt cache is stale (${age_hours}h old), running apt-get update..."
+    else
+      echo "[bootstrap] No apt update timestamp found, running apt-get update..."
+    fi
+    try sudo apt-get update -y
+    set_apt_last_update
+  else
+    local last_update age_hours
+    last_update="$(get_apt_last_update)"
+    age_hours=$(( ($(date +%s) - last_update) / 3600 ))
+    echo "[bootstrap] apt cache is fresh (${age_hours}h old), skipping apt-get update"
+  fi
+}
+
+# Run apt-get update unconditionally and update the timestamp
+# Used when adding new repositories (e.g., Docker)
+apt_update_always() {
+  echo "[bootstrap] Running apt-get update (forced)..."
+  try sudo apt-get update -y
+  set_apt_last_update
+}
+
+#################################
+# apt upgrade caching
+#################################
+
+# Get the last apt upgrade timestamp from the state file
+get_apt_last_upgrade() {
+  if [[ ! -f "$STATE_FILE" ]]; then
+    echo ""
+    return
+  fi
+  if command -v jq >/dev/null 2>&1; then
+    jq -r '.apt_last_upgrade // empty' "$STATE_FILE" 2>/dev/null || echo ""
+  else
+    grep -o '"apt_last_upgrade":[0-9]*' "$STATE_FILE" 2>/dev/null | sed 's/.*://' || echo ""
+  fi
+}
+
+# Write the current upgrade timestamp to the state file
+set_apt_last_upgrade() {
+  local timestamp
+  timestamp="$(date +%s)"
+
+  mkdir -p "$(dirname "$STATE_FILE")"
+
+  if command -v jq >/dev/null 2>&1; then
+    if [[ -f "$STATE_FILE" ]]; then
+      local tmp
+      tmp="$(mktemp)"
+      jq ".apt_last_upgrade = $timestamp" "$STATE_FILE" > "$tmp" && mv "$tmp" "$STATE_FILE"
+    else
+      echo "{\"apt_last_upgrade\": $timestamp}" > "$STATE_FILE"
+    fi
+  else
+    # Without jq, we need to be careful not to clobber apt_last_update
+    # Best effort: just write upgrade timestamp (update will fix it next time with jq)
+    if [[ -f "$STATE_FILE" ]]; then
+      # Try to preserve existing content
+      local update_ts
+      update_ts="$(get_apt_last_update)"
+      if [[ -n "$update_ts" ]]; then
+        echo "{\"apt_last_update\": $update_ts, \"apt_last_upgrade\": $timestamp}" > "$STATE_FILE"
+      else
+        echo "{\"apt_last_upgrade\": $timestamp}" > "$STATE_FILE"
+      fi
+    else
+      echo "{\"apt_last_upgrade\": $timestamp}" > "$STATE_FILE"
+    fi
+  fi
+}
+
+# Check if apt upgrade is stale
+is_apt_upgrade_stale() {
+  local last_upgrade
+  last_upgrade="$(get_apt_last_upgrade)"
+
+  if [[ -z "$last_upgrade" ]]; then
+    return 0  # No record, consider stale
+  fi
+
+  local now age
+  now="$(date +%s)"
+  age=$((now - last_upgrade))
+
+  if [[ $age -ge $APT_UPDATE_MAX_AGE_SECONDS ]]; then
+    return 0  # Stale
+  else
+    return 1  # Fresh
+  fi
+}
+
+# Run apt-get dist-upgrade only if stale
+apt_upgrade_if_stale() {
+  if is_apt_upgrade_stale; then
+    local last_upgrade age_hours
+    last_upgrade="$(get_apt_last_upgrade)"
+    if [[ -n "$last_upgrade" ]]; then
+      age_hours=$(( ($(date +%s) - last_upgrade) / 3600 ))
+      echo "[bootstrap] apt upgrade is stale (${age_hours}h old), running apt-get dist-upgrade..."
+    else
+      echo "[bootstrap] No apt upgrade timestamp found, running apt-get dist-upgrade..."
+    fi
+    try sudo apt-get dist-upgrade -y
+    set_apt_last_upgrade
+  else
+    local last_upgrade age_hours
+    last_upgrade="$(get_apt_last_upgrade)"
+    age_hours=$(( ($(date +%s) - last_upgrade) / 3600 ))
+    echo "[bootstrap] apt upgrade is fresh (${age_hours}h old), skipping apt-get dist-upgrade"
+  fi
+}
 
 nix_hosts() {
     jq -r '.hosts | keys[]' "$DOTFILES_DIR/nix/hosts.json"
@@ -78,6 +259,7 @@ install_docker() {
 
     if command -v docker >/dev/null 2>&1; then
         echo "[bootstrap] (install_docker) Docker is already installed, skipping docker install"
+        return 0
     fi
 
     # Add Docker's official GPG key:
@@ -95,7 +277,8 @@ Signed-By: /etc/apt/keyrings/docker.asc
 EOF
 
     # Update apt to pick up the new docker repository and install
-    try sudo apt-get update -y
+    # Always run apt-get update here since we just added a new repo
+    apt_update_always
     try sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
     # Add user to docker group so we don't need to use sudo
@@ -143,7 +326,6 @@ validate_nix_host() {
 apt_bootstrap() {
   if [[ ! "$DO_APT" -eq 1 ]]; then
     echo "[bootstrap] (apt_bootstrap) Skipping apt steps because --no-apt was specified..."
-    try sudo apt-get dist-upgrade -y
     return
   fi
 
@@ -171,13 +353,10 @@ apt_bootstrap() {
     )
   fi
 
-  if [[ ! "$APT_UPDATE_COMPLETE" -eq 1 ]]; then
-  	try sudo apt-get update -y
-  fi
+  apt_update_if_stale
 
   if [[ "$DO_UPGRADE" -eq 1 ]]; then
-    # In a VM this is fine; on real machines you may prefer to disable.
-    try sudo apt-get dist-upgrade -y
+    apt_upgrade_if_stale
   fi
 
   try sudo apt-get install -y "${pkgs[@]}"
@@ -333,12 +512,11 @@ main() {
     echo "[bootstrap] Detected WSL environment."
   fi
 
-  # TODO: Put this in a function
   # We need jq for this script to run at all so if it's not installed, get it
   if ! command -v jq >/dev/null 2>&1; then
-	  try sudo apt-get update -y
-	  try sudo apt-get install -y jq
-	  APT_UPDATE_COMPLETE="1"
+    echo "[bootstrap] jq not found, installing..."
+    apt_update_if_stale
+    try sudo apt-get install -y jq
   fi
 
   source_localrc
