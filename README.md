@@ -3,9 +3,6 @@
 This repository contains my dotfiles and uses Nix and Home Manager for
 declarative configuration across my machines.
 
-**TODO:** Add description of new Nix setup. Move manual setup into another doc
-file(s) maybe?
-
 ## Getting Started
 
 - **Ubuntu Setup Instructions:**
