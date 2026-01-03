@@ -1,5 +1,8 @@
 { config, pkgs, lib, ... }:
 
+let
+  wpr = pkgs.callPackage ../packages/wpr.nix { };
+in
 {
   imports = [
     ../lib/dotfiles-links.nix
@@ -44,6 +47,7 @@
     unzip
     libuchardet
     xz
+    dos2unix
 
     ###############################
     # Basic command line utilities
@@ -51,7 +55,6 @@
     gnumake
     gcc
     cmake
-    meson
     htop
     iotop
     universal-ctags
@@ -60,6 +63,8 @@
     neofetch
     id3v2
     calcurse
+    vim
+    tree-sitter
 
     #################
     # Nix tooling
@@ -83,6 +88,11 @@
 
     # Ruff is a Rust tool, top-level package
     ruff
+
+    #################
+    # Custom packages
+    #################
+    wpr
   ];
 
   # Provide a stable `dot` command that always uses the unified Python env
@@ -185,6 +195,17 @@
         ${config.myPython.environment}/bin/register-python-argcomplete \
           --external-argcomplete-script "$HOME/dot/cli/dot.py" dot \
           > "$HOME/.config/bash/completions/dot"
+      fi
+    '';
+
+  # Update flavours base16 schemes and templates on activation
+  home.activation.flavoursUpdate =
+    lib.hm.dag.entryAfter ["writeBoundary"] ''
+      if command -v flavours >/dev/null 2>&1; then
+        echo "Updating flavours schemes and templates..."
+        # flavours update can be noisy and sometimes fails on first run, so we
+        # suppress errors and output
+        ${pkgs.flavours}/bin/flavours update all >/dev/null 2>&1 || true
       fi
     '';
 }

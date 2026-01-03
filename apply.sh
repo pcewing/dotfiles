@@ -156,7 +156,7 @@ apt_bootstrap() {
     curl
     git
     jq
-    libfuse
+    libfuse3-3
     locate
     software-properties-common
     xz-utils

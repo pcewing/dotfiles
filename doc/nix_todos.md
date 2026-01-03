@@ -69,63 +69,15 @@ These require root access and modify system directories:
 
 ---
 
-## 2. Actual TODOs (Missing from Both Nix and apply.sh)
+## 2. Remaining TODOs
 
-### 2.1 Missing Packages
-
-| Package | Old Location | Priority | Notes |
-|---------|--------------|----------|-------|
-| `vim` | apt (shell) | Low | Standalone vim as backup (nvim is primary) |
-| `dos2unix` | apt (Python) | Low | Line ending converter |
-| `tree-sitter` CLI | Python provisioner | Medium | Standalone CLI, separate from nvim-treesitter plugin |
-| `clang` | apt (shell) | Medium | C/C++ compiler (clang-tools provides clangd but not the compiler) |
-| `ninja` | implicit in old | Low | Build system |
-| `usb-creator-gtk` | apt (shell) | Low | USB flash tool |
-
-### 2.2 WSL-Specific
-
-| Task | Old Location | Priority | Notes |
-|------|--------------|----------|-------|
-| Install `win32yank` | Python provisioner | High | Already has TODO in wsl.nix |
-| Configure clipboard integration | Python provisioner | High | win32yank for nvim clipboard |
-
-**Implementation suggestion for wsl.nix:**
-```nix
-home.packages = with pkgs; [
-  win32yank
-];
-```
-
-### 2.3 MPD Service Management
-
-| Task | Old Location | Priority | Notes |
-|------|--------------|----------|-------|
-| Disable system mpd.service | shell script | Low | `systemctl disable/mask mpd.service` |
-| Disable system mpd.socket | shell script | Low | `systemctl disable/mask mpd.socket` |
-| Disable user mpd.service | shell script | Low | `systemctl --user disable/mask mpd.service` |
-| Disable user mpd.socket | shell script | Low | `systemctl --user disable/mask mpd.socket` |
-
-**Note:** This was done in the old scripts to prevent the system mpd from conflicting with user-run mpd. May need to add to apply.sh or document as a manual step.
-
-### 2.4 Custom Tools
-
-| Task | Old Location | Priority | Notes |
-|------|--------------|----------|-------|
-| Install `wpr` | shell script | Low | Custom tool from S3: `pcewing-wpr` |
-
-### 2.5 Neovim Plugins (Nix Package Issues)
+### 2.1 Neovim Plugins (Nix Package Issues)
 
 | Plugin | Priority | Notes |
 |--------|----------|-------|
 | markdown.nvim | Low | Commented out in core.nix due to package issues |
 | cql-vim | Low | Cassandra CQL support |
 | mesonic | Low | Meson build system integration |
-
-### 2.6 Activation Scripts
-
-| Task | Old Location | Priority | Notes |
-|------|--------------|----------|-------|
-| `flavours update all` | shell/Python | Low | May need activation script after fresh install |
 
 ---
 
@@ -135,16 +87,17 @@ home.packages = with pkgs; [
 
 | Category | Packages |
 |----------|----------|
-| Core utilities | wget, gnupg, jq, plocate, fzf, nettools, unzip, libuchardet, xz |
-| CLI tools | gnumake, gcc, cmake, meson, htop, iotop, universal-ctags, ranger, tmux, neofetch, id3v2, calcurse |
+| Core utilities | wget, gnupg, jq, plocate, fzf, nettools, unzip, libuchardet, xz, dos2unix |
+| CLI tools | gnumake, gcc, cmake, htop, iotop, universal-ctags, ranger, tmux, neofetch, id3v2, calcurse, vim, tree-sitter |
 | Search/utils | ripgrep |
 | Theming | flavours |
 | C/C++ | clang-tools (clangd) |
-| Desktop/GUI | font-awesome, rofi, dunst, feh, sxiv, nitrogen, pavucontrol, picom, scrot, gucharmap, keepassxc, remmina, i3lock, meld, xclip, wl-clipboard, xdotool, libwebp, arandr, rxvt-unicode |
+| Desktop/GUI | font-awesome, rofi, dunst, feh, sxiv, nitrogen, pavucontrol, picom, scrot, gucharmap, keepassxc, remmina, i3lock, meld, xclip, wl-clipboard, xdotool, libwebp, arandr, rxvt-unicode, ventoy |
 | Media | inkscape, mpv, vlc, easytag, blueman, mpd, ncmpcpp, cava, yt-dlp |
 | Gaming | steam, steam-run, runelite |
-| Development | go, gopls, delve, rustup, nodejs, npm, openjdk, dotnet-sdk |
+| Development | go, gopls, delve, rustup, nodejs, npm, openjdk, dotnet-sdk, meson, ninja |
 | Proprietary | bcompare |
+| Custom | wpr (via custom derivation in `nix/home/packages/wpr.nix`) |
 
 ### 3.2 Python Packages (via unified environment)
 
@@ -168,8 +121,17 @@ All links from `links.json` are implemented in `dotfiles-links.nix`.
 
 | Task | Location |
 |------|----------|
-| dot CLI completion | core.nix activation |
-| MPD directories creation | desktop.nix activation |
+| dot CLI completion | core.nix `home.activation.dotArgcomplete` |
+| MPD directories creation | desktop.nix `home.activation.createMpdDirs` |
+| flavours update | core.nix `home.activation.flavoursUpdate` |
+| win32yank installation | wsl.nix `home.activation.installWin32yank` |
+
+### 3.6 WSL-Specific
+
+| Task | Location | Notes |
+|------|----------|-------|
+| win32yank | wsl.nix activation script | Downloads to `/mnt/c/bin/` on Windows filesystem |
+| BROWSER env var | wsl.nix | Set to `wslview` |
 
 ---
 
@@ -187,6 +149,7 @@ Items from old provisioners that are no longer needed:
 | Custom flavours installation | Now installed via Nix |
 | Custom ripgrep installation | Now installed via Nix |
 | Custom nodejs installation | Now installed via Nix |
+| `usb-creator-gtk` | Replaced by `ventoy` |
 
 ---
 
@@ -229,3 +192,13 @@ The old provisioners had version caching. Nix handles this via flake.lock:
 - Commit flake.lock for reproducibility
 - Use `nix flake update` to update nixpkgs
 - Consider overlays for packages needing specific versions
+
+### Custom Packages
+
+Custom packages are stored in `nix/home/packages/`:
+- `wpr.nix` - Personal wpr tool fetched from S3
+
+To add new custom packages:
+1. Create a `.nix` file in `nix/home/packages/`
+2. Use `pkgs.callPackage ../packages/yourpkg.nix { }` in the relevant role
+3. Add to the packages list

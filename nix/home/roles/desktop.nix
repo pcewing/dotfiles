@@ -73,6 +73,11 @@
     # Proprietary Software
     #########################
     bcompare
+
+    #########################
+    # System Utilities
+    #########################
+    ventoy
   ];
 
     # Make sure mpd runtime directories exist or it will complain on the first

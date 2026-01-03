@@ -3,6 +3,12 @@
 {
   home.packages = with pkgs; [
     #########
+    # Build Systems
+    #########
+    meson
+    ninja
+
+    #########
     # Golang
     #########
     go
