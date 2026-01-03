@@ -42,11 +42,7 @@ DO_UPGRADE=1
 DO_APT=1
 
 nix_hosts() {
-    if [ -f "$DOTFILES_DIR/nix/hosts.json" ]; then
-        jq -r '.hosts | keys[]' "$DOTFILES_DIR/nix/hosts.json"
-    else
-        ls "$DOTFILES_DIR/nix/home/hosts" 2>/dev/null | sed 's/\.nix$//' || true
-    fi
+    jq -r '.hosts | keys[]' "$DOTFILES_DIR/nix/hosts.json"
 }
 
 host_has_feature() {
@@ -85,11 +81,19 @@ validate_nix_host() {
         yell "[bootstrap] (validate_nix_host) Error: NIX_HOST is not set."
         yell "Either specify the --nix-host argument or export this variable in your ~/.localrc file. Available hosts:"
         yell "$(nix_hosts)"
+        yell "See $DOTFILES_DIR/nix/hosts.json for details."
         exit 1
     fi
 
-    if [ ! -e "$DOTFILES_DIR/nix/home/hosts/$NIX_HOST.nix" ]; then
-        die "NIX_HOST '$NIX_HOST' is not valid. Available hosts: $(nix_hosts)"
+    if [ ! -f "$DOTFILES_DIR/nix/hosts.json" ]; then
+        die "hosts.json not found at $DOTFILES_DIR/nix/hosts.json"
+    fi
+
+    if ! jq -e ".hosts[\"$NIX_HOST\"]" "$DOTFILES_DIR/nix/hosts.json" >/dev/null 2>&1; then
+        yell "NIX_HOST '$NIX_HOST' is not valid. Available hosts:"
+        yell "$(nix_hosts)"
+        yell "See $DOTFILES_DIR/nix/hosts.json for details."
+        exit 1
     fi
 }
 
