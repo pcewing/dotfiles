@@ -2,6 +2,8 @@
 
 This document tracks remaining work to achieve full parity between the old provisioning systems (shell scripts in `provision/` and Python scripts in `cli/lib/provision/`) and the new Nix/Home Manager configuration.
 
+**Important:** The primary entry point is `apply.sh`, which handles bootstrap/system-level tasks before invoking Home Manager. Many items that cannot or should not be managed by Nix are intentionally handled there.
+
 ## Status Legend
 - [ ] Not started
 - [~] Partial / In progress
@@ -9,98 +11,83 @@ This document tracks remaining work to achieve full parity between the old provi
 
 ---
 
-## 1. Missing Packages
+## 1. Handled by apply.sh (Intentionally Not in Nix)
 
-### 1.1 Core Utilities
+These items are managed by `apply.sh` rather than Nix, typically because they require root access, have OpenGL/driver issues with Nix, or are needed before Nix is available.
 
-| Package | Old Location | Status | Notes |
-|---------|--------------|--------|-------|
-| `curl` | apt (shell) | [ ] | Basic utility, should be in core.nix |
-| `vim` | apt (shell) | [ ] | Standalone vim as backup (nvim is primary) |
-| `libfuse2` | apt (shell) | [ ] | Required for AppImage support |
-| `dos2unix` | apt (Python) | [ ] | Line ending converter |
-| `apt-file` | apt (shell) | [ ] | May not be needed with Nix |
-| `software-properties-common` | apt (shell) | [ ] | Ubuntu-specific, not needed for Nix |
+### 1.1 APT Bootstrap Packages
 
-### 1.2 Desktop/GUI Utilities
+Installed via apt before Nix is available or to avoid Nix packaging issues:
 
-| Package | Old Location | Status | Notes |
-|---------|--------------|--------|-------|
-| `kitty` | Custom install (shell/Python) | [ ] | Terminal emulator - add to desktop.nix |
-| `usb-creator-gtk` | apt (shell) | [ ] | USB flash tool - add to desktop.nix if needed |
-| `kitty-terminfo` | apt (shell) | [ ] | May come with kitty package |
+| Package | Reason | Notes |
+|---------|--------|-------|
+| `apt-file` | Pre-Nix bootstrap | Ubuntu package search |
+| `ca-certificates` | Pre-Nix bootstrap | Required for HTTPS/curl |
+| `curl` | Pre-Nix bootstrap | Needed to install Nix itself |
+| `git` | Pre-Nix bootstrap | Needed to clone dotfiles |
+| `jq` | Pre-Nix bootstrap | Used by apply.sh to parse hosts.json |
+| `libfuse` | Pre-Nix bootstrap | AppImage support |
+| `locate` | Pre-Nix bootstrap | File search |
+| `software-properties-common` | Pre-Nix bootstrap | Ubuntu apt tooling |
+| `xz-utils` | Pre-Nix bootstrap | Compression utilities |
 
-### 1.3 Development Tools
+### 1.2 Desktop Packages (OpenGL Issues)
 
-| Package | Old Location | Status | Notes |
-|---------|--------------|--------|-------|
-| `clang` | apt (shell) | [ ] | C/C++ compiler (clang-tools provides clangd but not the compiler) |
-| `build-essential` equivalent | apt (shell) | [~] | `gcc` is present; may need `binutils`, `libc-dev`, etc. |
-| `tree-sitter` CLI | Python provisioner | [ ] | Standalone CLI, separate from nvim-treesitter plugin |
-| `ninja` | implicit in old | [ ] | Build system (used for building i3) |
+These are installed via apt to avoid OpenGL/graphics driver issues that are common with Nix on non-NixOS systems:
 
----
+| Package | Reason | Notes |
+|---------|--------|-------|
+| `i3` | OpenGL/driver issues | Window manager |
+| `i3status` | Companion to i3 | Status bar |
+| `kitty` | OpenGL/driver issues | GPU-accelerated terminal |
 
-## 2. System Configuration
+### 1.3 System-Level Configuration
 
-### 2.1 Display Manager Integration
+These require root access and modify system directories:
 
-| Task | Old Location | Status | Notes |
-|------|--------------|--------|-------|
-| Install `xsession.desktop` | shell script | [ ] | Copies to `/usr/share/xsessions/xsession.desktop` |
-| Install `sway-user.desktop` | shell script | [ ] | Copies to `/usr/share/wayland-sessions/sway-user.desktop` |
+| Task | Location in apply.sh | Notes |
+|------|---------------------|-------|
+| `update-alternatives` for vi/vim/editor | `set_default_terminal_and_editor()` | Points to nvim |
+| `update-alternatives` for x-terminal-emulator | `set_default_terminal_and_editor()` | Points to kitty (desktop only) |
+| Install `xsession.desktop` | `install_session_desktop_files()` | To `/usr/share/xsessions/` |
+| Install `sway-user.desktop` | `install_session_desktop_files()` | To `/usr/share/wayland-sessions/` |
 
-**Note:** These require root access to install into system directories. Options:
-1. Use NixOS with display manager configuration
-2. Keep as a manual post-install step
-3. Create a separate bootstrap script for system-level config
+### 1.4 Docker Installation
 
-### 2.2 Editor Alternatives
+| Task | Location in apply.sh | Notes |
+|------|---------------------|-------|
+| Install Docker packages | `install_docker()` | docker-ce, containerd, buildx, compose |
+| Add user to docker group | `install_docker()` | Requires logout/reboot to take effect |
 
-| Task | Old Location | Status | Notes |
-|------|--------------|--------|-------|
-| `update-alternatives` for `vi` | shell/Python | [ ] | Points to nvim |
-| `update-alternatives` for `vim` | shell/Python | [ ] | Points to nvim |
-| `update-alternatives` for `editor` | shell/Python | [ ] | Points to nvim |
+### 1.5 Nix Bootstrap
 
-**Note:** Nix handles this differently via `programs.neovim.defaultEditor = true` and shell aliases. May not be necessary if all shells source the Nix profile.
-
-### 2.3 MPD Service Management
-
-| Task | Old Location | Status | Notes |
-|------|--------------|--------|-------|
-| Disable system mpd.service | shell script | [ ] | `systemctl disable/mask mpd.service` |
-| Disable system mpd.socket | shell script | [ ] | `systemctl disable/mask mpd.socket` |
-| Disable user mpd.service | shell script | [ ] | `systemctl --user disable/mask mpd.service` |
-| Disable user mpd.socket | shell script | [ ] | `systemctl --user disable/mask mpd.socket` |
-
-**Note:** Home Manager can manage user systemd units. Consider using `home-manager` services.mpd if running mpd as a user service, or document manual steps.
+| Task | Location in apply.sh | Notes |
+|------|---------------------|-------|
+| Install Nix | `install_nix_if_needed()` | Single-user installation |
+| Enable flakes | `enable_nix_experimental()` | Writes to ~/.config/nix/nix.conf |
+| Apply Home Manager | `apply_home_manager()` | Runs `home-manager switch` |
 
 ---
 
-## 3. Docker Configuration
+## 2. Actual TODOs (Missing from Both Nix and apply.sh)
 
-| Task | Old Location | Status | Notes |
-|------|--------------|--------|-------|
-| Install Docker packages | Python provisioner | [ ] | containerd, docker-ce, docker-cli, buildx, compose |
-| Add user to docker group | Python provisioner | [ ] | Requires system-level config |
-| Configure Docker daemon | - | [ ] | Optional: daemon.json settings |
+### 2.1 Missing Packages
 
-**Note:** Docker installation with Nix can be tricky on non-NixOS. Options:
-1. Use the existing Python/shell provisioner for Docker
-2. Install Docker via system package manager
-3. Use rootless Docker or Podman
+| Package | Old Location | Priority | Notes |
+|---------|--------------|----------|-------|
+| `vim` | apt (shell) | Low | Standalone vim as backup (nvim is primary) |
+| `dos2unix` | apt (Python) | Low | Line ending converter |
+| `tree-sitter` CLI | Python provisioner | Medium | Standalone CLI, separate from nvim-treesitter plugin |
+| `clang` | apt (shell) | Medium | C/C++ compiler (clang-tools provides clangd but not the compiler) |
+| `ninja` | implicit in old | Low | Build system |
+| `usb-creator-gtk` | apt (shell) | Low | USB flash tool |
 
-There's a `nix/home/features/development.nix` that could include Docker config if using NixOS.
+### 2.2 WSL-Specific
 
----
-
-## 4. WSL-Specific Configuration
-
-| Task | Old Location | Status | Notes |
-|------|--------------|--------|-------|
-| Install `win32yank` | Python provisioner | [ ] | Already has TODO in wsl.nix |
-| Configure clipboard integration | Python provisioner | [ ] | win32yank for nvim clipboard |
+| Task | Old Location | Priority | Notes |
+|------|--------------|----------|-------|
+| Install `win32yank` | Python provisioner | High | Already has TODO in wsl.nix |
+| Configure clipboard integration | Python provisioner | High | win32yank for nvim clipboard |
 
 **Implementation suggestion for wsl.nix:**
 ```nix
@@ -109,144 +96,136 @@ home.packages = with pkgs; [
 ];
 ```
 
----
+### 2.3 MPD Service Management
 
-## 5. Custom/Third-Party Tools
+| Task | Old Location | Priority | Notes |
+|------|--------------|----------|-------|
+| Disable system mpd.service | shell script | Low | `systemctl disable/mask mpd.service` |
+| Disable system mpd.socket | shell script | Low | `systemctl disable/mask mpd.socket` |
+| Disable user mpd.service | shell script | Low | `systemctl --user disable/mask mpd.service` |
+| Disable user mpd.socket | shell script | Low | `systemctl --user disable/mask mpd.socket` |
 
-### 5.1 wpr Tool
+**Note:** This was done in the old scripts to prevent the system mpd from conflicting with user-run mpd. May need to add to apply.sh or document as a manual step.
 
-| Task | Old Location | Status | Notes |
-|------|--------------|--------|-------|
-| Install `wpr` | shell script | [ ] | Custom tool from S3: `pcewing-wpr` |
+### 2.4 Custom Tools
 
-**Note:** This appears to be a personal tool. Options:
-1. Create a Nix derivation that fetches from S3
-2. Keep as manual installation
-3. Add to a local overlay
+| Task | Old Location | Priority | Notes |
+|------|--------------|----------|-------|
+| Install `wpr` | shell script | Low | Custom tool from S3: `pcewing-wpr` |
 
-### 5.2 Default Terminal Emulator
+### 2.5 Neovim Plugins (Nix Package Issues)
 
-| Task | Old Location | Status | Notes |
-|------|--------------|--------|-------|
-| Set kitty as x-terminal-emulator | shell script | [ ] | Uses `update-alternatives` |
+| Plugin | Priority | Notes |
+|--------|----------|-------|
+| markdown.nvim | Low | Commented out in core.nix due to package issues |
+| cql-vim | Low | Cassandra CQL support |
+| mesonic | Low | Meson build system integration |
 
----
+### 2.6 Activation Scripts
 
-## 6. i3/Window Manager
-
-| Task | Old Location | Status | Notes |
-|------|--------------|--------|-------|
-| Verify i3 gaps support | shell/Python | [ ] | Old scripts built i3-gaps from source |
-| Install i3status | apt (shell) | [ ] | Should verify this is included |
-| py3status | pip (Python) | [x] | In desktop.nix Python packages |
-
-**Note:** As of i3 version 4.22, gaps support was merged into mainline i3. The Nix `i3` package should include this. Verify the version in nixpkgs matches or exceeds 4.22.
+| Task | Old Location | Priority | Notes |
+|------|--------------|----------|-------|
+| `flavours update all` | shell/Python | Low | May need activation script after fresh install |
 
 ---
 
-## 7. Neovim Ecosystem
+## 3. Already Complete
 
-| Task | Old Location | Status | Notes |
-|------|--------------|--------|-------|
-| pynvim | pip (shell/Python) | [x] | In core.nix Python packages |
-| nvim-treesitter grammars | Python provisioner | [x] | Using `withAllGrammars` in core.nix |
-| markdown.nvim plugin | core.nix TODO | [ ] | Commented out due to package issues |
-| cql-vim plugin | core.nix TODO | [ ] | Cassandra CQL support |
-| mesonic plugin | core.nix TODO | [ ] | Meson build system integration |
+### 3.1 Packages in Nix
 
----
+| Category | Packages |
+|----------|----------|
+| Core utilities | wget, gnupg, jq, plocate, fzf, nettools, unzip, libuchardet, xz |
+| CLI tools | gnumake, gcc, cmake, meson, htop, iotop, universal-ctags, ranger, tmux, neofetch, id3v2, calcurse |
+| Search/utils | ripgrep |
+| Theming | flavours |
+| C/C++ | clang-tools (clangd) |
+| Desktop/GUI | font-awesome, rofi, dunst, feh, sxiv, nitrogen, pavucontrol, picom, scrot, gucharmap, keepassxc, remmina, i3lock, meld, xclip, wl-clipboard, xdotool, libwebp, arandr, rxvt-unicode |
+| Media | inkscape, mpv, vlc, easytag, blueman, mpd, ncmpcpp, cava, yt-dlp |
+| Gaming | steam, steam-run, runelite |
+| Development | go, gopls, delve, rustup, nodejs, npm, openjdk, dotnet-sdk |
+| Proprietary | bcompare |
 
-## 8. Python Environment
+### 3.2 Python Packages (via unified environment)
 
-| Package | Old Location | Status | Notes |
-|---------|--------------|--------|-------|
-| black | pip (Python) | [x] | In core.nix |
-| mypy | pip (Python) | [x] | In core.nix |
-| isort | pip (Python) | [x] | In core.nix |
-| flake8 | pip (Python) | [x] | In core.nix |
-| autoflake | pip (Python) | [x] | In core.nix |
-| ruff | pip (Python) | [x] | In core.nix (as system package) |
-| argcomplete | pip (Python) | [x] | In core.nix |
-| json5 | pip (Python) | [x] | In core.nix |
-| python-mpd2 | pip (shell) | [x] | In core.nix as `mpd2` |
-| py3status | pip (Python) | [x] | In desktop.nix |
+| Package | Location |
+|---------|----------|
+| pip, pynvim, mpd2, black, mypy, isort, flake8, autoflake, argcomplete, json5 | core.nix |
+| py3status | desktop.nix |
+| ruff | core.nix (system package) |
 
----
+### 3.3 Neovim
 
-## 9. Manjaro/Arch-Specific (Low Priority)
+- Installed via `programs.neovim` with plugins
+- treesitter with all grammars via `withAllGrammars`
+- LSP config, telescope, copilot, etc.
 
-The `provision/manjaro.sh` script includes some packages not in the Ubuntu scripts:
+### 3.4 Dotfiles Links
 
-| Package | Status | Notes |
-|---------|--------|-------|
-| `discord` | [ ] | Chat application |
-| `firefox` | [ ] | Browser (may want to add) |
-| `flatpak` | [ ] | Universal package manager |
-| `kicad` | [ ] | PCB design software |
-| `poppler` | [ ] | PDF utilities |
-| `transmission-gtk` | [ ] | BitTorrent client |
-| `sway` ecosystem | [ ] | Wayland compositor (mako, swaybg, swayidle, swaylock, waybar) |
+All links from `links.json` are implemented in `dotfiles-links.nix`.
 
----
+### 3.5 Activation Scripts
 
-## 10. Configuration Files / Dotfiles Links
-
-| Task | Status | Notes |
-|------|--------|-------|
-| All links from links.json | [x] | Implemented in `dotfiles-links.nix` |
-| Verify parity with links.json | [x] | Both files appear identical |
+| Task | Location |
+|------|----------|
+| dot CLI completion | core.nix activation |
+| MPD directories creation | desktop.nix activation |
 
 ---
 
-## 11. Activation Scripts / Post-Install
+## 4. Potentially Obsolete
 
-| Task | Old Location | Status | Notes |
-|------|--------------|--------|-------|
-| dot CLI completion | Python provisioner | [x] | Implemented in core.nix activation |
-| MPD directories creation | shell script | [x] | Implemented in desktop.nix activation |
-| flavours update | shell/Python | [ ] | May need activation script to run `flavours update all` |
+Items from old provisioners that are no longer needed:
 
----
-
-## Priority Recommendations
-
-### High Priority (Functionality Gaps)
-1. Add `kitty` to desktop.nix
-2. Add `curl` to core.nix
-3. Implement win32yank in wsl.nix
-4. Verify i3 gaps support works with Nix package
-
-### Medium Priority (Developer Experience)
-5. Add `tree-sitter` CLI
-6. Add `clang` compiler (not just clang-tools)
-7. Add full build toolchain (binutils, etc.)
-8. Add `libfuse2` for AppImage support
-
-### Low Priority (Nice to Have)
-9. Document display manager desktop file installation
-10. Document/implement Docker setup
-11. Add wpr tool installation
-12. Add remaining Manjaro packages if needed
-
-### Potentially Obsolete
-- `apt-file`, `software-properties-common` - Ubuntu/apt-specific
-- Building i3-gaps from source - now in mainline i3
-- `youtube-dl` - replaced by `yt-dlp` which is already included
+| Item | Reason |
+|------|--------|
+| Building i3-gaps from source | Gaps merged into mainline i3 as of 4.22 |
+| `youtube-dl` | Replaced by `yt-dlp` (already in Nix) |
+| `compton` | Replaced by `picom` (already in Nix) |
+| Custom kitty installation | Now installed via apt in apply.sh |
+| Custom neovim AppImage | Now installed via Nix |
+| Custom flavours installation | Now installed via Nix |
+| Custom ripgrep installation | Now installed via Nix |
+| Custom nodejs installation | Now installed via Nix |
 
 ---
 
-## Notes
+## 5. Manjaro/Arch-Specific (Low Priority)
 
-### Home Manager vs NixOS
+The `provision/manjaro.sh` script includes packages not in the Ubuntu scripts. Consider adding if needed:
 
-Some items (display manager config, system services, docker group) are better handled by NixOS than Home Manager. If running on a non-NixOS system, these will need:
-- Manual installation steps
-- A separate bootstrap script
-- System-level Nix configuration
+| Package | Notes |
+|---------|-------|
+| `discord` | Chat application |
+| `firefox` | Browser |
+| `flatpak` | Universal package manager |
+| `kicad` | PCB design software |
+| `poppler` | PDF utilities |
+| `transmission-gtk` | BitTorrent client |
+| `sway` ecosystem | mako, swaybg, swayidle, swaylock, waybar |
+
+---
+
+## 6. Future Considerations
+
+### Moving More to Nix
+
+Some items currently in apply.sh could potentially move to Nix in the future:
+
+1. **kitty/i3**: If OpenGL issues are resolved or using NixOS
+2. **Docker**: Could use Podman from Nix as alternative
+3. **System alternatives**: Could rely solely on Nix profile PATH ordering
+
+### NixOS Migration
+
+If migrating to NixOS, many apply.sh tasks would move to system configuration:
+- Display manager desktop files
+- Docker installation and group management
+- System-wide alternatives
 
 ### Version Pinning
 
-The old provisioners had version caching and would install specific versions. Nix handles this via the flake lock file, but be aware that:
-- nixpkgs version determines package versions
-- Consider using overlays for packages that need specific versions
-- The flake.lock should be committed to ensure reproducibility
+The old provisioners had version caching. Nix handles this via flake.lock:
+- Commit flake.lock for reproducibility
+- Use `nix flake update` to update nixpkgs
+- Consider overlays for packages needing specific versions
