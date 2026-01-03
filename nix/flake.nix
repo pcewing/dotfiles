@@ -25,17 +25,17 @@
         personal-desktop = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [ 
-            ./home/hosts/personal-desktop.nix 
-            { nixpkgs.overlays = [ nixgl.overlay ]; }
+            ./home/hosts/personal-desktop.nix
           ];
+          extraSpecialArgs = { inherit nixgl; };
         };
 
         work-desktop = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [ 
-            ./home/hosts/work-desktop.nix 
-            { nixpkgs.overlays = [ nixgl.overlay ]; }
+            ./home/hosts/work-desktop.nix
           ];
+          extraSpecialArgs = { inherit nixgl; };
         };
 
         personal-wsl = home-manager.lib.homeManagerConfiguration {

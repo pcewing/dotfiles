@@ -1,19 +1,11 @@
-{ pkgs, ... }:
+{ pkgs, nixgl, ... }:
 
 {
   home.sessionVariables = {
     TERMINAL = "kitty";
   };
 
-  home.packages = with pkgs; [
-    ########################
-    # nixGL for OpenGL support
-    ########################
-    nixgl.nixGLIntel
-    nixgl.nixGLNvidia
-    nixgl.nixVulkanIntel
-    nixgl.nixVulkanNvidia
-
+  home.packages = (with pkgs; [
     ########################
     # Desktop / GUI utilities
     ########################
@@ -68,5 +60,13 @@
     # Proprietary Software
     #########################
     bcompare
+  ]) ++ [
+    ########################
+    # nixGL for OpenGL support
+    ########################
+    nixgl.packages.${pkgs.system}.nixGLIntel
+    nixgl.packages.${pkgs.system}.nixGLNvidia
+    nixgl.packages.${pkgs.system}.nixVulkanIntel
+    nixgl.packages.${pkgs.system}.nixVulkanNvidia
   ];
 }
