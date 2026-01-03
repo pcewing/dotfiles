@@ -133,9 +133,3 @@ The following should be installed manually:
       updated that way
 - Visual Studio Code
     - Probably could get this from Nix, I just didn't give it a proper go
-
-## WSL
-
-If this is a WSL machine, follow the additional setup steps here:
-
-[setup_wsl.md][./setup_wsl.md]

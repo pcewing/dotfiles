@@ -50,12 +50,22 @@ in
       fi
     '';
 
-    # TODO: Link the file ../../../config/wslrc to ~/.wslrc
-    # Probably don't use the dotfiles-links.nix file since we only want this on
-    # WSL? Unless there's a good way to add it to the `items` array for WSL
-    # only
+    # Link the wslrc file. This is only active for WSL hosts.
+    home.file.".wslrc".source = ../../../config/wslrc;
 
-    # TODO: Add an activation script to download this wezterm.sh file from github:
-    # https://raw.githubusercontent.com/wez/wezterm/main/assets/shell-integration/wezterm.sh
-    # and put it at the path: "$HOME/wezterm.sh"
+    # Download wezterm shell integration script
+    home.activation.downloadWeztermShellIntegration =
+      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        WEZTERM_SH_URL="https://raw.githubusercontent.com/wez/wezterm/main/assets/shell-integration/wezterm.sh"
+        WEZTERM_SH_DEST="$HOME/wezterm.sh"
+
+        if [ ! -f "$WEZTERM_SH_DEST" ]; then
+          echo "Downloading wezterm.sh for shell integration..."
+          ${pkgs.curl}/bin/curl -sfL "$WEZTERM_SH_URL" -o "$WEZTERM_SH_DEST"
+          chmod +x "$WEZTERM_SH_DEST"
+          echo "wezterm.sh installed to $WEZTERM_SH_DEST"
+        else
+          echo "wezterm.sh already exists, skipping download."
+        fi
+      '';
 }
