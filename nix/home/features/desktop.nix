@@ -1,11 +1,11 @@
-{ pkgs, nixGLPackages, ... }:
+{ pkgs, ... }:
 
 {
   home.sessionVariables = {
     TERMINAL = "kitty";
   };
 
-  home.packages = (with pkgs; [
+  home.packages = with pkgs; [
     ########################
     # Desktop / GUI utilities
     ########################
@@ -26,7 +26,6 @@
     xclip
     wl-clipboard
     xdotool
-    kitty
     libwebp
 
     ########
@@ -51,20 +50,8 @@
     yt-dlp
 
     #########################
-    # i3 / bar tooling
-    #########################
-    i3
-    i3status
-
-    #########################
     # Proprietary Software
     #########################
     bcompare
-  ]) ++ [
-    ########################
-    # nixGL for OpenGL support
-    ########################
-    nixGLPackages.nixGLIntel
-    nixGLPackages.nixVulkanIntel
   ];
 }

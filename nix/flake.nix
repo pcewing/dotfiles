@@ -8,13 +8,9 @@
       url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    nixgl = {
-      url = "github:nix-community/nixGL";
-    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nixgl, ... }:
+  outputs = { self, nixpkgs, home-manager, ... }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
@@ -26,7 +22,6 @@
           modules = [ 
             ./home/hosts/personal-desktop.nix
           ];
-          extraSpecialArgs = { nixGLPackages = nixgl.packages.${system}; };
         };
 
         work-desktop = home-manager.lib.homeManagerConfiguration {
@@ -34,7 +29,6 @@
           modules = [ 
             ./home/hosts/work-desktop.nix
           ];
-          extraSpecialArgs = { nixGLPackages = nixgl.packages.${system}; };
         };
 
         personal-wsl = home-manager.lib.homeManagerConfiguration {

@@ -99,6 +99,9 @@ apt_bootstrap() {
     git
     locate
     xz-utils
+    kitty
+    i3
+    i3status
   )
 
   try sudo apt-get update -y
