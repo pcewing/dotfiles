@@ -1,10 +1,15 @@
 { config, pkgs, lib, ... }:
 
-let
-  py = pkgs.python3.withPackages (ps: with ps; [
+{
+  imports = [
+    ./dotfiles-links.nix
+    ./python-environment.nix
+  ];
+
+  # Declare Python packages needed by core
+  myPython.packages = with pkgs.python3Packages; [
     pip
     pynvim
-    mpd2
     black
     mypy
     isort
@@ -12,11 +17,6 @@ let
     autoflake
     argcomplete
     json5
-  ]);
-in
-{
-  imports = [
-    ./dotfiles-links.nix
   ];
 
   home.sessionVariables = {
@@ -72,21 +72,17 @@ in
     #################
     flavours
 
-    #################
-    # Python environment (ONE interpreter w/ all tools)
-    #################
-    py
-
     # Ruff is a Rust tool, top-level package
     ruff
   ];
 
-  # Provide a stable `dot` command that always uses the nix Python env
+  # Provide a stable `dot` command that always uses the unified Python env
   home.file.".local/bin/dot" = {
     executable = true;
     text = ''
       #!/usr/bin/env bash
-      exec "${py}/bin/python" "$HOME/dot/cli/dot.py" "$@"
+      # Find python3 from the unified environment in PATH
+      exec python3 "$HOME/dot/cli/dot.py" "$@"
     '';
   };
 
@@ -177,8 +173,8 @@ in
     lib.hm.dag.entryAfter ["writeBoundary"] ''
       if [ -x "$HOME/dot/cli/dot.py" ]; then
         mkdir -p "$HOME/.config/bash/completions"
-        # Use the same python env as `dot` to guarantee argcomplete is available
-        "${py}/bin/register-python-argcomplete" \
+        # Use register-python-argcomplete from PATH (unified Python env)
+        register-python-argcomplete \
           --external-argcomplete-script "$HOME/dot/cli/dot.py" dot \
           > "$HOME/.config/bash/completions/dot"
       fi
