@@ -12,6 +12,7 @@ _PIP_PACKAGES = {
         "autoflake",
         "ruff",
         "argcomplete",
+        "json5",
     ],
 }
 
