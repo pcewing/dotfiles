@@ -11,6 +11,8 @@ yell() { >&2 echo "$*"; }
 die()  { yell "ERROR: $*"; exit 1; }
 try()  { "$@" || die "Command failed: $*"; }
 
+# TODO: This name makes no sense. This returns true if the cmd is installed,
+# implying that we would NOT need it. Rename to is_installed or something
 need_cmd() {
   command -v "$1" >/dev/null 2>&1 || return 1
 }
@@ -43,6 +45,10 @@ DOTFILES_DIR="$DOTFILES_DIR_DEFAULT"
 NIX_HOST=""
 DO_UPGRADE=1
 DO_APT=1
+
+# If jq isn't installed, we will run this very early in the script. Keep track
+# of whether or not we've done it so we don't waste time doing it again
+APT_UPDATE_COMPLETE="0"
 
 nix_hosts() {
     jq -r '.hosts | keys[]' "$DOTFILES_DIR/nix/hosts.json"
@@ -131,11 +137,15 @@ apt_bootstrap() {
     )
   fi
 
-  try sudo apt-get update -y
+  if [[ ! "$APT_UPDATE_COMPLETE" -eq 1 ]]; then
+  	try sudo apt-get update -y
+  fi
+
   if [[ "$DO_UPGRADE" -eq 1 ]]; then
     # In a VM this is fine; on real machines you may prefer to disable.
     try sudo apt-get dist-upgrade -y
   fi
+
   try sudo apt-get install -y "${pkgs[@]}"
 }
 
@@ -208,18 +218,25 @@ set_default_terminal_and_editor() {
   echo "[bootstrap] Setting system defaults via update-alternatives..."
 
   # Ensure nix is on PATH in this script:
-  source_nix_profile
+  # TODO: We already exectued this in main, remove this?
+  #source_nix_profile
 
-  local kitty_path nvim_path
-  kitty_path="$(command -v kitty || true)"
-  nvim_path="$(command -v nvim || true)"
+  if host_has_feature "desktop"; then
+  	local nvim_path
+  	kitty_path="$(command -v kitty || true)"
 
-  if [[ -n "$kitty_path" ]]; then
-    try sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator "$kitty_path" 50
-    try sudo update-alternatives --set x-terminal-emulator "$kitty_path"
+	  if [[ -n "$kitty_path" ]]; then
+	    try sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator "$kitty_path" 50
+	    try sudo update-alternatives --set x-terminal-emulator "$kitty_path"
+	  else
+	    yell "[bootstrap] kitty not found on PATH; skipping terminal alternative"
+	  fi
   else
-    yell "[bootstrap] kitty not found on PATH; skipping terminal alternative"
+          echo "[bootstrap] (set_default_terminal_and_editor) Desktop feature not enabled, skipping setting default terminal emulator"
   fi
+
+  local nvim_path
+  nvim_path="$(command -v nvim || true)"
 
   if [[ -n "$nvim_path" ]]; then
     try sudo update-alternatives --install /usr/bin/vi vi "$nvim_path" 60
@@ -243,6 +260,12 @@ install_session_desktop_files() {
   local sway_src="$dot/config/sway-user.desktop"
   local sway_dst="/usr/share/wayland-sessions/sway-user.desktop"
 
+
+  if ! host_has_feature "desktop"; then
+        echo "[bootstrap] (install_session_desktop_files) Desktop feature not enabled, skipping installing session desktop files"
+	return 0
+  fi
+
   if [[ -f "$xs_src" ]]; then
     try sudo install -m 0644 "$xs_src" "$xs_dst"
   else
@@ -263,6 +286,14 @@ main() {
   echo "[bootstrap] Starting on: $(lsb_release -ds 2>/dev/null || uname -a)"
   if is_wsl; then
     echo "[bootstrap] Detected WSL environment."
+  fi
+
+  # TODO: Put this in a function
+  # We need jq for this script to run at all so if it's not installed, get it
+  if ! command -v jq >/dev/null 2>&1; then
+	  try sudo apt-get update -y
+	  try sudo apt-get install -y jq
+	  APT_UPDATE_COMPLETE="1"
   fi
 
   source_localrc
