@@ -18,25 +18,23 @@
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
-      pkgsWithNixGL = import nixpkgs {
-        inherit system;
-        overlays = [ nixgl.overlay ];
-      };
     in
     {
       homeConfigurations = {
         personal-desktop = home-manager.lib.homeManagerConfiguration {
-          pkgs = pkgsWithNixGL;
+          inherit pkgs;
           modules = [ 
             ./home/hosts/personal-desktop.nix
           ];
+          extraSpecialArgs = { nixGLPackages = nixgl.packages.${system}; };
         };
 
         work-desktop = home-manager.lib.homeManagerConfiguration {
-          pkgs = pkgsWithNixGL;
+          inherit pkgs;
           modules = [ 
             ./home/hosts/work-desktop.nix
           ];
+          extraSpecialArgs = { nixGLPackages = nixgl.packages.${system}; };
         };
 
         personal-wsl = home-manager.lib.homeManagerConfiguration {

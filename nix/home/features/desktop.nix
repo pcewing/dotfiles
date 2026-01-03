@@ -1,11 +1,11 @@
-{ pkgs, ... }:
+{ pkgs, nixGLPackages, ... }:
 
 {
   home.sessionVariables = {
     TERMINAL = "kitty";
   };
 
-  home.packages = with pkgs; [
+  home.packages = (with pkgs; [
     ########################
     # Desktop / GUI utilities
     ########################
@@ -60,11 +60,11 @@
     # Proprietary Software
     #########################
     bcompare
-
+  ]) ++ [
     ########################
     # nixGL for OpenGL support
     ########################
-    nixgl.nixGLIntel
-    nixgl.nixVulkanIntel
+    nixGLPackages.nixGLIntel
+    nixGLPackages.nixVulkanIntel
   ];
 }
