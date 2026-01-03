@@ -42,7 +42,20 @@ DO_UPGRADE=1
 DO_APT=1
 
 nix_hosts() {
-    ls "$DOTFILES_DIR/nix/home/hosts" | sed 's/\.nix$//'
+    if [ -f "$DOTFILES_DIR/nix/hosts.json" ]; then
+        jq -r '.hosts | keys[]' "$DOTFILES_DIR/nix/hosts.json"
+    else
+        ls "$DOTFILES_DIR/nix/home/hosts" 2>/dev/null | sed 's/\.nix$//' || true
+    fi
+}
+
+host_has_feature() {
+    local feature="$1"
+    if [ -z "$NIX_HOST" ] || [ ! -f "$DOTFILES_DIR/nix/hosts.json" ]; then
+        return 1
+    fi
+    jq -e ".hosts[\"$NIX_HOST\"].features | index(\"$feature\")" \
+        "$DOTFILES_DIR/nix/hosts.json" >/dev/null 2>&1
 }
 
 while [[ $# -gt 0 ]]; do
@@ -99,10 +112,17 @@ apt_bootstrap() {
     git
     locate
     xz-utils
-    kitty
-    i3
-    i3status
+    jq
   )
+
+  # Add feature-specific packages based on host configuration
+  if host_has_feature "desktop"; then
+    pkgs+=(
+      kitty
+      i3
+      i3status
+    )
+  fi
 
   try sudo apt-get update -y
   if [[ "$DO_UPGRADE" -eq 1 ]]; then
