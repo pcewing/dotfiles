@@ -10,6 +10,9 @@ in
     ../features/development.nix
   ];
 
+  # Enable the development feature
+  development.enable = true;
+
   # Declare Python packages needed by core
   myPython.packageFns = [
     (ps: with ps; [

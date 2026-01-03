@@ -1,49 +1,53 @@
-{ pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
-  home.packages = with pkgs; [
-    #########
-    # Build Systems
-    #########
-    meson
-    ninja
+  options.development.enable = lib.mkEnableOption "development tools";
 
-    #########
-    # Golang
-    #########
-    go
-    gopls
-    delve
+  config = lib.mkIf config.development.enable {
+    home.packages = with pkgs; [
+      #########
+      # Build Systems
+      #########
+      meson
+      ninja
 
-    #########
-    # Rust
-    #########
-    rustup
+      #########
+      # Golang
+      #########
+      go
+      gopls
+      delve
 
-    #########
-    # NodeJS
-    #########
-    nodejs
-    nodePackages.npm
+      #########
+      # Rust
+      #########
+      rustup
 
-    #########
-    # Java
-    #########
-    openjdk
+      #########
+      # NodeJS
+      #########
+      nodejs
+      nodePackages.npm
 
-    #########
-    # .NET
-    #########
-    dotnet-sdk
-  ];
+      #########
+      # Java
+      #########
+      openjdk
 
-  # Ensure GOPATH is set
-  home.sessionVariables = {
-    GOPATH = "$HOME/go";
+      #########
+      # .NET
+      #########
+      dotnet-sdk
+    ];
+
+    # Ensure GOPATH is set
+    home.sessionVariables = {
+      GOPATH = "$HOME/go";
+    };
+
+    # Add Go bin to PATH
+    home.sessionPath = [
+      "$HOME/go/bin"
+    ];
   };
-
-  # Add Go bin to PATH
-  home.sessionPath = [
-    "$HOME/go/bin"
-  ];
 }
