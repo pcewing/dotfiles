@@ -6,5 +6,5 @@
     BROWSER = "wslview";
   };
 
-  # Often you *don’t* want X11/Wayland stuff here.
+  # TODO: win32yank?
 }
