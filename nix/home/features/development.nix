@@ -29,12 +29,6 @@
     # .NET
     #########
     dotnet-sdk
-
-    #########
-    # Docker
-    #########
-    docker
-    docker-compose
   ];
 
   # Ensure GOPATH is set

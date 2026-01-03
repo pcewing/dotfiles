@@ -50,29 +50,60 @@ DO_APT=1
 # of whether or not we've done it so we don't waste time doing it again
 APT_UPDATE_COMPLETE="0"
 
+# Track if docker was installed during this run so that we can print a reminder
+# at the end to either reboot or log out and back in for the group change to
+# take effect
+DOCKER_INSTALLED="0"
+
 nix_hosts() {
     jq -r '.hosts | keys[]' "$DOTFILES_DIR/nix/hosts.json"
 }
 
-host_has_feature() {
-    local feature="$1"
+host_has_role() {
+    local role="$1"
     if [ -z "$NIX_HOST" ] || [ ! -f "$DOTFILES_DIR/nix/hosts.json" ]; then
         return 1
     fi
-    jq -e ".hosts[\"$NIX_HOST\"].features | index(\"$feature\")" \
+    jq -e ".hosts[\"$NIX_HOST\"].roles | index(\"$role\")" \
         "$DOTFILES_DIR/nix/hosts.json" >/dev/null 2>&1
 }
 
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --dir)          DOTFILES_DIR="$2"; shift 2;;
-    --nix-host)     NIX_HOST="$2"; shift 2;;
-    --no-upgrade)   DO_UPGRADE=0; shift;;
-    --no-apt)       DO_APT=0; shift;;
-    -h|--help)      usage; exit 0;;
-    *) die "Unknown argument: $1";;
-  esac
-done
+install_docker() {
+    # TODO: Eventually we're going to move this from core to its own role and
+    # when we do we'll need to update this condition
+    if ! host_has_role "core"; then
+        echo "[bootstrap] (install_docker) core role not enabled, skipping docker install"
+        return 0
+    fi
+
+    if command -v docker >/dev/null 2>&1; then
+        echo "[bootstrap] (install_docker) Docker is already installed, skipping docker install"
+    fi
+
+    # Add Docker's official GPG key:
+    try sudo install -m 0755 -d /etc/apt/keyrings
+    try sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    try sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+    # Add the repository to Apt sources:
+    try sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+    # Update apt to pick up the new docker repository and install
+    try sudo apt-get update -y
+    try sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+    # Add user to docker group so we don't need to use sudo
+    sudo groupadd docker >/dev/null 2>&1
+    try sudo usermod -aG docker $USER
+
+    DOCKER_INSTALLED="1"
+}
 
 source_localrc() {
     local localrc_path="$HOME/.localrc"
@@ -128,8 +159,8 @@ apt_bootstrap() {
     jq
   )
 
-  # Add feature-specific packages based on host configuration
-  if host_has_feature "desktop"; then
+  # Add role-specific packages based on host configuration
+  if host_has_role "desktop"; then
     pkgs+=(
       kitty
       i3
@@ -221,7 +252,7 @@ set_default_terminal_and_editor() {
   # TODO: We already exectued this in main, remove this?
   #source_nix_profile
 
-  if host_has_feature "desktop"; then
+  if host_has_role "desktop"; then
   	local nvim_path
   	kitty_path="$(command -v kitty || true)"
 
@@ -232,7 +263,7 @@ set_default_terminal_and_editor() {
 	    yell "[bootstrap] kitty not found on PATH; skipping terminal alternative"
 	  fi
   else
-          echo "[bootstrap] (set_default_terminal_and_editor) Desktop feature not enabled, skipping setting default terminal emulator"
+          echo "[bootstrap] (set_default_terminal_and_editor) Desktop role not enabled, skipping setting default terminal emulator"
   fi
 
   local nvim_path
@@ -261,8 +292,8 @@ install_session_desktop_files() {
   local sway_dst="/usr/share/wayland-sessions/sway-user.desktop"
 
 
-  if ! host_has_feature "desktop"; then
-        echo "[bootstrap] (install_session_desktop_files) Desktop feature not enabled, skipping installing session desktop files"
+  if ! host_has_role "desktop"; then
+        echo "[bootstrap] (install_session_desktop_files) Desktop role not enabled, skipping installing session desktop files"
 	return 0
   fi
 
@@ -282,6 +313,17 @@ install_session_desktop_files() {
 #################################
 # main
 #################################
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --dir)          DOTFILES_DIR="$2"; shift 2;;
+    --nix-host)     NIX_HOST="$2"; shift 2;;
+    --no-upgrade)   DO_UPGRADE=0; shift;;
+    --no-apt)       DO_APT=0; shift;;
+    -h|--help)      usage; exit 0;;
+    *) die "Unknown argument: $1";;
+  esac
+done
+
 main() {
   echo "[bootstrap] Starting on: $(lsb_release -ds 2>/dev/null || uname -a)"
   if is_wsl; then
@@ -306,8 +348,13 @@ main() {
   set_default_terminal_and_editor
   install_session_desktop_files
 
+  install_docker
+
   echo "[bootstrap] Done."
-  echo "Tip: if something goes sideways, Home Manager supports rollback."
+
+  if [[ "$DOCKER_INSTALLED" -eq 1 ]]; then
+    echo "[bootstrap] Docker was just installed. Either reboot or log out and back in for the group change to take effect."
+  fi
 }
 
 main "$@"
