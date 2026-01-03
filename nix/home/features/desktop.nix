@@ -7,6 +7,11 @@
 
   home.packages = with pkgs; [
     ########################
+    # nixGL for OpenGL support
+    ########################
+    nixgl.auto.nixGLDefault
+
+    ########################
     # Desktop / GUI utilities
     ########################
     font-awesome
