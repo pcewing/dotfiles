@@ -6,9 +6,11 @@
   ];
 
   # Declare Python packages needed by desktop
-  myPython.packages = with pkgs.python3Packages; [
-    py3status
-    mpd2
+  myPython.packageFns = [
+    (ps: with ps; [
+      py3status
+      # mpd2 is already included from core.nix
+    ])
   ];
 
   home.sessionVariables = {
