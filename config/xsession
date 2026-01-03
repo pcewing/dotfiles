@@ -8,10 +8,31 @@
 # $ cd ~/dot/config
 # $ shellcheck --shell=dash -x ./env ./xsession
 
+DOTFILES_LOG_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/logs"
+XSESSION_LOG_FILE="xsession_$(date +"%Y%m%d_%H%M%S").log"
+XSESSION_LOG_PATH="${DOTFILES_LOG_DIR}/${XSESSION_LOG_FILE}"
+
+log() {
+    echo "$*" >> "$XSESSION_LOG_PATH"
+}
+
+# Initialize log directory and clean up old logs
+mkdir -p "$DOTFILES_LOG_DIR"
+if [ -x "$HOME/dot/bin/cleanup_logs.sh" ]; then
+    "$HOME/dot/bin/cleanup_logs.sh"
+else
+    log "Warning: $HOME/dot/bin/cleanup_logs.sh not found or not executable"
+fi
+
+# Log PATH both before and after we source the env file so we can debug issues
+# if it's not modifying it correctly
+log "Starting at $(date)"
+log "PATH: $PATH"
+
 # Add user-defined fonts (only if directory exists)
 if [ -d "$HOME/.fonts" ]; then
-  xset +fp "$HOME/.fonts"
-  xset fp rehash
+    xset +fp "$HOME/.fonts"
+    xset fp rehash
 fi
 
 # Disable bell
@@ -49,11 +70,13 @@ ulimit -c unlimited
 
 # Set up environment variables
 # shellcheck source=./env
-if [ -f "$HOME/dot/config/env" ]; then
-  . "$HOME/dot/config/env"
-  echo "Sourced env, Path = $PATH" >> "$HOME/xsession-debug.log"
+ENV_CONFIG_PATH="$HOME/dot/config/env"
+if [ -f "$ENV_CONFIG_PATH" ]; then
+    . "$ENV_CONFIG_PATH"
+    log "Sourced ${ENV_CONFIG_PATH} configuration file"
+    log "PATH: $PATH"
 else
-  echo "ERROR: $HOME/dot/config/env not found" >> "$HOME/xsession-debug.log"
+    log "ERROR: ${ENV_CONFIG_PATH} not found"
 fi
 
 # Wrap exec in a function so we can redirect its output cleanly
@@ -62,23 +85,17 @@ exec_i3() {
 }
 
 # Start i3 and log output
-logdir="$HOME/.logs"
-mkdir -p "$logdir"
-"$HOME/dot/bin/cleanup_logs.sh"
-i3logfile="$logdir/i3_$(date +"%Y%m%d_%H%M%S").log"
-echo "Starting at $(date)" >> "$i3logfile"
-echo "PATH: $PATH" >> "$i3logfile"
-echo "Checking for i3: $(command -v i3 2>&1)" >> "$i3logfile"
+log "Checking for i3: $(command -v i3 2>&1)"
 
 # Try to start i3 and log any errors
 if command -v i3 >/dev/null 2>&1; then
-  echo "Found i3 at: $(command -v i3)" >> "$i3logfile"
-  echo "DISPLAY is: $DISPLAY" >> "$i3logfile"
-  exec_i3 >> "$i3logfile" 2>&1
+    log "Found i3 at: $(command -v i3)"
+    log "DISPLAY is: $DISPLAY"
+    exec_i3 >> "$XSESSION_LOG_PATH" 2>&1
 else
-  echo "ERROR: i3 not found in PATH" >> "$i3logfile"
-  echo "PATH was: $PATH" >> "$i3logfile"
-  # Try to show a notification
-  notify-send "X Session Failed" "i3 not found in PATH" 2>/dev/null || true
-  exit 1
+    log "ERROR: i3 not found in PATH"
+    log "PATH was: $PATH"
+    # Try to show a notification
+    notify-send "X Session Failed" "i3 not found in PATH" 2>/dev/null || true
+    exit 1
 fi
