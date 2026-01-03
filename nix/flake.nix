@@ -14,42 +14,32 @@
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
+      
+      # Load host definitions from JSON
+      hostsData = builtins.fromJSON (builtins.readFile ./hosts.json);
+      
+      # Convert feature name to module path
+      featureToModule = feature: ./home/features/${feature}.nix;
+      
+      # Generate a home-manager configuration for a single host
+      mkHostConfig = hostName: hostConfig:
+        home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [
+            {
+              home.username = hostConfig.username;
+              home.homeDirectory = "/home/${hostConfig.username}";
+              home.stateVersion = "24.05";
+              
+              imports = map featureToModule hostConfig.features;
+            }
+          ];
+        };
+      
+      # Generate all homeConfigurations from the JSON
+      homeConfigurations = builtins.mapAttrs mkHostConfig hostsData.hosts;
     in
     {
-      homeConfigurations = {
-        personal-desktop = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [ 
-            ./home/hosts/personal-desktop.nix
-          ];
-        };
-
-        work-desktop = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [ 
-            ./home/hosts/work-desktop.nix
-          ];
-        };
-
-        personal-wsl = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [ ./home/hosts/personal-wsl.nix ];
-        };
-
-        work-wsl = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [ ./home/hosts/work-wsl.nix ];
-        };
-
-        personal-server = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [ ./home/hosts/personal-server.nix ];
-        };
-
-        work-server = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [ ./home/hosts/work-server.nix ];
-        };
-      };
+      inherit homeConfigurations;
     };
 }

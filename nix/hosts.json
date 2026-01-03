@@ -1,0 +1,28 @@
+{
+  "hosts": {
+    "personal-desktop": {
+      "username": "pewing",
+      "features": ["core", "desktop", "gaming"]
+    },
+    "work-desktop": {
+      "username": "pewing",
+      "features": ["core", "desktop"]
+    },
+    "personal-wsl": {
+      "username": "pewing",
+      "features": ["core", "wsl"]
+    },
+    "work-wsl": {
+      "username": "pewing",
+      "features": ["core", "wsl"]
+    },
+    "personal-server": {
+      "username": "pewing",
+      "features": ["core"]
+    },
+    "work-server": {
+      "username": "pewing",
+      "features": ["core"]
+    }
+  }
+}
