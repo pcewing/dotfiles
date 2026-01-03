@@ -1,5 +1,7 @@
 
 # Base16 {{scheme-name}}
 
-eval "base16_{{scheme-slug}}"
+if command -v "base16_{{scheme-slug}}" >/dev/null 2>&1; then
+    eval "base16_{{scheme-slug}}"
+fi
 
