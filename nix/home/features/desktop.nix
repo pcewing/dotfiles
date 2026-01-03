@@ -47,7 +47,7 @@
     #########################
     # i3 / bar tooling
     #########################
-    py3status
+    python3Packages.py3status
 
     #########################
     # Video download
