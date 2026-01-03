@@ -230,6 +230,38 @@ apt_upgrade_if_stale() {
   fi
 }
 
+#################################
+# apt install caching
+#################################
+
+# Get the hash of installed apt packages from the state file.
+# Assumes jq is available.
+get_apt_pkgs_hash() {
+  if [[ ! -f "$STATE_FILE" ]]; then
+    echo ""
+    return
+  fi
+  jq -r '.apt_pkgs_hash // empty' "$STATE_FILE" 2>/dev/null || echo ""
+}
+
+# Calculate and write the hash of installed apt packages to the state file.
+# Assumes jq is available.
+# The package list is passed as arguments.
+set_apt_pkgs_hash() {
+  local pkgs_hash
+  pkgs_hash=$(printf "%s\n" "$@" | sort | sha256sum | awk '{print $1}')
+
+  mkdir -p "$(dirname "$STATE_FILE")"
+
+  local tmp
+  tmp="$(mktemp)"
+  if [[ -f "$STATE_FILE" ]] && [[ -s "$STATE_FILE" ]]; then
+    jq ".apt_pkgs_hash = \"$pkgs_hash\"" "$STATE_FILE" > "$tmp" && mv "$tmp" "$STATE_FILE"
+  else
+    echo "{\"apt_pkgs_hash\": \"$pkgs_hash\"}" > "$STATE_FILE"
+  fi
+}
+
 nix_hosts() {
     jq -r '.hosts | keys[]' "$DOTFILES_DIR/nix/hosts.json"
 }
@@ -353,7 +385,20 @@ apt_bootstrap() {
     apt_upgrade_if_stale
   fi
 
-  try sudo apt-get install -y "${pkgs[@]}"
+  # Check if packages are already installed by comparing hashes
+  local current_pkgs_hash
+  current_pkgs_hash=$(printf "%s\n" "${pkgs[@]}" | sort | sha256sum | awk '{print $1}')
+
+  local installed_pkgs_hash
+  installed_pkgs_hash=$(get_apt_pkgs_hash)
+
+  if [[ "$current_pkgs_hash" == "$installed_pkgs_hash" ]]; then
+    echo "[bootstrap] apt packages are already up-to-date, skipping install."
+  else
+    echo "[bootstrap] New or changed apt packages detected, running install..."
+    try sudo apt-get install -y "${pkgs[@]}"
+    set_apt_pkgs_hash "${pkgs[@]}"
+  fi
 }
 
 #################################
