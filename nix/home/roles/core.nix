@@ -134,7 +134,7 @@ in
       ultisnips
       vim-snippets
   
-      nvim-markdown # The custom nvim-markdown plugin
+      # Custom nvim-markdown plugin
   
       vim-clang-format
       nvim-lspconfig

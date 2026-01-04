@@ -2,27 +2,48 @@
 
 set -euo pipefail
 
+#==============================================================================
+# Utilities
+#==============================================================================
+
+# Print a message to stderr.
+#
+# $*: The message to print.
 yell() { >&2 echo "$*"; }
+
+# Print an error message to stderr and exit.
+#
+# $*: The error message to print.
 die()  { yell "ERROR: $*"; exit 1; }
+
+# Execute a command, and exit if it fails.
+#
+# $*: The command to execute.
 try()  { "$@" || die "Command failed: $*"; }
 
+# Checks if a command is installed and on the PATH.
+#
+# $1: The command name to check.
+# Returns 0 if the command is installed, 1 otherwise.
 is_cmd_installed() {
   command -v "$1" >/dev/null 2>&1 || return 1
 }
 
-# This is also defined in config/bash/core.sh so we could probably source that
-# instead but just duplicate it for now
+# Checks if the script is running in a WSL environment.
+#
+# Returns 0 if in WSL, 1 otherwise.
 is_wsl() {
     [ -n "$WSL_DISTRO_NAME" ] && return 0 || return 1
 }
 
-#################################
-# config knobs (safe defaults)
-#################################
+#==============================================================================
+# Configuration
+#==============================================================================
 DOTFILES_DIR_DEFAULT="$HOME/dot"
 STATE_FILE="$HOME/.local/state/dotfiles/apply.json"
 APT_UPDATE_MAX_AGE_SECONDS=86400 # 24 hours
 
+# Prints the script usage information.
 usage() {
   cat <<EOF
 Usage: $0 [--dir PATH] [--nix-host NAME] [--no-upgrade]
@@ -47,12 +68,13 @@ DO_APT=1
 # take effect
 DOCKER_INSTALLED="0"
 
-#################################
-# apt update caching
-#################################
+#==============================================================================
+# APT Update Caching
+#==============================================================================
 
-# Get the last apt update timestamp from the state file
-# Returns empty string if not found
+# Gets the last apt update timestamp from the state file.
+#
+# Returns an empty string if not found.
 get_apt_last_update() {
   if [[ ! -f "$STATE_FILE" ]]; then
     echo ""
@@ -67,7 +89,7 @@ get_apt_last_update() {
   fi
 }
 
-# Write the current timestamp to the state file
+# Writes the current timestamp for apt update to the state file.
 set_apt_last_update() {
   local timestamp
   timestamp="$(date +%s)"
@@ -84,13 +106,14 @@ set_apt_last_update() {
       echo "{\"apt_last_update\": $timestamp}" > "$STATE_FILE"
     fi
   else
-    # Simple fallback without jq
+    # Simple fallback without jq, will clobber other fields
     echo "{\"apt_last_update\": $timestamp}" > "$STATE_FILE"
   fi
 }
 
-# Check if apt update is stale (older than APT_UPDATE_MAX_AGE_SECONDS)
-# Returns 0 (true) if stale or missing, 1 (false) if fresh
+# Checks if the apt update cache is stale.
+#
+# Returns 0 (true) if stale or missing, 1 (false) if fresh.
 is_apt_update_stale() {
   local last_update
   last_update="$(get_apt_last_update)"
@@ -110,7 +133,7 @@ is_apt_update_stale() {
   fi
 }
 
-# Run apt-get update only if the cache is stale
+# Runs apt-get update only if the cache is stale.
 apt_update_if_stale() {
   if is_apt_update_stale; then
     local last_update age_hours
@@ -131,19 +154,21 @@ apt_update_if_stale() {
   fi
 }
 
-# Run apt-get update unconditionally and update the timestamp
-# Used when adding new repositories (e.g., Docker)
+# Runs apt-get update unconditionally and updates the timestamp.
+# Used when adding new repositories (e.g., Docker).
 apt_update_always() {
   echo "[bootstrap] Running apt-get update (forced)..."
   try sudo apt-get update -y
   set_apt_last_update
 }
 
-#################################
-# apt upgrade caching
-#################################
+#==============================================================================
+# APT Upgrade Caching
+#==============================================================================
 
-# Get the last apt upgrade timestamp from the state file
+# Gets the last apt upgrade timestamp from the state file.
+#
+# Returns an empty string if not found.
 get_apt_last_upgrade() {
   if [[ ! -f "$STATE_FILE" ]]; then
     echo ""
@@ -156,7 +181,7 @@ get_apt_last_upgrade() {
   fi
 }
 
-# Write the current upgrade timestamp to the state file
+# Writes the current timestamp for apt upgrade to the state file.
 set_apt_last_upgrade() {
   local timestamp
   timestamp="$(date +%s)"
@@ -189,7 +214,7 @@ set_apt_last_upgrade() {
   fi
 }
 
-# Check if apt upgrade is stale
+# Checks if the apt upgrade is stale.
 is_apt_upgrade_stale() {
   local last_upgrade
   last_upgrade="$(get_apt_last_upgrade)"
@@ -209,7 +234,7 @@ is_apt_upgrade_stale() {
   fi
 }
 
-# Run apt-get dist-upgrade only if stale
+# Runs apt-get dist-upgrade only if the cache is stale.
 apt_upgrade_if_stale() {
   if is_apt_upgrade_stale; then
     local last_upgrade age_hours
@@ -230,9 +255,9 @@ apt_upgrade_if_stale() {
   fi
 }
 
-#################################
-# apt install caching
-#################################
+#==============================================================================
+# APT Install Caching
+#==============================================================================
 
 # Get the hash of installed apt packages from the state file.
 # Assumes jq is available.
@@ -245,8 +270,9 @@ get_apt_pkgs_hash() {
 }
 
 # Calculate and write the hash of installed apt packages to the state file.
+#
 # Assumes jq is available.
-# The package list is passed as arguments.
+# $*: The list of packages to hash.
 set_apt_pkgs_hash() {
   local pkgs_hash
   pkgs_hash=$(printf "%s\n" "$@" | sort | sha256sum | awk '{print $1}')
@@ -262,10 +288,19 @@ set_apt_pkgs_hash() {
   fi
 }
 
+#==============================================================================
+# Host & Role Helpers
+#==============================================================================
+
+# Lists the available Nix hosts from the hosts.json file.
 nix_hosts() {
     jq -r '.hosts | keys[]' "$DOTFILES_DIR/nix/hosts.json"
 }
 
+# Checks if the current NIX_HOST has a specific role.
+#
+# $1: The role to check for.
+# Returns 0 if the host has the role, 1 otherwise.
 host_has_role() {
     local role="$1"
     if [ -z "$NIX_HOST" ] || [ ! -f "$DOTFILES_DIR/nix/hosts.json" ]; then
@@ -275,6 +310,11 @@ host_has_role() {
         "$DOTFILES_DIR/nix/hosts.json" >/dev/null 2>&1
 }
 
+#==============================================================================
+# Installation Functions
+#==============================================================================
+
+# Installs Docker if it's not already installed and the 'core' role is active.
 install_docker() {
     # TODO: Eventually we're going to move this from core to its own role and
     # when we do we'll need to update this condition
@@ -314,6 +354,7 @@ EOF
     DOCKER_INSTALLED="1"
 }
 
+# Sources the local, non-version-controlled rc file if it exists.
 source_localrc() {
     local localrc_path="$HOME/.localrc"
 
@@ -325,6 +366,7 @@ source_localrc() {
     fi
 }
 
+# Validates that the NIX_HOST variable is set and is a valid host.
 validate_nix_host() {
     if [ -z "$NIX_HOST" ]; then
         yell "[bootstrap] (validate_nix_host) Error: NIX_HOST is not set."
@@ -346,9 +388,7 @@ validate_nix_host() {
     fi
 }
 
-#################################
-# apt bootstrap (minimal)
-#################################
+# Installs minimal prerequisite packages using apt.
 apt_bootstrap() {
   if [[ ! "$DO_APT" -eq 1 ]]; then
     echo "[bootstrap] (apt_bootstrap) Skipping apt steps because --no-apt was specified..."
@@ -401,9 +441,7 @@ apt_bootstrap() {
   fi
 }
 
-#################################
-# nix install / init
-#################################
+# Installs Nix if it's not already installed.
 install_nix_if_needed() {
   if is_cmd_installed nix; then
     echo "[bootstrap] nix already installed."
@@ -411,10 +449,11 @@ install_nix_if_needed() {
   fi
 
   echo "[bootstrap] Installing Nix (single-user)..."
-  # Standard installer; we'll tighten this up later if you prefer a different method.
+  # Standard installer; can be customized later if needed.
   try sh -c 'curl -L https://nixos.org/nix/install | sh -s -- --no-daemon'
 }
 
+# Sources the Nix profile to make `nix` available in the current shell.
 source_nix_profile() {
   # Make nix available in the current shell, even right after install.
   if is_cmd_installed nix; then
@@ -426,7 +465,7 @@ source_nix_profile() {
     # shellcheck disable=SC1090
     source "$HOME/.nix-profile/etc/profile.d/nix.sh"
   elif [[ -f "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh" ]]; then
-    # multi-user install (if you ever switch later)
+    # Multi-user install path
     # shellcheck disable=SC1091
     source "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
   fi
@@ -434,6 +473,7 @@ source_nix_profile() {
   is_cmd_installed nix || die "nix still not on PATH after sourcing profile."
 }
 
+# Enables Nix experimental features (nix-command and flakes).
 enable_nix_experimental() {
   # Home Manager via flakes is the nicest iteration experience.
   # This just ensures nix can use flakes/commands on fresh installs.
@@ -448,30 +488,19 @@ enable_nix_experimental() {
   fi
 }
 
-#################################
-# apply home-manager
-#################################
+# Applies the Home Manager configuration for the current host.
 apply_home_manager() {
   echo "[bootstrap] Applying Home Manager target: $NIX_HOST"
 
-  # Assumes your repo will contain a flake with:
-  # homeConfigurations.<nixHost>
-  #
-  # We'll create that flake next.
+  # Assumes your repo contains a flake with homeConfigurations.<nixHost>
   try nix --extra-experimental-features "nix-command flakes" \
     run "github:nix-community/home-manager" -- \
     switch -b hm-bak --flake "$DOTFILES_DIR/nix#$NIX_HOST"
 }
 
-# Setting the default terminal and editor via `update-alternatives` is a
-# system-wide action so we need to do that here after we've applied the Nix
-# configuration
+# Sets the default terminal and editor using update-alternatives.
 set_default_terminal_and_editor() {
   echo "[bootstrap] Setting system defaults via update-alternatives..."
-
-  # Ensure nix is on PATH in this script:
-  # TODO: We already exectued this in main, remove this?
-  #source_nix_profile
 
   if host_has_role "desktop"; then
   	local nvim_path
@@ -502,6 +531,7 @@ set_default_terminal_and_editor() {
   fi
 }
 
+# Installs X11 and Wayland session files for graphical login managers.
 install_session_desktop_files() {
   echo "[bootstrap] Installing session desktop files..."
 
@@ -531,9 +561,9 @@ install_session_desktop_files() {
   fi
 }
 
-#################################
-# main
-#################################
+#==============================================================================
+# Main Execution
+#==============================================================================
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --dir)          DOTFILES_DIR="$2"; shift 2;;

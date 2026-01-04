@@ -3,15 +3,19 @@
 let
   dotConfigDir = ../../../config;
 
+  # Helper to classify a link as XDG-compliant (in .config) or a regular
+  # home-relative dotfile.
   link = { dst, srcPath }:
     if lib.hasPrefix ".config/" dst then
       { xdg = true; key = lib.removePrefix ".config/" dst; value = { source = srcPath; }; }
     else
       { xdg = false; key = dst; value = { source = srcPath; }; };
 
+  # Helper to create a link item for the `items` list.
   mk = dstRel: srcRel:
     link { dst = dstRel; srcPath = dotConfigDir + "/${srcRel}"; };
 
+  # List of all files and directories to be linked into the home directory.
   items = [
     (mk ".Xresources"                      "Xresources")
     (mk ".bash_profile"                    "bash_profile")
@@ -51,9 +55,11 @@ let
     (mk ".config/wezterm/wezterm.lua"      "wezterm.lua")
   ];
 
+  # Separate items into XDG and home-relative lists.
   xdgPairs = builtins.filter (x: x.xdg) items;
   homePairs = builtins.filter (x: !x.xdg) items;
 
+  # Convert the lists to attribute sets suitable for home-manager options.
   xdgAttr = lib.listToAttrs (map (x: { name = x.key; value = x.value; }) xdgPairs);
   homeAttr = lib.listToAttrs (map (x: { name = x.key; value = x.value; }) homePairs);
 in

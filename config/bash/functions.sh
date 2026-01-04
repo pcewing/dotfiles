@@ -783,8 +783,9 @@ git_diff_with()
     local diff_target="$1"
 
     if [ -z "$diff_target" ]; then
-        yell "ERROR: Missing argument <diff_target>"
-        return 1
+        # If diff_target isn't specified, default it to the previous commit hash
+        diff_target="$(git log -n 1 | grep -E '^commit ' | sed -e 's/^commit //' -e 's/ .*//')"
+        echo "Defaulting diff_target to $diff_target"
     fi
 
     # TODO: We could make this robust and walk up the file tree but for now

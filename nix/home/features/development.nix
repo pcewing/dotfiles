@@ -1,3 +1,6 @@
+# This module provides a set of common software development tools for various
+# languages. It can be enabled in a role to provide a baseline development
+# environment.
 { config, pkgs, lib, ... }:
 
 {
