@@ -135,14 +135,14 @@ script to set that up correctly.
 
 # Other TODOs (From 2025-01-03)
 
-- On multi-monitor setups, run arandr and set up a TODO.sh file
-- Set up background wallpaper or whatever will manage it
-    - Maybe just `nitrogen --restore &` ?
-    - Can we put an svg in github repo and convert it to png or something?
-        - So it's text on disk and small in size but then we have a default wallpaper everywhere
+- Add to setup doc:
+    - On multi-monitor setups, run arandr and set up a TODO.sh file
+    - Set up background wallpaper or whatever will manage it
+        - Maybe just `nitrogen --restore &` ?
+        - Can we put an svg in github repo and convert it to png or something?
+            - So it's text on disk and small in size but then we have a default wallpaper everywhere
 - Move base16-shell installation out of bashrc maybe?
     - Have nix do this? With current system, it will never update after first installation and it feels weird to have shell init scripts cloning git repositories
-- nixfmt
 - Maybe we can merge some of the shell scripts i3 executes into a single shell script so they can all share the same logging and debugging facilities?
 - bcompare in nix is Beyond Compare 4, is it possible to get 5?
 - Are we forgetting to execute gtk stuff on i3 startup? Keyring, etc.
