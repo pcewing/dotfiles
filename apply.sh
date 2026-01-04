@@ -46,12 +46,13 @@ APT_UPDATE_MAX_AGE_SECONDS=86400 # 24 hours
 # Prints the script usage information.
 usage() {
   cat <<EOF
-Usage: $0 [--dir PATH] [--nix-host NAME] [--no-upgrade]
+Usage: $0 [--dir PATH] [--nix-host NAME] [--no-upgrade] [--reset-state]
 
-  --dir        Where to clone it (default: $DOTFILES_DIR_DEFAULT)
-  --nix-host   Home Manager target to apply
-  --no-upgrade Skip apt-get dist-upgrade (default is to run it)
-  --no-apt     Skip all apt-get steps
+  --dir         Where to clone it (default: $DOTFILES_DIR_DEFAULT)
+  --nix-host    Home Manager target to apply
+  --no-upgrade  Skip apt-get dist-upgrade (default is to run it)
+  --no-apt      Skip all apt-get steps
+  --reset-state Delete the state file to force re-running all cached steps
 
 Examples:
   $0 --nix-host personal-desktop
@@ -62,6 +63,7 @@ DOTFILES_DIR="$DOTFILES_DIR_DEFAULT"
 NIX_HOST=""
 DO_UPGRADE=1
 DO_APT=1
+RESET_STATE=0
 
 # Track if docker was installed during this run so that we can print a reminder
 # at the end to either reboot or log out and back in for the group change to
@@ -562,6 +564,56 @@ install_session_desktop_files() {
 }
 
 #==============================================================================
+# System Setup Caching
+#==============================================================================
+
+# Checks if the one-time system setup tasks have been completed.
+#
+# Assumes jq is available.
+# Returns 0 if setup is done, 1 otherwise.
+is_system_setup_done() {
+  if [[ ! -f "$STATE_FILE" ]]; then
+    return 1
+  fi
+  local setup_done
+  setup_done=$(jq -r '.system_setup_done // false' "$STATE_FILE")
+  if [[ "$setup_done" == "true" ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# Marks the one-time system setup tasks as completed in the state file.
+#
+# Assumes jq is available.
+set_system_setup_done() {
+  mkdir -p "$(dirname "$STATE_FILE")"
+  local tmp
+  tmp="$(mktemp)"
+  if [[ -f "$STATE_FILE" ]] && [[ -s "$STATE_FILE" ]]; then
+    jq ".system_setup_done = true" "$STATE_FILE" > "$tmp" && mv "$tmp" "$STATE_FILE"
+  else
+    echo '{"system_setup_done": true}' > "$STATE_FILE"
+  fi
+}
+
+# Runs the system-level setup tasks that require sudo, but only if they
+# haven't been completed before.
+run_sudo_setup_tasks_if_needed() {
+  if is_system_setup_done; then
+    echo "[bootstrap] System-level setup already completed, skipping."
+    return
+  fi
+
+  echo "[bootstrap] Running system-level setup tasks..."
+  set_default_terminal_and_editor
+  install_session_desktop_files
+  set_system_setup_done
+  echo "[bootstrap] System-level setup tasks complete."
+}
+
+#==============================================================================
 # Main Execution
 #==============================================================================
 while [[ $# -gt 0 ]]; do
@@ -570,12 +622,18 @@ while [[ $# -gt 0 ]]; do
     --nix-host)     NIX_HOST="$2"; shift 2;;
     --no-upgrade)   DO_UPGRADE=0; shift;;
     --no-apt)       DO_APT=0; shift;;
+    --reset-state)  RESET_STATE=1; shift;;
     -h|--help)      usage; exit 0;;
     *) die "Unknown argument: $1";;
   esac
 done
 
 main() {
+  if [[ "$RESET_STATE" -eq 1 ]]; then
+    echo "[bootstrap] Resetting state file at $STATE_FILE..."
+    rm -f "$STATE_FILE"
+  fi
+
   echo "[bootstrap] Starting on: $(lsb_release -ds 2>/dev/null || uname -a)"
   if is_wsl; then
     echo "[bootstrap] Detected WSL environment."
@@ -595,8 +653,7 @@ main() {
   source_nix_profile
   enable_nix_experimental
   apply_home_manager
-  set_default_terminal_and_editor
-  install_session_desktop_files
+  run_sudo_setup_tasks_if_needed
 
   install_docker
 
