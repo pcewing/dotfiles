@@ -88,7 +88,22 @@ Create `~/.gitconfig_local` like:
 	name = Paul Ewing
 ```
 
-### Wallpaper Rotater
+### Desktop Wallpaper
+
+#### Basic Wallpaper Setup
+
+Put logic to apply a wallpaper in `~/set-bg.sh`. For example, download a
+wallpaper to `~/Pictures/wallpaper.png` and set it via:
+```
+feh --bg-scale "$HOME/Pictures/wallpaper.png"
+```
+
+You can also set the wallpaper using `nitrogen` and then in the shell script, run:
+```
+nitrogen --restore &
+```
+
+#### Wallpaper Rotater
 
 If using `wpr`, create `~/.config/wpr/config.json` like:
 
@@ -99,6 +114,12 @@ If using `wpr`, create `~/.config/wpr/config.json` like:
     "Interval":120
 }
 ```
+
+### Screen Layout
+
+When running a multi-monitor setup, set the screen layout by running `arandr`,
+configuring the monitors as desired, and then saving the layout to
+`~/.screenlayout/config.sh`.
 
 ### Dual Boot Clock Fix
 
