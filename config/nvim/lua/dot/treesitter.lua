@@ -34,49 +34,10 @@ function M.configure()
         -- downloads a ton of parsers I don't care about and that were occasionally
         -- causing errors.
         ensure_installed = {
-            "bash",
-            "c",
-            "c_sharp",
-            "cmake",
-            "commonlisp",
-            "cpp",
-            "css",
-            "csv",
-            "disassembly",
-            "dockerfile",
-            "elixir",
-            "erlang",
-            "gdscript",
-            "git_rebase",
-            "gitattributes",
-            "gitcommit",
-            "git_config",
-            "gitignore",
-            "go",
-            "godot_resource",
-            "gomod",
-            "gosum",
-            "gowork",
-            "groovy",
-            "hcl",
-            "html",
-            "ini",
-            "java",
-            "javascript",
-            "json",
-            "latex",
-            "lua",
-            "make",
-            "markdown",
-            "markdown_inline",
-            "meson",
-            "proto",
-            "puppet",
-            "python",
-            "toml",
-            "vim",
-            "xml",
-            "yaml",
+            -- Leave this empty because Nix will install the grammars into the
+            -- Nix store and we don't want the Treesitter plugin trying to
+            -- install them at runtime because it will fail due to missing
+            -- write permissions
         }
     })
 end

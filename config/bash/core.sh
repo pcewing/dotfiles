@@ -6,7 +6,7 @@ if [ -z "$DOT_CORE_SOURCED" ]; then
     DOT_CORE_SOURCED=1
 
     function _is_wsl() {
-        [ -n "$WSL_DISTRO_NAME" ] && return 0 || return 1
+        [ -n "${WSL_DISTRO_NAME-}" ] && return 0 || return 1
     }
 
     # Using `command -v foo` on WSL is very slow. I profiled this on 2024/03/08

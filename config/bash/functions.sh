@@ -725,3 +725,37 @@ function merge_pdfs()
 
     pdftk "$input1" "$input2" cat output "$output"
 }
+
+str_contains()
+{
+    local string="$1"
+    local substring="$2"
+    if test "${string#*$substring}" != "$string"
+    then
+        return 0    # $substring is in $string
+    else
+        return 1    # $substring is not in $string
+    fi
+}
+
+# Clone a Github repository to the specified path or a reasonable default if no
+# path is provided
+gh_clone()
+{
+    local org="$1"
+    local repo="$2"
+    local path="$3"
+
+    local url="https://github.com/$org/$repo"
+
+    if [ -z "$path" ]; then
+        path="$HOME/src/github/$org/$repo"
+    fi
+
+    if [ -e "$path" ]; then
+        yell "ERROR: Target directory '$path' already exists"
+        return 1
+    fi
+
+    git clone "$url" "$path"
+}

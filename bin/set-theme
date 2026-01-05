@@ -48,11 +48,8 @@ function get_background_opacity() {
 background_opacity="$(get_background_opacity "$theme")"
 sed -Ei "s/^background_opacity.*/background_opacity $background_opacity/" "$DOTFILES/config/kitty.conf"
 
-# TODO: Either add flavours to provision script or install it here if it's
-# missing
 if ! command -v flavours &>/dev/null; then
-    flavours_url="https://github.com/Misterio77/flavours/releases/latest"
-    die "Error: flavours is not installed; download and install it from: $flavours_url"
+    die "Error: flavours is not installed"
 fi
 
 # Run flavours to render the config templates into all dotfiles

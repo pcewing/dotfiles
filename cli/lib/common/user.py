@@ -68,7 +68,7 @@ class User:
         # Convert to platform-agnostic Group type
         return [Group(g.gr_name, g.gr_gid, g.gr_mem) for g in groups]
 
-    # TODO: Remove dry run stuff, make a wrapper in provision lib for that
+    # TODO: Remove dry run stuff
     # TODO: I actually don't know if this was even used? I think we used group.py
     def add_to_group(self, group: str, dry_run: bool) -> None:
         groups = set(self.get_groups())

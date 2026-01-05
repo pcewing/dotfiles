@@ -286,3 +286,7 @@ bar {
         binding_mode        $base00 $base0A $base00
     }
 }
+
+# If we're running in a Virtual Machine, start up any necessary software for
+# integration between the host and guest.
+exec_always "~/dot/bin/run_vm_guest_additions.sh"
