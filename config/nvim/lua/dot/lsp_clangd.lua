@@ -35,7 +35,8 @@ function M.configure()
     -- server attaches to the current buffer
     local on_attach = function(client, buf)
         -- Enable completion triggered by <c-x><c-o>
-        vim.api.nvim_buf_set_option(buf, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+        -- IMPROVEMENT: nvim_buf_set_option is deprecated in favor of vim.bo[buf]
+        vim.bo[buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
         -- See `:help vim.lsp.*` for documentation on the below functions
         Map.nnoremapbs(buf, 'gD',    '<cmd>lua vim.lsp.buf.declaration()<cr>')

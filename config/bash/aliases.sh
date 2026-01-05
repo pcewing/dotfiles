@@ -108,7 +108,8 @@ fi
 # Apt aliases
 if _is_installed 'apt'; then
     set_alias '0' 'apti' 'sudo apt install -y'
-    set_alias '0' 'apts' 'sudo apt search'
+    # IMPROVEMENT: Removed sudo from apt search - sudo is unnecessary for search operations
+    set_alias '0' 'apts' 'apt search'
 fi
 
 # Pacman aliases

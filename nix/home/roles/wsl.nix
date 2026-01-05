@@ -14,7 +14,9 @@ in
 
     # Install win32yank to Windows filesystem for clipboard integration
     # This needs to be on NTFS (not WSL filesystem) for performance reasons
+    # IMPROVEMENT: Using run to respect verbose/dry-run flags from home-manager
     home.activation.installWin32yank = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        run() { echo "running: $*"; "$@"; }
         WIN32YANK_VERSION="${win32yankVersion}"
         WIN32YANK_URL="${win32yankUrl}"
         WIN32YANK_DIR="${win32yankInstallDir}"

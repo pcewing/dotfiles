@@ -505,7 +505,8 @@ set_default_terminal_and_editor() {
   echo "[bootstrap] Setting system defaults via update-alternatives..."
 
   if host_has_role "desktop"; then
-  	local nvim_path
+  	# BUG FIX: Removed incorrect variable declaration - was "nvim_path" but should be "kitty_path"
+  	local kitty_path
   	kitty_path="$(command -v kitty || true)"
 
 	  if [[ -n "$kitty_path" ]]; then

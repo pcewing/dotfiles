@@ -6,9 +6,10 @@ import subprocess
 from lib.common.log import Log
 
 
+# BUG FIX: Return type annotation was str but function returns list[str]
 def _execute_git_command(
     cmd: list[str], strip: bool = True, filter_empty: bool = True
-) -> str:
+) -> list[str]:
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, text=True)
     stdout, _ = p.communicate()
     if p.returncode != 0:
@@ -235,7 +236,8 @@ class Git:
 
     @staticmethod
     def commit(message: str) -> None:
-        Log.debug("commiting staged changes")
+        # BUG FIX: Fixed typo "commiting" -> "committing"
+        Log.debug("committing staged changes")
         subprocess.check_call(["git", "commit", "--message", message])
 
     @staticmethod

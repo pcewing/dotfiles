@@ -35,7 +35,8 @@ function fm() {
 
     file_manager="$(xdg-mime query default inode/directory | sed -e 's/\.desktop//')"
 
-    if test -z "path"; then
+    # BUG FIX: Was missing $ before path variable, so condition was always false
+    if test -z "$path"; then
         path="."
     fi
 
@@ -98,10 +99,11 @@ function nvimp() {
 }
 
 # Download the audio from a YouTube video as an MP3 file
+# IMPROVEMENT: Changed from youtube-dl to yt-dlp, the actively maintained fork
 function yt_mp3() {
-    installed "youtube-dl" || return 1
+    installed "yt-dlp" || return 1
 
-    youtube-dl -x --audio-format "mp3" "$1"
+    yt-dlp -x --audio-format "mp3" "$1"
 }
 
 # WARNING: This shouldn't be called from an interactive shell as the passphrase
@@ -284,7 +286,8 @@ function go_test_coverage() {
     if go test -coverprofile="$tempfile"; then
         go tool cover -html="$tempfile"
     else
-        1>&1 echo -e "ERROR: Tests failed; to view coverage anyways run:\ngo tool cover -html=\"$tempfile\""
+        # BUG FIX: Was using 1>&1 (stdout to stdout, no-op) instead of 1>&2 (stdout to stderr)
+        1>&2 echo -e "ERROR: Tests failed; to view coverage anyways run:\ngo tool cover -html=\"$tempfile\""
     fi
 }
 
@@ -556,8 +559,9 @@ function tar_directory() {
         return 1
     fi
 
-    path="$(realpath $dir)"
-    name="$(basename $path)"
+    # BUG FIX: Added quotes around $dir and $path to handle paths with spaces
+    path="$(realpath "$dir")"
+    name="$(basename "$path")"
 
     archive_path="/tmp/$name.tar.gz"
 

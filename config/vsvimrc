@@ -54,6 +54,7 @@ nnoremap <A-F7> 7gt
 nnoremap <A-F8> 8gt
 nnoremap <A-F9> 9gt
 nnoremap <A-F0> 10gt
+" BUG FIX: Removed duplicate mapping block that was accidentally included twice
 nnoremap <leader><F1> 1gt
 nnoremap <leader><F2> 2gt
 nnoremap <leader><F3> 3gt
@@ -64,17 +65,6 @@ nnoremap <leader><F7> 7gt
 nnoremap <leader><F8> 8gt
 nnoremap <leader><F9> 9gt
 nnoremap <leader><F0> 10gt
-
-nnoremap <leader><F1> 1gt
-nnoremap <leader><F2> 2gt
-nnoremap <leader><F3> 3gt
-nnoremap <leader><F4> 4gt
-nnoremap <leader><F5> 5gt
-nnoremap <leader><F6> 6gt
-nnoremap <leader><F7> 7gt
-nnoremap <leader><F8> 8gt
-nnoremap <leader><F9> 9gt
-nnoremap <leader><F0> 0gt
 
 nnoremap <leader>vo :vsc Edit.GoToFile<cr>
 nnoremap <leader>vm :vsc Edit.GoToMember<cr>

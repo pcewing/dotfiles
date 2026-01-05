@@ -1,20 +1,17 @@
 #!/usr/bin/env bash
 
-function destroy_containers() {
-    containers="$(docker ps -a \
-        | grep -Ev '^CONTAINER' \
-        | awk '{print $1}')"
+# IMPROVEMENT: Use docker's built-in filtering with -q flag instead of grep/awk parsing.
+# This is more reliable as it avoids issues with column alignment or format changes.
 
+function destroy_containers() {
+    containers="$(docker ps -aq)"
     if [ -n "$containers" ]; then
         echo "$containers" | xargs docker rm -f
     fi
 }
 
 function destroy_images() {
-    images="$(docker images \
-        | grep -Ev '^REPOSITORY' \
-        | awk '{print $3}')"
-    
+    images="$(docker images -q)"
     if [ -n "$images" ]; then
         echo "$images" | xargs docker rmi
     fi

@@ -22,7 +22,7 @@ declare -a sources=(
 )
 
 for i in "${sources[@]}"; do
-    src_if_exists  "$i"
+    src_if_exists "$i"
 done
 
 # Source fzf shell integrations if we have them
@@ -63,7 +63,8 @@ if _is_installed "go"; then
 fi
 
 # Rust configuration
-if _is_installed "rust"; then
+# BUG FIX: Changed "rust" to "rustc" - "rust" is not a command, rustc is the compiler
+if _is_installed "rustc"; then
     [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 fi
 
