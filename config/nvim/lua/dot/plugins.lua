@@ -5,9 +5,11 @@ local Map           = require('dot.map')
 local Notifications = require('dot.notifications')
 local Util          = require('dot.util')
 
--- TODO: Copy/pasted from ChatGPT, find the right place for this and read
--- through it
 -- Function to list snippets and allow FZF selection
+-- Not currently that useful because it shows all snippets and the list is
+-- massive and most of them I would never use, like all of the licensing
+-- snippets. Maybe find a way to make this better. A simple solution could be
+-- to make a regex filter to remove the ones we don't care about.
 function ShowSnippets()
   local filetype = vim.bo.filetype  -- Get the current filetype
   local snippets = vim.fn["UltiSnips#SnippetsInCurrentScope"](1)  -- Get available snippets
@@ -110,16 +112,15 @@ local plugins = {
         end
     },
 
-    -- TODO: This is currently not installed because there's no Nix package for it
---    nvim_markdown = {
---        configure = function()
---            vim.g.vim_markdown_frontmatter = 1
---
---            -- This is <tab> by default which conflicts with UltiSnips
---            -- TODO: Should we only do this in markdown files?
---            Map.imap('<Plug>', '<Plug>Markdown_Jump')
---        end
---    },
+    nvim_markdown = {
+        configure = function()
+            vim.g.vim_markdown_frontmatter = 1
+
+            -- This is <tab> by default which conflicts with UltiSnips
+            -- TODO: Should we only do this in markdown files?
+            Map.imap('<Plug>', '<Plug>Markdown_Jump')
+        end
+    },
 
     clang_format = {
         configure = function()

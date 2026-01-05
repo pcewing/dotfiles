@@ -1,3 +1,5 @@
+# Think we can delete this file now, go through and double check maybe then delete
+
 # Nix Migration TODOs
 
 This document tracks remaining work to achieve full parity between the old provisioning systems (shell scripts in `provision/` and Python scripts in `cli/lib/provision/`) and the new Nix/Home Manager configuration.
