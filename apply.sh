@@ -33,7 +33,7 @@ is_cmd_installed() {
 #
 # Returns 0 if in WSL, 1 otherwise.
 is_wsl() {
-    [ -n "$WSL_DISTRO_NAME" ] && return 0 || return 1
+    [ -n "${WSL_DISTRO_NAME-}" ] && return 0 || return 1
 }
 
 #==============================================================================

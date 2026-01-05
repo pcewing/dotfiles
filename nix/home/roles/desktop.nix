@@ -2,6 +2,7 @@
 
 let
     wallpaperSvg = ../../../img/wallpaper.svg;
+    setBgTemplate = ../../../templates/set-bg.sh;
 in
 {
     imports = [
@@ -86,17 +87,18 @@ in
         ventoy
     ];
 
-    home.file.".set-bg.sh" = {
-        executable = true;
-        text = ''
-            #!/usr/bin/env bash
-            # This script is managed by Nix.
-            # It sets the desktop background wallpaper.
-            if [ -f "$HOME/Pictures/default_wallpaper.png" ]; then
-              feh --bg-scale "$HOME/Pictures/default_wallpaper.png"
-            fi
-        '';
-    };
+    # Install ~/set-bg.sh from templates/set-bg.sh only if it doesn't already
+    # exist. This allows per-machine customization without home-manager
+    # overwriting it.
+    home.activation.installSetBgScript = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        target="$HOME/set-bg.sh"
+        if [ ! -e "$target" ]; then
+          echo "Installing default $target from template..."
+          install -m 0755 ${setBgTemplate} "$target"
+        else
+          echo "$target already exists; leaving it untouched."
+        fi
+    '';
 
     # Generate a PNG wallpaper from the source SVG.
     home.activation.generateWallpaper = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
@@ -109,8 +111,7 @@ in
         echo "Wallpaper generated at $HOME/Pictures/default_wallpaper.png"
     '';
 
-    # Make sure mpd runtime directories exist or it will complain on the first
-    # startup
+    # Make sure mpd runtime directories exist or it will complain on the first startup
     home.activation.createMpdDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         mkdir -p "$HOME/.mpd/playlists" "$HOME/.local/share/mpd"
     '';
