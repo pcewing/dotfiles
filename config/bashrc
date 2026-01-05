@@ -15,13 +15,21 @@ src_if_exists() {
 }
 
 declare -a sources=(
-    "$HOME/.fzf.bash"
     "$HOME/.localrc"
+
+    # No need to filter this out on non-WSL hosts because Nix won't link it
+    "$HOME/.wslrc"
 )
 
 for i in "${sources[@]}"; do
     src_if_exists  "$i"
 done
+
+# Source fzf shell integrations if we have them
+if command -v fzf-share >/dev/null; then
+  source "$(fzf-share)/key-bindings.bash"
+  source "$(fzf-share)/completion.bash"
+fi
 
 # Prompt
 black="\[\033[30m\]"
@@ -35,6 +43,12 @@ white="\[\033[37m\]"
 none="\[\033[00m\]"
 
 PS1="${white}[${green}\u${white}@${blue}\H${white}:${yellow}\w${white}] "
+
+# Bash auto-completion for dotfiles CLI
+export DOT_BASH_COMPLETION="1"
+if [ -f "$HOME/.config/bash/completions/dot" ]; then
+  source "$HOME/.config/bash/completions/dot"
+fi
 
 # Node.js configuration
 if [ -d "$HOME/.nvm" ]; then
@@ -52,10 +66,6 @@ fi
 if _is_installed "rust"; then
     [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 fi
-
-# Bash auto-completion for dotfiles CLI
-export DOT_BASH_COMPLETION="1"
-source "$HOME/.bash_completion.d/dot.bash"
 
 # Initialize base16 color system
 . "$DOTFILES/config/bash/base16.sh"

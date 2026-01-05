@@ -4,45 +4,8 @@ This is a Python CLI tool for various dotfiles operations.
 
 ## Bash Auto-Completion (Requires Python 3.7+)
 
-The `DotProvisioner` in the CLI automatically sets up Bash auto-completion so just run:
-
-```bash
-dot provision
-```
-
-Or:
-
-```bash
-dot provision dot
-```
-
-### Manual Setup
-
-Install the `argcomplete` python package:
-
-```bash
-python -m pip install argcomplete
-```
-
-Generate the auto-completion script:
-
-```bash
-export DOT_BASH_COMPLETION="1"
-mkdir -p ~/.bash_completion.d
-echo "$(
-    register-python-argcomplete --external-argcomplete-script $DOTFILES/cli/dot.py dot
-)" &>~/.bash_completion.d/dot.bash
-```
-
-Add this to `.bashrc` or similar:
-
-```bash
-export DOT_BASH_COMPLETION="1"
-source "$HOME/.bash_completion.d/dot.bash"
-```
-
-Reload shell config and the auto-completion script should be sourced into the
-shell automatically.
+The CLI supports auto-completion via `argcomplete` and it should be configured
+automatically by Nix home-manager.
 
 ## Code Formatting
 
