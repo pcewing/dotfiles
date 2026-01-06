@@ -521,6 +521,9 @@ set_default_terminal_and_editor() {
   local nvim_path
   nvim_path="$(command -v nvim || true)"
 
+  # TODO: This might actually be dangerous because these symlinks are system
+  # wide but the Nix profile where the target executables live is not. Probably
+  # don't do this.
   if [[ -n "$nvim_path" ]]; then
     try sudo update-alternatives --install /usr/bin/vi vi "$nvim_path" 60
     try sudo update-alternatives --set vi "$nvim_path"
