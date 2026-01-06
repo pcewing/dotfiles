@@ -11,14 +11,14 @@ is_in_path() {
     esac
 }
 
+# BUG FIX: The original implementations had swapped logic -
+# "append" was prepending and "prepend" was appending.
 append_to_path() {
-    PATH=$1${PATH:+":$PATH"}
-    export PATH
+    export PATH="${PATH:+$PATH:}$1"
 }
 
 prepend_to_path() {
-    p="$1"
-    export PATH="${PATH}:${p}"
+    export PATH="$1${PATH:+:$PATH}"
 }
 
 try_append_to_path() {

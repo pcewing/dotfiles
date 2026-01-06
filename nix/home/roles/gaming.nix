@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
-    # Allow proprietary packages for gaming (e.g., Steam)
-    nixpkgs.config.allowUnfree = true;
+    # IMPROVEMENT: Removed redundant nixpkgs.config.allowUnfree = true since it's
+    # already set in core.nix which is always imported alongside gaming.nix
 
     home.packages = with pkgs; [
         steam

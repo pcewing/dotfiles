@@ -30,7 +30,8 @@ function start_process() {
 
     # If it's not running just run it
     if [ "$running" = "0" ]; then
-        $procname $procargs >> "$logfile" 2>&1 &
+        # BUG FIX: Quoted $procargs to prevent word splitting issues with args containing spaces
+        $procname "$procargs" >> "$logfile" 2>&1 &
         return
     fi
 
@@ -41,7 +42,7 @@ function start_process() {
             sleep 0.1
         done
 
-        $procname $procargs >> "$logfile" 2>&1 &
+        $procname "$procargs" >> "$logfile" 2>&1 &
     fi
 }
 

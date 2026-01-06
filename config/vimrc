@@ -36,8 +36,12 @@ set softtabstop=4
 set tabstop=4
 set expandtab
 
-" Don't use smart indent in markdown files
-autocmd FileType markdown setlocal nosmartindent
+" IMPROVEMENT: Wrapped autocmd in augroup to prevent duplicate autocmds on config reload
+augroup dotfiles_markdown
+    autocmd!
+    " Don't use smart indent in markdown files
+    autocmd FileType markdown setlocal nosmartindent
+augroup END
 
 " Set the Leader key. I leave the leader key as '\' and remap ' ' to it
 " instead of setting ' ' as the leader. This is so that showcmd is actually
@@ -110,11 +114,15 @@ nnoremap <silent> <leader>r :source ~/.vimrc<cr>
 xnoremap <leader>n :normal<space>
 
 " Install vim-plug automatically on Linux if it isn't already
+" IMPROVEMENT: Wrapped VimEnter autocmd in augroup to prevent duplicate autocmds
 if has('unix')
     if empty(glob('~/.vim/autoload/plug.vim'))
         silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
             \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+        augroup dotfiles_plug_install
+            autocmd!
+            autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+        augroup END
     endif
 endif
 
@@ -161,7 +169,11 @@ call plug#end()
 
 " Format the current C/C++ file with clang-format (Uses vim-clang-format plugin)
 let g:clang_format#detect_style_file = 1
-autocmd FileType c,cpp vnoremap <buffer><Leader>q :ClangFormat<CR>
+" IMPROVEMENT: Wrapped autocmd in augroup to prevent duplicate autocmds on config reload
+augroup dotfiles_clang_format
+    autocmd!
+    autocmd FileType c,cpp vnoremap <buffer><Leader>q :ClangFormat<CR>
+augroup END
 
 " FZF
 nnoremap <Leader>o :Files<CR>

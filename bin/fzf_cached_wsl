@@ -145,7 +145,8 @@ class FuzzyFileFinder:
                         # Keep this commented out for performance except when debugging
                         # Log.debug("ignoring file", {"ignore_pattern": ignore_pattern, "file": path_rel})
                         return
-                except:
+                # IMPROVEMENT: Use specific exception type instead of bare except
+                except re.error:
                     print("ignore_pattern = {}, path_rel = {}".format(ignore_pattern, path_rel))
                     raise
 

@@ -113,8 +113,9 @@ class FileWalker:
             elif dir_entry.is_file(follow_symlinks=True):
                 FileWalker._handle_file(ctx, FileWalker.File(ctx.root, path_rel))
             elif dir_entry.is_symlink():
+                # BUG FIX: Fixed typo "non-existant" -> "non-existent"
                 Log.debug(
-                    "encountered symlink directory entry with non-existant target"
+                    "encountered symlink directory entry with non-existent target"
                 )
             else:
                 Log.warn(
@@ -140,7 +141,7 @@ class FileWalker:
         if ctx.halt:
             return
 
-        # If handler requested to skip, do nothin
+        # If handler requested to skip, do nothing
         if result.skip:
             return
 

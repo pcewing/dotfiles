@@ -4,7 +4,8 @@ local act = wezterm.action
 
 local config = {}
 
-function get_wsl_domain()
+-- IMPROVEMENT: Added 'local' to helper functions to avoid polluting global namespace
+local function get_wsl_domain()
     -- This should match the entry in the list output by `wsl --list` that
     -- should be used as the default domain
     local wsl_domain_name = os.getenv("WEZTERM_WSL_DOMAIN")
@@ -16,7 +17,7 @@ function get_wsl_domain()
     return wsl_domain_name
 end
 
-function get_shell(tab_info)
+local function get_shell(tab_info)
     local shell = ''
     if tab_info.active_pane.domain_name == "local" then
         shell = '(Git Bash) '
@@ -34,7 +35,7 @@ wezterm.on('format-window-title', function(tab, pane, tabs, panes, config)
     return index .. get_shell(tab) .. tab.active_pane.title
 end)
 
-function tab_title(tab_info)
+local function tab_title(tab_info)
     local title = tab_info.tab_title
     if title and #title > 0 then
         return title

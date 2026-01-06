@@ -4,13 +4,17 @@ local Log = require('dot.log')
 
 local M = {}
 
+-- IMPROVEMENT: vim.loop was renamed to vim.uv in Neovim 0.10+
+-- Use vim.uv if available, fall back to vim.loop for older versions
+local uv = vim.uv or vim.loop
+
 function M.is_windows()
     -- TODO: Confirm this is right; only checked it on Linux
-    return vim.loop.os_uname().sysname == "Windows"
+    return uv.os_uname().sysname == "Windows"
 end
 
 function M.is_linux()
-    return vim.loop.os_uname().sysname == "Linux"
+    return uv.os_uname().sysname == "Linux"
 end
 
 function M.path_sep()

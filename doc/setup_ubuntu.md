@@ -2,7 +2,7 @@
 
 ## New Machine Bootstrapping
 
-These are the typical steps to perform immediately after the inital Ubuntu
+These are the typical steps to perform immediately after the initial Ubuntu
 installation.
 
 Update the system and reboot:
@@ -67,7 +67,7 @@ cd ~/dot
 
 **Note:** The first time `apply.sh`, nix profile won't be sourced in the active shell. The easiest workaround is to just open a new shell.
 
-**TODO:** We should add a message to the end of the output instructing user to restart shell. We could write a file on the first run and check for its existence on subsequent runs. If it does not exist, prompt the user to restart the computer. Probably not a bad idea on the first bootstrap to make sure everything propogates.
+**TODO:** We should add a message to the end of the output instructing user to restart shell. We could write a file on the first run and check for its existence on subsequent runs. If it does not exist, prompt the user to restart the computer. Probably not a bad idea on the first bootstrap to make sure everything propagates.
 
 ## Daily Operations
 
