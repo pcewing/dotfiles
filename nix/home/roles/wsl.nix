@@ -12,8 +12,13 @@ in
         BROWSER = "wslview";
     };
 
-    # Install win32yank to Windows filesystem for clipboard integration
-    # This needs to be on NTFS (not WSL filesystem) for performance reasons
+    # Install win32yank for better clipboard integration. It more gracefully
+    # handles inconsistencies with line endings when copying and pasting
+    # between Windows and WSL.
+    # There's an open issue as of implementing this on 2024-05-20 where
+    # running win32yank.exe from path within the WSL file system is very slow:
+    # https://github.com/equalsraf/win32yank/issues/22
+    # To avoid that, make sure we install this on the Windows file system in `C:\bin`.
     home.activation.installWin32yank = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         WIN32YANK_VERSION="${win32yankVersion}"
         WIN32YANK_URL="${win32yankUrl}"
