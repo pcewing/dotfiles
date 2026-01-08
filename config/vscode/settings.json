@@ -1,0 +1,76 @@
+{
+    "github.copilot.nextEditSuggestions.enabled": true,
+    "vim.vimrc.enable": true,
+    "vim.easymotion": true,
+    "vim.incsearch": true,
+    "vim.useSystemClipboard": true,
+    "vim.useCtrlKeys": true,
+    "vim.hlsearch": true,
+    "vim.insertModeKeyBindings": [
+        {
+            "before": ["j", "j"],
+            "after": ["<Esc>"]
+        }
+    ],
+    "vim.normalModeKeyBindings": [
+        {
+            "before": ["<Leader>", "o"],
+            "commands": ["workbench.action.quickOpen"]
+        },
+        {
+            "before": ["<leader>", "a", "f"],
+            "commands": [
+            "workbench.action.chat.addSelectedFilesToChat"
+            ]
+        },
+        {
+            "before": ["<leader>", "a", "c"],
+            "commands": [
+            "workbench.action.chat.addContext"
+            ]
+        },
+        {
+            "before": ["<leader>", "a", "g"],
+            "commands": [
+            "workbench.action.chat.addEditorContextItem"
+            ]
+        },
+        {
+            "before": ["<leader>", "c", "e"],
+            "commands": [
+            "workbench.action.chat.open"
+            ],
+            "args": { "query": "#editor " }
+        }
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": ["<leader>", "d"],
+            "after": ["d", "d"]
+        },
+        {
+            "before": ["<C-n>"],
+            "commands": [":nohl"]
+        },
+        {
+            "before": ["K"],
+            "commands": ["lineBreakInsert"],
+            "silent": true
+        }
+    ],
+    "vim.leader": "<space>",
+    "vim.handleKeys": {
+        "<C-a>": false,
+        // TODO: Not sure this is actually working, may want to just remove these
+        // This is the "Add Context" command for LLM chat which is handy
+        "<C-/>": false,
+        "<C-f>": false,
+        "<C-S-p>": false,
+        "<C-p>": false
+    },
+    // To improve performance
+    "extensions.experimental.affinity": {
+        "vscodevim.vim": 1
+    },
+    "editor.minimap.enabled": false
+}
