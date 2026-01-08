@@ -759,3 +759,24 @@ gh_clone()
 
     git clone "$url" "$path"
 }
+
+function git_fetch_pr {
+    installed "git" || return 1
+
+    local git_remote="$1"
+    local git_pr="$2"
+    local git_branch="$3"
+
+    if [[ -z "$git_remote" || -z "$git_pr" ]]; then
+        yell "Usage: git_fetch_pr <git remote> <git pull request> [branch name]"
+        yell "Example: git_fetch_pr origin 1723 my-local-branch"
+        return 1
+    fi
+
+    if [[ -z "$git_branch" ]]; then
+        git_branch="pr-${git_pr}"
+    fi
+
+    git fetch "$git_remote" "pull/${git_pr}/head:${git_branch}"
+    git checkout "$git_branch"
+}
