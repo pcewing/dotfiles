@@ -128,41 +128,33 @@ in
         defaultEditor = true;
 
         plugins = with pkgs.vimPlugins; [
-            fzf-vim
-
-            telescope-nvim
-            plenary-nvim
-            popup-nvim
-
-            nvim-treesitter.withAllGrammars
-
-            ultisnips
-            vim-snippets
-
-            # Custom nvim-markdown plugin
-
-            vim-clang-format
-            nvim-lspconfig
-
-            copilot-vim
-
-            base16-vim
-            vim-puppet
-            vim-go
-            vim-csharp
-            emmet-vim
-            vim-vinegar
-            vim-flake8
-            vim-glsl
             Jenkinsfile-vim-syntax
-            plantuml-syntax
+            base16-vim
+            copilot-vim
             cql-vim
-            vim-fugitive
-            mesonic
-
-            nvim-cmp
+            emmet-vim
+            fzf-vim
             lspsaga-nvim
             lualine-nvim
+            mesonic
+            nvim-cmp
+            nvim-lspconfig
+            nvim-markdown
+            nvim-treesitter.withAllGrammars
+            plantuml-syntax
+            plenary-nvim
+            popup-nvim
+            telescope-nvim
+            ultisnips
+            vim-clang-format
+            vim-csharp
+            vim-flake8
+            vim-fugitive
+            vim-glsl
+            vim-go
+            vim-puppet
+            vim-snippets
+            vim-vinegar
         ];
 
         extraPackages = with pkgs; [
