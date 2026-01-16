@@ -16,14 +16,14 @@ function get_shell(tab_info)
         local process = tab_info.active_pane.foreground_process_name
         if process then
             if process:find("bash") then
-                shell = '(Git Bash) '
+                shell = '(git) '
             elseif process:find("powershell") or process:find("pwsh") then
                 shell = '(pwsh) '
             end
         end
     elseif domain_name:sub(1, 4) == "WSL:" then
         -- Match any WSL domain (WSL:Ubuntu, WSL:Debian, etc.)
-        shell = '(WSL) '
+        shell = '(wsl) '
     end
     return shell
 end
@@ -231,6 +231,20 @@ config.keys = {
 
   -- Launch menu
   { key = 'o', mods = 'LEADER', action = act.ShowLauncherArgs { flags = 'LAUNCH_MENU_ITEMS' }, },
+
+  -- Rename the current tab
+  {
+    key = ',',
+    mods = 'LEADER',
+    action = act.PromptInputLine {
+      description = 'Set tab title',
+      action = wezterm.action_callback(function(window, pane, line)
+        if line then
+          window:active_tab():set_title(line)
+        end
+      end),
+    },
+  },
 }
 
 -- This is super annoying to me so disable it
