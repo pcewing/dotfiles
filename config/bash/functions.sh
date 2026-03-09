@@ -780,3 +780,175 @@ function git_fetch_pr {
     git fetch "$git_remote" "pull/${git_pr}/head:${git_branch}"
     git checkout "$git_branch"
 }
+
+# Derive a stable repo name from the 'origin' remote URL.
+# Errors out if no 'origin' remote is configured.
+git_repo_name() {
+    local url name
+
+    url="$(git remote get-url origin 2>/dev/null)" || {
+        echo "Error: no 'origin' remote configured; cannot determine repository name." >&2
+        return 1
+    }
+
+    name="${url##*/}"
+    name="${name%.git}"
+
+    if [ -z "$name" ]; then
+        echo "Error: failed to derive repository name from origin URL: $url" >&2
+        return 1
+    fi
+
+    printf '%s\n' "$name"
+}
+
+_git_worktree_add_usage() {
+    echo "Usage: git_worktree_add <worktree_name> [base]" >&2
+    echo "  base examples: master | main | origin/master | upstream/master | <sha>" >&2
+}
+
+git_worktree_add() {
+    local worktree_name base_arg repo_name top_dir worktree_parent worktree_path
+    local branch_mode base_ref current_branch
+    local dir_worktree_name
+    local has_upstream=0 remote_source remote_ref
+
+    if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+        _git_worktree_add_usage
+        return 1
+    fi
+
+    worktree_name="$1"
+    base_arg="$2"
+
+    if [ -z "$worktree_name" ]; then
+        _git_worktree_add_usage
+        return 1
+    fi
+
+    if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        echo "Error: not inside a git work tree." >&2
+        return 1
+    fi
+
+    repo_name="$(git_repo_name)" || return 1
+
+
+    echo "Fetching remotes..."
+    git fetch --all --prune --tags || {
+        echo "Warning: 'git fetch --all' failed; branch detection may be incomplete." >&2
+    }
+
+    # Find top of current worktree even if invoked from subdirectories
+    top_dir="$(git rev-parse --show-toplevel)" || return 1
+    worktree_parent="$(cd "$top_dir/.." && pwd -P)"
+
+    # Normalize directory component: replace "special" characters with underscores.
+    # Keep the *branch* name exactly as provided; only the directory name is normalized.
+    dir_worktree_name="$worktree_name"
+    dir_worktree_name="${dir_worktree_name//\//_}"
+    dir_worktree_name="${dir_worktree_name//\\/__}"
+    dir_worktree_name="${dir_worktree_name//:/_}"
+    dir_worktree_name="${dir_worktree_name// /_}"
+    dir_worktree_name="${dir_worktree_name//\*/_}"
+    dir_worktree_name="${dir_worktree_name//\?/_}"
+    dir_worktree_name="${dir_worktree_name//\[/_}"
+    dir_worktree_name="${dir_worktree_name//\]/_}"
+
+    if [ "$dir_worktree_name" != "$worktree_name" ]; then
+        echo "Warning: normalized worktree directory name differs from branch name:" >&2
+        echo "  branch:    '$worktree_name'" >&2
+        echo "  directory: '${repo_name}.${dir_worktree_name}'" >&2
+    fi
+
+    worktree_path="${worktree_parent}/${repo_name}.${dir_worktree_name}"
+
+    if [ -e "$worktree_path" ]; then
+        echo "Error: path already exists: $worktree_path" >&2
+        return 1
+    fi
+
+    # Default base (when omitted) is the branch currently checked out.
+    # If detached HEAD, fall back to HEAD.
+    if [ -z "$base_arg" ]; then
+        current_branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null)"
+        base_ref="${current_branch:-HEAD}"
+    else
+        base_ref="$base_arg"
+        if ! git rev-parse --verify --quiet "${base_ref}^{commit}" >/dev/null; then
+            echo "Error: base '$base_ref' is not a valid commit/branch/ref." >&2
+            return 1
+        fi
+    fi
+
+    # Determine whether an 'upstream' remote exists.
+    if git remote | grep -qx "upstream"; then
+        has_upstream=1
+    fi
+
+    # Decide how to handle the branch:
+    # 1) local branch
+    # 2) remote branch on origin
+    # 3) remote branch on upstream (only if upstream remote exists)
+    if git show-ref --verify --quiet "refs/heads/${worktree_name}"; then
+        branch_mode="existing-local"
+        remote_source=""
+        remote_ref=""
+    elif git show-ref --verify --quiet "refs/remotes/origin/${worktree_name}"; then
+        branch_mode="existing-remote"
+        remote_source="origin"
+        remote_ref="origin/${worktree_name}"
+    elif [ "$has_upstream" -eq 1 ] && git show-ref --verify --quiet "refs/remotes/upstream/${worktree_name}"; then
+        branch_mode="existing-remote"
+        remote_source="upstream"
+        remote_ref="upstream/${worktree_name}"
+    else
+        branch_mode="new"
+        remote_source=""
+        remote_ref=""
+    fi
+
+    echo "Repo name:      $repo_name"
+    echo "Worktree name:  $worktree_name"
+    echo "Worktree path:  $worktree_path"
+    echo "Branch decision:"
+    case "$branch_mode" in
+        existing-local)
+            echo "  → Using existing local branch '$worktree_name' (base ignored)"
+            ;;
+        existing-remote)
+            echo "  → Creating local branch '$worktree_name' tracking '$remote_ref' (base ignored)"
+            ;;
+        new)
+            echo "  → Creating new branch '$worktree_name' from '$base_ref'"
+            ;;
+    esac
+
+    echo "Creating worktree..."
+    case "$branch_mode" in
+        existing-local)
+            git worktree add "$worktree_path" "$worktree_name" || return 1
+            ;;
+        existing-remote)
+            git worktree add -b "$worktree_name" "$worktree_path" "$remote_ref" || return 1
+            ;;
+        new)
+            git worktree add -b "$worktree_name" "$worktree_path" "$base_ref" || return 1
+            ;;
+    esac
+
+    echo "Changing to worktree directory..."
+    cd "$worktree_path" || return 1
+
+    if [ -f .gitmodules ]; then
+        echo "Updating submodules..."
+        git submodule update --init --recursive
+    fi
+
+    echo "Worktree status:"
+    git status
+
+    echo
+    echo "Now working in worktree '${worktree_name}'"
+    echo
+}

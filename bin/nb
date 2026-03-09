@@ -7,7 +7,13 @@ MONTH=$(date +"%m")
 YEAR=$(date +"%Y")
 DAY_OF_WEEK=$(date +"%w")
 
-FILEPATH="${NOTEBOOK_DIR}/${YEAR}/${YEAR}_${MONTH}_${DAY}.md"
+FILEPATH="${NOTEBOOK_DIR}/${YEAR}/${YEAR}_${MONTH}_${DAY}"
+
+if [ ! -z "$1" ]; then
+    FILEPATH="${FILEPATH}_$1"
+fi
+
+FILEPATH="${FILEPATH}.md"
 
 DAY_STRING=""
 case "$DAY_OF_WEEK" in
