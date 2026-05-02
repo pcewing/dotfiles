@@ -143,6 +143,8 @@ if _is_installed 'git'; then
     set_alias '0' 'gpull'   'git pull origin $(gbc)'
     set_alias '0' 'gpush'   'git push origin $(gbc)'
     set_alias '0' 'grv'     'git remote -v'
+    set_alias '0' 'gwl'     'git worktree list'
+    set_alias '0' 'gwr'     'git worktree remove'
 fi
 
 # SVN aliases

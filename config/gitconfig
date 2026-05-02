@@ -13,6 +13,9 @@
     cont = rebase --continue
     rv = remote -v
 
+    wl = git worktree list
+    wr = git worktree list
+
     # current branch
     cbr = rev-parse --abbrev-ref HEAD
 
