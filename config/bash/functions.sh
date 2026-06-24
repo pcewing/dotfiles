@@ -952,3 +952,10 @@ git_worktree_add() {
     echo "Now working in worktree '${worktree_name}'"
     echo
 }
+
+function git_diff_commits() {
+    local before="$1"
+    local after="$2"
+
+    python -u "$DOTFILES/bin/git-wdiff.py" --base-ref "$before" --target-ref "$after"
+}

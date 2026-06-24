@@ -4,3 +4,4 @@ gitconfig_local
 *.swp
 *.pyc
 version_cache.json5
+.venv/
