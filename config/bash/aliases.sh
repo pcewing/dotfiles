@@ -57,6 +57,7 @@ set_alias '0' '.....'   'cd ../../../..'
 set_alias '1' 'ls'      'ls --color'
 set_alias '0' 'lsl'     'ls -l --group-directories-first'
 set_alias '0' 'lss'     'ls --sort=extension --group-directories-first'
+set_alias '0' 'lslt'    'ls -lt --time-style=long-iso --group-directories-first'
 
 # Helpers
 set_alias '1' 'grep' 'grep --color=auto'
@@ -121,7 +122,7 @@ fi
 
 # Wi-Fi aliases
 if _is_installed 'nmcli'; then
-    set_alias '0' 'wifisearch' 'nmcli device wifi list'
+    set_alias '0' 'wifisearch'  'nmcli device wifi list'
     set_alias '0' 'wificonnect' 'nmcli device wifi connect --ask'
 fi
 
@@ -135,14 +136,23 @@ if _is_installed 'git'; then
     set_alias '0' 'gbc'     'git branch --show-current'
     set_alias '0' 'gac'     'git add --all && git commit'
     set_alias '0' 'gd'      'git diff'
+    set_alias '0' 'gdc'     'git diff --cached'
+    set_alias '0' 'gdn'     'git diff --name-only'
+    set_alias '0' 'gdp'     'git diff 2>&1 | tee "diff.patch"'
+    set_alias '0' 'gdcp'    'git diff --cached 2>&1 | tee "diff.patch"'
     set_alias '0' 'gdt'     'git difftool --dir-diff --no-symlinks'
+    set_alias '0' 'gdtc'    'git difftool --dir-diff --no-symlinks --cached'
     set_alias '0' 'gdm'     'git difftool -t "meld" -d'
+    set_alias '0' 'gl'      'git log'
+    set_alias '0' 'glo'     'git log --oneline'
+    set_alias '0' 'glor'    'git log --oneline --reverse'
     set_alias '0' 'gaa'     'git add --all'
     set_alias '0' 'gaad'    'git add --all --dry-run'
     set_alias '0' 'grpull'  'git pull --rebase origin $(gbc)'
     set_alias '0' 'gpull'   'git pull origin $(gbc)'
     set_alias '0' 'gpush'   'git push origin $(gbc)'
     set_alias '0' 'grv'     'git remote -v'
+    set_alias '0' 'gwa'     'git worktree add'
     set_alias '0' 'gwl'     'git worktree list'
     set_alias '0' 'gwr'     'git worktree remove'
 fi
