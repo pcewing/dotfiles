@@ -84,3 +84,22 @@ fi
 # accidentally committed it. We should put this somewhere that makes more
 # sense.
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# VS Code Shell integration, see:
+# https://code.visualstudio.com/docs/terminal/shell-integration
+# TODO: For this and teh block below, maybe let's just move all VS Code stuff
+# to a config/bash/vscode.sh file and then do a single:
+#     [[ "$TERM_PROGRAM" == "vscode" ]] && source vscode.sh
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path bash)"
+
+# When running in VS Code, automatically activate a Python virtual environment
+# since agents seem to struggle to consistently do this
+if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+    if [ -d "$HOME/dot/.venv" ]; then
+        . "$HOME/dot/.venv/Scripts/activate"
+    else
+        python -m venv "$HOME/dot/.venv"
+        . "$HOME/dot/.venv/Scripts/activate"
+        python -m pip install -r "$HOME/dot/requirements.txt"
+    fi
+fi
