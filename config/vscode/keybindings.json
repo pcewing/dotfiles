@@ -1,0 +1,23 @@
+[
+    {
+        "key": "ctrl+backspace",
+        "command": "workbench.action.chat.attachFile",
+        "when": "editorTextFocus"
+    },
+    /*
+    {
+        "key": "space v x",
+        "command": "workbench.action.tasks.runTask",
+        "args": "Open in gVim at Cursor",
+        "when": "editorTextFocus"
+    },
+    */
+    {
+        "key": "space v v",
+        "command": "workbench.action.terminal.sendSequence",
+        "args": {
+            "text": "& \"C:\\Program Files\\Vim\\vim91\\gvim.exe\" --servername gVimStudio --remote-silent \"+execute 'normal! ${lineNumber}G${columnNumber}|'\" \"${file}\"\u000D"
+        },
+        "when": "editorTextFocus && vim.mode == 'Normal'"
+    }
+]
