@@ -185,3 +185,29 @@ else
     " allows for transparency if the terminal emulator has that configured.
     hi Normal guibg=NONE ctermbg=NONE
 endif
+
+
+function! CopyCodeSnippet() range
+    " Get the current file path relative to the working directory
+    let l:filename = expand('%')
+
+    " Get the start and end line numbers of the visual selection
+    let l:start_line = a:firstline
+    let l:end_line = a:lastline
+
+    " Retrieve the selected lines of text
+    let l:lines = getline(l:start_line, l:end_line)
+
+    " Format the snippet with Markdown code blocks
+    let l:header = l:filename . ':' . l:start_line . '-' . l:end_line
+    let l:formatted_text = l:header . "\n" . '```' . "\n" . join(l:lines, "\n") . "\n" . '```' . "\n"
+
+    " Copy the formatted text to the system clipboard
+    let @+ = l:formatted_text
+    let @* = l:formatted_text
+
+    echo "Snippet copied to clipboard!"
+endfunction
+
+" Map Shift+Y (Y) in visual mode to run the function
+vnoremap Y :call CopyCodeSnippet()<CR>
