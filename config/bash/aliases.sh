@@ -231,6 +231,12 @@ if _is_installed 'docker'; then
 fi
 
 if _is_installed 'python'; then
+    # TODO: Make sure this is the right command on Linux. I think the
+    # activation script may be slightly different on Linux? But maybe not.
+    set_alias '0' 'dot_venv' '. "$DOTFILES/.venv/Scripts/activate"'
+fi
+
+if _is_installed 'python'; then
     #set_alias '0' 'serve' 'python -m SimpleHTTPServer'
     set_alias '0' 'serve' 'python -m http.server'
 fi
