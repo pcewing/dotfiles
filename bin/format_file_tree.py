@@ -22,8 +22,15 @@
 #       |_ qux.txt
 
 
-
+import os
 import sys
+
+DOTFILES_DIR = os.getenv("DOTFILES")
+if DOTFILES_DIR is None:
+    raise Exception("DOTFILES environment variable not specified")
+sys.path.append(os.path.join(DOTFILES_DIR, "cli"))
+
+from lib.common.file_walker import FileWalker
 
 
 def build_tree(paths):
@@ -84,70 +91,18 @@ def print_tree(tree, depth=0):
 
 
 if __name__ == "__main__":
-    # Example input data matching your find output
-    input_data = """
-    src/aitools/autoprompt/generate.py
-    src/aitools/autoprompt/init.py
-    src/aitools/autoprompt/run.py
-    src/aitools/autoprompt/__init__.py
-    src/aitools/bootstrap.py
-    src/aitools/cli.py
-    src/aitools/common/config.py
-    src/aitools/common/open_with.py
-    src/aitools/common/profiles.py
-    src/aitools/common/providers.py
-    src/aitools/common/templating.py
-    src/aitools/common/workspace.py
-    src/aitools/common/__init__.py
-    src/aitools/config/generate.py
-    src/aitools/config/show.py
-    src/aitools/config/__init__.py
-    src/aitools/feature/archive.py
-    src/aitools/feature/generate/address_feedback.py
-    src/aitools/feature/generate/bug.py
-    src/aitools/feature/generate/implement_tasks.py
-    src/aitools/feature/generate/review_loop.py
-    src/aitools/feature/generate/specify_tasks.py
-    src/aitools/feature/generate/tdd_addendum.py
-    src/aitools/feature/generate/test_plan.py
-    src/aitools/feature/generate/write_tdd.py
-    src/aitools/feature/generate/__init__.py
-    src/aitools/feature/lib/archive.py
-    src/aitools/feature/lib/common.py
-    src/aitools/feature/lib/generate/address_feedback.py
-    src/aitools/feature/lib/generate/bug.py
-    src/aitools/feature/lib/generate/common.py
-    src/aitools/feature/lib/generate/implement_tasks.py
-    src/aitools/feature/lib/generate/review_loop.py
-    src/aitools/feature/lib/generate/specify_tasks.py
-    src/aitools/feature/lib/generate/tdd_addendum.py
-    src/aitools/feature/lib/generate/test_plan.py
-    src/aitools/feature/lib/generate/write_tdd.py
-    src/aitools/feature/lib/generate/__init__.py
-    src/aitools/feature/lib/list_archive_candidates.py
-    src/aitools/feature/lib/run.py
-    src/aitools/feature/lib/start.py
-    src/aitools/feature/lib/__init__.py
-    src/aitools/feature/list_archive_candidates.py
-    src/aitools/feature/run/address_feedback.py
-    src/aitools/feature/run/implement_tasks.py
-    src/aitools/feature/run/specify_tasks.py
-    src/aitools/feature/run/__init__.py
-    src/aitools/feature/start.py
-    src/aitools/feature/__init__.py
-    src/health.py
-    src/aitools/__init__.py
-    src/aitools/__main__.py
-    src/common/commit_attributions.py
-    src/common/render_postprocessing.py
-    src/common/__init__.py
-    """
+    # TODO: Take directory as a `-d/--directory` command line option
+    file_enumeration = FileWalker.enumerate(".", files=True, directories=False)
 
-    # If paths are piped into the script, use standard input instead
-    if not sys.stdin.isatty():
-        paths_list = sys.stdin.read().splitlines()
-    else:
-        paths_list = input_data.strip().splitlines()
+    files = file_enumeration.get_files()
 
-    file_tree = build_tree(paths_list)
+    file_paths = [f.get_relative_path() for f in files]
+
+    # TODO: Hack, these start with ".\" on Windows which breaks the below. Fix properly
+    file_paths_fixed = []
+    for f in file_paths:
+        file_paths_fixed.append(f[2:])
+
+
+    file_tree = build_tree(file_paths_fixed)
     print_tree(file_tree)
