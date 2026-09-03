@@ -4,79 +4,125 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a dotfiles management system for Linux environments using Nix and Home Manager for declarative configuration. It supports multiple host types: desktops, servers, and WSL instances.
+A dotfiles management system declaratively configured with Nix and Home Manager.
+It supports Linux host types (desktop, server, WSL) plus a Windows bootstrap
+path. App configs live in `config/` and are linked into the home directory by
+Home Manager on Linux, or copied (marked read-only) on Windows.
+
+There is no test suite, so "run a single test" does not apply.
 
 ## Common Commands
 
-### Fresh Install (Primary Method)
+### Fresh Install (bootstrap)
+
 ```bash
 ./apply.sh --nix-host <host-name>
-# Example: ./apply.sh --nix-host personal-desktop
+# e.g. ./apply.sh --nix-host personal-desktop
 ```
-Available hosts are defined in `nix/hosts.json`: personal-desktop, work-desktop, personal-wsl, work-wsl, personal-server, work-server.
 
-### Apply Nix Configuration Changes
+Installs Nix, enables flakes, and applies Home Manager. It also handles
+system-level tasks intentionally left out of Nix (apt bootstrap packages,
+Docker + group, session desktop files, `update-alternatives`). Options:
+`--dir`, `--no-upgrade`, `--no-apt`, `--reset-state`. Host names come from
+`nix/hosts.json`.
+
+### Apply Config Changes
+
 ```bash
 home-manager switch --flake ~/dot/nix#<host-name>
 ```
 
-### Python CLI Tool
+### Deprovision Pre-Nix Hosts
+
 ```bash
-dot provision [TAGS]    # Run provisioners
-dot link                # Create symlinks (legacy)
-dot clean               # Remove symlinks
-dot tidy                # Format Python code (black, isort, autoflake)
+./unprovision.sh
 ```
 
-### Type Checking and Linting
+Removes packages the old (now-deleted) shell/Python provisioners installed, so
+a host can be re-provisioned with Nix. See `doc/nix_todos.md` for migration
+parity status.
+
+### Python CLI (`dot`)
+
+Home Manager generates `~/.local/bin/dot`, a wrapper that runs `cli/dot.py`
+with the unified Python environment. Subcommands:
+
+- `dot link` / `dot clean` — create/remove symlinks from `links.json` (legacy)
+- `dot tidy [FILES]` — format Python (black + isort + autoflake); `-d/--dry-run`
+- `dot lint [FILES]` — lint Python
+- `dot git-sync` — sync the current repo with a remote (`-d/--dry-run`, `-v`)
+- `dot status` — print dotfile repo status
+- `dot fd <choose|add|edit|update>` — fzf directory registry
+- Global `-l/--log-level debug|info|warn|error|crit`
+
+### Type Checking / Formatting
+
 ```bash
-make mypy               # Run mypy on all Python files
+make mypy      # type-check all Python files
+make nixfmt    # format all .nix files (runs in a nix-shell)
+make link|clean|windows   # legacy dot.sh targets
 ```
 
 ### Theming
+
 ```bash
-set-theme <scheme-name>  # Apply base16 color scheme (e.g., outrun-dark)
-flavours update all      # Required first time setup
+flavours update all   # required first-time setup
+set-theme <scheme>    # apply a base16 scheme, e.g. outrun-dark
 ```
+
+Full details in `doc/theme.md`.
 
 ## Architecture
 
-### Nix Configuration (`nix/`)
-- `flake.nix` - Entry point; generates Home Manager configurations from `hosts.json`
-- `hosts.json` - Defines hosts and their roles (core, desktop, gaming, wsl)
-- `home/roles/` - Host-type configurations (Ansible-style naming):
-  - `core.nix` - Base packages (neovim, git, fzf, tmux, Python tools)
-  - `desktop.nix` - GUI packages (i3, kitty, rofi, mpd, media tools)
-  - `gaming.nix` - Gaming packages
-  - `wsl.nix` - WSL-specific configuration
-- `home/lib/` - Shared modules imported by roles:
-  - `dotfiles-links.nix` - Maps config files from `config/` to home directory
-  - `python-environment.nix` - Builds unified Python environment
-- `home/features/` - Specific feature modules (e.g., docker) that can be shared across roles
+### Nix configuration (`nix/`)
 
-### Configuration Files (`config/`)
-Application configs that get linked to home directory via Home Manager:
-- `bash/` - Shell configuration
-- `nvim/` - Neovim configuration
-- `i3`, `sway` - Window manager configs
-- `kitty.conf`, `alacritty/`, `wezterm.lua` - Terminal emulators
-- `flavours/` - Base16 theming (schemes in `schemes/custom/`, templates in `templates/custom/`)
+`flake.nix` is the entry point: it reads `hosts.json` and, for each host, maps
+its `roles` list to modules at `home/roles/<role>.nix` (`core`, `desktop`,
+`gaming`, `wsl`). Adding a host or role means editing `hosts.json` and creating
+a role file — the flake picks it up automatically.
+
+- `home/lib/` — shared modules imported by roles:
+  - `dotfiles-links.nix` — **source of truth** for mapping `config/` files into
+    the home directory (via `home.file` / `xdg.configFile`). `links.json` is the
+    legacy equivalent still used by `dot link`/`dot clean`; they can drift.
+  - `python-environment.nix` — builds a unified Python env from the
+    `myPython.packageFns` option. To add Python deps, add a `ps: with ps; [ ... ]`
+    function to a role's `myPython.packageFns` list (see `core.nix`).
+- `home/features/` — optional modules enabled by roles (e.g. `development.nix`).
+- `home/packages/` — custom derivations pulled in via `pkgs.callPackage`.
+
+`core.nix` also declares the `dot` wrapper, argcomplete, and a
+`home.activation.flavoursUpdate` hook.
+
+### Config files (`config/`)
+
+Application configs that Home Manager links into the home directory: `bash/`,
+`nvim/`, `i3`, `sway`, `kitty.conf`, `wezterm.lua`, `flavours/` (base16 schemes
+and templates). The names here map to destinations in `dotfiles-links.nix`.
 
 ### Python CLI (`cli/`)
-- `dot.py` - Main entry point with argparse
-- `commands/` - Command implementations (provision, link, tidy, lint, etc.)
-- `lib/provision/` - Provisioners for apt, pip, nodejs, docker, neovim, etc.
-- `lib/common/` - Shared utilities (shell, git, logging, file operations)
 
-### Utility Scripts (`bin/`)
-Standalone scripts: `set-theme`, `i3-util.sh`, `startup.sh`, `fuzzy-fm`, etc.
+`dot.py` is the argparse entry point; `commands/__init__.py` registers each
+subcommand. Each subcommand is a module exposing `add_<name>_parser(subparsers)`
+that sets a `func` default. Shared logic lives in `cli/lib/common/` (git, log,
+links, linter, shell, etc.).
 
-## Key Files
+### Utility scripts (`bin/`)
 
-- `apply.sh` - Bootstrap script for fresh installs (installs Nix, applies Home Manager)
-- `links.json` - Legacy dotfile symlink mappings (now mostly handled by `dotfiles-links.nix`)
-- `nix/hosts.json` - Host definitions with roles; drives the entire Nix configuration
+Standalone scripts not managed by Nix: `set-theme`, `i3-util.sh`, `startup.sh`,
+`fuzzy-fm`, and assorted helpers. Some are Python.
+
+### Bootstrap / docs
+
+- `apply.sh` — bootstrap for fresh Linux installs; the pre-Nix and root-requiring
+  half of provisioning (see `doc/nix_todos.md` for exactly what stays here).
+- `dot.sh` — legacy `windows` path: copies `config/` files read-only instead of
+  symlinking (Windows symlinks need admin rights).
+- `doc/` — `setup_ubuntu.md`, `setup_windows.md`, `theme.md`, `todo.md`,
+  `nix_todos.md` (Nix migration status).
 
 ## Code Style
 
-Python code uses black, isort, and autoflake. Run `dot tidy` before committing Python changes. Type hints are encouraged; validate with `make mypy`.
+Python uses black, isort, and autoflake — run `dot tidy` before committing Python
+changes. Type hints are encouraged; validate with `make mypy`. Nix files are
+formatted with `make nixfmt`.
