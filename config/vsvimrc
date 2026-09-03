@@ -3,11 +3,6 @@ set backspace=indent,eol,start    " Make backspace behave as expected in insert 
 set history=1000                  " Increase :cmdline history
 set visualbell                    " No sounds
 set laststatus=2                  " Always display the status line
-" There's currently a bug and this causes Visual Studio to frequently hang
-" which is super annoying so just disable system clipboard for now:
-" https://github.com/VsVim/VsVim/issues/3040
-"set clipboard=unnamed,unnamedplus " Use system clipboard if possible
-set clipboard=
 set cursorline                    " Add a visual indicator to the line the cursor is on
 
 " Indentation
@@ -16,6 +11,34 @@ set shiftwidth=4
 set softtabstop=4
 set tabstop=4
 set expandtab
+
+" There's currently an issue where using the unnamed (i.e. system) clipboard
+" in VsVim often causes Visual Studio to hang for multiple seconds. There are
+" a few different GitHub issues discussing this:
+" - https://github.com/VsVim/VsVim/issues/2035
+" - https://github.com/VsVim/VsVim/issues/3116
+" - https://github.com/VsVim/VsVim/issues/3040
+"
+" So, don't use the system clipboard
+"set clipboard=unnamed,unnamedplus " Use system clipboard if possible
+set clipboard=
+
+" These mappings are suggested workarounds to still use the global clipboard
+" while avoiding the hang but I didn't have much luck with them
+""""noremap y "0y
+"""""noremap yy "0yy
+""""noremap Y "0y$
+""""noremap d "0d
+""""noremap dd "0dd
+""""noremap D "0D
+""""noremap p "0p
+""""noremap P "0P
+""""" black hole register for x because chars do not need to go in any accessible register anyway
+""""noremap x "_x
+
+"noremap yy :vsc edit.copy<CR>"0yy
+"noremap y :vsc edit.cop<CR>gv"0y
+
 
 " Set the Leader key. I leave the leader key as '\' and remap ' ' to it
 " instead of setting ' ' as the leader. This is so that showcmd is actually
