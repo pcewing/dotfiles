@@ -12,10 +12,10 @@ from typing import Optional
 DOTFILES_DIR = os.getenv("DOTFILES")
 if DOTFILES_DIR is None:
     raise Exception("DOTFILES environment variable not specified")
-sys.path.append(os.path.join(DOTFILES_DIR, "cli"))
+sys.path.append(os.path.join(DOTFILES_DIR, "src"))
 
-from lib.common.file_walker import FileWalker
-from lib.common.log import Log
+from dot.lib.common.file_walker import FileWalker
+from dot.lib.common.log import Log
 
 
 def run_command(cmd: list[str]) -> list[str]:

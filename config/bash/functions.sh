@@ -447,7 +447,7 @@ function is_restart_required() {
 function fd() {
     local selection
 
-    if ! selection="$("$DOTFILES/cli/dot.py" fd choose "$1")"; then
+    if ! selection="$(dot fd choose "$1")"; then
         yell "ERROR: Directory selection failed"
         return 1
     fi
@@ -466,15 +466,15 @@ function fd() {
 }
 
 function fd_add() {
-    "$DOTFILES/cli/dot.py" fd add
+    dot fd add
 }
 
 function fd_edit() {
-    "$DOTFILES/cli/dot.py" fd edit
+    dot fd edit
 }
 
 function fd_update() {
-    "$DOTFILES/cli/dot.py" fd update
+    dot fd update
 }
 
 function dec_to_hex() {

@@ -113,8 +113,8 @@ in
         executable = true;
         text = ''
             #!/usr/bin/env bash
-            # Find python3 from the unified environment in PATH
-            exec python3 "$HOME/dot/cli/dot.py" "$@"
+            # Run the dot package via the unified Python environment
+            exec env PYTHONPATH="$HOME/dot/src" python3 -m dot "$@"
         '';
     };
 
@@ -170,11 +170,10 @@ in
 
     # Optional: generate a static completion file during activation
     home.activation.dotArgcomplete = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        if [ -x "$HOME/dot/cli/dot.py" ]; then
+        if [ -x "$HOME/.local/bin/dot" ]; then
           mkdir -p "$HOME/.config/bash/completions"
           # Use the unified Python environment directly
-          ${config.myPython.environment}/bin/register-python-argcomplete \
-            --external-argcomplete-script "$HOME/dot/cli/dot.py" dot \
+          ${config.myPython.environment}/bin/register-python-argcomplete dot \
             > "$HOME/.config/bash/completions/dot"
         fi
     '';

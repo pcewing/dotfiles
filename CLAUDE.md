@@ -44,8 +44,9 @@ parity status.
 
 ### Python CLI (`dot`)
 
-Home Manager generates `~/.local/bin/dot`, a wrapper that runs `cli/dot.py`
-with the unified Python environment. Subcommands:
+Install it locally with `pip install -e ".[dev]"`. On Linux, Home Manager
+generates `~/.local/bin/dot`, a wrapper that runs the package via `python -m dot`
+using the unified Python environment. Subcommands:
 
 - `dot links <init|clean|diff|backport>` — manage dotfile links from `links.json` (legacy); `diff`/`backport` are Windows-only
 - `dot tidy [FILES]` — format Python (black + isort + autoflake); `-d/--dry-run`
@@ -100,12 +101,13 @@ Application configs that Home Manager links into the home directory: `bash/`,
 `nvim/`, `i3`, `sway`, `kitty.conf`, `wezterm.lua`, `flavours/` (base16 schemes
 and templates). The names here map to destinations in `dotfiles-links.nix`.
 
-### Python CLI (`cli/`)
+### Python CLI (`src/dot/`)
 
-`dot.py` is the argparse entry point; `commands/__init__.py` registers each
-subcommand. Each subcommand is a module exposing `add_<name>_parser(subparsers)`
-that sets a `func` default. Shared logic lives in `cli/lib/common/` (git, log,
-links, linter, shell, etc.).
+`cli/cli.py` is the argparse entry point (`dot = "dot.cli.cli:main"` in
+`pyproject.toml`); `cli/commands/__init__.py` registers each subcommand. Each
+subcommand is a module exposing `add_<name>_parser(subparsers)` that sets a
+`func` default. Shared logic lives in `lib/common/` (git, log, links, linter,
+shell, etc.).
 
 ### Utility scripts (`bin/`)
 

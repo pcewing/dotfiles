@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dot"
+description = "Dotfiles management CLI"
+requires-python = ">=3.11"
+dynamic = ["version"]
+dependencies = [
+    "argcomplete>=3.0",
+    "json5>=0.9",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "coverage>=7.0",
+]
+
+[project.scripts]
+dot = "dot.cli.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["dot*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "dot.__version__" }

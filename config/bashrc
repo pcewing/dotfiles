@@ -45,7 +45,6 @@ none="\[\033[00m\]"
 PS1="${white}[${green}\u${white}@${blue}\H${white}:${yellow}\w${white}] "
 
 # Bash auto-completion for dotfiles CLI
-export DOT_BASH_COMPLETION="1"
 if [ -f "$HOME/.config/bash/completions/dot" ]; then
   source "$HOME/.config/bash/completions/dot"
 fi
@@ -100,6 +99,6 @@ if [[ "$TERM_PROGRAM" == "vscode" ]]; then
     else
         python -m venv "$HOME/dot/.venv"
         . "$HOME/dot/.venv/Scripts/activate"
-        python -m pip install -r "$HOME/dot/requirements.txt"
+        python -m pip install -e "$HOME/dot"
     fi
 fi

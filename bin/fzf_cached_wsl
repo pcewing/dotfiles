@@ -38,12 +38,12 @@ from typing import Optional
 DOTFILES_DIR = os.getenv("DOTFILES")
 if DOTFILES_DIR is None:
     raise Exception("DOTFILES environment variable not specified")
-sys.path.append(os.path.join(DOTFILES_DIR, "cli"))
+sys.path.append(os.path.join(DOTFILES_DIR, "src"))
 
-from lib.common.dir import Dir
-from lib.common.file_walker import FileWalker
-from lib.common.log import Log
-from lib.common.util import Util
+from dot.lib.common.dir import Dir
+from dot.lib.common.file_walker import FileWalker
+from dot.lib.common.log import Log
+from dot.lib.common.util import Util
 
 
 def parse_args():

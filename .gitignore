@@ -3,5 +3,7 @@ gitconfig_local
 *.zwc
 *.swp
 *.pyc
+__pycache__/
+*.egg-info/
 version_cache.json5
 .venv/
