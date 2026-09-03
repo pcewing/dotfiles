@@ -1,0 +1,2 @@
+[general]
+import = ['C:\Users\pewing\.config/alacritty/windows.toml', 'C:\Users\pewing\.config/alacritty/linux.yml', 'C:\Users\pewing\.config/alacritty/base16.toml']

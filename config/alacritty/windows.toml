@@ -1,0 +1,28 @@
+[font]
+size = 16
+
+[font.bold]
+family = "Ubuntu Mono derivative Powerline"
+style = "Bold"
+
+[font.bold_italic]
+family = "Ubuntu Mono derivative Powerline"
+style = "Bold Italic"
+
+[font.italic]
+family = "Ubuntu Mono derivative Powerline"
+style = "Italic"
+
+[font.normal]
+family = "Ubuntu Mono derivative Powerline"
+style = "Regular"
+
+[font.offset]
+x = 1
+y = 1
+
+[terminal]
+
+[terminal.shell]
+args = ["--login"]
+program = 'C:\Program Files\Git\bin\bash.exe'

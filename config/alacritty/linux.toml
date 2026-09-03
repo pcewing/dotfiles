@@ -1,0 +1,29 @@
+[font]
+size = 16.0
+
+[font.bold]
+family = "Ubuntu Mono"
+style = "Bold"
+
+[font.bold_italic]
+family = "Ubuntu Mono"
+style = "Bold Italic"
+
+[font.italic]
+family = "Ubuntu Mono"
+style = "Italic"
+
+[font.normal]
+family = "Ubuntu Mono"
+style = "Regular"
+
+[font.offset]
+x = 1
+y = 1
+
+[window]
+opacity = 0.8
+
+[window.padding]
+x = 8
+y = 8

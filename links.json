@@ -26,13 +26,12 @@
     { "src": "xsession",                     "dst": "~/.xsession",                                  "type": "f" },
     { "src": "nvim",                         "dst": "~/.config/nvim",                               "type": "d" },
     { "src": "kitty.conf",                   "dst": "~/.config/kitty/kitty.conf",                   "type": "f" },
-    { "src": "alacritty/alacritty.yml",      "dst": "~/.config/alacritty/alacritty.yml",            "type": "f" },
-    { "src": "alacritty/base16.yml",         "dst": "~/.config/alacritty/base16.yml",               "type": "f", "platforms": ["linux", "windows"] },
-    { "src": "alacritty/linux.yml",          "dst": "~/.config/alacritty/linux.yml",                "type": "f" },
+    { "src": "alacritty/base16.toml",        "dst": "~/.config/alacritty/base16.toml",              "type": "f", "platforms": ["linux", "windows"] },
+    { "src": "alacritty/linux.toml",         "dst": "~/.config/alacritty/linux.toml",               "type": "f" },
     { "src": "wezterm.lua",                  "dst": "~/.config/wezterm/wezterm.lua",                "type": "f", "platforms": ["linux", "windows"] },
     { "src": "flavours",                     "dst": "~/.config/flavours",                           "type": "d" },
     { "src": "vsvimrc",                      "dst": "~/.vsvimrc",                                   "type": "f", "platforms": ["windows"] },
     { "src": "vimrc",                        "dst": "~/AppData/Local/nvim/init.vim",                "type": "f", "platforms": ["windows"] },
-    { "src": "alacritty/windows.yml",        "dst": "~/.config/alacritty/windows.yml",              "type": "f", "platforms": ["windows"] },
-    { "src": "alacritty.yml",                "dst": "$APPDATA/alacritty/alacritty.yml",             "type": "f", "platforms": ["windows"] }
+    { "src": "alacritty/windows.toml",       "dst": "~/.config/alacritty/windows.toml",             "type": "f", "platforms": ["windows"] },
+    { "src": "alacritty.toml",               "dst": "$APPDATA/alacritty/alacritty.toml",            "type": "f", "platforms": ["windows"] }
 ]
