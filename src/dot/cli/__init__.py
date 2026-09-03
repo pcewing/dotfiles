@@ -1,5 +1,6 @@
 """Argparse front end for the dot CLI.
 
-Subcommands live in :mod:`dot.cli.commands` and register themselves on the top-level
-parser; all logic lives in :mod:`dot.lib`.
+Each subcommand is a module or subpackage here that registers itself on the
+top-level parser via its ``add_<name>_parser`` function; all logic lives in
+:mod:`dot.lib`.
 """

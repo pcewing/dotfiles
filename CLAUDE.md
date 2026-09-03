@@ -104,8 +104,8 @@ and templates). The names here map to destinations in `dotfiles-links.nix`.
 ### Python CLI (`src/dot/`)
 
 `cli/cli.py` is the argparse entry point (`dot = "dot.cli.cli:main"` in
-`pyproject.toml`); `cli/commands/__init__.py` registers each subcommand. Each
-subcommand is a module exposing `add_<name>_parser(subparsers)` that sets a
+`pyproject.toml`) and registers each subcommand. Each subcommand is a module or
+subpackage in `cli/` exposing `add_<name>_parser(subparsers)` that sets a
 `func` default. Shared logic lives in `lib/common/` (git, log, links, linter,
 shell, etc.).
 
