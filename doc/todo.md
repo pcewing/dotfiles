@@ -14,7 +14,6 @@ Improvements I'd like to make to my dotfiles.
     - [Code Cleanup](#code-cleanup)
     - [Necessary Pip Packages](#necessary-pip-packages)
 - [FZF Bash Integration](#fzf-bash-integration)
-- [Windows support in Python CLI](#windows-support-in-python-cli)
 - [wezterm shell integration](#wezterm-shell-integration)
 - [I3WM "Virtual Desktops"](#i3wm-"virtual-desktops")
 - [Python Tidy/Lint](#python-tidy/lint)
@@ -109,14 +108,6 @@ python3 -m pip install typing_extensions
 
 Also needs to be installed as root if the script elevates
 sudo python3 -m pip install typing_extensions
-
-# Windows Support
-
-- Get the `clean`/`link` commands to work on Windows
-- One thing that would be handy is a command to diff the dotfiles against the
-  copied locations to see if we updated anything and forgot to backport it into
-  the repo
-    - Especially now that we're using Nix on Linux so those could get out of sync too
 
 ## FZF Bash Integration
 

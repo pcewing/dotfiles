@@ -47,7 +47,7 @@ parity status.
 Home Manager generates `~/.local/bin/dot`, a wrapper that runs `cli/dot.py`
 with the unified Python environment. Subcommands:
 
-- `dot link` / `dot clean` — create/remove symlinks from `links.json` (legacy)
+- `dot links <init|clean|diff|backport>` — manage dotfile links from `links.json` (legacy); `diff`/`backport` are Windows-only
 - `dot tidy [FILES]` — format Python (black + isort + autoflake); `-d/--dry-run`
 - `dot lint [FILES]` — lint Python
 - `dot git-sync` — sync the current repo with a remote (`-d/--dry-run`, `-v`)
@@ -84,7 +84,7 @@ a role file — the flake picks it up automatically.
 - `home/lib/` — shared modules imported by roles:
   - `dotfiles-links.nix` — **source of truth** for mapping `config/` files into
     the home directory (via `home.file` / `xdg.configFile`). `links.json` is the
-    legacy equivalent still used by `dot link`/`dot clean`; they can drift.
+    legacy equivalent still used by `dot links init`/`dot links clean`; they can drift.
   - `python-environment.nix` — builds a unified Python env from the
     `myPython.packageFns` option. To add Python deps, add a `ps: with ps; [ ... ]`
     function to a role's `myPython.packageFns` list (see `core.nix`).
