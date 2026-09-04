@@ -959,3 +959,12 @@ function git_diff_commits() {
 
     python -u "$DOTFILES/bin/git-wdiff.py" --base-ref "$before" --target-ref "$after"
 }
+
+function parse_python_ast() {
+    local path="$1"
+    if python -c "import ast; ast.parse(open('${path}').read())"; then
+        echo "Successfully parsed '${path}' into an AST"
+    else
+        echo "Failed to parse '${path}' into an AST"
+    fi
+}
