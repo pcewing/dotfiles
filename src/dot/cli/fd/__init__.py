@@ -65,6 +65,13 @@ class Registry:
         return Registry._PATH
 
 
+def normalize_path(path: str) -> str:
+    path = os.path.expanduser(path)
+    if "$HOME" in path:
+        path = path.replace("$HOME", home())
+    return os.path.realpath(path)
+
+
 def add_fd_parser(parent: argparse.ArgumentParser) -> None:
     parser = parent.add_parser("fd", help="TODO")
 
@@ -82,6 +89,17 @@ def add_fd_parser(parent: argparse.ArgumentParser) -> None:
     cmd_parser_add.add_argument("key", default=None, nargs="?")
     cmd_parser_add.add_argument("--category", default="")
     cmd_parser_add.set_defaults(func=cmd_add)
+
+    cmd_parser_remove = subparsers.add_parser(
+        "remove", aliases=["rm"], help="Remove a directory from the registry"
+    )
+    cmd_parser_remove.add_argument("directory", default=None, nargs="?")
+    cmd_parser_remove.set_defaults(func=cmd_remove)
+
+    cmd_parser_prune = subparsers.add_parser(
+        "prune", help="Remove registry entries whose directories no longer exist"
+    )
+    cmd_parser_prune.set_defaults(func=cmd_prune)
 
     cmd_parser_edit = subparsers.add_parser(
         "edit", help="Open the registry file in an editor"
@@ -134,6 +152,52 @@ def cmd_add(args: argparse.Namespace) -> None:
     entries = Registry.load()
     entries[key] = {"path": cwd, "category": args.category}
     Registry.store(entries)
+
+
+def cmd_remove(args: argparse.Namespace) -> None:
+    target = args.directory
+    if target is None or target == "":
+        target = os.getcwd()
+    target = normalize_path(target)
+
+    entries = Registry.load()
+    keys_to_remove = [
+        key
+        for key, entry in entries.items()
+        if normalize_path(entry["path"]) == target
+    ]
+
+    if not keys_to_remove:
+        print(f"No registry entry for {target}")
+        return
+
+    for key in keys_to_remove:
+        del entries[key]
+    Registry.store(entries)
+
+    for key in keys_to_remove:
+        print(f"Removed {key}")
+
+
+def cmd_prune(args: argparse.Namespace) -> None:
+    entries = Registry.load()
+    keys_to_remove = [
+        key
+        for key, entry in entries.items()
+        if not os.path.isdir(normalize_path(entry["path"]))
+    ]
+
+    if not keys_to_remove:
+        print("Nothing to prune")
+        return
+
+    for key in keys_to_remove:
+        del entries[key]
+    Registry.store(entries)
+
+    for key in keys_to_remove:
+        print(f"Removed {key}")
+    print(f"Pruned {len(keys_to_remove)} entries")
 
 
 def cmd_edit(args: argparse.Namespace) -> None:
