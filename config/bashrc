@@ -102,3 +102,8 @@ if [[ "$TERM_PROGRAM" == "vscode" ]]; then
         python -m pip install -e "$HOME/dot"
     fi
 fi
+
+# TODO: I haven't added this to links.json so I'm leaving this commented out.
+# Once we sync that config file we can uncomment. For now, just put this in
+# ~/.localrc instead.
+#export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/config"

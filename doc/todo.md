@@ -5,6 +5,7 @@ Improvements I'd like to make to my dotfiles.
 ## Table of Contents
 
 - [High Priority](#high-priority)
+    - [RipGrep Config](#ripgrep-config)
     - [UltiSnips Freezing Issue](#ultisnips-freezing-issue)
 - [Python CLI](#python-cli)
     - [Bootstrapper](#bootstrapper)
@@ -33,6 +34,11 @@ Improvements I'd like to make to my dotfiles.
 **IMPORTANT NOTE:** A lot of the items in this file may be obsolete with the new Nix setup. Basically everything provisioner related is and I'm sure some other things are as well. We should go through and clean this up so that it's up-to-date.
 
 ## High Priority
+
+### RipGrep Config
+
+- Add the `config/ripgrep/config` file to `links.json` so we can sync/clean that config file
+- Uncomment the `RIPGREP_CONFIG_PATH` line in `config/bashrc`
 
 ### UltiSnips Freezing Issue
 
