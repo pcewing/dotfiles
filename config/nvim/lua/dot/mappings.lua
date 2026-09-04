@@ -92,6 +92,9 @@ function M._misc()
     -- Copy file path and line number of current line to clipboard
     Map.nnoremaps('<leader>y', ':lua copy_file_and_line()<cr>')
 
+    -- Copy visual selection to clipboard as a Markdown code snippet
+    Map.vnoremap('Y', ':lua copy_code_snippet()<cr>')
+
     -- Execute normal command on visual selection
     Map.xnoremap('<leader>n', ':normal<space>')
 

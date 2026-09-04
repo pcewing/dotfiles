@@ -25,6 +25,7 @@ end
 
 function M.init()
     _G.close_tabs_to_right        = Util.close_tabs_to_right
+    _G.copy_code_snippet          = Util.copy_code_snippet
     _G.copy_file_and_line         = Util.copy_file_and_line
     _G.format_current_python_file = Util.format_current_python_file
     _G.move_to_column             = Util.move_to_column

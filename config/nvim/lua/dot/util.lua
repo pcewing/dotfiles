@@ -136,6 +136,27 @@ function M.copy_file_and_line()
     vim.fn.setreg('+', file_and_line)
 end
 
+-- Copies the visually selected lines to the clipboard formatted as a Markdown
+-- code block, prefixed with the file path and selected line range. Reads the
+-- selection from the '< and '> marks, so it must be called from a visual-mode
+-- mapping.
+function M.copy_code_snippet()
+    local filename = vim.fn.expand('%')
+
+    local start_line = vim.fn.getpos("'<")[2]
+    local end_line = vim.fn.getpos("'>")[2]
+
+    local lines = vim.fn.getline(start_line, end_line)
+
+    local header = filename .. ':' .. start_line .. '-' .. end_line
+    local formatted_text = header .. '\n```\n' .. table.concat(lines, '\n') .. '\n```\n'
+
+    vim.fn.setreg('+', formatted_text)
+    vim.fn.setreg('*', formatted_text)
+
+    print("Snippet copied to clipboard!")
+end
+
 --[[
   Truncates a string from the center if it exceeds the specified maximum
   length.
