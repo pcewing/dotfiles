@@ -145,6 +145,7 @@ if _is_installed 'git'; then
     set_alias '0' 'gdm'     'git difftool -t "meld" -d'
     set_alias '0' 'gl'      'git log'
     set_alias '0' 'glo'     'git log --oneline'
+    set_alias '0' 'gln'     'git log --name-only'
     set_alias '0' 'glor'    'git log --oneline --reverse'
     set_alias '0' 'gaa'     'git add --all'
     set_alias '0' 'gaad'    'git add --all --dry-run'
