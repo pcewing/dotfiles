@@ -30,13 +30,13 @@ Improvements I'd like to make to my dotfiles.
     - [nvim-telescope/telescope.nvim](#nvim-telescope/telescope.nvim)
     - [neovim/nvim-lspconfig](#neovim/nvim-lspconfig)
 
-**IMPORTANT NOTE:** A lot of the items in this file may be obsolete with the new Nix setup. Basically everything provisioner related is and I'm sure some other things are as well. We should go through and clean this up so that it's up-to-date.
+**IMPORTANT NOTE:** A lot of the items in this file may be obsolete, especially anything provisioner related. We should go through and clean this up so that it's up-to-date.
 
 ## High Priority
 
 ### UltiSnips Freezing Issue
 
-**Note:** I'm not sure if this is still a problem after switching to Nix. Maybe wait and see if we still encounter this.
+**Note:** I'm not sure if this is still a problem. Maybe wait and see if we still encounter this.
 
 UltiSnips freezes sometimes in Neovim which is really annoying and was marked as won't fix because it's specific to Neovim:
 
@@ -111,13 +111,9 @@ sudo python3 -m pip install typing_extensions
 
 ## FZF Bash Integration
 
-**Note:** This statement is not longer accurate since we install fzf via Nix
-now; however, I still don't think bash integration is set up so this TODO item
-is still valid.
-
-`~/.fzf.bash` doesn't exist for me, maybe because I'm installing via apt. I'd
-like that so I can get fzf `ctrl+r` functionality so update the provision
-script to set that up correctly.
+`config/bashrc` sources the fzf shell integration from
+`/usr/share/doc/fzf/examples`, which provides `ctrl+r` and completion for the
+apt-installed fzf.
 
 ## Python Tidy/Lint
 
@@ -133,9 +129,9 @@ script to set that up correctly.
         - Can we put an svg in github repo and convert it to png or something?
             - So it's text on disk and small in size but then we have a default wallpaper everywhere
 - Move base16-shell installation out of bashrc maybe?
-    - Have nix do this? With current system, it will never update after first installation and it feels weird to have shell init scripts cloning git repositories
+    - It feels weird to have shell init scripts cloning git repositories; consider moving this into provisioning
 - Maybe we can merge some of the shell scripts i3 executes into a single shell script so they can all share the same logging and debugging facilities?
-- bcompare in nix is Beyond Compare 4, is it possible to get 5?
+- Beyond Compare is installed manually; is it possible to get 5?
 - Are we forgetting to execute gtk stuff on i3 startup? Keyring, etc.
     - Notice how long it takes `gnome-text-editor` to run; maybe it's a snap?
     - Also look at some errors in terminal when running Firefox, Nitrogen, etc.

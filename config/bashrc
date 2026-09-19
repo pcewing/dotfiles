@@ -5,6 +5,11 @@
 . "$DOTFILES/config/bash/core.sh"
 
 export EDITOR='nvim'
+export VISUAL='nvim'
+
+if command -v kitty >/dev/null 2>&1; then
+    export TERMINAL='kitty'
+fi
 
 # Load custom utilities
 . "$DOTFILES/config/bash/aliases.sh"
@@ -17,7 +22,7 @@ src_if_exists() {
 declare -a sources=(
     "$HOME/.localrc"
 
-    # No need to filter this out on non-WSL hosts because Nix won't link it
+    # Only present/linked on WSL hosts
     "$HOME/.wslrc"
 )
 
@@ -25,10 +30,13 @@ for i in "${sources[@]}"; do
     src_if_exists  "$i"
 done
 
-# Source fzf shell integrations if we have them
-if command -v fzf-share >/dev/null; then
-  source "$(fzf-share)/key-bindings.bash"
-  source "$(fzf-share)/completion.bash"
+# Source fzf shell integrations if we have them. Depending on how fzf was
+# installed these live in a few different places.
+if [ -f /usr/share/doc/fzf/examples/key-bindings.bash ]; then
+  source /usr/share/doc/fzf/examples/key-bindings.bash
+fi
+if [ -f /usr/share/doc/fzf/examples/completion.bash ]; then
+  source /usr/share/doc/fzf/examples/completion.bash
 fi
 
 # Prompt
@@ -94,11 +102,11 @@ fi
 # When running in VS Code, automatically activate a Python virtual environment
 # since agents seem to struggle to consistently do this
 if [[ "$TERM_PROGRAM" == "vscode" ]]; then
-    if [ -d "$HOME/dot/.venv" ]; then
-        . "$HOME/dot/.venv/Scripts/activate"
+    if [ -d "$DOTFILES/.venv" ]; then
+        . "$DOTFILES/.venv/bin/activate"
     else
-        python -m venv "$HOME/dot/.venv"
-        . "$HOME/dot/.venv/Scripts/activate"
-        python -m pip install -e "$HOME/dot"
+        python -m venv "$DOTFILES/.venv"
+        . "$DOTFILES/.venv/bin/activate"
+        python -m pip install -e "$DOTFILES"
     fi
 fi

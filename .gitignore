@@ -2,6 +2,7 @@ tags
 gitconfig_local
 *.zwc
 *.swp
+.nvimlog
 *.pyc
 __pycache__/
 *.egg-info/

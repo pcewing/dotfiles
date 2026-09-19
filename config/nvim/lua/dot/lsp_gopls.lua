@@ -1,15 +1,8 @@
 local M = {}
 
-local Log = require('dot.log')
 local Map = require('dot.map')
 
 function M.configure()
-    local status, lspconfig = pcall(require, 'lspconfig')
-    if not status  then
-        Log.warn('Failed to load lspconfig module')
-        return
-    end
-
     -- Requires gopls which should be installed by default with Go
     if vim.fn.executable('gopls') ~= 1 then
         return
@@ -19,7 +12,7 @@ function M.configure()
     -- language server attaches to the current buffer
     local on_attach = function(client, buf)
         -- Enable completion triggered by <c-x><c-o>
-        vim.api.nvim_buf_set_option(buf, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+        vim.bo[buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
         -- See `:help vim.lsp.*` for documentation on the below functions
         Map.nnoremapbs(buf, '<leader>ld', '<Cmd>lua vim.lsp.buf.definition()<CR>')
@@ -29,13 +22,14 @@ function M.configure()
         Map.nnoremapbs(buf, '<C-k>',      '<cmd>lua vim.lsp.buf.signature_help()<CR>')
     end
 
-    -- https://github.com/neovim/nvim-lspconfig/tree/master/lua/lspconfig/server_configurations/gopls.lua
-    lspconfig["gopls"].setup {
+    -- See :help lspconfig-nvim-0.11
+    vim.lsp.config('gopls', {
         on_attach = on_attach,
         flags = {
             debounce_text_changes = 150,
         }
-    }
+    })
+    vim.lsp.enable('gopls')
 end
 
 return M

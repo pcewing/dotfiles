@@ -4,8 +4,24 @@ import json
 import os
 from typing import Optional
 
+OS_RELEASE_FILE = "/etc/os-release"
 LSB_RELEASE_FILE = "/etc/lsb-release"
 CENTOS_RELEASE_FILE = "/etc/centos-release"
+
+
+def _parse_kv_file(path: str) -> dict[str, str]:
+    values: dict[str, str] = {}
+    with open(path, "r") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, _, value = line.partition("=")
+            value = value.strip()
+            if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'", '"'):
+                value = value[1:-1]
+            values[key.strip()] = value
+    return values
 
 
 class DistroInformation:
@@ -20,10 +36,10 @@ class DistroInformation:
     def __str__(self) -> str:
         # fmt: off
         return json.dumps({
-            "DISTRIB_ID": self.id,
-            "DISTRIB_RELEASE": self.release,
-            "DISTRIB_CODENAME": self.codename,
-            "DISTRIB_DESCRIPTION": self.description,
+            "id":          self.id,
+            "release":     self.release,
+            "codename":    self.codename,
+            "description": self.description,
         })
         # fmt: on
 
@@ -35,31 +51,40 @@ class DistroInformation:
 
     @staticmethod
     def _load_distro_info() -> None:
-        if os.path.isfile(LSB_RELEASE_FILE):
+        if os.path.isfile(OS_RELEASE_FILE):
+            DistroInformation._load_os_release_file()
+        elif os.path.isfile(LSB_RELEASE_FILE):
             DistroInformation._load_lsb_release_file()
         elif os.path.isfile(CENTOS_RELEASE_FILE):
             raise Exception("CentOS is not supported")
 
     @staticmethod
-    def _load_lsb_release_file() -> None:
-        required = set(
-            [
-                "DISTRIB_ID",
-                "DISTRIB_RELEASE",
-                "DISTRIB_CODENAME",
-                "DISTRIB_DESCRIPTION",
-            ]
+    def _load_os_release_file() -> None:
+        vars = _parse_kv_file(OS_RELEASE_FILE)
+
+        # VERSION_CODENAME is the standard key; Ubuntu also sets
+        # UBUNTU_CODENAME and some releases only populate that one.
+        codename = vars.get("VERSION_CODENAME") or vars.get("UBUNTU_CODENAME") or ""
+
+        DistroInformation._data = DistroInformation(
+            vars.get("ID", ""),
+            vars.get("VERSION_ID", ""),
+            codename,
+            vars.get("PRETTY_NAME", ""),
         )
 
-        # TODO: Use `/etc/os-release` instead which is a more common standard
-        vars: dict[str, str] = {}
-        with open("/etc/lsb-release", "r") as f:
-            for line in f:
-                (key, val) = line.strip().split("=")
-                if key in required:
-                    vars[key] = val
+    @staticmethod
+    def _load_lsb_release_file() -> None:
+        required = [
+            "DISTRIB_ID",
+            "DISTRIB_RELEASE",
+            "DISTRIB_CODENAME",
+            "DISTRIB_DESCRIPTION",
+        ]
 
-        if len(vars) != len(required):
+        vars = _parse_kv_file(LSB_RELEASE_FILE)
+
+        if any(key not in vars for key in required):
             raise Exception("Failed to construct DistroInformation")
 
         DistroInformation._data = DistroInformation(

@@ -28,6 +28,7 @@
     { "src": "kitty.conf",                   "dst": "~/.config/kitty/kitty.conf",                   "type": "f" },
     { "src": "alacritty/base16.toml",        "dst": "~/.config/alacritty/base16.toml",              "type": "f", "platforms": ["linux", "windows"] },
     { "src": "alacritty/linux.toml",         "dst": "~/.config/alacritty/linux.toml",               "type": "f" },
+    { "src": "alacritty/alacritty.toml",     "dst": "~/.config/alacritty/alacritty.toml",           "type": "f" },
     { "src": "wezterm.lua",                  "dst": "~/.config/wezterm/wezterm.lua",                "type": "f", "platforms": ["linux", "windows"] },
     { "src": "flavours",                     "dst": "~/.config/flavours",                           "type": "d" },
     { "src": "vsvimrc",                      "dst": "~/.vsvimrc",                                   "type": "f", "platforms": ["windows"] },

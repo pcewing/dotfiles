@@ -1,12 +1,17 @@
 #!/usr/bin/env python
 
 import json
+import os
 import subprocess
 from typing import List
 
 from dot.lib.common.log import Log
 
 APT_LIST_TIMEOUT_SECONDS = 30
+
+
+def _apt_env() -> dict[str, str]:
+    return {**os.environ, "DEBIAN_FRONTEND": "noninteractive"}
 
 
 class PackageListing:
@@ -103,16 +108,20 @@ class Apt:
         if dry_run:
             Log.info("skipping apt update due to --dry-run")
         else:
-            if subprocess.call(["sudo", "apt", "-y", "update"]) != 0:
+            if (
+                subprocess.call(["sudo", "apt-get", "-y", "update"], env=_apt_env())
+                != 0
+            ):
                 raise Exception("Apt update failed")
 
     @staticmethod
     def upgrade(dry_run: bool) -> None:
-        Log.info("upgrading APT packages")
+        Log.info("running apt dist-upgrade")
         if dry_run:
             Log.info("skipping apt upgrade due to --dry-run")
         else:
-            if subprocess.call(["sudo", "apt", "-y", "upgrade"]) != 0:
+            cmd = ["sudo", "apt-get", "-y", "dist-upgrade"]
+            if subprocess.call(cmd, env=_apt_env()) != 0:
                 raise Exception("Apt upgrade failed")
 
     @staticmethod
@@ -121,24 +130,29 @@ class Apt:
         if dry_run:
             Log.info("skipping apt install due to --dry-run")
             return
-        if subprocess.call(["sudo", "apt", "-y", "install"] + packages) != 0:
+        cmd = ["sudo", "apt-get", "-y", "install"] + packages
+        if subprocess.call(cmd, env=_apt_env()) != 0:
             raise Exception("Apt install failed")
 
     @staticmethod
     def install_deb_files(deb_files: List[str], dry_run: bool) -> None:
-        cmd = ["sudo", "dpkg", "-i"] + deb_files
-
         Log.info(
             "installing deb packages",
             {
                 "packages": "[ " + ", ".join(deb_files) + " ]",
-            }
+            },
         )
         if dry_run:
             Log.info("skipping install", {"reason": "dry run"})
-        else:
-            if subprocess.call(cmd) != 0:
-                raise Exception("Failed to install packages")
+            return
+
+        if subprocess.call(["sudo", "dpkg", "-i"] + deb_files, env=_apt_env()) != 0:
+            raise Exception("Failed to install packages")
+
+        # dpkg doesn't resolve dependencies, so let apt fix them up.
+        fix_cmd = ["sudo", "apt-get", "-y", "-f", "install"]
+        if subprocess.call(fix_cmd, env=_apt_env()) != 0:
+            raise Exception("Failed to resolve package dependencies")
 
     @staticmethod
     def get_installed_packages() -> List[PackageListing]:

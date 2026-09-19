@@ -1,0 +1,22 @@
+{
+  "hosts": {
+    "personal-desktop": {
+      "tags": ["x11", "gaming"]
+    },
+    "work-desktop": {
+      "tags": ["x11"]
+    },
+    "personal-wsl": {
+      "tags": ["wsl"]
+    },
+    "work-wsl": {
+      "tags": ["wsl"]
+    },
+    "personal-server": {
+      "tags": []
+    },
+    "work-server": {
+      "tags": []
+    }
+  }
+}

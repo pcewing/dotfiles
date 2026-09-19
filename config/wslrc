@@ -7,3 +7,5 @@ export LS_COLORS
 if [ "$TERM_PROGRAM" = "WezTerm" ] && [ -f "$HOME/wezterm.sh" ]; then
     source "$HOME/wezterm.sh"
 fi
+
+export BROWSER=wslview

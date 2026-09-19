@@ -28,6 +28,15 @@ end
 Log.init(Log.levels.info, Util.path_join(tmp_dir, "nvim.log"))
 Log.debug('loading init.lua')
 
+
+-- TODO: Move this elsewhere, just testing it first. Fixes an issue where FZF
+-- doesn't work in Neovide on Windows when Neovide is run from Git Bash.
+if vim.fn.has("win32") == 1 and string.find(vim.o.shell, "bash") then
+    vim.o.shellcmdflag = "-c"
+    vim.o.shellxquote = ""
+    vim.o.shellquote = ""
+end
+
 Settings.init()
 Plugins.init()
 Mappings.init()

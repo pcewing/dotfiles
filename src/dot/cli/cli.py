@@ -6,7 +6,7 @@ from typing import Sequence
 import argcomplete
 
 from dot import __version__
-from dot.cli import fd, git_sync, links, lint, status, tidy
+from dot.cli import fd, git_sync, links, lint, provision, status, tidy
 from dot.lib.common.log import Log
 
 
@@ -17,6 +17,7 @@ def add_command_parsers(parser: argparse.ArgumentParser) -> None:
     git_sync.add_git_sync_parser(subparsers)
     links.add_links_parser(subparsers)
     lint.add_lint_parser(subparsers)
+    provision.add_provision_parser(subparsers)
     status.add_status_parser(subparsers)
     tidy.add_tidy_parser(subparsers)
 

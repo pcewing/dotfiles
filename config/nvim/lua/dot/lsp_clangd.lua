@@ -6,24 +6,17 @@ Uses the clangd language server:
 https://clangd.llvm.org/
 
 Support for clangd in lspconfig:
-https://github.com/neovim/nvim-lspconfig/tree/master/lua/lspconfig/server_configurations/clangd.lua
+https://github.com/neovim/nvim-lspconfig/blob/master/lsp/clangd.lua
 
 ]]--
 
 local vim = vim
 
-local Log = require('dot.log')
 local Map = require('dot.map')
 
 local M = {}
 
 function M.configure()
-    local status, lspconfig = pcall(require, 'lspconfig')
-    if not status  then
-        Log.warn('Failed to load lspconfig module')
-        return
-    end
-
     -- Requires clangd LSP, to install:
     -- sudo apt-get install clangd-12
     -- sudo update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-12 100
@@ -35,7 +28,7 @@ function M.configure()
     -- server attaches to the current buffer
     local on_attach = function(client, buf)
         -- Enable completion triggered by <c-x><c-o>
-        vim.api.nvim_buf_set_option(buf, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+        vim.bo[buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
         -- See `:help vim.lsp.*` for documentation on the below functions
         Map.nnoremapbs(buf, 'gD',    '<cmd>lua vim.lsp.buf.declaration()<cr>')
@@ -66,15 +59,20 @@ function M.configure()
     -- This log file isn't rotated so it will grow infinitely. Keep logging off
     -- unless debugging issues with the language server, in which case, set this to
     -- "trace" or "debug" instead of "off".
-    vim.lsp.set_log_level("off")
+    vim.lsp.log.set_level("off")
 
-    lspconfig["clangd"].setup {
+    -- nvim-lspconfig only ships the server defaults now (in its "lsp/"
+    -- directory); it is no longer a "framework". Register overrides with
+    -- vim.lsp.config() and activate them with vim.lsp.enable(). See
+    -- :help lspconfig-nvim-0.11
+    vim.lsp.config('clangd', {
         on_attach = on_attach,
         flags = {
             debounce_text_changes = 150,
         },
         filetypes = { "c", "cpp" },
-    }
+    })
+    vim.lsp.enable('clangd')
 end
 
 return M

@@ -35,7 +35,7 @@ function set_alias() {
 }
 
 # Re-apply dotfiles
-set_alias '0' 'df_apply'            '$DOTFILES/apply.sh'
+set_alias '0' 'df_apply'            '$DOTFILES/.venv/bin/dot provision'
 
 # Edit/reload bash configs
 set_alias '0' 'aliases'             '$EDITOR $DOTFILES/config/bash/aliases.sh'
@@ -232,9 +232,7 @@ if _is_installed 'docker'; then
 fi
 
 if _is_installed 'python'; then
-    # TODO: Make sure this is the right command on Linux. I think the
-    # activation script may be slightly different on Linux? But maybe not.
-    set_alias '0' 'dot_venv' '. "$DOTFILES/.venv/Scripts/activate"'
+    set_alias '0' 'dot_venv' '. "$DOTFILES/.venv/bin/activate"'
 fi
 
 if _is_installed 'python'; then
