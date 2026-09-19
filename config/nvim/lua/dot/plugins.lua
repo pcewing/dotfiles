@@ -1,9 +1,11 @@
 local vim = vim
+local Plug = vim.fn["plug#"]
 
 local Log           = require('dot.log')
 local Map           = require('dot.map')
 local Notifications = require('dot.notifications')
 local Util          = require('dot.util')
+local VimPlug       = require('dot.vim_plug')
 
 -- Function to list snippets and allow FZF selection
 -- Not currently that useful because it shows all snippets and the list is
@@ -47,6 +49,9 @@ local plugins = {
         is_enabled = function()
             return os.getenv("NVIM_COPILOT_ENABLED") == "1"
         end,
+        init = function()
+            Plug('github/copilot.vim')
+        end,
         configure = function()
             -- Don't use tab to accept Copilot suggestions which conflicts with
             -- snippets. Not using my Map.imap() function here because it
@@ -69,6 +74,10 @@ local plugins = {
     },
 
     fzf = {
+        init = function()
+            Plug('junegunn/fzf', { ['dir'] = '~/.fzf', ['do'] = './install --bin' })
+            Plug('junegunn/fzf.vim')
+        end,
         configure = function()
             -- We should remove this eventually in favor of the below
             Map.nnoremap('<Leader>o', ':Files<CR>')
@@ -84,6 +93,9 @@ local plugins = {
     },
 
     telescope = {
+        init = function()
+            Plug('nvim-telescope/telescope.nvim')
+        end,
         configure = function()
             Map.nnoremap('<leader>tf', ':Telescope find_files<cr>')
             Map.nnoremap('<leader>tt', ':Telescope tags<cr>')
@@ -95,6 +107,12 @@ local plugins = {
     },
 
     nvim_treesitter = {
+        init = function()
+            -- Sometimes the automatic :TSUpdate won't run successfully and then it
+            -- won't rerun. If cryptic treesitter errors show up after running
+            -- :PlugUpdate, try running :TSUpdate manually
+            Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate'})
+        end,
         configure = function()
             local Treesitter = require('dot.treesitter')
             Treesitter.configure()
@@ -102,6 +120,10 @@ local plugins = {
     },
 
     ultisnips = {
+        init = function()
+            Plug('SirVer/ultisnips')
+            Plug('honza/vim-snippets')
+        end,
         configure = function()
             vim.g.UltiSnipsExpandTrigger = "<tab>"
             vim.g.UltiSnipsJumpForwardTrigger = "<c-j>"
@@ -112,17 +134,23 @@ local plugins = {
         end
     },
 
-    nvim_markdown = {
-        configure = function()
-            vim.g.vim_markdown_frontmatter = 1
+    --nvim_markdown = {
+    --    init = function()
+    --        Plug('ixru/nvim-markdown')
+    --    end,
+    --    configure = function()
+    --        vim.g.vim_markdown_frontmatter = 1
 
-            -- This is <tab> by default which conflicts with UltiSnips
-            -- TODO: Should we only do this in markdown files?
-            Map.imap('<Plug>', '<Plug>Markdown_Jump')
-        end
-    },
+    --        -- This is <tab> by default which conflicts with UltiSnips
+    --        -- TODO: Should we only do this in markdown files?
+    --        Map.imap('<Plug>', '<Plug>Markdown_Jump')
+    --    end
+    --},
 
     clang_format = {
+        init = function()
+            Plug('rhysd/vim-clang-format')
+        end,
         configure = function()
             -- Format the current C/C++ file with clang-format (Uses vim-clang-format plugin)
             vim.g['clang_format#detect_style_file'] = 1
@@ -131,7 +159,9 @@ local plugins = {
     },
 
     lsp_config = {
-        configure = function()
+        init = function()
+            Plug('neovim/nvim-lspconfig')
+        end,        configure = function()
             local LspClangd = require('dot.lsp_clangd')
             local LspGopls = require('dot.lsp_gopls')
             local LspJedi = require('dot.lsp_jedi')
@@ -143,18 +173,67 @@ local plugins = {
             Map.nnoremap('<leader>ls', ':LspStop<cr>')
         end
     },
+
+    other = {
+        init = function()
+            -- Colorschemes
+            Plug('chriskempson/base16-vim')
+
+            Plug('rodjek/vim-puppet')
+            Plug('fatih/vim-go')
+            --Plug('OrangeT/vim-csharp')
+            Plug('mattn/emmet-vim')
+            Plug('tpope/vim-vinegar')
+            Plug('nvie/vim-flake8')
+            Plug('tikhomirov/vim-glsl')
+            Plug('martinda/Jenkinsfile-vim-syntax')
+            Plug('aklt/plantuml-syntax')
+            Plug('elubow/cql-vim')
+            Plug('tpope/vim-fugitive')
+            Plug('igankevich/mesonic')
+            Plug('hrsh7th/nvim-cmp')
+            Plug('nvim-lua/popup.nvim')
+            Plug('nvim-lua/plenary.nvim')
+            Plug('glepnir/lspsaga.nvim')
+            Plug('hoob3rt/lualine.nvim')
+        end
+    },
 }
 
+-- function M.init()
+--     for plugin_name, plugin in pairs(plugins) do
+--         if plugin.is_enabled ~= nil and not plugin.is_enabled() then
+--             Log.debug('skip configuring ' .. plugin_name .. ' plugin because it is disabled')
+--         else
+--             Log.debug('configuring ' .. plugin_name .. ' plugin')
+--             if plugin.configure ~= nil then
+--                 plugin.configure()
+--             end
+--         end
+--     end
+-- end
+
 function M.init()
+    if not VimPlug.is_installed() then
+        Notifications.add("vim-plug is not installed; install it via `:lua install_vim_plug()`")
+        return
+    end
+
+    -- Ever since switching from init.vim to init.lua, it doesn't seem like
+    -- Neovim autoloads the plug.vim file anymore. I'm not sure why and don't
+    -- have time right now to dig into it so just manually source it for now.
+    VimPlug.source()
+
+    vim.call('plug#begin')
+
     for plugin_name, plugin in pairs(plugins) do
-        if plugin.is_enabled ~= nil and not plugin.is_enabled() then
-            Log.debug('skip configuring ' .. plugin_name .. ' plugin because it is disabled')
-        else
-            Log.debug('configuring ' .. plugin_name .. ' plugin')
-            if plugin.configure ~= nil then
-                plugin.configure()
-            end
-        end
+        M._init_plugin(plugin_name, plugin)
+    end
+
+    vim.call('plug#end')
+
+    for plugin_name, plugin in pairs(plugins) do
+        M._configure_plugin(plugin_name, plugin)
     end
 end
 

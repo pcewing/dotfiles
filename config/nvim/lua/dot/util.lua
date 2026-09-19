@@ -26,7 +26,12 @@ function M.path_join(...)
 end
 
 function M.tmp_dir()
-    return M.path_join(os.getenv('HOME'), '.tmp', 'nvim')
+    --if M.is_windows() then
+    --    -- TODO: Get home directory correctly; os.getenv('HOME') doesn't work. Maybe USERPROFILE?
+    return M.path_join('c:/Users/pewing', '.tmp', 'nvim')
+    --else
+    --    return M.path_join(os.getenv('HOME'), '.tmp', 'nvim')
+    --end
 end
 
 function M.data_dir()
