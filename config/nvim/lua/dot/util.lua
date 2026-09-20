@@ -114,10 +114,26 @@ function M.move_to_column(column)
     vim.api.nvim_set_current_line(nline)
 end
 
+-- Closes every tab page to the right of the current one. Each 'tabclose' is
+-- guarded so the loop cannot spin forever: it stops if the command fails (for
+-- example E37 on a modified buffer when 'hidden' is off) or if the tab count
+-- does not actually decrease.
 function M.close_tabs_to_right()
     local cur = vim.fn.tabpagenr()
     while cur < vim.fn.tabpagenr('$') do
-        vim.cmd('tabclose ' .. (cur + 1))
+        local before = vim.fn.tabpagenr('$')
+        local ok, err = pcall(vim.cmd, 'tabclose ' .. (cur + 1))
+        if not ok then
+            Log.warn('close_tabs_to_right: tabclose failed: ' ..
+                     (tostring(err):gsub('%s+', ' ')))
+            break
+        end
+        if vim.fn.tabpagenr('$') >= before then
+            -- A 'tabclose' that reports success without reducing the tab count
+            -- (e.g. an autocmd opening a new tab) would otherwise loop forever.
+            Log.warn('close_tabs_to_right: no progress closing tab ' .. (cur + 1))
+            break
+        end
     end
 end
 
