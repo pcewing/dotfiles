@@ -1,0 +1,2 @@
+[general]
+import = ['~/.config/alacritty/common.toml', '~/.config/alacritty/windows.toml', '~/.config/alacritty/base16.toml']

@@ -14,6 +14,31 @@ from dot.lib.common.os import OperatingSystem
 # from typing_extensions import Self
 
 
+def _is_link(path: str) -> bool:
+    """Return True when path itself is a symlink or a Windows junction.
+
+    os.path.isdir() follows links, so a link to a directory would otherwise be
+    treated as a real directory and have its target's contents deleted.
+    """
+    if os.path.islink(path):
+        return True
+    if not os.path.lexists(path):
+        return False
+    attributes = getattr(os.lstat(path), "st_file_attributes", 0)
+    return bool(attributes & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0))
+
+
+def _chmod_tree(path: str, mode: int) -> None:
+    """Apply mode to path and everything beneath it, without following links."""
+    if os.path.isdir(path) and not _is_link(path):
+        for root, dirs, files in os.walk(path):
+            for name in dirs + files:
+                entry = os.path.join(root, name)
+                if not _is_link(entry):
+                    os.chmod(entry, mode)
+    os.chmod(path, mode)
+
+
 class LinkType(Enum):
     FILE = 1
     DIRECTORY = 2
@@ -65,14 +90,20 @@ class Link:
                 f"Parent directory path for symlink {self.dst} exists but is not a directory"
             )
 
-        if os.path.exists(self.dst):
+        if os.path.lexists(self.dst):
             if os.path.islink(self.dst):
                 Log.info(f"Deleting existing symlink at path {self.dst}")
+                os.remove(self.dst)
+            elif os.path.isdir(self.dst):
+                Log.warn(
+                    f"Deleting existing directory which is NOT a symlink at path {self.dst}"
+                )
+                shutil.rmtree(self.dst)
             else:
                 Log.warn(
                     f"Deleting existing file which is NOT a symlink at path {self.dst}"
                 )
-            os.remove(self.dst)
+                os.remove(self.dst)
 
         Log.info(f"Creating symlink", {"source": self.src, "target": self.dst})
         os.symlink(self.src, self.dst)
@@ -89,14 +120,17 @@ class Link:
                 f"Parent directory path for copy {self.dst} exists but is not a directory"
             )
 
-        if os.path.exists(self.dst):
-            Log.info(f"Deleting existing file at path {self.dst}")
-            os.chmod(self.dst, stat.S_IWRITE)
-            os.remove(self.dst)
+        if os.path.lexists(self.dst):
+            self._delete_windows()
 
-        Log.info(f"Copying file", {"source": self.src, "target": self.dst})
-        shutil.copyfile(self.src, self.dst)
-        os.chmod(self.dst, stat.S_IREAD)
+        if self.is_dir():
+            Log.info("Copying directory", {"source": self.src, "target": self.dst})
+            shutil.copytree(self.src, self.dst)
+        else:
+            Log.info("Copying file", {"source": self.src, "target": self.dst})
+            shutil.copyfile(self.src, self.dst)
+
+        _chmod_tree(self.dst, stat.S_IREAD)
 
     def delete(self) -> None:
         if OperatingSystem.get().is_windows():
@@ -116,13 +150,21 @@ class Link:
         os.remove(self.dst)
 
     def _delete_windows(self) -> None:
-        if not os.path.exists(self.dst):
+        if not os.path.lexists(self.dst):
             Log.info(f"File at path {self.dst} does not exist, skipping")
             return
 
-        Log.info(f"Removing file at path {self.dst}")
-        os.chmod(self.dst, stat.S_IWRITE)
-        os.remove(self.dst)
+        if _is_link(self.dst):
+            Log.info(f"Removing link at path {self.dst}")
+            os.remove(self.dst)
+        elif os.path.isdir(self.dst):
+            Log.info(f"Removing directory at path {self.dst}")
+            _chmod_tree(self.dst, stat.S_IWRITE)
+            shutil.rmtree(self.dst)
+        else:
+            Log.info(f"Removing file at path {self.dst}")
+            os.chmod(self.dst, stat.S_IWRITE)
+            os.remove(self.dst)
 
 
 class Links:

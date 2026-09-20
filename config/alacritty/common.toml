@@ -1,0 +1,5 @@
+[hints]
+# Force Alacritty to process OSC 8 anchor tags
+enabled = [
+    { hyperlinks = true, command = "cmd /c start", mouse = { enabled = true } }
+]
