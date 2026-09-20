@@ -23,10 +23,15 @@ end
 
 function M._background()
     if Util.is_windows() then
+        Log.info('Windows detected, setting background to "dark"')
+        vim.opt.background = 'dark'
+    elseif vim.g.neovide then
+        Log.info('Neovide detected, setting background to "dark"')
         vim.opt.background = 'dark'
     else
         -- On Non-Windows operating systems, use the host window's background.
         -- This allows for transparency if the terminal has that configured.
+        Log.info('Setting background color to NONE')
         vim.api.nvim_set_hl(0, 'Normal', {
             bg = 'NONE',
             ctermbg = 'NONE'
