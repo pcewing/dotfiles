@@ -68,28 +68,6 @@ function M.configure()
     -- Install missing parsers asynchronously
     treesitter.install(ensure_installed)
 
-    -- Enable Native Tree-sitter Highlighting via FileType autocommand
-    vim.api.nvim_create_autocmd("FileType", {
-        group = vim.api.nvim_create_augroup("UserTreesitterConfig", { clear = true }),
-        callback = function(args)
-            local buf = args.buf
-            local ft = vim.bo[buf].filetype
-
-            ---- Keep your 2024-05-21 override: use built-in regex highlighting for Markdown
-            --if ft == "markdown" then
-            --    vim.sequential_glance_fallback = true -- Optional flag if you handle fallback rules
-            --    return
-            --end
-
-            -- Check if a valid tree-sitter parser is loaded for this filetype
-            local lang = vim.treesitter.language.get_lang(ft) or ft
-            local has_parser = pcall(vim.treesitter.language.add, lang)
-
-            if has_parser then
-                vim.treesitter.start(buf, lang)
-            end
-        end,
-    })
     -- Central configuration for handling specific filetypes
     local filetype_rules = {
         fzf      = { ignore = true },
@@ -100,8 +78,9 @@ function M.configure()
     }
 
     -- Enable Native Tree-sitter Highlighting via FileType autocommand
+    local treesitter_group = vim.api.nvim_create_augroup("UserTreesitterConfig", { clear = true })
     vim.api.nvim_create_autocmd("FileType", {
-        group = vim.api.nvim_create_augroup("UserTreesitterConfig", { clear = true }),
+        group = treesitter_group,
         callback = function(args)
             local buf = args.buf
             local ft = vim.bo[buf].filetype

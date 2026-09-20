@@ -5,12 +5,14 @@ local Log = require('dot.log')
 local M = {}
 
 function M.is_windows()
-    -- TODO: Confirm this is right; only checked it on Linux
-    return vim.loop.os_uname().sysname == "Windows"
+    -- Note: vim.loop.os_uname().sysname reports "Windows_NT" on Windows, so it
+    -- can't be used here. Neovim's own feature detection is reliable on both
+    -- Windows and Linux.
+    return vim.fn.has('win32') == 1
 end
 
 function M.is_linux()
-    return vim.loop.os_uname().sysname == "Linux"
+    return vim.fn.has('linux') == 1
 end
 
 function M.path_sep()
@@ -25,13 +27,15 @@ function M.path_join(...)
     return M.str_join(M.path_sep(), ...)
 end
 
+-- Returns the current user's home directory. os.getenv('HOME') is not set on
+-- Windows (which uses USERPROFILE instead), so rely on Neovim's '~' expansion,
+-- which resolves the home directory correctly on both Windows and Linux.
+function M.home_dir()
+    return vim.fn.expand('~')
+end
+
 function M.tmp_dir()
-    --if M.is_windows() then
-    --    -- TODO: Get home directory correctly; os.getenv('HOME') doesn't work. Maybe USERPROFILE?
-    return M.path_join('c:/Users/pewing', '.tmp', 'nvim')
-    --else
-    --    return M.path_join(os.getenv('HOME'), '.tmp', 'nvim')
-    --end
+    return M.path_join(M.home_dir(), '.tmp', 'nvim')
 end
 
 function M.data_dir()
@@ -52,6 +56,13 @@ end
 
 function M.is_string(n)
   return type(n) == "string"
+end
+
+-- Returns whether an environment variable is set to a non-empty value. An empty
+-- variable counts as unset, matching Neovim's own `!empty($VAR)` checks.
+function M.env_is_set(name)
+    local value = vim.env[name]
+    return value ~= nil and value ~= ""
 end
 
 function M.reload_config(config)

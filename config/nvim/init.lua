@@ -46,6 +46,9 @@ Theme.init()
 if Util.is_wsl() then
     local Wsl = require('dot.wsl')
     Wsl.init()
+elseif Util.is_linux() then
+    local Linux = require('dot.linux')
+    Linux.init()
 end
 
 if Notifications.any() then

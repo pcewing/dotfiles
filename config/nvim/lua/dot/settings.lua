@@ -47,8 +47,8 @@ end
 
 function M._directories()
     -- Add a double slash on the path which instructs Neovim to create a unique
-    -- directory for each editing session
-    -- TODO: Should this be \\ on windows?
+    -- directory for each editing session. This works on Windows too; Neovim
+    -- accepts and recommends "//" over "\\" on Win32 (see 'backupdir').
     local dir = Util.tmp_dir() .. "//"
 
     Log.debug('Setting backup dir to ' .. dir)

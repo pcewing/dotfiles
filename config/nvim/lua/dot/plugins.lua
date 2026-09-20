@@ -251,7 +251,7 @@ function M._init_plugin(plugin_name, plugin)
         return
     end
 
-    init_result = plugin.init()
+    local init_result = plugin.init()
     if init_result == nil or init_result == true then
         plugin.initialized = true
     end
