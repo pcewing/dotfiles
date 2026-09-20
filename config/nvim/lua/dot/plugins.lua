@@ -235,11 +235,6 @@ function M.init()
         return
     end
 
-    -- Ever since switching from init.vim to init.lua, it doesn't seem like
-    -- Neovim autoloads the plug.vim file anymore. I'm not sure why and don't
-    -- have time right now to dig into it so just manually source it for now.
-    VimPlug.source()
-
     vim.call('plug#begin')
 
     for plugin_name, plugin in pairs(plugins) do
