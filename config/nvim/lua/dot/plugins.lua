@@ -13,10 +13,11 @@ local VimPlug       = require('dot.vim_plug')
 -- snippets. Maybe find a way to make this better. A simple solution could be
 -- to make a regex filter to remove the ones we don't care about.
 function ShowSnippets()
-  local filetype = vim.bo.filetype  -- Get the current filetype
   local snippets = vim.fn["UltiSnips#SnippetsInCurrentScope"](1)  -- Get available snippets
 
   -- If no snippets available, notify the user
+  -- (vim.tbl_isempty is not deprecated as of Neovim 0.12 and there is no
+  -- vim.tbl_is_empty; next(t) == nil is the dependency-free equivalent.)
   if vim.tbl_isempty(snippets) then
     print("No snippets available for this filetype.")
     return
@@ -33,11 +34,26 @@ function ShowSnippets()
   vim.fn["fzf#run"]({
     source = fzf_snippets,
     sink = function(choice)
-      if choice then
-        local snippet_trigger = choice:match("^(%S+)")
-        vim.cmd("call UltiSnips#ExpandSnippetOrJump()")
-        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(snippet_trigger, true, false, true), 'm', true)
+      if not choice then
+        return
       end
+
+      local snippet_trigger = choice:match("^(%S+)")
+      if not snippet_trigger then
+        return
+      end
+
+      -- UltiSnips expands the snippet whose trigger sits immediately before
+      -- the cursor, so the trigger has to be in the buffer *before* we ask it
+      -- to expand. Defer until the FZF window has closed, then insert the
+      -- trigger, leave the cursor right after it, and expand.
+      vim.schedule(function()
+        vim.cmd("startinsert")
+        local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+        vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, { snippet_trigger })
+        vim.api.nvim_win_set_cursor(0, { row, col + #snippet_trigger })
+        vim.cmd("call UltiSnips#ExpandSnippetOrJump()")
+      end)
     end
   })
 end
