@@ -7,6 +7,8 @@
 export EDITOR='nvim'
 export VISUAL='nvim'
 
+# Maybe switch this to something like:
+# if [ -n "${KITTY_PID-}" ]
 if command -v kitty >/dev/null 2>&1; then
     export TERMINAL='kitty'
 fi

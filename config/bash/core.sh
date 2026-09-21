@@ -5,6 +5,20 @@
 if [ -z "$DOT_CORE_SOURCED" ]; then
     DOT_CORE_SOURCED=1
 
+    function _is_windows() {
+        case "$OSTYPE" in
+            msys*|cygwin*|mingw*)   return 0    ;;
+            *)                      return 1   ;;
+        esac
+    }
+
+    function _is_linux() {
+        case "$OSTYPE" in
+            linux*)                 return 0    ;;
+            *)                      return 1   ;;
+        esac
+    }
+
     function _is_wsl() {
         [ -n "${WSL_DISTRO_NAME-}" ] && return 0 || return 1
     }
