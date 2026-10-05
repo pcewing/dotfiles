@@ -72,6 +72,7 @@ function M.configure()
     local filetype_rules = {
         fzf      = { ignore = true },
         netrw    = { ignore = true },
+        txt      = { ignore = true },
 
         -- Example: Apply the fallback flag to markdown (replaces your old commented out logic)
         --markdown = { fallback = true }, 
