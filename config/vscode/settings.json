@@ -1,5 +1,6 @@
 {
     "github.copilot.nextEditSuggestions.enabled": true,
+    "terminal.integrated.shellIntegration.enabled": true,
     "vim.vimrc.enable": true,
     "vim.easymotion": true,
     "vim.incsearch": true,
@@ -18,27 +19,27 @@
             "commands": ["workbench.action.quickOpen"]
         },
         {
-            "before": ["<leader>", "a", "f"],
-            "commands": [
-            "workbench.action.chat.addSelectedFilesToChat"
-            ]
+              "before": ["<leader>", "a", "f"],
+              "commands": [
+                  "workbench.action.chat.addSelectedFilesToChat"
+              ]
         },
         {
-            "before": ["<leader>", "a", "c"],
-            "commands": [
-            "workbench.action.chat.addContext"
-            ]
+              "before": ["<leader>", "a", "c"],
+              "commands": [
+                  "workbench.action.chat.addContext"
+              ]
         },
         {
             "before": ["<leader>", "a", "g"],
             "commands": [
-            "workbench.action.chat.addEditorContextItem"
+                "workbench.action.chat.addEditorContextItem"
             ]
         },
         {
             "before": ["<leader>", "c", "e"],
             "commands": [
-            "workbench.action.chat.open"
+                "workbench.action.chat.open"
             ],
             "args": { "query": "#editor " }
         }
@@ -61,7 +62,9 @@
     "vim.leader": "<space>",
     "vim.handleKeys": {
         "<C-a>": false,
-        // TODO: Not sure this is actually working, may want to just remove these
+        // In Vim Normal mode this is Ctrl+Backspace / delete-word-left; let VS Code handle it
+        // so workbench.action.chat.attachFile in keybindings.json can use it.
+        "<C-BS>": false,
         // This is the "Add Context" command for LLM chat which is handy
         "<C-/>": false,
         "<C-f>": false,
@@ -72,5 +75,71 @@
     "extensions.experimental.affinity": {
         "vscodevim.vim": 1
     },
-    "editor.minimap.enabled": false
+    "editor.minimap.enabled": false,
+    "chat.tools.terminal.autoApprove": {
+        "Set-Content": true,
+        "Start-Process": true,
+        "git rev-parse": true,
+        "git diff": true,
+        "git branch --show-current": true,
+        "Test-Path": true,
+        "git add": true,
+        "git commit": true,
+        "mkdir": true
+    },
+    "chat.agent.maxRequests": 500,
+    "chat.agentFilesLocations": {
+        "~/.config/copilot/agents": true,
+        "~/.config/copilot/agents/stages": true
+    },
+    "chat.agentSkillsLocations": {
+        ".github/skills/common": true,
+        "~/.config/copilot/skills": true,
+        ".github/skills/feature-dev": true
+    },
+    "chat.instructionsFilesLocations": {
+        "~/.config/copilot/instructions": true
+    },
+    "chat.promptFilesLocations": {
+        ".github/prompts/feature-dev": true,
+        "~/src/copilot/prompts": false,
+        "~/src/copilot/prompts/feature-dev": false
+    },
+    // Copilot agents use the integrated terminal in VS Code, respecting the
+    // default terminal profile. So this should ensure that they use Git Bash as
+    // their primary shell.
+    "terminal.integrated.profiles.windows": {
+        "Git Bash": {
+            "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+            "args": []
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "Git Bash",
+    // For agent/automation scenarios specifically, VS Code also has a separate
+    // automation profile setting that takes precedence over the default. This
+    // only affects terminals spawned by tasks, extensions, and agents.
+    "terminal.integrated.automationProfile.windows": {
+        "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+        "args": []
+    },
+    "github.copilot.chat.agentDebugLog.fileLogging.enabled": true,
+    "github.copilot.chat.localIndex.enabled": true,
+    "claudeCode.preferredLocation": "panel",
+    "claudeCode.initialPermissionMode": "acceptEdits",
+    "chat.viewSessions.orientation": "stacked",
+    "roo-cline.debug": false,
+    "roo-cline.allowedCommands": [
+        "git log",
+        "git diff",
+        "git show"
+    ],
+    "roo-cline.deniedCommands": [],
+    "explorer.copyRelativePathSeparator": "/",
+    "explorer.copyPathSeparator": "/",
+    "chat.useClaudeHooks": true,
+    "chat.hookFilesLocations": {
+        ".claude/settings.local.json": false,
+        ".claude/settings.json": false,
+        "~/.claude/settings.json": false
+    }
 }
