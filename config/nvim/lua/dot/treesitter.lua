@@ -65,6 +65,12 @@ function M.configure()
         "yaml",
     }
 
+    -- Lookup set of parsers we actually expect to be present
+    local expected_parsers = {}
+    for _, parser in ipairs(ensure_installed) do
+        expected_parsers[parser] = true
+    end
+
     -- Install missing parsers asynchronously
     treesitter.install(ensure_installed)
 
@@ -72,7 +78,8 @@ function M.configure()
     local filetype_rules = {
         fzf      = { ignore = true },
         netrw    = { ignore = true },
-        txt      = { ignore = true },
+        -- NOTE: `.txt` files are detected as filetype `text`, not `txt`
+        text     = { ignore = true },
 
         -- Example: Apply the fallback flag to markdown (replaces your old commented out logic)
         --markdown = { fallback = true }, 
@@ -102,18 +109,49 @@ function M.configure()
                 end
             end
 
-            -- Check if a valid tree-sitter parser is loaded for this filetype
+            -- Check if a valid tree-sitter parser is loaded for this filetype.
+            --
+            -- NOTE: `vim.treesitter.language.add()` does not throw when a parser
+            -- is missing, it returns `nil, err`. So the boolean returned by
+            -- `pcall` is not a valid "has parser" check on its own.
             local lang = vim.treesitter.language.get_lang(ft) or ft
-            local has_parser = pcall(vim.treesitter.language.add, lang)
+            local ok, has_parser = pcall(vim.treesitter.language.add, lang)
+            has_parser = ok and has_parser == true
 
-            if has_parser then
-                -- Catch internal start exceptions if the underlying binary is corrupt or missing
-                local success, err = pcall(vim.treesitter.start, buf, lang)
+            -- Parsers listed in `ensure_installed` are expected to be present, so
+            -- failures for those are worth surfacing. A filetype we never asked a
+            -- parser for (plain text, json5, ...) is just noise.
+            local expected = expected_parsers[lang] == true
 
-                if not success then
+            if not has_parser then
+                if expected then
                     print(string.format(
-                        'ERROR: Failed to run treesitter autocmd on filetype "%s". Add to `filetype_rules` if LSP/Highlighting support isn\'t needed.', 
-                        ft
+                        'ERROR: Treesitter parser "%s" for filetype "%s" was expected but could not be loaded. Try `:TSInstall %s`.',
+                        lang, ft, lang
+                    ))
+                else
+                    Log.debug(string.format(
+                        'No treesitter parser for filetype "%s" (language "%s"); skipping highlighting',
+                        ft, lang
+                    ))
+                end
+
+                return
+            end
+
+            -- Catch internal start exceptions if the underlying binary is corrupt or missing
+            local success, err = pcall(vim.treesitter.start, buf, lang)
+
+            if not success then
+                if expected then
+                    print(string.format(
+                        'ERROR: Failed to run treesitter autocmd on filetype "%s": %s',
+                        ft, err
+                    ))
+                else
+                    Log.debug(string.format(
+                        'Failed to run treesitter autocmd on filetype "%s": %s',
+                        ft, err
                     ))
                 end
             end

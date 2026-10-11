@@ -23,10 +23,18 @@ function M._log(level, msg)
         return
     end
 
+    -- Write through the local handle rather than the global `io.output` stream:
+    -- redirecting and then closing the global output leaves it closed, which
+    -- makes every later `io.write` fail with "standard file is closed".
     local file = io.open(M.path, "a")
-    io.output(file)
-    io.write(M._format(level, msg))
-    io.close(file)
+    if file == nil then
+        -- Logging must never raise, so a failed open (missing directory,
+        -- permissions, ...) is silently dropped.
+        return
+    end
+
+    file:write(M._format(level, msg))
+    file:close()
 end
 
 function M.trace(msg) M._log(M.levels.trace, msg) end
