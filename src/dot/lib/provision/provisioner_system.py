@@ -25,6 +25,7 @@ class SystemConfigProvisioner(IComponentProvisioner):
 
         self._set_terminal_alternative()
         self._install_session_files()
+        self._install_xorg_configs()
         self._create_mpd_dirs()
         self._mask_mpd_services()
         self._generate_wallpaper()
@@ -68,12 +69,38 @@ class SystemConfigProvisioner(IComponentProvisioner):
             "/usr/share/wayland-sessions/sway-user.desktop",
         )
 
-    def _sudo_install(self, src: str, dst: str) -> None:
-        if not os.path.isfile(src):
-            Log.warn("session file is missing, skipping", {"path": src})
+    def _install_xorg_configs(self) -> None:
+        src_dir = os.path.join(Dir.config(), "xorg.conf.d")
+        if not os.path.isdir(src_dir):
+            Log.warn("xorg config directory is missing, skipping", {"path": src_dir})
             return
 
-        Log.info("installing session file", {"src": src, "dst": dst})
+        dst_dir = "/etc/X11/xorg.conf.d"
+        self._ensure_system_dir(dst_dir)
+
+        for name in sorted(os.listdir(src_dir)):
+            src = os.path.join(src_dir, name)
+            if not os.path.isfile(src):
+                continue
+            self._sudo_install(src, os.path.join(dst_dir, name))
+
+    def _ensure_system_dir(self, path: str) -> None:
+        if os.path.isdir(path):
+            return
+
+        Log.info("creating system directory", {"path": path})
+        if self._args.dry_run:
+            return
+
+        if subprocess.call(["sudo", "mkdir", "-p", path]) != 0:
+            raise Exception(f"Failed to create {path}")
+
+    def _sudo_install(self, src: str, dst: str) -> None:
+        if not os.path.isfile(src):
+            Log.warn("system file is missing, skipping", {"path": src})
+            return
+
+        Log.info("installing system file", {"src": src, "dst": dst})
         if self._args.dry_run:
             return
 

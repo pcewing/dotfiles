@@ -4,25 +4,27 @@ function yell () { >&2 echo "$*";  }
 function die () { yell "$*"; exit 1; }
 function try () { "$@" || die "Command failed: $*"; }
 
-# To permanently set this, identify the product string by running:
+# Imperative helper for changing mouse acceleration in the current X session.
+#
+# The persistent version of this setting is managed by the dotfiles repo; see
+# config/xorg.conf.d/50-mouse-acceleration.conf, which is installed to
+# /etc/X11/xorg.conf.d/ by:
+#
+#     dot provision system
+#
+# Because that file matches on the device product name, it only ever applies to
+# the physical mice listed in MICE_NAMES below, and is never picked up by the
+# virtual pointers that remote desktop tools inject. Use this script to apply
+# the change without restarting the X server, or to experiment with values.
+#
+# To discover the product string of a device, run:
 # $ xinput
 #
 # | Virtual core pointer                        id=2    [master pointer  (3)]
 # |   |_ Virtual core XTEST pointer             id=4    [slave  pointer  (2)]
 # |   |_ SINOWEALTH 2.4G Wireless Receiver      id=16   [slave  pointer  (2)]
 #
-# Next, create a file here:
-#
-# /etc/X11/xorg.conf.d/50-mouse-acceleration.conf
-#
-# Finally, add the contents:
-#
-#Section "InputClass"
-#    Identifier "Dark Matter Wireless Gaming Mouse"
-#    MatchDriver "libinput"
-#    MatchProduct "SINOWEALTH 2.4G Wireless Receiver"
-#    Option "AccelSpeed" "-0.75"
-#EndSection
+# Keep MICE_NAMES in sync with the MatchProduct entries in that config file.
 
 MICE_NAMES=(
     "Logitech G Pro"
