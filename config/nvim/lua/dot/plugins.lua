@@ -15,8 +15,6 @@ local function show_snippets()
   local snippets = vim.fn["UltiSnips#SnippetsInCurrentScope"](1)  -- Get available snippets
 
   -- If no snippets available, notify the user
-  -- (vim.tbl_isempty is not deprecated as of Neovim 0.12 and there is no
-  -- vim.tbl_is_empty; next(t) == nil is the dependency-free equivalent.)
   if vim.tbl_isempty(snippets) then
     print("No snippets available for this filetype.")
     return
@@ -143,19 +141,6 @@ local plugins = {
         end
     },
 
-    --nvim_markdown = {
-    --    init = function()
-    --        Plug('ixru/nvim-markdown')
-    --    end,
-    --    configure = function()
-    --        vim.g.vim_markdown_frontmatter = 1
-
-    --        -- This is <tab> by default which conflicts with UltiSnips
-    --        -- TODO: Should we only do this in markdown files?
-    --        Map.imap('<Plug>', '<Plug>Markdown_Jump')
-    --    end
-    --},
-
     clang_format = {
         init = function()
             Plug('rhysd/vim-clang-format')
@@ -199,7 +184,6 @@ local plugins = {
             Plug('chriskempson/base16-vim')
 
             Plug('rodjek/vim-puppet')
-            --Plug('OrangeT/vim-csharp')
             Plug('mattn/emmet-vim')
             Plug('tpope/vim-vinegar')
             Plug('nvie/vim-flake8')
@@ -210,26 +194,11 @@ local plugins = {
             Plug('tpope/vim-fugitive')
             Plug('igankevich/mesonic')
             Plug('hrsh7th/nvim-cmp')
-            Plug('nvim-lua/popup.nvim')
             Plug('nvim-lua/plenary.nvim')
-            Plug('glepnir/lspsaga.nvim')
             Plug('hoob3rt/lualine.nvim')
         end
     },
 }
-
--- function M.init()
---     for plugin_name, plugin in pairs(plugins) do
---         if plugin.is_enabled ~= nil and not plugin.is_enabled() then
---             Log.debug('skip configuring ' .. plugin_name .. ' plugin because it is disabled')
---         else
---             Log.debug('configuring ' .. plugin_name .. ' plugin')
---             if plugin.configure ~= nil then
---                 plugin.configure()
---             end
---         end
---     end
--- end
 
 function M.init()
     if not VimPlug.is_installed() then

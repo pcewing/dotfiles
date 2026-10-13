@@ -42,7 +42,6 @@ end
 function M.init()
     -- Force theme loading to execute after Neovim and Neovide UI channels
     -- fully initialize
-    --vim.api.nvim_create_autocmd('VimEnter', {
     vim.api.nvim_create_autocmd('UIEnter', {
         callback = function()
             M._color_scheme()

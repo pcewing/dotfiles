@@ -10,9 +10,6 @@ function M.configure()
         return
     end
 
-    -- Call setup
-    treesitter.setup()
-
     -- The source of truth for the available parsers lives in this file:
     -- https://github.com/nvim-treesitter/nvim-treesitter/blob/master/lua/nvim-treesitter/parsers.lua
     --
@@ -74,15 +71,12 @@ function M.configure()
     -- Install missing parsers asynchronously
     treesitter.install(ensure_installed)
 
-    -- Central configuration for handling specific filetypes
-    local filetype_rules = {
-        fzf      = { ignore = true },
-        netrw    = { ignore = true },
+    -- Filetypes that never get treesitter highlighting
+    local ignored_filetypes = {
+        fzf   = true,
+        netrw = true,
         -- NOTE: `.txt` files are detected as filetype `text`, not `txt`
-        text     = { ignore = true },
-
-        -- Example: Apply the fallback flag to markdown (replaces your old commented out logic)
-        --markdown = { fallback = true }, 
+        text  = true,
     }
 
     -- Enable Native Tree-sitter Highlighting via FileType autocommand
@@ -93,20 +87,8 @@ function M.configure()
             local buf = args.buf
             local ft = vim.bo[buf].filetype
 
-            -- Get the rules matching the current filetype (if any)
-            local rule = filetype_rules[ft]
-
-            if rule then
-                -- 1. Check if the filetype should be skipped completely
-                if rule.ignore then
-                    return
-                end
-
-                -- 2. Check if the fallback flag should be enabled
-                if rule.fallback then
-                    vim.sequential_glance_fallback = true
-                    return -- Exit early since we are dropping back to standard highlighting
-                end
+            if ignored_filetypes[ft] then
+                return
             end
 
             -- Check if a valid tree-sitter parser is loaded for this filetype.

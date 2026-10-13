@@ -54,11 +54,4 @@ function M.install()
     return true
 end
 
-function M.install_plugins()
-    -- TODO: Untested and currently unused
-    local autocmd_command = 'PlugInstall --sync'
-    Log.info('Installing plugins: ' .. autocmd_command)
-    vim.cmd(autocmd_command)
-end
-
 return M
