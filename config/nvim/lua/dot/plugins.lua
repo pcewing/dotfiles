@@ -3,7 +3,6 @@ local Plug = vim.fn["plug#"]
 
 local Log           = require('dot.log')
 local Notifications = require('dot.notifications')
-local Util          = require('dot.util')
 local VimPlug       = require('dot.vim_plug')
 
 -- Function to list snippets and allow FZF selection
@@ -58,8 +57,17 @@ end
 
 local M = {}
 
+-- Plugins are declared with Plug() and then configured in the order listed
+-- here, so order is significant: a later spec's configure can rely on an earlier
+-- one having run. (A string-keyed table iterated with pairs() would run them in
+-- a different order on every launch.)
+--
+-- Each spec has a name (for the log), an init function that declares the
+-- plugin's Plug() lines, and optionally an is_enabled function and a configure
+-- function that runs after plug#end().
 local plugins = {
-    copilot = {
+    {
+        name = 'copilot',
         is_enabled = function()
             return os.getenv("NVIM_COPILOT_ENABLED") == "1"
         end,
@@ -85,7 +93,8 @@ local plugins = {
         end
     },
 
-    fzf = {
+    {
+        name = 'fzf',
         init = function()
             Plug('junegunn/fzf', { ['dir'] = '~/.fzf', ['do'] = './install --bin' })
             Plug('junegunn/fzf.vim')
@@ -106,7 +115,8 @@ local plugins = {
         end
     },
 
-    nvim_treesitter = {
+    {
+        name = 'nvim_treesitter',
         init = function()
             -- Sometimes the automatic :TSUpdate won't run successfully and then it
             -- won't rerun. If cryptic treesitter errors show up after running
@@ -119,7 +129,8 @@ local plugins = {
         end
     },
 
-    ultisnips = {
+    {
+        name = 'ultisnips',
         init = function()
             Plug('SirVer/ultisnips')
             Plug('honza/vim-snippets')
@@ -133,7 +144,8 @@ local plugins = {
         end
     },
 
-    clang_format = {
+    {
+        name = 'clang_format',
         init = function()
             Plug('rhysd/vim-clang-format')
         end,
@@ -158,7 +170,8 @@ local plugins = {
         end
     },
 
-    lsp_config = {
+    {
+        name = 'lsp_config',
         init = function()
             Plug('neovim/nvim-lspconfig')
         end,
@@ -170,7 +183,8 @@ local plugins = {
         end
     },
 
-    other = {
+    {
+        name = 'other',
         init = function()
             -- Colorschemes
             Plug('chriskempson/base16-vim')
@@ -195,49 +209,26 @@ function M.init()
         return
     end
 
+    -- Only plugins declared between plug#begin and plug#end are configured
+    local enabled = {}
+
     vim.call('plug#begin')
-
-    for plugin_name, plugin in pairs(plugins) do
-        M._init_plugin(plugin_name, plugin)
+    for _, plugin in ipairs(plugins) do
+        if plugin.is_enabled == nil or plugin.is_enabled() then
+            Log.debug('initializing ' .. plugin.name .. ' plugin')
+            plugin.init()
+            table.insert(enabled, plugin)
+        else
+            Log.debug('skip initializing ' .. plugin.name .. ' plugin because it is disabled')
+        end
     end
-
     vim.call('plug#end')
 
-    for plugin_name, plugin in pairs(plugins) do
-        M._configure_plugin(plugin_name, plugin)
-    end
-end
-
-function M._init_plugin(plugin_name, plugin)
-    if plugin.is_enabled ~= nil and not plugin.is_enabled() then
-        Log.debug('skip initializing ' .. plugin_name .. ' plugin because it is disabled')
-        return
-    end
-
-    Log.debug('initializing ' .. plugin_name .. ' plugin')
-
-    if plugin.init == nil then
-        Log.warn('plugin ' .. plugin_name .. ' has no init function')
-        Notifications.add('plugin ' .. plugin_name .. ' has no init function')
-        return
-    end
-
-    local init_result = plugin.init()
-    if init_result == nil or init_result == true then
-        plugin.initialized = true
-    end
-end
-
-function M._configure_plugin(plugin_name, plugin)
-    if plugin.initialized == nil or not plugin.initialized then
-        Log.debug('skip configuring ' .. plugin_name .. ' plugin because it is not initialized')
-        return
-    end
-
-    Log.debug('configuring ' .. plugin_name .. ' plugin')
-
-    if plugin.configure ~= nil then
-        plugin.configure()
+    for _, plugin in ipairs(enabled) do
+        if plugin.configure ~= nil then
+            Log.debug('configuring ' .. plugin.name .. ' plugin')
+            plugin.configure()
+        end
     end
 end
 
