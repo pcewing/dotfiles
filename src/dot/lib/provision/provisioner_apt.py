@@ -33,6 +33,22 @@ APT_PACKAGES = {
         "clangd",
         "fd-find",
     ],
+    # Global Python libraries. `dot`, `aim`, and the scratch scripts written to
+    # debug them run outside the dotfiles virtualenv, so install these into the
+    # system Python instead of relying on pipx/venv installs.
+    "python": [
+        "python3-argcomplete",
+        "python3-coverage",
+        "python3-jinja2",
+        "python3-json5",
+        "python3-mistune",
+        "python3-pytest",
+        "python3-pytest-cov",
+        "python3-rich",
+        "python3-tomlkit",
+        "python3-yaml",        # PyYAML
+        "python3-zstandard",
+    ],
     "gui-tools": [
         "fonts-font-awesome",  # Used for media buttons on polybar
         "rofi",                # Fuzzy application launcher
@@ -57,6 +73,8 @@ APT_PACKAGES = {
         "rxvt-unicode",        # Backup terminal emulator
         "i3",                  # Window manager (gaps are mainline as of 4.22)
         "i3status",            # i3 status bar
+        "py3status",           # i3/sway status bar; the bar runs the system binary, not the venv
+        "python3-mpd",         # python-mpd2, required by py3status's mpd_status module
     ],
     "media": [
         "inkscape",            # Vector graphics editor
@@ -91,6 +109,7 @@ class AptProvisioner(IComponentProvisioner):
             Apt.upgrade(self._args.dry_run)
 
         packages = list(APT_PACKAGES["core"])
+        packages += APT_PACKAGES["python"]
 
         if self._args.tags.has(Tags.x11):
             packages += APT_PACKAGES["gui-tools"]
