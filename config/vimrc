@@ -9,7 +9,7 @@ set gcr=a:blinkon0                " Disable cursor blink
 set visualbell                    " No sounds
 set autoread                      " Reload files changed outside vim
 set autowrite                     " Write the file on :make
-set nohidden                      " Hide buffer instead of closing it
+set hidden                        " Allow switching away from modified buffers without saving them
 set splitright                    " When splitting vertically, the new pane should be on the right
 set splitbelow                    " When splitting horizontally, the new pane should be on the bottom
 set ruler                         " Show the line & column number at cursor

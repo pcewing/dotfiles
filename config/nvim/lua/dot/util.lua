@@ -112,8 +112,8 @@ end
 
 -- Closes every tab page to the right of the current one. Each 'tabclose' is
 -- guarded so the loop cannot spin forever: it stops if the command fails (for
--- example E37 on a modified buffer when 'hidden' is off) or if the tab count
--- does not actually decrease.
+-- example an autocmd that throws) or if the tab count does not actually
+-- decrease.
 function M.close_tabs_to_right()
     local cur = vim.fn.tabpagenr()
     while cur < vim.fn.tabpagenr('$') do
