@@ -17,13 +17,11 @@ local Settings      = require('dot.settings')
 local Theme         = require('dot.theme')
 local Util          = require('dot.util')
 
+-- "p" makes mkdir() a no-op when the directory already exists
 local tmp_dir = Util.tmp_dir()
+vim.fn.mkdir(tmp_dir, "p", "0775")
 
-if not Util.directory_exists(tmp_dir) then
-    vim.fn.mkdir(tmp_dir, "p", "0775")
-end
-
-Log.init(Log.levels.info, Util.path_join(tmp_dir, "nvim.log"))
+Log.init(Log.levels.info, vim.fs.joinpath(tmp_dir, "nvim.log"))
 Log.debug('loading init.lua')
 
 

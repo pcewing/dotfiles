@@ -128,7 +128,9 @@ function M.init()
     M._resize()
     M._misc()
 
-    -- Reload/edit config
+    -- Reload/edit config. <leader>x opens the repo's copy rather than
+    -- stdpath('config'): on Windows the config is copied there read-only by
+    -- `dot links init`, and edits belong in the repo.
     vim.keymap.set('n', '<leader>x', '<cmd>e ~/dot/config/nvim/init.lua<CR>', { desc = 'Edit Neovim config' })
     vim.keymap.set('n', '<leader>r', Util.reload_config, { desc = 'Reload Neovim config' })
 end

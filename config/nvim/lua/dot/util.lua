@@ -15,18 +15,6 @@ function M.is_linux()
     return vim.fn.has('linux') == 1
 end
 
-function M.path_sep()
-    if M.is_windows() then return "\\" else return "/" end
-end
-
-function M.str_join(sep, ...)
-    return table.concat({...}, sep)
-end
-
-function M.path_join(...)
-    return M.str_join(M.path_sep(), ...)
-end
-
 -- Returns the current user's home directory. os.getenv('HOME') is not set on
 -- Windows (which uses USERPROFILE instead), so rely on Neovim's '~' expansion,
 -- which resolves the home directory correctly on both Windows and Linux.
@@ -35,27 +23,11 @@ function M.home_dir()
 end
 
 function M.tmp_dir()
-    return M.path_join(M.home_dir(), '.tmp', 'nvim')
-end
-
-function M.data_dir()
-    return vim.fn.stdpath('data')
-end
-
-function M.config_dir()
-    return vim.fn.stdpath('config')
+    return vim.fs.joinpath(M.home_dir(), '.tmp', 'nvim')
 end
 
 function M.config_path()
-    return M.path_join(M.config_dir(), "init.lua")
-end
-
-function M.is_int(n)
-  return (type(n) == "number") and (math.floor(n) == n)
-end
-
-function M.is_string(n)
-  return type(n) == "string"
+    return vim.fs.joinpath(vim.fn.stdpath('config'), 'init.lua')
 end
 
 -- Returns whether an environment variable is set to a non-empty value. An empty
@@ -65,21 +37,30 @@ function M.env_is_set(name)
     return value ~= nil and value ~= ""
 end
 
-function M.reload_config(config)
-    if config == nil or not M.is_string(config) or string.len(config) == 0 then
-        config = M.config_path()
-    end
-
-    vim.cmd("luafile " .. config)
+-- Re-runs init.lua, which also forgets the cached dot.* modules so that changes
+-- to them are picked up.
+function M.reload_config()
+    vim.cmd.luafile(M.config_path())
 end
 
+-- Formats the current file with black and reloads it. The file name is passed
+-- as an argument rather than through a shell, so spaces or shell characters in
+-- it are harmless.
 function M.format_current_python_file()
-    local command = "black " .. vim.api.nvim_buf_get_name(0) .. " 2>&1"
-    local handle = io.popen(command)
-    local result = handle:read("*a")
-    handle:close()
-    vim.cmd "edit"
-    print(result)
+    local command = { 'black', vim.api.nvim_buf_get_name(0) }
+
+    -- vim.system throws if black itself cannot be run (e.g. it is not on PATH)
+    local ok, result = pcall(function()
+        return vim.system(command, { text = true }):wait()
+    end)
+    if not ok then
+        vim.notify('Failed to run black: ' .. tostring(result), vim.log.levels.ERROR)
+        return
+    end
+
+    vim.cmd.edit()
+    -- black reports what it did (or the error) on stderr
+    print(vim.trim(result.stderr .. result.stdout))
 end
 
 function M.move_to_column(column)
@@ -87,7 +68,7 @@ function M.move_to_column(column)
     local curr = vim.api.nvim_win_get_cursor(0)[2]
 
     -- Make sure the target column is valid
-    if column == nil or not M.is_int(column) then
+    if column == nil or column % 1 ~= 0 then
         column = 80
     end
 
@@ -138,25 +119,11 @@ function M.is_wsl()
     return type(x) == "string" and string.len(x) > 0
 end
 
-function M.directory_exists(path)
-    return vim.fn.isdirectory(path) ~= 0
-end
-
-function M.file_exists(path)
-   local f = io.open(path, "r")
-   if f ~= nil then
-       io.close(f)
-       return true
-   else
-       return false
-   end
-end
-
 -- Returns the current file path and line number underneath the cursor
 -- formatted as:
 -- path/to/file.cpp:42
 function M.get_file_and_line()
-    return M.str_join(':', vim.fn.expand('%'), vim.fn.line('.'))
+    return vim.fn.expand('%') .. ':' .. vim.fn.line('.')
 end
 
 function M.copy_file_and_line()

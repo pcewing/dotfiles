@@ -1,10 +1,9 @@
 local vim = vim
 
 local Log = require('dot.log')
-local Util = require('dot.util')
 
 local M = {
-    path = Util.path_join(Util.data_dir(), 'site', 'autoload', 'plug.vim'),
+    path = vim.fs.joinpath(vim.fn.stdpath('data'), 'site', 'autoload', 'plug.vim'),
     url = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 }
 
@@ -22,7 +21,7 @@ local function last_line(text)
 end
 
 function M.is_installed()
-    return Util.file_exists(M.path)
+    return vim.uv.fs_stat(M.path) ~= nil
 end
 
 function M.install()
