@@ -18,6 +18,7 @@ from dot.lib.provision.provisioner_links import LinksProvisioner
 from dot.lib.provision.provisioner_neovim import NeovimProvisioner
 from dot.lib.provision.provisioner_nodejs import NodeJSProvisioner
 from dot.lib.provision.provisioner_pip import PipProvisioner
+from dot.lib.provision.provisioner_pipx import PipxProvisioner
 from dot.lib.provision.provisioner_ripgrep import RipgrepProvisioner
 from dot.lib.provision.provisioner_rust import RustProvisioner
 from dot.lib.provision.provisioner_system import SystemConfigProvisioner
@@ -35,6 +36,7 @@ from dot.lib.provision.provisioner_wsl import WslProvisioner
 _COMPONENT_PROVISIONERS: dict[str, type[IComponentProvisioner]] = {
     "apt":          AptProvisioner,
     "pip":          PipProvisioner,
+    "pipx":         PipxProvisioner,
     "nodejs":       NodeJSProvisioner,
     "go":           GoProvisioner,
     "rust":         RustProvisioner,

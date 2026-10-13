@@ -177,14 +177,10 @@ local plugins = {
     lsp_config = {
         init = function()
             Plug('neovim/nvim-lspconfig')
-        end,        configure = function()
-            local LspClangd = require('dot.lsp_clangd')
-            local LspGopls = require('dot.lsp_gopls')
-            local LspJedi = require('dot.lsp_jedi')
-
-            LspClangd.configure()
-            LspGopls.configure()
-            LspJedi.configure()
+        end,
+        configure = function()
+            local Lsp = require('dot.lsp')
+            Lsp.configure()
 
             Map.nnoremap('<leader>ls', ':LspStop<cr>')
         end
@@ -196,7 +192,6 @@ local plugins = {
             Plug('chriskempson/base16-vim')
 
             Plug('rodjek/vim-puppet')
-            Plug('fatih/vim-go')
             --Plug('OrangeT/vim-csharp')
             Plug('mattn/emmet-vim')
             Plug('tpope/vim-vinegar')

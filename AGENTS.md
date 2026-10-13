@@ -87,13 +87,13 @@ Keep this list small; everything else belongs in a provisioner. Options:
 - `provisioner_*.py` — one module per component.
 
 `dot provision` runs components in registry order, so dependencies are honored:
-`apt` first (installs packages other components need), then `pip`, development
+`apt` first (installs packages other components need), then `pip`, `pipx`, development
 toolchains, version-tracked tools, `links`, `dot` completion, `wsl`, `system`
 (sets `update-alternatives` for the `neovim`/`kitty` binaries), `docker`, and
 `win32yank`.
 
 Components use the shared helpers in `src/dot/lib/common/` (`apt.py`,
-`pip.py`, `github.py`, `archive.py`, `shell.py`, `alternatives.py`,
+`pip.py`, `pipx.py`, `github.py`, `archive.py`, `shell.py`, `alternatives.py`,
 `version_cache.py`, etc.). The version-tracked components cache the latest
 release in `version_cache.json5` (gitignored) so GitHub lookups are not
 repeated on every run.

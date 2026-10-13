@@ -17,7 +17,6 @@ PIP_PACKAGES = {
         "ruff",
         "pynvim",
         "python-mpd2",
-        "jedi-language-server",
     ],
     "x11": [
         "py3status",

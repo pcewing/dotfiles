@@ -32,6 +32,7 @@ APT_PACKAGES = {
         "clang",
         "clangd",
         "fd-find",
+        "pipx",
     ],
     # Global Python libraries. `dot`, `aim`, and the scratch scripts written to
     # debug them run outside the dotfiles virtualenv, so install these into the
