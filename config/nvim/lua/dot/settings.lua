@@ -16,6 +16,12 @@ function M._base()
     vim.opt.clipboard = "unnamed,unnamedplus"         -- Use system clipboard if possible
     vim.opt.cursorline = true                         -- Add a visual indicator to the line the cursor is on
 
+    -- Show the completion menu even for a single match, don't select (and
+    -- insert) the first match automatically, and show item documentation in a
+    -- popup. "noselect" is what makes LSP autocompletion usable: without it,
+    -- the menu that opens after typing "." would insert its first item.
+    vim.opt.completeopt = { 'menuone', 'noselect', 'popup' }
+
     -- Use global status line
     vim.opt.laststatus = 3
 end

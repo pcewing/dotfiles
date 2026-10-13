@@ -22,7 +22,14 @@ Neovim provides these LSP mappings itself, so they are not defined here:
     <C-]>      go to definition         (via 'tagfunc')
     <C-x><C-o> completion               (via 'omnifunc')
 
-See :help lsp-defaults
+Completion also opens automatically after the server's trigger characters
+(e.g. "." or "->"); see on_lsp_attach below. In the completion menu:
+
+    <C-n>/<C-p>  next/previous item
+    <C-y>        accept the item (expands LSP snippets, applies auto-imports)
+    <C-e>        close the menu
+
+See :help lsp-defaults and :help lsp-completion
 
 ]]
 
@@ -81,6 +88,12 @@ local function on_lsp_attach(args)
 
     map_keys(args.buf, common_keys)
     map_keys(args.buf, server.keys or {})
+
+    -- Built-in LSP completion. autotrigger opens the menu when the server's
+    -- trigger characters are typed; elsewhere use <C-x><C-o>. This also
+    -- expands snippet items and applies the server's additional edits (such as
+    -- clangd adding an #include) when an item is accepted with <C-y>.
+    vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
 end
 
 function M.configure()

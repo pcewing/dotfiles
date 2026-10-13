@@ -193,9 +193,7 @@ local plugins = {
             Plug('elubow/cql-vim')
             Plug('tpope/vim-fugitive')
             Plug('igankevich/mesonic')
-            Plug('hrsh7th/nvim-cmp')
             Plug('nvim-lua/plenary.nvim')
-            Plug('hoob3rt/lualine.nvim')
         end
     },
 }
