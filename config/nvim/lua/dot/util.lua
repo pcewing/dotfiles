@@ -147,9 +147,4 @@ function M.copy_code_snippet(start_line, end_line)
     print("Snippet copied to clipboard!")
 end
 
--- Returns whether or not a buffer contains unsaved changes
-function M.is_buffer_modified(buffer_index)
-    return vim.fn.getbufvar(buffer_index, '&modified') == 1
-end
-
 return M

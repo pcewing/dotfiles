@@ -56,205 +56,80 @@ function M._directories()
     vim.opt.directory = { dir, "." }
 end
 
-function M._get_tab_info(i)
-    -- Check whether or not the tab is selected
-    local is_selected = false
-    if i == vim.fn.tabpagenr() then
-        is_selected = true
-    end
+-- The shortest a file name in the tabline is cut down to, not counting the "…"
+-- that marks it as shortened
+local min_name_length = 4
 
-    local buflist = vim.fn.tabpagebuflist(i)
-    local winnr = vim.fn.tabpagewinnr(i)
+-- Each tab is labelled "+[n] name": "+" when a buffer visible in the tab has
+-- unsaved changes, the tab number (for {n}gt), and the name of the file in the
+-- tab's focused window. When the labels don't fit, the longest names are
+-- shortened first, from the left ("…e_name.c"), down to min_name_length. If
+-- they still don't fit, the trailing "%<" makes Neovim cut off the tabs on the
+-- right (it would otherwise cut from the left).
+function M._generate_tabline()
+    local count = vim.fn.tabpagenr('$')
+    local current = vim.fn.tabpagenr()
 
-    -- The title is the name of the file currently open in the buffer focused
-    -- within the tab. If it doesn't have one because it's an unsaved buffer,
-    -- fall back to UNSAVED
-    local title = vim.fn.fnamemodify(vim.fn.bufname(buflist[winnr]), ":t")
-    if #title == 0 then
-        title = "UNSAVED"
-    end
-
-    -- Check if any buffers open in the tab are modified and need to be save
-    local is_modified = false
-    for _, i in ipairs(buflist) do
-        if Util.is_buffer_modified(i) then
-            Log.debug("buffer " .. i .. " is modified")
-            is_modified = true
-            break
+    local tabs = {}
+    for i = 1, count do
+        local buffers = vim.fn.tabpagebuflist(i)
+        local name = vim.fn.fnamemodify(vim.fn.bufname(buffers[vim.fn.tabpagewinnr(i)]), ':t')
+        if name == '' then
+            name = 'UNSAVED'
         end
-    end
 
-    return {
-        title = title,
-        index = i,
-        is_modified = is_modified,
-        is_selected = is_selected
-    }
-end
-
-function M._format_tabline_tab(tab)
-    local s = ""
-
-    -- Format the modified indicator
-    s = s .. (tab["is_modified"] and "+" or " ")
-
-    -- Format the tab index
-    s = s .. "[" .. tab["index"] .. "] "
-
-    -- Format the tab title
-    s = s .. tab["title"]
-
-    return s
-end
-
-function M._format_tabline_no_truncation(tabs)
-    local s = ""
-    for i, tab in pairs(tabs) do
-        -- Separate tabs with a space
-        if i > 1 then
-            s = s .. " "
+        local is_modified = false
+        for _, buffer in ipairs(buffers) do
+            if vim.bo[buffer].modified then
+                is_modified = true
+                break
+            end
         end
-        -- Set the tab metadata
-        s = s .. (tab["is_selected"] and "%#TabLineSel#" or "%#TabLine#")
-        s = s .. "%" .. tab["index"] .. "T"
 
-        s = s .. M._format_tabline_tab(tab)
-    end
-    return s .. '%#TabLineFill#%T'
-end
-
--- The "Basic" truncation strategy is to hide all of the tabs that don't fit on
--- the tabline and put an indicator on the right of how many more tabs there
--- are. I Personallly like this better than squishing each tab down. I'd rather
--- the first N tabs be readable and just hide the ones that don't fit than make
--- them all less readable.
-function M._format_tabline_basic_truncation(tabs, truncation)
-    -- TODO: We could merge this loop with the one below and do this in one
-    -- pass but I'm too lazy right now
-    local tab_contents = {}
-    for i, tab in pairs(tabs) do
-        local meta = (tab["is_selected"] and "%#TabLineSel#" or "%#TabLine#")
-        meta = meta .. "%" .. tab["index"] .. "T"
-
-        local label = M._format_tabline_tab(tab)
-
-        tab_contents[i] = {
-            meta = meta,
-            label = label
+        tabs[i] = {
+            prefix = (is_modified and '+' or ' ') .. '[' .. i .. '] ',
+            name = name,
+            width = vim.fn.strdisplaywidth(name),
         }
     end
 
-    local suffix_base_len = #" ... (x more)"
-    local current_length = 0
-    local truncate_index = 0
-    for i, tab_content in pairs(tab_contents) do
-        -- First, check if we can even fit the truncation suffix. It could be
-        -- longer than the tab label if the file in the tab has a very short
-        -- name. If this won't fit, then we actually need to start truncating
-        -- at the previous tab
-        local remaining_tabs = (#tabs - i) + 1
-        local suffix_len = suffix_base_len + math.floor(remaining_tabs / 10)
-        if (current_length + suffix_len) > truncation["max_length"] then
-            truncate_index = math.max(0, i - 1)
-            break
+    -- Total width of the tabline if no name is wider than max_width (one space
+    -- separates the tabs)
+    local function total_width(max_width)
+        local total = count - 1
+        for _, tab in ipairs(tabs) do
+            total = total + #tab.prefix + math.min(tab.width, max_width)
         end
-
-        -- Separate tabs with a space
-        local separator = ""
-        if i > 1 then
-            separator = " "
-        end
-
-        local tab_len = #tab_content["label"] + #separator
-
-        -- If appending this label would exceed the max length, start
-        -- truncating at this tab
-        if (current_length + tab_len) > truncation["max_length"] then
-            truncate_index = i
-            break
-        end
-
-        current_length = current_length + tab_len
+        return total
     end
 
-    -- Now that we know where to start truncating, format the tabline
-    local s = ""
-    for i, tab_content in pairs(tab_contents) do
-        if i >= truncate_index then
-            break
-        end
-        if i > 1 then
-            s = s .. " "
-        end
-        s = s .. tab_content["meta"] .. tab_content["label"]
-    end
-
-    -- Align the truncation suffix to the right
-    s = s .. "%="
-
-    -- Fill any extra space and disassociate the following text from the last tab
-    s = s .. "%#TabLineFill#%T"
-
-    -- Append the truncation suffix
-    local truncated_tabs = (#tabs - truncate_index) + 1
-    s = s .. "... (" .. tostring(truncated_tabs) .. " more)"
-
-    return s
-end
-
-function M._format_tabline(tabs, truncation)
-    if truncation["strategy"] == "Basic" then
-        return M._format_tabline_basic_truncation(tabs, truncation)
-    else
-        return M._format_tabline_no_truncation(tabs)
-    end
-end
-
--- Tabline generation is done in two steps. The first step collects all of the
--- tab information and the second step formats the tabline. The reason is that
--- we need to be able to check the total length and truncate appropriately.
--- That's harder to do when the string contains characters that are actually
--- printed, like the `%#TabLine#` tokens. So instead, we need to gather all of
--- the desired tab labels, sum their lengths, choose a truncation strategy, and
--- then format everything using that strategy.
-function M._generate_tabline()
-    -- Get all of the tab information
-    local tabs = {}
-    for i = 1, vim.fn.tabpagenr('$') do
-        tabs[i] = M._get_tab_info(i)
-    end
-
-    -- The length of the tab label prefix (I.E. "+[1] "), which can vary if the
-    -- tab index is multiple digits. Ignoring the case of >100 tabs; I never
-    -- use that many and there would be no good way to format that anyways
-    local prefix_length = #tabs >= 10 and 6 or 5
-
-    local total_length = 0
+    -- Lower the widest allowed name until the tabs fit. A shortened name keeps
+    -- max_width - 1 cells and adds the "…".
+    local max_width = 0
     for _, tab in ipairs(tabs) do
-        local title_len = #tab["title"]
-        local tab_len = title_len + prefix_length
-        total_length = total_length + tab_len
+        max_width = math.max(max_width, tab.width)
+    end
+    while max_width > min_name_length + 1 and total_width(max_width) > vim.o.columns do
+        max_width = max_width - 1
     end
 
-    -- We separate tabs with a space so account for that as well
-    total_length = total_length + #tabs - 1
+    local labels = {}
+    for i, tab in ipairs(tabs) do
+        local name = tab.name
+        if tab.width > max_width then
+            while vim.fn.strdisplaywidth(name) > max_width - 1 do
+                name = vim.fn.strcharpart(name, 1)
+            end
+            name = '…' .. name
+        end
 
-    local truncation = {
-        strategy = "None",
-        total_length = total_length,
-        max_length = vim.o.columns,
-        amount = 0,
-        amount_per_tab = 0,
-    }
-
-    -- Handle truncating if the tabline is too long
-    if total_length > truncation["max_length"] then
-        truncation["strategy"] = "Basic"
-        truncation["amount"] = truncation["total_length"] - truncation["max_length"]
-        truncation["amount_per_tab"] = truncation["amount"] - #tabs
+        -- %nT makes a mouse click select the tab; "%" in a file name must be
+        -- doubled so it isn't read as a tabline item
+        labels[i] = (i == current and '%#TabLineSel#' or '%#TabLine#')
+            .. '%' .. i .. 'T' .. tab.prefix .. (name:gsub('%%', '%%%%'))
     end
 
-    return M._format_tabline(tabs, truncation)
+    return table.concat(labels, '%#TabLineFill# ') .. '%#TabLineFill#%T%<'
 end
 
 function M._tab_line()
