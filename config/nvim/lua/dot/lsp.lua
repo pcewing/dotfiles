@@ -29,11 +29,16 @@ Completion also opens automatically after the server's trigger characters
     <C-y>        accept the item (expands LSP snippets, applies auto-imports)
     <C-e>        close the menu
 
+This file adds gd, <C-k>, gD (clangd only), and <leader>fm, a live fzf picker
+for workspace symbols (see lsp_symbols.lua).
+
 See :help lsp-defaults and :help lsp-completion
 
 ]]
 
 local vim = vim
+
+local LspSymbols = require('dot.lsp_symbols')
 
 local M = {}
 
@@ -88,6 +93,11 @@ local function on_lsp_attach(args)
 
     map_keys(args.buf, common_keys)
     map_keys(args.buf, server.keys or {})
+
+    vim.keymap.set('n', '<leader>fm', LspSymbols.pick, {
+        buffer = args.buf,
+        desc = 'Find LSP workspace symbol (fzf)',
+    })
 
     -- Built-in LSP completion. autotrigger opens the menu when the server's
     -- trigger characters are typed; elsewhere use <C-x><C-o>. This also

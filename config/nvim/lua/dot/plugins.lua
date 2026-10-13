@@ -91,26 +91,18 @@ local plugins = {
             Plug('junegunn/fzf.vim')
         end,
         configure = function()
-            -- We should remove this eventually in favor of the below
+            -- The one exception to the <leader>f* scheme below; it's used too
+            -- often to retire (and matches config/vimrc)
             vim.keymap.set('n', '<Leader>o', '<cmd>Files<CR>', { desc = 'Find file (fzf)' })
 
-            vim.keymap.set('n', '<leader>ft', '<cmd>Tags<CR>', { desc = 'Find tag (fzf)' })
+            -- Find mappings. The LSP workspace symbol picker, <leader>fm, is
+            -- mapped in lsp.lua because it needs an attached server.
             vim.keymap.set('n', '<leader>fo', '<cmd>Files<CR>', { desc = 'Find file (fzf)' })
+            vim.keymap.set('n', '<leader>ft', '<cmd>Tags<CR>', { desc = 'Find tag (fzf)' })
+            vim.keymap.set('n', '<leader>fg', '<cmd>RG<CR>', { desc = 'Live grep (fzf)' })
+            vim.keymap.set('n', '<leader>fb', '<cmd>Buffers<CR>', { desc = 'Find buffer (fzf)' })
+            vim.keymap.set('n', '<leader>fh', '<cmd>Helptags<CR>', { desc = 'Find help tag (fzf)' })
             vim.keymap.set('n', '<leader>fs', show_snippets, { desc = 'Find and expand snippet (fzf)' })
-        end
-    },
-
-    telescope = {
-        init = function()
-            Plug('nvim-telescope/telescope.nvim')
-        end,
-        configure = function()
-            vim.keymap.set('n', '<leader>tf', '<cmd>Telescope find_files<CR>', { desc = 'Find file (Telescope)' })
-            vim.keymap.set('n', '<leader>tt', '<cmd>Telescope tags<CR>', { desc = 'Find tag (Telescope)' })
-            vim.keymap.set('n', '<leader>ts', '<cmd>Telescope lsp_dynamic_workspace_symbols<CR>', { desc = 'Find LSP workspace symbol (Telescope)' })
-            vim.keymap.set('n', '<leader>tg', '<cmd>Telescope live_grep<CR>', { desc = 'Live grep (Telescope)' })
-            vim.keymap.set('n', '<leader>tb', '<cmd>Telescope buffers<CR>', { desc = 'Find buffer (Telescope)' })
-            vim.keymap.set('n', '<leader>th', '<cmd>Telescope help_tags<CR>', { desc = 'Find help tag (Telescope)' })
         end
     },
 
@@ -193,7 +185,6 @@ local plugins = {
             Plug('elubow/cql-vim')
             Plug('tpope/vim-fugitive')
             Plug('igankevich/mesonic')
-            Plug('nvim-lua/plenary.nvim')
         end
     },
 }
