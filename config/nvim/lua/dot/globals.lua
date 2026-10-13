@@ -10,37 +10,21 @@ function M._move_to_column(opts)
     Util.move_to_column(column)
 end
 
-function M._reload_snippets(commands)
+function M._copy_code_snippet(opts)
+    Util.copy_code_snippet(opts.line1, opts.line2)
+end
+
+function M._reload_snippets()
     vim.cmd('call UltiSnips#RefreshSnippets()')
 end
 
-function M._create_command(name, fn, opts)
-    vim.api.nvim_create_user_command(name, fn, opts)
-end
-
-function M._create_commands(commands)
-    for _, command in ipairs(commands) do
-        M._create_command(unpack(command))
-    end
-end
-
 function M.init()
-    _G.close_tabs_to_right        = Util.close_tabs_to_right
-    _G.copy_code_snippet          = Util.copy_code_snippet
-    _G.copy_file_and_line         = Util.copy_file_and_line
-    _G.format_current_python_file = Util.format_current_python_file
-    _G.move_to_column             = Util.move_to_column
-    _G.print_current_filetype     = Util.print_current_filetype
-    _G.reload_config              = Util.reload_config
-
-    _G.install_vim_plug           = VimPlug.install
-
-    M._create_commands({
-        { 'ReloadConfig',     Util.reload_config,       {} },
-        { 'CloseTabsToRight', Util.close_tabs_to_right, {} },
-        { 'MoveToColumn',     M._move_to_column,        { nargs = 1 } },
-        { 'ReloadSnippets',   M._reload_snippets,       {} },
-    })
+    vim.api.nvim_create_user_command('ReloadConfig', function() Util.reload_config() end, {})
+    vim.api.nvim_create_user_command('CloseTabsToRight', Util.close_tabs_to_right, {})
+    vim.api.nvim_create_user_command('MoveToColumn', M._move_to_column, { nargs = 1 })
+    vim.api.nvim_create_user_command('ReloadSnippets', M._reload_snippets, {})
+    vim.api.nvim_create_user_command('CopyCodeSnippet', M._copy_code_snippet, { range = true })
+    vim.api.nvim_create_user_command('InstallVimPlug', function() VimPlug.install() end, {})
 end
 
 return M

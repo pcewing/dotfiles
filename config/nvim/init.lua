@@ -1,14 +1,12 @@
 local vim = vim
 
-if _G.config_loaded == true then
-    for name, _ in pairs(package.loaded) do
-        if name:match('^dot%..*$') then
-            package.loaded[name] = nil
-        end
+-- Forget any cached dot.* modules so that :ReloadConfig, which re-runs this
+-- file, picks up changes to them. On first load there is nothing to forget.
+for name, _ in pairs(package.loaded) do
+    if name:match('^dot%..*$') then
+        package.loaded[name] = nil
     end
 end
-
-_G.config_loaded = true
 
 local Globals       = require('dot.globals')
 local Log           = require('dot.log')

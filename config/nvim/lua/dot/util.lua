@@ -82,10 +82,6 @@ function M.format_current_python_file()
     print(result)
 end
 
-function M.print_current_filetype()
-    print(vim.bo.filetype)
-end
-
 function M.move_to_column(column)
     -- Get the current column
     local curr = vim.api.nvim_win_get_cursor(0)[2]
@@ -168,15 +164,10 @@ function M.copy_file_and_line()
     vim.fn.setreg('+', file_and_line)
 end
 
--- Copies the visually selected lines to the clipboard formatted as a Markdown
--- code block, prefixed with the file path and selected line range. Reads the
--- selection from the '< and '> marks, so it must be called from a visual-mode
--- mapping.
-function M.copy_code_snippet()
+-- Copies the given range of lines to the clipboard formatted as a Markdown
+-- code block, prefixed with the file path and line range.
+function M.copy_code_snippet(start_line, end_line)
     local filename = vim.fn.expand('%')
-
-    local start_line = vim.fn.getpos("'<")[2]
-    local end_line = vim.fn.getpos("'>")[2]
 
     local lines = vim.fn.getline(start_line, end_line)
 

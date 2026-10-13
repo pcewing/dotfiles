@@ -2,7 +2,6 @@ local vim = vim
 local Plug = vim.fn["plug#"]
 
 local Log           = require('dot.log')
-local Map           = require('dot.map')
 local Notifications = require('dot.notifications')
 local Util          = require('dot.util')
 local VimPlug       = require('dot.vim_plug')
@@ -12,7 +11,7 @@ local VimPlug       = require('dot.vim_plug')
 -- massive and most of them I would never use, like all of the licensing
 -- snippets. Maybe find a way to make this better. A simple solution could be
 -- to make a regex filter to remove the ones we don't care about.
-function ShowSnippets()
+local function show_snippets()
   local snippets = vim.fn["UltiSnips#SnippetsInCurrentScope"](1)  -- Get available snippets
 
   -- If no snippets available, notify the user
@@ -49,7 +48,8 @@ function ShowSnippets()
       -- trigger, leave the cursor right after it, and expand.
       vim.schedule(function()
         vim.cmd("startinsert")
-        local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+        local cursor = vim.api.nvim_win_get_cursor(0)
+        local row, col = cursor[1], cursor[2]
         vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, { snippet_trigger })
         vim.api.nvim_win_set_cursor(0, { row, col + #snippet_trigger })
         vim.cmd("call UltiSnips#ExpandSnippetOrJump()")
@@ -70,10 +70,8 @@ local plugins = {
         end,
         configure = function()
             -- Don't use tab to accept Copilot suggestions which conflicts with
-            -- snippets. Not using my Map.imap() function here because it
-            -- doesn't support passing through the `replace_keycodes` and `expr`
-            -- options. (TODO: Add that support)
-            -- I'm not sure why those are necessary but this is copied from:
+            -- snippets. I'm not sure why `expr` and `replace_keycodes` are
+            -- necessary but this is copied from:
             -- https://github.com/github/copilot.vim/blob/53d3091be388ff1edacdb84421ccfa19a446a84d/doc/copilot.txt#L119-L132
             vim.keymap.set('i', '<C-J>', 'copilot#Accept("\\<CR>")', {
                 expr = true,
@@ -96,15 +94,11 @@ local plugins = {
         end,
         configure = function()
             -- We should remove this eventually in favor of the below
-            Map.nnoremap('<Leader>o', ':Files<CR>')
+            vim.keymap.set('n', '<Leader>o', '<cmd>Files<CR>', { desc = 'Find file (fzf)' })
 
-            Map.nnoremap('<leader>ft', ':Tags<cr>')
-            Map.nnoremap('<leader>fo', ':Files<cr>')
-
-            -- TODO: Copy/pasted from ChatGPT, clean up to use the Map module
-            -- like above
-            -- Map the function to a keybinding (e.g., <leader>s)
-            vim.api.nvim_set_keymap("n", "<leader>fs", "<cmd>lua ShowSnippets()<CR>", { noremap = true, silent = true })
+            vim.keymap.set('n', '<leader>ft', '<cmd>Tags<CR>', { desc = 'Find tag (fzf)' })
+            vim.keymap.set('n', '<leader>fo', '<cmd>Files<CR>', { desc = 'Find file (fzf)' })
+            vim.keymap.set('n', '<leader>fs', show_snippets, { desc = 'Find and expand snippet (fzf)' })
         end
     },
 
@@ -113,12 +107,12 @@ local plugins = {
             Plug('nvim-telescope/telescope.nvim')
         end,
         configure = function()
-            Map.nnoremap('<leader>tf', ':Telescope find_files<cr>')
-            Map.nnoremap('<leader>tt', ':Telescope tags<cr>')
-            Map.nnoremap('<leader>ts', ':Telescope lsp_dynamic_workspace_symbols<cr>')
-            Map.nnoremap('<leader>tg', ':Telescope live_grep<cr>')
-            Map.nnoremap('<leader>tb', ':Telescope buffers<cr>')
-            Map.nnoremap('<leader>th', ':Telescope help_tags<cr>')
+            vim.keymap.set('n', '<leader>tf', '<cmd>Telescope find_files<CR>', { desc = 'Find file (Telescope)' })
+            vim.keymap.set('n', '<leader>tt', '<cmd>Telescope tags<CR>', { desc = 'Find tag (Telescope)' })
+            vim.keymap.set('n', '<leader>ts', '<cmd>Telescope lsp_dynamic_workspace_symbols<CR>', { desc = 'Find LSP workspace symbol (Telescope)' })
+            vim.keymap.set('n', '<leader>tg', '<cmd>Telescope live_grep<CR>', { desc = 'Live grep (Telescope)' })
+            vim.keymap.set('n', '<leader>tb', '<cmd>Telescope buffers<CR>', { desc = 'Find buffer (Telescope)' })
+            vim.keymap.set('n', '<leader>th', '<cmd>Telescope help_tags<CR>', { desc = 'Find help tag (Telescope)' })
         end
     },
 
@@ -145,8 +139,7 @@ local plugins = {
             vim.g.UltiSnipsJumpForwardTrigger = "<c-j>"
             vim.g.UltiSnipsJumpBackwardTrigger = "<c-k>"
 
-            Map.nnoremaps('<leader>ue', ':UltiSnipsEdit<CR>')
-
+            vim.keymap.set('n', '<leader>ue', '<cmd>UltiSnipsEdit<CR>', { desc = 'Edit snippets for this filetype' })
         end
     },
 
@@ -170,7 +163,21 @@ local plugins = {
         configure = function()
             -- Format the current C/C++ file with clang-format (Uses vim-clang-format plugin)
             vim.g['clang_format#detect_style_file'] = 1
-            Map.ft_vnoremap('c,cpp', '<Leader>q', ':ClangFormat<CR>')
+
+            -- This uses ':' rather than <cmd> so that leaving visual mode passes
+            -- the selection to the command as a '<,'> range.
+            vim.api.nvim_create_autocmd('FileType', {
+                -- clear = true keeps a config reload from stacking duplicate
+                -- autocmds
+                group = vim.api.nvim_create_augroup('dot_clang_format', { clear = true }),
+                pattern = { 'c', 'cpp' },
+                callback = function(args)
+                    vim.keymap.set('x', '<Leader>q', ':ClangFormat<CR>', {
+                        buffer = args.buf,
+                        desc = 'Format selection with clang-format',
+                    })
+                end,
+            })
         end
     },
 
@@ -182,7 +189,7 @@ local plugins = {
             local Lsp = require('dot.lsp')
             Lsp.configure()
 
-            Map.nnoremap('<leader>ls', ':LspStop<cr>')
+            vim.keymap.set('n', '<leader>ls', '<cmd>LspStop<CR>', { desc = 'Stop LSP clients' })
         end
     },
 
@@ -226,7 +233,7 @@ local plugins = {
 
 function M.init()
     if not VimPlug.is_installed() then
-        Notifications.add("vim-plug is not installed; install it via `:lua install_vim_plug()`")
+        Notifications.add("vim-plug is not installed; install it via `:InstallVimPlug`")
         return
     end
 
