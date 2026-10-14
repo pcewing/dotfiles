@@ -5,7 +5,7 @@ import json
 import random
 import string
 
-from dot.lib.common.git import Git, GitCommit
+from dot.lib.common.git import Git, GitBranch, GitCommit
 from dot.lib.common.log import Log
 from dot.lib.common.typing import StringOrNone
 
@@ -33,7 +33,7 @@ def add_git_sync_parser(subparsers: argparse._SubParsersAction) -> None:
     parser.set_defaults(func=cmd_git_sync)
 
 
-def generate_temporary_branch_name(length: int = 8):
+def generate_temporary_branch_name(length: int = 8) -> str:
     characters = string.ascii_lowercase + string.digits
     random_string = "".join(random.choice(characters) for _ in range(length))
     return f"temp-{random_string}"
@@ -44,13 +44,13 @@ def generate_temporary_branch_name(length: int = 8):
 def find_common_commit(
     local_commits: list[GitCommit], remote_commits: list[GitCommit]
 ) -> tuple[int, int]:
-    remote_commits_dict = {}
+    remote_commits_dict: dict[str, int] = {}
     for i in range(len(remote_commits)):
         remote_commit = remote_commits[i]
         remote_commits_dict[remote_commit.hash] = i
 
-    local_commit_index = None
-    remote_commit_index = None
+    local_commit_index: int | None = None
+    remote_commit_index: int | None = None
 
     for i in range(len(local_commits)):
         local_commit = local_commits[i]
@@ -61,7 +61,7 @@ def find_common_commit(
         remote_commit_index = remote_commit_index
         break
 
-    if remote_commit_index is None:
+    if local_commit_index is None or remote_commit_index is None:
         raise Exception(
             "Failed to find a common commit between the local and remote repositories"
         )
@@ -75,7 +75,7 @@ def find_common_commit(
     return local_commit_index, remote_commit_index
 
 
-def resolve_local_changes(current_branch: str, dry_run: bool) -> StringOrNone:
+def resolve_local_changes(current_branch: GitBranch, dry_run: bool) -> StringOrNone:
     git_status = Git.status()
 
     Log.info("Checking if there are local changes that need to be committed")
@@ -197,6 +197,6 @@ def cmd_git_sync(args: argparse.Namespace) -> None:
             Git.push(remote, current_branch.name)
 
 
-def print_commits(commits: list[GitCommit]):
+def print_commits(commits: list[GitCommit]) -> None:
     d = {"commits": [c.to_dict() for c in commits]}
     print(json.dumps(d, indent=4))

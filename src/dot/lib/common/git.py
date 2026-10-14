@@ -8,16 +8,16 @@ from dot.lib.common.log import Log
 
 def _execute_git_command(
     cmd: list[str], strip: bool = True, filter_empty: bool = True
-) -> str:
+) -> list[str]:
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, text=True)
     stdout, _ = p.communicate()
     if p.returncode != 0:
         raise Exception("Git command failed: {}".format(" ".join(cmd)))
     lines = stdout.split("\n")
     if strip:
-        lines = [l.strip() for l in lines]
+        lines = [line.strip() for line in lines]
     if filter_empty:
-        lines = [l for l in lines if l != ""]
+        lines = [line for line in lines if line != ""]
     return lines
 
 
@@ -73,7 +73,7 @@ class GitStatus:
         else:
             raise Exception(f"Unknown file status: {file_status}")
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, list[str]]:
         return {
             "staged_modified": self.staged_modified,
             "staged_added": self.staged_added,
@@ -81,10 +81,10 @@ class GitStatus:
             "untracked": self.untracked,
         }
 
-    def to_json(self):
+    def to_json(self) -> str:
         return json.dumps(self.to_dict(), indent=4)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.to_json()
 
 
@@ -93,16 +93,16 @@ class GitCommit:
         self.hash = hash
         self.message = message
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, str]:
         return {
             "hash": self.hash,
             "message": self.message,
         }
 
-    def to_json(self):
+    def to_json(self) -> str:
         return json.dumps(self.to_dict(), indent=4)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.to_json()
 
 
@@ -113,7 +113,7 @@ class GitBranch:
         self.tracking = tracking
         self.hash = hash
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, str | bool]:
         return {
             "name": self.name,
             "is_current": self.is_current,
@@ -121,15 +121,15 @@ class GitBranch:
             "hash": self.hash,
         }
 
-    def to_json(self):
+    def to_json(self) -> str:
         return json.dumps(self.to_dict(), indent=4)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.to_json()
 
 
 class GitRepository:
-    def __init__(self, url, path):
+    def __init__(self, url: str, path: str) -> None:
         self._url = url
         self._path = path
 
@@ -177,8 +177,8 @@ class Git:
         stdout, _ = p.communicate()
         if p.returncode != 0:
             raise Exception("Git command failed: {}".format(" ".join(cmd)))
-        branches = []
-        for line in [l.strip() for l in stdout.split("\n")]:
+        branches: list[GitBranch] = []
+        for line in [ln.strip() for ln in stdout.split("\n")]:
             if line == "":
                 continue
             is_current, name, tracking, hash = line.split(" ")
@@ -197,7 +197,9 @@ class Git:
         raise Exception("Failed to identify current branch")
 
     @staticmethod
-    def get_commits(remote: str = None, limit: int = None) -> list[GitCommit]:
+    def get_commits(
+        remote: str | None = None, limit: int | None = None
+    ) -> list[GitCommit]:
         fmt_hash = "%H"
         fmt_message = "%s"
 
@@ -211,7 +213,7 @@ class Git:
         if remote is not None:
             cmd.append(remote)
 
-        commits = []
+        commits: list[GitCommit] = []
         lines = _execute_git_command(cmd)
         for line in lines:
             hash, message = line.split("|", 1)
