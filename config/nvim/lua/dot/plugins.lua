@@ -114,6 +114,12 @@ local plugins = {
             vim.keymap.set('n', '<leader>fs', show_snippets, { desc = 'Find and expand snippet (fzf)' })
             vim.keymap.set('n', '<leader>fw', '<cmd>Windows<CR>', { desc = 'Find window (fzf)' })
             vim.keymap.set('n', '<leader>f<Tab>', require('dot.fzf_tabs').pick, { desc = 'Find tab (fzf)' })
+            vim.keymap.set(
+                'n',
+                '<leader>fc',
+                require('dot.compile_commands').pick,
+                { desc = 'Choose compile_commands.json for clangd (fzf)' }
+            )
         end,
     },
 
