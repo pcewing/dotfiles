@@ -14,10 +14,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "autoflake",
-    "black",
     "flake8",
-    "isort",
     "mypy",
     "ruff",
     "pytest>=8.0",
@@ -37,3 +34,14 @@ include = ["dot*"]
 
 [tool.setuptools.dynamic]
 version = { attr = "dot.__version__" }
+
+[tool.ruff]
+# Matches requires-python; controls which pyupgrade (UP) rewrites apply.
+target-version = "py311"
+# Lets import sorting (I) treat the `dot` package as first-party.
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "UP", "SIM", "I"]
+# ruff format owns line length.
+ignore = ["E501"]
