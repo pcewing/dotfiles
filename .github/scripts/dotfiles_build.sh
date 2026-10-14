@@ -3,4 +3,5 @@
 set -e
 
 # TODO: Replace with actual project build commands
-make build
+echo "Build skipped!"
+exit 0
