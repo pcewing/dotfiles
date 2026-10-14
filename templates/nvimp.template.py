@@ -10,7 +10,7 @@ VERBOSE = False
 DRY_RUN = False
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="TODO")
     parser.add_argument("-o", "--output", default="TODO", help="TODO")
     parser.add_argument("--dry-run", action="store_true", help="TODO")
@@ -23,8 +23,8 @@ def parse_args():
     return args
 
 
-def main():
-    args = parse_args()
+def main() -> None:
+    args = parse_args()  # noqa: F841 - template placeholder; scripts use args
 
 
 if __name__ == "__main__":

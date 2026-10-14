@@ -52,7 +52,9 @@ def parse_author(author_str: str) -> tuple[str, str]:
     return match.group(1).strip(), match.group(2).strip()
 
 
-def git(*args: str, capture: bool = False) -> subprocess.CompletedProcess:
+def git(
+    *args: str, capture: bool = False, env: dict[str, str] | None = None
+) -> subprocess.CompletedProcess[str]:
     """Run a git command, exiting with an error message on failure."""
     cmd = ["git", *args]
     try:
@@ -61,6 +63,7 @@ def git(*args: str, capture: bool = False) -> subprocess.CompletedProcess:
             check=True,
             capture_output=capture,
             text=True,
+            env=env,
         )
     except subprocess.CalledProcessError as exc:
         stderr = exc.stderr.strip() if exc.stderr else ""
@@ -128,10 +131,10 @@ def cmd_amend(author_map: dict[str, str], *, dry_run: bool) -> None:
         tuple[str, str, str, str]
     ] = []  # (short_hash, old_id, new_name, new_email)
     for commit_hash, name, email in entries:
-        new = parsed.get((name, email))
-        if new is not None:
+        replacement = parsed.get((name, email))
+        if replacement is not None:
             old_id = f"{name} <{email}>"
-            new_id = f"{new[0]} <{new[1]}>"
+            new_id = f"{replacement[0]} <{replacement[1]}>"
             affected.append((commit_hash[:8], old_id, new_id, commit_hash))
 
     if not affected:
