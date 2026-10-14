@@ -9,7 +9,7 @@ class Alternatives:
     @staticmethod
     def install(
         link: str, name: str, path: str, priority: int, sudo: bool, dry_run: bool
-    ):
+    ) -> None:
         Log.info(
             "Adding alternative",
             {
@@ -22,7 +22,7 @@ class Alternatives:
         if dry_run:
             Log.info("skip adding alternative due to --dry-run")
             return
-        cmd = []
+        cmd: list[str] = []
         if sudo:
             cmd.append("sudo")
         cmd += ["update-alternatives", "--install", link, name, path, str(priority)]
@@ -30,12 +30,12 @@ class Alternatives:
             raise Exception("update-alternatives failed")
 
     @staticmethod
-    def set(name: str, path: str, sudo: bool, dry_run: bool):
+    def set(name: str, path: str, sudo: bool, dry_run: bool) -> None:
         Log.info("setting alternative", {"name": name, "path": path})
         if dry_run:
             Log.info("skip setting alternative due to --dry-run")
             return
-        cmd = []
+        cmd: list[str] = []
         if sudo:
             cmd.append("sudo")
         cmd += ["update-alternatives", "--set", name, path]

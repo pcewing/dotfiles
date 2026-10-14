@@ -2,6 +2,7 @@
 
 import json
 import urllib.request
+from typing import Any
 
 from dot.lib.common.util import download_file
 
@@ -13,19 +14,22 @@ class Github:
     def get_latest_release(org: str, repo: str) -> str:
         url = f"https://api.github.com/repos/{org}/{repo}/releases/latest"
         with urllib.request.urlopen(url) as response:
-            return json.loads(response.read())["tag_name"]
+            tag_name: str = json.loads(response.read())["tag_name"]
+            return tag_name
 
     @staticmethod
-    def get_releases(org: str, repo: str) -> list[str]:
+    def get_releases(org: str, repo: str) -> list[dict[str, Any]]:
         url = f"https://api.github.com/repos/{org}/{repo}/releases"
         with urllib.request.urlopen(url) as response:
-            return json.loads(response.read())
+            result: list[dict[str, Any]] = json.loads(response.read())
+            return result
 
     @staticmethod
-    def get_tags(org: str, repo: str) -> list[str]:
+    def get_tags(org: str, repo: str) -> list[dict[str, Any]]:
         url = f"https://api.github.com/repos/{org}/{repo}/tags"
         with urllib.request.urlopen(url) as response:
-            return json.loads(response.read())
+            result: list[dict[str, Any]] = json.loads(response.read())
+            return result
 
     @staticmethod
     def download_release_artifact(

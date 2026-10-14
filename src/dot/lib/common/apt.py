@@ -14,7 +14,15 @@ def _apt_env() -> dict[str, str]:
 
 
 class PackageListing:
-    def __init__(self, name, repositories, version, version_epoch, arch, attrs):
+    def __init__(
+        self,
+        name: str,
+        repositories: list[str],
+        version: str,
+        version_epoch: str | None,
+        arch: str,
+        attrs: list[str],
+    ) -> None:
         self.name = name
         self.repositories = repositories
         self.version = version

@@ -5,6 +5,7 @@ import os
 import shutil
 import stat
 from enum import Enum
+from typing import Any
 
 from dot.lib.common.dir import Dir
 from dot.lib.common.log import Log
@@ -167,18 +168,19 @@ class Link:
 
 
 class Links:
-    _links = None
+    _links: list[Link] | None = None
 
     @staticmethod
     def get() -> list[Link]:
         if Links._links is None:
-            Links._initialize_links()
+            Links._links = Links._initialize_links()
         return Links._links
 
     @staticmethod
-    def _load_links_json():
+    def _load_links_json() -> list[dict[str, Any]]:
         with open(os.path.join(Dir.dot(), "links.json")) as f:
-            return json.loads(f.read())
+            links: list[dict[str, Any]] = json.loads(f.read())
+            return links
 
     @staticmethod
     def _platform() -> str:
@@ -190,7 +192,7 @@ class Links:
         return os_.get_name()
 
     @staticmethod
-    def _initialize_link(link_json) -> Link:
+    def _initialize_link(link_json: dict[str, Any]) -> Link:
         return Link(
             os.path.join(Dir.config(), link_json["src"]),
             os.path.expandvars(link_json["dst"].replace("~", Dir.home())),
@@ -198,9 +200,9 @@ class Links:
         )
 
     @staticmethod
-    def _initialize_links():
+    def _initialize_links() -> list[Link]:
         platform = Links._platform()
-        Links._links = [
+        return [
             Links._initialize_link(link)
             for link in Links._load_links_json()
             if platform in link.get("platforms", ["linux"])
