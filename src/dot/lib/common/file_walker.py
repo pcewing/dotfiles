@@ -3,7 +3,6 @@
 import json
 import os
 from collections.abc import Callable
-from typing import Optional
 
 from dot.lib.common.log import Log
 
@@ -77,8 +76,8 @@ class FileWalker:
             nodes += self._directories
             return nodes
 
-    FileHandler = Optional[Callable[[File], FileHandlerResult | None]]
-    DirectoryHandler = Optional[Callable[[Directory], DirectoryHandlerResult | None]]
+    FileHandler = Callable[[File], FileHandlerResult | None] | None
+    DirectoryHandler = Callable[[Directory], DirectoryHandlerResult | None] | None
 
     class Context:
         def __init__(
@@ -120,7 +119,7 @@ class FileWalker:
             else:
                 Log.warn(
                     "encountered directory entry of unknown type",
-                    [("path", dir_entry.path)],
+                    {"path": dir_entry.path},
                 )
 
     @staticmethod
