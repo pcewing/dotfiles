@@ -5,7 +5,6 @@ import os
 import shutil
 import stat
 from enum import Enum
-from typing import List  # , Self
 
 from dot.lib.common.dir import Dir
 from dot.lib.common.log import Log
@@ -105,7 +104,7 @@ class Link:
                 )
                 os.remove(self.dst)
 
-        Log.info(f"Creating symlink", {"source": self.src, "target": self.dst})
+        Log.info("Creating symlink", {"source": self.src, "target": self.dst})
         os.symlink(self.src, self.dst)
 
     def _create_windows(self) -> None:
@@ -171,14 +170,14 @@ class Links:
     _links = None
 
     @staticmethod
-    def get() -> List[Link]:
+    def get() -> list[Link]:
         if Links._links is None:
             Links._initialize_links()
         return Links._links
 
     @staticmethod
     def _load_links_json():
-        with open(os.path.join(Dir.dot(), "links.json"), "r") as f:
+        with open(os.path.join(Dir.dot(), "links.json")) as f:
             return json.loads(f.read())
 
     @staticmethod

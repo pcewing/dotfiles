@@ -41,19 +41,17 @@ def clone(src_dir, repo, dry_run):
     global IGNORE_ORGS
     if repo.org in IGNORE_ORGS:
         print(
-            "Repo {}/{} is in an org which should be ignored, skipping...".format(
-                repo.org, repo.name
-            )
+            f"Repo {repo.org}/{repo.name} is in an org which should be ignored, skipping..."
         )
         return
 
     path = os.path.join(src_dir, repo.org, repo.name)
     if os.path.exists(path):
-        print("Repo path {}/{} already exists, skipping...".format(repo.org, repo.name))
+        print(f"Repo path {repo.org}/{repo.name} already exists, skipping...")
         return
 
     if dry_run:
-        print("git clone {} {}".format(repo.url, path))
+        print(f"git clone {repo.url} {path}")
     else:
         subprocess.run(["git", "clone", repo.url, path])
 

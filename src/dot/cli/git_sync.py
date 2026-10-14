@@ -124,7 +124,7 @@ def resolve_local_changes(current_branch: str, dry_run: bool) -> StringOrNone:
     Log.info(f"Checking out the original branch ({current_branch.name})")
     if not dry_run:
         Git.checkout(current_branch.name)
-    Log.info(f"Checked out the original branch")
+    Log.info("Checked out the original branch")
 
     return temp_commit_hash
 

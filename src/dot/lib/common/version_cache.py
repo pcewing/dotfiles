@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import os
 import tempfile
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 from dot.lib.common.log import Log
 
@@ -57,8 +57,8 @@ class VersionCache:
         name: str,
         *,
         use_stale_on_failed_attempt: bool = True,
-        failure_cooldown_seconds: Optional[int] = None,
-    ) -> Optional[Dict[str, Any]]:
+        failure_cooldown_seconds: int | None = None,
+    ) -> dict[str, Any] | None:
         """
         Returns the cached entry for `name`, or None if not present / not usable.
 
@@ -106,16 +106,13 @@ class VersionCache:
             last_attempt_dt = VersionCache._parse_iso_utc(entry.get("last_attempt"))
             if last_attempt_dt is not None:
                 # Failed attempt after last successful update?
-                failed_after_update = (
-                    update_dt is None or last_attempt_dt > update_dt
-                )
+                failed_after_update = update_dt is None or last_attempt_dt > update_dt
 
                 within_cooldown = True
                 if failure_cooldown_seconds is not None:
                     within_cooldown = (
-                        (now - last_attempt_dt).total_seconds()
-                        <= failure_cooldown_seconds
-                    )
+                        now - last_attempt_dt
+                    ).total_seconds() <= failure_cooldown_seconds
 
                 if failed_after_update and within_cooldown:
                     last_err = entry.get("last_error")
@@ -131,7 +128,9 @@ class VersionCache:
         return None
 
     @staticmethod
-    def update_version(name: str, version: str, source: Optional[str] = None) -> Dict[str, Any]:
+    def update_version(
+        name: str, version: str, source: str | None = None
+    ) -> dict[str, Any]:
         """
         Upserts a successful version lookup.
         - Sets update_time to now (UTC ISO8601, Z).
@@ -163,7 +162,9 @@ class VersionCache:
         return entry
 
     @staticmethod
-    def add_failed_attempt(name: str, error: Optional[str] = None, source: Optional[str] = None) -> Dict[str, Any]:
+    def add_failed_attempt(
+        name: str, error: str | None = None, source: str | None = None
+    ) -> dict[str, Any]:
         """
         Records a failed attempt to refresh a version.
         - Sets last_attempt to now (UTC ISO8601, Z).
@@ -200,15 +201,20 @@ class VersionCache:
 
     @staticmethod
     def _utc_now() -> datetime:
-        return datetime.now(timezone.utc)
+        return datetime.now(UTC)
 
     @staticmethod
     def _utc_now_iso() -> str:
         # Use second precision, Z suffix.
-        return VersionCache._utc_now().replace(microsecond=0).isoformat().replace("+00:00", "Z")
+        return (
+            VersionCache._utc_now()
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
 
     @staticmethod
-    def _parse_iso_utc(value: Any) -> Optional[datetime]:
+    def _parse_iso_utc(value: Any) -> datetime | None:
         if not isinstance(value, str) or not value:
             return None
         try:
@@ -219,13 +225,13 @@ class VersionCache:
             dt = datetime.fromisoformat(s)
             if dt.tzinfo is None:
                 # Assume UTC if timezone omitted (best-effort)
-                dt = dt.replace(tzinfo=timezone.utc)
-            return dt.astimezone(timezone.utc)
+                dt = dt.replace(tzinfo=UTC)
+            return dt.astimezone(UTC)
         except Exception:
             return None
 
     @staticmethod
-    def _load() -> Dict[str, Any]:
+    def _load() -> dict[str, Any]:
         path = VersionCache.CACHE_PATH
         if not path.exists():
             return {"versions": {}}
@@ -256,7 +262,7 @@ class VersionCache:
         return {"versions": {}}
 
     @staticmethod
-    def _save(data: Dict[str, Any]) -> None:
+    def _save(data: dict[str, Any]) -> None:
         path = VersionCache.CACHE_PATH
         path.parent.mkdir(parents=True, exist_ok=True)
 

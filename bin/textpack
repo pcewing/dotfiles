@@ -74,7 +74,7 @@ def pack(src_dir, files, output_file):
                 ofs.write(text.strip())
                 ofs.write("\n")
             except UnicodeDecodeError:
-                print(f"Skipping file; invalid UTF-8")
+                print("Skipping file; invalid UTF-8")
 
 
 def unpack_file(output_dir, s):

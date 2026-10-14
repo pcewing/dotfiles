@@ -3,7 +3,6 @@
 import json
 import os
 import subprocess
-from typing import List
 
 from dot.lib.common.log import Log
 
@@ -125,7 +124,7 @@ class Apt:
                 raise Exception("Apt upgrade failed")
 
     @staticmethod
-    def install(packages: List[str], dry_run: bool) -> None:
+    def install(packages: list[str], dry_run: bool) -> None:
         Log.info("installing apt packages", {"packages": sorted(packages)})
         if dry_run:
             Log.info("skipping apt install due to --dry-run")
@@ -135,7 +134,7 @@ class Apt:
             raise Exception("Apt install failed")
 
     @staticmethod
-    def install_deb_files(deb_files: List[str], dry_run: bool) -> None:
+    def install_deb_files(deb_files: list[str], dry_run: bool) -> None:
         Log.info(
             "installing deb packages",
             {
@@ -155,11 +154,11 @@ class Apt:
             raise Exception("Failed to resolve package dependencies")
 
     @staticmethod
-    def get_installed_packages() -> List[PackageListing]:
+    def get_installed_packages() -> list[PackageListing]:
         return Apt._list(["--installed"])
 
     @staticmethod
-    def _list(args: List[str]) -> List[PackageListing]:
+    def _list(args: list[str]) -> list[PackageListing]:
         p = subprocess.Popen(
             ["apt", "list"] + args,
             stdout=subprocess.PIPE,
@@ -175,9 +174,7 @@ class Apt:
 
         package_listings = []
         for line in stdout.split("\n"):
-            if line.strip() == "Listing...":
-                continue
-            elif line.strip() == "":
+            if line.strip() == "Listing..." or line.strip() == "":
                 continue
             package_listings.append(PackageListing.parse(line))
         return package_listings

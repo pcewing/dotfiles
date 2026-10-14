@@ -33,7 +33,6 @@ import re
 import string
 import sys
 import time
-from typing import Optional
 
 DOTFILES_DIR = os.getenv("DOTFILES")
 if DOTFILES_DIR is None:
@@ -103,7 +102,7 @@ class FuzzyFileFinder:
         ignore_file = os.path.join(directory, ".fzfignore")
         if os.path.isfile(ignore_file):
             ignore_file_content = None
-            with open(ignore_file, "r") as f:
+            with open(ignore_file) as f:
                 ignore_file_content = f.read()
             lines = list(
                 filter(
@@ -121,7 +120,7 @@ class FuzzyFileFinder:
 
         def handle_dir(
             directory: FileWalker.Directory,
-        ) -> Optional[FileWalker.DirectoryHandlerResult]:
+        ) -> FileWalker.DirectoryHandlerResult | None:
             name = directory.get_name()
             if name == ".git":
                 return FileWalker.DirectoryHandlerResult(skip=True)
@@ -135,7 +134,7 @@ class FuzzyFileFinder:
 
         def handle_file(
             file: FileWalker.File,
-        ) -> Optional[FileWalker.FileHandlerResult]:
+        ) -> FileWalker.FileHandlerResult | None:
             name = file.get_name()
             for ignore_pattern in file_ignore_patterns:
                 path_rel = file.get_relative_path()
@@ -146,7 +145,7 @@ class FuzzyFileFinder:
                         # Log.debug("ignoring file", {"ignore_pattern": ignore_pattern, "file": path_rel})
                         return
                 except:
-                    print("ignore_pattern = {}, path_rel = {}".format(ignore_pattern, path_rel))
+                    print(f"ignore_pattern = {ignore_pattern}, path_rel = {path_rel}")
                     raise
 
             on_file(file.get_relative_path())
@@ -239,7 +238,7 @@ class Cache:
         Log.info("loading cache from file", {"cache_file": cache_file})
 
         cache_file_content = None
-        with open(cache_file, "r") as f:
+        with open(cache_file) as f:
             cache_file_content = f.read()
 
         Log.info("printing existing cache contents to stdout")
@@ -298,7 +297,7 @@ def main():
         {
             "cache": args.cache,
             "directory": args.directory,
-        }
+        },
     )
 
     cache = Cache(tmp_dir, args.directory, args.cache, args.tidy)

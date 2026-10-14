@@ -3,7 +3,6 @@
 import os
 import re
 import subprocess
-from typing import Optional, Tuple
 
 from dot.lib.common.archive import Archive
 from dot.lib.common.dir import Dir
@@ -84,7 +83,7 @@ class StyluaProvisioner(IComponentProvisioner):
         Shell.ln(exe_path, symlink_path, True, self._args.dry_run)
 
     @staticmethod
-    def _get_current_version() -> Optional[Semver]:
+    def _get_current_version() -> Semver | None:
         try:
             p = subprocess.Popen(
                 ["stylua", "--version"],
@@ -103,7 +102,7 @@ class StyluaProvisioner(IComponentProvisioner):
             return None
 
     @staticmethod
-    def _get_target_version() -> Tuple[str, Semver]:
+    def _get_target_version() -> tuple[str, Semver]:
         cached_version = VersionCache.get_version("stylua")
         if cached_version is not None:
             Log.info(

@@ -3,7 +3,6 @@
 import os
 import re
 import subprocess
-from typing import Optional, Tuple
 
 from dot.lib.common.apt import Apt
 from dot.lib.common.dir import Dir
@@ -55,7 +54,7 @@ class RipgrepProvisioner(IComponentProvisioner):
         Apt.install_deb_files([deb_path], self._args.dry_run)
 
     @staticmethod
-    def _get_current_version() -> Optional[Semver]:
+    def _get_current_version() -> Semver | None:
         try:
             p = subprocess.Popen(
                 ["rg", "--version"],
@@ -74,7 +73,7 @@ class RipgrepProvisioner(IComponentProvisioner):
             return None
 
     @staticmethod
-    def _get_target_version() -> Tuple[str, Semver]:
+    def _get_target_version() -> tuple[str, Semver]:
         cached_version = VersionCache.get_version("ripgrep")
         if cached_version is not None:
             Log.info(

@@ -40,6 +40,7 @@ AUTHOR_MAP: dict[str, str] = {
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def parse_author(author_str: str) -> tuple[str, str]:
     """Parse 'Name <email>' into (name, email). Raises ValueError on bad input."""
     match = re.match(r"^(.+?)\s*<([^>]+)>$", author_str.strip())
@@ -87,6 +88,7 @@ def get_commit_authors() -> list[tuple[str, str, str]]:
 # Commands
 # ---------------------------------------------------------------------------
 
+
 def cmd_discover() -> None:
     """Print all unique authors in the branch history with commit counts."""
     entries = get_commit_authors()
@@ -122,7 +124,9 @@ def cmd_amend(author_map: dict[str, str], *, dry_run: bool) -> None:
 
     # Identify affected commits.
     entries = get_commit_authors()
-    affected: list[tuple[str, str, str, str]] = []  # (short_hash, old_id, new_name, new_email)
+    affected: list[
+        tuple[str, str, str, str]
+    ] = []  # (short_hash, old_id, new_name, new_email)
     for commit_hash, name, email in entries:
         new = parsed.get((name, email))
         if new is not None:
@@ -153,8 +157,8 @@ def cmd_amend(author_map: dict[str, str], *, dry_run: bool) -> None:
             return "'" + s.replace("'", "'\\''") + "'"
 
         block = (
-            f"if [ \"$GIT_AUTHOR_EMAIL\" = {sq(old_email)} ] && "
-            f"[ \"$GIT_AUTHOR_NAME\" = {sq(old_name)} ]; then\n"
+            f'if [ "$GIT_AUTHOR_EMAIL" = {sq(old_email)} ] && '
+            f'[ "$GIT_AUTHOR_NAME" = {sq(old_name)} ]; then\n'
             f"    GIT_AUTHOR_NAME={sq(new_name)}\n"
             f"    GIT_AUTHOR_EMAIL={sq(new_email)}\n"
             f"    GIT_COMMITTER_NAME={sq(new_name)}\n"
@@ -171,6 +175,7 @@ def cmd_amend(author_map: dict[str, str], *, dry_run: bool) -> None:
     # FILTER_BRANCH_SQUELCH_WARNING suppresses the advisory recommending
     # git-filter-repo; for a simple env-filter author rewrite it is not needed.
     import os
+
     env = {**os.environ, "FILTER_BRANCH_SQUELCH_WARNING": "1"}
     git("filter-branch", "-f", "--env-filter", filter_script, "--", "HEAD", env=env)
     print("\nDone. Run 'git push --force-with-lease' to update the remote.")
@@ -179,6 +184,7 @@ def cmd_amend(author_map: dict[str, str], *, dry_run: bool) -> None:
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(

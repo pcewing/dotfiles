@@ -2,7 +2,8 @@
 
 import json
 import os
-from typing import Callable, Optional
+from collections.abc import Callable
+from typing import Optional
 
 from dot.lib.common.log import Log
 
@@ -54,8 +55,8 @@ class FileWalker:
 
     class Enumeration:
         def __init__(self) -> None:
-            self._files: list["FileWalker.File"] = []
-            self._directories: list["FileWalker.Directory"] = []
+            self._files: list[FileWalker.File] = []
+            self._directories: list[FileWalker.Directory] = []
 
         def add_file(self, file: "FileWalker.File") -> None:
             self._files.append(file)
@@ -71,13 +72,13 @@ class FileWalker:
 
         def get_nodes(self) -> list["FileWalker.Node"]:
             # TODO: How do I make this one line without angering mypy?
-            nodes: list["FileWalker.Node"] = []
+            nodes: list[FileWalker.Node] = []
             nodes += self._files
             nodes += self._directories
             return nodes
 
-    FileHandler = Optional[Callable[[File], Optional[FileHandlerResult]]]
-    DirectoryHandler = Optional[Callable[[Directory], Optional[DirectoryHandlerResult]]]
+    FileHandler = Optional[Callable[[File], FileHandlerResult | None]]
+    DirectoryHandler = Optional[Callable[[Directory], DirectoryHandlerResult | None]]
 
     class Context:
         def __init__(

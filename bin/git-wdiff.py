@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 git-wdiff: Diff the working directory (or a target ref) against a diff-base worktree.
 
@@ -58,7 +57,7 @@ def list_worktree_paths(repo_root):
     paths = set()
     for line in output.splitlines():
         if line.startswith("worktree "):
-            paths.add(Path(line[len("worktree "):]))
+            paths.add(Path(line[len("worktree ") :]))
     return paths
 
 
@@ -133,9 +132,7 @@ def main():
 
     # Determine the right side of the diff.
     if args.target_ref is not None:
-        target_commit = run(
-            ["git", "rev-parse", args.target_ref], cwd=str(repo_root)
-        )
+        target_commit = run(["git", "rev-parse", args.target_ref], cwd=str(repo_root))
         print(f"Target ref:      {args.target_ref} ({target_commit[:8]})")
 
         diff_target = repo_root.parent / (repo_root.name + ".diff-target")

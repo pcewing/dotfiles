@@ -2,7 +2,6 @@
 
 import os
 import subprocess
-from typing import Optional, Tuple
 
 from dot.lib.common.archive import Archive
 from dot.lib.common.dir import Dir
@@ -82,7 +81,7 @@ class NodeJSProvisioner(IComponentProvisioner):
             Shell.ln(symlink_src_path, symlink_dst_path, True, self._args.dry_run)
 
     @staticmethod
-    def _get_current_version() -> Optional[Semver]:
+    def _get_current_version() -> Semver | None:
         try:
             p = subprocess.Popen(
                 ["node", "--version"],
@@ -99,7 +98,7 @@ class NodeJSProvisioner(IComponentProvisioner):
             return None
 
     @staticmethod
-    def _get_target_version() -> Tuple[str, Semver]:
+    def _get_target_version() -> tuple[str, Semver]:
         cached_version = VersionCache.get_version("nodejs")
         if cached_version is not None:
             Log.info(

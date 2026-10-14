@@ -11,7 +11,7 @@ CENTOS_RELEASE_FILE = "/etc/centos-release"
 
 def _parse_kv_file(path: str) -> dict[str, str]:
     values: dict[str, str] = {}
-    with open(path, "r") as f:
+    with open(path) as f:
         for line in f:
             line = line.strip()
             if not line or line.startswith("#") or "=" not in line:

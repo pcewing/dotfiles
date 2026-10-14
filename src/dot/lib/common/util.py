@@ -4,13 +4,12 @@ import os
 import shutil
 import subprocess
 import urllib.request
-from typing import Optional
 
 from dot.lib.common.log import Log
 from dot.lib.common.shell import Shell
 
 
-def sh(cmd: list[str], check: bool = False, cwd: Optional[str] = None) -> int:
+def sh(cmd: list[str], check: bool = False, cwd: str | None = None) -> int:
     msg = f"Executing shell command: {' '.join(cmd)}"
     if cwd is not None:
         msg += f" (cwd: {cwd})"

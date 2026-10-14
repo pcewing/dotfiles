@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-from typing import Optional, Tuple
 
 from dot.lib.common.archive import Archive
 from dot.lib.common.dir import Dir
@@ -109,23 +108,23 @@ class Win32YankProvisioner(IComponentProvisioner):
             dry_run=self._args.dry_run,
         )
 
-    def _read_version_file(self) -> Optional[str]:
+    def _read_version_file(self) -> str | None:
         if not os.path.isfile(self._version_file_path()):
             return None
-        with open(self._version_file_path(), "r") as f:
+        with open(self._version_file_path()) as f:
             return f.read()
 
     def _version_file_path(self) -> str:
         return os.path.join(self._install_dir, "win32yank_version.txt")
 
-    def _get_current_version(self) -> Optional[Semver]:
+    def _get_current_version(self) -> Semver | None:
         version_str = self._read_version_file()
         if version_str is None:
             return None
         return Semver.parse(version_str)
 
     @staticmethod
-    def _get_target_version() -> Tuple[str, Semver]:
+    def _get_target_version() -> tuple[str, Semver]:
         cached_version = VersionCache.get_version("win32yank")
         if cached_version is not None:
             Log.info(

@@ -2,7 +2,6 @@
 
 import subprocess
 import sys
-from typing import List
 
 from dot.lib.common.log import Log
 
@@ -10,7 +9,7 @@ from dot.lib.common.log import Log
 class Pip:
     @staticmethod
     def install(
-        packages: List[str],
+        packages: list[str],
         upgrade: bool = False,
         dry_run: bool = False,
     ) -> None:
