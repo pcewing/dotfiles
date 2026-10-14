@@ -23,19 +23,20 @@ import os
 import re
 import subprocess
 import urllib.request
+from typing import Any
 
 # IGNORE_ORGS is a list of orgs which should not be cloned.
 IGNORE_ORGS = ["hashicorp"]
 
 
 class Repo:
-    def __init__(self, org="", name="", url=""):
+    def __init__(self, org: str = "", name: str = "", url: str = "") -> None:
         self.org = org
         self.name = name
         self.url = url
 
 
-def clone(src_dir, repo, dry_run):
+def clone(src_dir: str, repo: Repo, dry_run: bool) -> None:
     os.makedirs(repo.org, exist_ok=True)
 
     global IGNORE_ORGS
@@ -56,9 +57,9 @@ def clone(src_dir, repo, dry_run):
         subprocess.run(["git", "clone", repo.url, path])
 
 
-def get_page(url, token):
+def get_page(url: str, token: str) -> tuple[str | None, list[dict[str, Any]]]:
     request = urllib.request.Request(url)
-    request.add_header("Authorization", "token %s" % token)
+    request.add_header("Authorization", f"token {token}")
 
     with urllib.request.urlopen(request) as response:
         header = response.getheader("Link")
@@ -69,7 +70,7 @@ def get_page(url, token):
         return (next_page_url, json.loads(response.read()))
 
 
-def get_repo_data(token):
+def get_repo_data(token: str) -> list[dict[str, Any]]:
     (next_page_url, data) = get_page("https://api.github.com/user/repos", token)
 
     while next_page_url is not None:
@@ -79,7 +80,7 @@ def get_repo_data(token):
     return data
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Clone a user's git repositories.")
     parser.add_argument(
         "--dry-run",
@@ -104,7 +105,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
+def main() -> None:
     args = parse_args()
     src_dir = os.path.expandvars(args.src_dir)
 

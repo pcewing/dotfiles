@@ -30,7 +30,7 @@ from pathlib import Path
 DEFAULT_DIFF_TOOL = r"C:\Program Files\Beyond Compare 5\BCompare.exe"
 
 
-def run(cmd, cwd=None, check=True):
+def run(cmd: list[str], cwd: str | None = None, check: bool = True) -> str:
     """Run a command, print stderr on failure, and return stdout."""
     result = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
     if check and result.returncode != 0:
@@ -42,7 +42,7 @@ def run(cmd, cwd=None, check=True):
     return result.stdout.strip()
 
 
-def get_repo_root():
+def get_repo_root() -> Path:
     """Return the root directory of the current (active) worktree."""
     root = run(["git", "rev-parse", "--show-toplevel"])
     if not root:
@@ -51,17 +51,17 @@ def get_repo_root():
     return Path(root)
 
 
-def list_worktree_paths(repo_root):
+def list_worktree_paths(repo_root: Path) -> set[Path]:
     """Return a set of Path objects for every registered worktree."""
     output = run(["git", "worktree", "list", "--porcelain"], cwd=str(repo_root))
-    paths = set()
+    paths: set[Path] = set()
     for line in output.splitlines():
         if line.startswith("worktree "):
             paths.add(Path(line[len("worktree ") :]))
     return paths
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
             "Diff the working directory (or a target ref) against a diff-base "

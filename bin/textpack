@@ -26,7 +26,7 @@ DELIM = "%%"
 FILE_DELIM = "TP_FILE"
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Simple tool to pack text files in a directory into a single file"
     )
@@ -50,20 +50,20 @@ def parse_args():
 
 
 # TODO: Use FileWalker
-def enumerate_files(dir):
-    results = []
+def enumerate_files(dir: str) -> list[str]:
+    results: list[str] = []
     for root, _, files in os.walk(dir):
         for file in files:
             results.append(os.path.join(root, file))
     return results
 
 
-def read_file(file):
+def read_file(file: str) -> str:
     with open(file, "rb") as f:
         return f.read().decode("utf-8")
 
 
-def pack(src_dir, files, output_file):
+def pack(src_dir: str, files: list[str], output_file: str) -> None:
     with open(output_file, "w") as ofs:
         for file in files:
             print(f"Packing file {file}")
@@ -77,7 +77,7 @@ def pack(src_dir, files, output_file):
                 print("Skipping file; invalid UTF-8")
 
 
-def unpack_file(output_dir, s):
+def unpack_file(output_dir: str, s: str) -> None:
     tp_line, content = s.split("\n", 1)
     path = tp_line.replace(f"{DELIM} {FILE_DELIM} ", "").replace(f" {DELIM}", "")
     dst_path = os.path.join(output_dir, path)
@@ -90,9 +90,9 @@ def unpack_file(output_dir, s):
         f.write(content)
 
 
-def unpack(file, dst_dir):
+def unpack(file: str, dst_dir: str) -> None:
     s = read_file(file)
-    substrs = []
+    substrs: list[int] = []
     while True:
         start = substrs[len(substrs) - 1] + 1 if len(substrs) > 0 else 0
         i = s.find(f"{DELIM} {FILE_DELIM} ", start)
@@ -107,7 +107,7 @@ def unpack(file, dst_dir):
             unpack_file(dst_dir, s[substrs[i] : substrs[i + 1]])
 
 
-def cmd_pack(args):
+def cmd_pack(args: argparse.Namespace) -> None:
     input_directory = os.path.realpath(args.input_directory)
     if not os.path.isdir(input_directory):
         raise Exception(f"Input directory {input_directory} does not exist")
@@ -116,13 +116,13 @@ def cmd_pack(args):
     pack(input_directory, input_files, output_file)
 
 
-def cmd_unpack(args):
+def cmd_unpack(args: argparse.Namespace) -> None:
     file = os.path.realpath(args.input_file)
     directory = os.path.realpath(args.output_directory)
     unpack(file, directory)
 
 
-def main():
+def main() -> None:
     args = parse_args()
     args.func(args)
 
