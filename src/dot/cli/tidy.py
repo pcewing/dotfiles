@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
 import argparse
+import sys
 
-from dot.lib.common.linter import Linter
+from dot.lib.common.linter import Linter, LinterError
+from dot.lib.common.log import Log
+from dot.lib.common.python_files import PythonFilesError
 
 
 def add_tidy_parser(subparsers: argparse._SubParsersAction) -> None:
@@ -13,7 +16,8 @@ def add_tidy_parser(subparsers: argparse._SubParsersAction) -> None:
     parser.add_argument(
         "files",
         nargs="*",
-        help="The files to tidy; if omitted, all files are tidied",
+        metavar="PATH",
+        help="Files or directories to tidy; directories are expanded to the git-tracked Python files they contain",
     )
     parser.add_argument(
         "-d",
@@ -25,4 +29,8 @@ def add_tidy_parser(subparsers: argparse._SubParsersAction) -> None:
 
 
 def cmd_tidy(args: argparse.Namespace) -> None:
-    Linter.tidy(args.files, args.dry_run)
+    try:
+        Linter.tidy(args.files, args.dry_run)
+    except (LinterError, PythonFilesError) as e:
+        Log.error(str(e))
+        sys.exit(2)
