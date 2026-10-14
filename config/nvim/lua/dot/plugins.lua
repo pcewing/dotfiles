@@ -181,7 +181,8 @@ local plugins = {
             local Lsp = require('dot.lsp')
             Lsp.configure()
 
-            vim.keymap.set('n', '<leader>ls', '<cmd>LspStop<CR>', { desc = 'Stop LSP clients' })
+            vim.keymap.set('n', '<leader>ls', '<cmd>lsp stop<CR>', { desc = 'Stop LSP clients for the buffer' })
+            vim.keymap.set('n', '<leader>li', '<cmd>DisplayLSPStatus<CR>', { desc = 'Show LSP status' })
         end,
     },
 
