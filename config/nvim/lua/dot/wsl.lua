@@ -8,7 +8,7 @@
 -- working provider up front instead: WSLg's Wayland clipboard first, then
 -- win32yank, then OSC 52.
 
-local Log  = require('dot.log')
+local Log = require('dot.log')
 local Util = require('dot.util')
 
 local M = {}
@@ -18,8 +18,8 @@ local M = {}
 -- then the install location in case Neovim was started from a context that
 -- never sourced config/env.
 local WIN32YANK_CANDIDATES = {
-    "win32yank.exe",
-    "/mnt/c/bin/win32yank.exe",
+    'win32yank.exe',
+    '/mnt/c/bin/win32yank.exe',
 }
 
 function M._find_win32yank()
@@ -34,14 +34,14 @@ end
 
 function M._win32yank_clipboard(path)
     return {
-        name = "win32yank-wsl",
+        name = 'win32yank-wsl',
         copy = {
-            ["+"] = path .. " -i --crlf",
-            ["*"] = path .. " -i --crlf",
+            ['+'] = path .. ' -i --crlf',
+            ['*'] = path .. ' -i --crlf',
         },
         paste = {
-            ["+"] = path .. " -o --lf",
-            ["*"] = path .. " -o --lf",
+            ['+'] = path .. ' -o --lf',
+            ['*'] = path .. ' -o --lf',
         },
         cache_enabled = true,
     }
@@ -51,10 +51,12 @@ end
 -- one of Neovim's builtin providers or a table of commands.
 function M._resolve_clipboard_provider()
     -- WSLg runs a Wayland compositor whose clipboard is bridged to Windows.
-    if Util.env_is_set("WAYLAND_DISPLAY")
-        and vim.fn.executable("wl-copy") == 1
-        and vim.fn.executable("wl-paste") == 1 then
-        return "wl-copy"
+    if
+        Util.env_is_set('WAYLAND_DISPLAY')
+        and vim.fn.executable('wl-copy') == 1
+        and vim.fn.executable('wl-paste') == 1
+    then
+        return 'wl-copy'
     end
 
     local win32yank = M._find_win32yank()
@@ -64,7 +66,7 @@ function M._resolve_clipboard_provider()
 
     -- Last resort for a shell with no WSLg and no win32yank. Without this,
     -- 'clipboard' being set means Neovim has no working provider at all.
-    return "osc52"
+    return 'osc52'
 end
 
 function M._clipboard()
@@ -72,10 +74,10 @@ function M._clipboard()
 
     vim.g.clipboard = provider
 
-    if type(provider) == "table" then
-        Log.debug("Using " .. provider.name .. " for the system clipboard")
+    if type(provider) == 'table' then
+        Log.debug('Using ' .. provider.name .. ' for the system clipboard')
     else
-        Log.debug("Using " .. provider .. " for the system clipboard")
+        Log.debug('Using ' .. provider .. ' for the system clipboard')
     end
 end
 

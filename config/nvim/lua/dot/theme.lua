@@ -1,6 +1,6 @@
-local Log           = require('dot.log')
+local Log = require('dot.log')
 local Notifications = require('dot.notifications')
-local Util          = require('dot.util')
+local Util = require('dot.util')
 
 local M = {}
 
@@ -8,9 +8,9 @@ function M._color_scheme()
     -- Start flavours - nvim
     local color_scheme = 'base16-outrun-dark'
     -- End flavours - nvim
-    
+
     -- CRITICAL FOR NEOVIDE / GUI ON WINDOWS: Enable true color support
-    vim.opt.termguicolors = true 
+    vim.opt.termguicolors = true
     vim.g.base16colorspace = 256
 
     local status, _ = pcall(vim.cmd, 'colorscheme ' .. color_scheme)
@@ -34,7 +34,7 @@ function M._background()
         Log.info('Setting background color to NONE')
         vim.api.nvim_set_hl(0, 'Normal', {
             bg = 'NONE',
-            ctermbg = 'NONE'
+            ctermbg = 'NONE',
         })
     end
 end
@@ -46,7 +46,7 @@ function M.init()
         callback = function()
             M._color_scheme()
             M._background()
-        end
+        end,
     })
 end
 

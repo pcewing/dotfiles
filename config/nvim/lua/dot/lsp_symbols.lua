@@ -25,8 +25,8 @@ local M = {}
 local source_buf = nil
 
 local this_file = debug.getinfo(1, 'S').source:sub(2)
-local query_script = vim.fs.normalize(vim.fs.joinpath(
-    vim.fs.dirname(this_file), '..', '..', 'scripts', 'lsp_symbols_query.lua'))
+local query_script =
+    vim.fs.normalize(vim.fs.joinpath(vim.fs.dirname(this_file), '..', '..', 'scripts', 'lsp_symbols_query.lua'))
 
 -- Called over RPC by scripts/lsp_symbols_query.lua for every query change.
 function M.query(query)
@@ -34,18 +34,24 @@ function M.query(query)
         return {}
     end
 
-    local responses = vim.lsp.buf_request_sync(
-        source_buf, 'workspace/symbol', { query = query }, 2000) or {}
+    local responses = vim.lsp.buf_request_sync(source_buf, 'workspace/symbol', { query = query }, 2000) or {}
 
     local lines = {}
     for client_id, response in pairs(responses) do
         local client = vim.lsp.get_client_by_id(client_id)
         if client ~= nil and response.result ~= nil then
-            local items = vim.lsp.util.symbols_to_items(
-                response.result, source_buf, client.offset_encoding)
+            local items = vim.lsp.util.symbols_to_items(response.result, source_buf, client.offset_encoding)
             for _, item in ipairs(items) do
-                table.insert(lines, string.format('%s:%d:%d: %s',
-                    vim.fn.fnamemodify(item.filename, ':.'), item.lnum, item.col, item.text))
+                table.insert(
+                    lines,
+                    string.format(
+                        '%s:%d:%d: %s',
+                        vim.fn.fnamemodify(item.filename, ':.'),
+                        item.lnum,
+                        item.col,
+                        item.text
+                    )
+                )
             end
         end
     end
@@ -68,7 +74,9 @@ function M.pick()
     source_buf = vim.api.nvim_get_current_buf()
 
     local reload = table.concat({
-        vim.fn.shellescape(vim.v.progpath), '--clean', '-l',
+        vim.fn.shellescape(vim.v.progpath),
+        '--clean',
+        '-l',
         vim.fn.shellescape(query_script),
         vim.fn.shellescape(vim.v.servername),
         '{q}',
@@ -80,9 +88,12 @@ function M.pick()
         source = 'true',
         options = {
             '--disabled',
-            '--prompt', 'Symbols> ',
-            '--header', 'Type to search workspace symbols',
-            '--bind', 'change:reload:' .. reload,
+            '--prompt',
+            'Symbols> ',
+            '--header',
+            'Type to search workspace symbols',
+            '--bind',
+            'change:reload:' .. reload,
         },
     }
     spec = vim.fn['fzf#vim#with_preview'](spec)

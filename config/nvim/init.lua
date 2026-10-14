@@ -8,29 +8,28 @@ for name, _ in pairs(package.loaded) do
     end
 end
 
-local Globals       = require('dot.globals')
-local Log           = require('dot.log')
-local Mappings      = require('dot.mappings')
+local Globals = require('dot.globals')
+local Log = require('dot.log')
+local Mappings = require('dot.mappings')
 local Notifications = require('dot.notifications')
-local Plugins       = require('dot.plugins')
-local Settings      = require('dot.settings')
-local Theme         = require('dot.theme')
-local Util          = require('dot.util')
+local Plugins = require('dot.plugins')
+local Settings = require('dot.settings')
+local Theme = require('dot.theme')
+local Util = require('dot.util')
 
 -- "p" makes mkdir() a no-op when the directory already exists
 local tmp_dir = Util.tmp_dir()
-vim.fn.mkdir(tmp_dir, "p", "0775")
+vim.fn.mkdir(tmp_dir, 'p', '0775')
 
-Log.init(Log.levels.info, vim.fs.joinpath(tmp_dir, "nvim.log"))
+Log.init(Log.levels.info, vim.fs.joinpath(tmp_dir, 'nvim.log'))
 Log.debug('loading init.lua')
-
 
 -- TODO: Move this elsewhere, just testing it first. Fixes an issue where FZF
 -- doesn't work in Neovide on Windows when Neovide is run from Git Bash.
-if vim.fn.has("win32") == 1 and string.find(vim.o.shell, "bash") then
-    vim.o.shellcmdflag = "-c"
-    vim.o.shellxquote = ""
-    vim.o.shellquote = ""
+if vim.fn.has('win32') == 1 and string.find(vim.o.shell, 'bash') then
+    vim.o.shellcmdflag = '-c'
+    vim.o.shellxquote = ''
+    vim.o.shellquote = ''
 end
 
 Settings.init()
@@ -49,7 +48,7 @@ end
 
 if Notifications.any() then
     Notifications.display()
-    vim.o.statusline = "Configuration errors occurred; see quickfix list for details"
+    vim.o.statusline = 'Configuration errors occurred; see quickfix list for details'
 end
 
 Log.debug('finished loading init.lua')

@@ -34,7 +34,7 @@ end
 -- variable counts as unset, matching Neovim's own `!empty($VAR)` checks.
 function M.env_is_set(name)
     local value = vim.env[name]
-    return value ~= nil and value ~= ""
+    return value ~= nil and value ~= ''
 end
 
 -- Re-runs init.lua, which also forgets the cached dot.* modules so that changes
@@ -76,14 +76,13 @@ function M.move_to_column(column)
 
     -- Make sure we aren't already past the target column
     if insertion_count <= 0 then
-        print("Target column is less than or equal to current column")
+        print('Target column is less than or equal to current column')
         return
     end
 
-    local insertion_string = ""
-    for i = 1,insertion_count,1
-    do
-        insertion_string = insertion_string .. " "
+    local insertion_string = ''
+    for i = 1, insertion_count, 1 do
+        insertion_string = insertion_string .. ' '
     end
 
     local line = vim.api.nvim_get_current_line()
@@ -101,8 +100,7 @@ function M.close_tabs_to_right()
         local before = vim.fn.tabpagenr('$')
         local ok, err = pcall(vim.cmd, 'tabclose ' .. (cur + 1))
         if not ok then
-            Log.warn('close_tabs_to_right: tabclose failed: ' ..
-                     (tostring(err):gsub('%s+', ' ')))
+            Log.warn('close_tabs_to_right: tabclose failed: ' .. (tostring(err):gsub('%s+', ' ')))
             break
         end
         if vim.fn.tabpagenr('$') >= before then
@@ -115,8 +113,8 @@ function M.close_tabs_to_right()
 end
 
 function M.is_wsl()
-    local x = os.getenv("WSL_DISTRO_NAME")
-    return type(x) == "string" and string.len(x) > 0
+    local x = os.getenv('WSL_DISTRO_NAME')
+    return type(x) == 'string' and string.len(x) > 0
 end
 
 -- Returns the current file path and line number underneath the cursor
@@ -144,7 +142,7 @@ function M.copy_code_snippet(start_line, end_line)
     vim.fn.setreg('+', formatted_text)
     vim.fn.setreg('*', formatted_text)
 
-    print("Snippet copied to clipboard!")
+    print('Snippet copied to clipboard!')
 end
 
 return M

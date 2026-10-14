@@ -10,7 +10,7 @@
 -- non-graphical context) silently copies nothing at all. Resolve the provider
 -- ourselves so the OSC 52 fallback is always available.
 
-local Log  = require('dot.log')
+local Log = require('dot.log')
 local Util = require('dot.util')
 
 local M = {}
@@ -46,10 +46,8 @@ function M._resolve_clipboard_provider()
     -- native copies. It is the right trade until a compositor grows a clipboard
     -- protocol that needs no focus, so revisit this when giving Wayland another
     -- try.
-    if Util.env_is_set("WAYLAND_DISPLAY")
-        and Util.env_is_set("DISPLAY")
-        and vim.fn.executable("xclip") == 1 then
-        return "xclip"
+    if Util.env_is_set('WAYLAND_DISPLAY') and Util.env_is_set('DISPLAY') and vim.fn.executable('xclip') == 1 then
+        return 'xclip'
     end
 
     -- Disabled on Wayland for the reason above, and kept so the native path is
@@ -61,25 +59,25 @@ function M._resolve_clipboard_provider()
     --     return "wl-copy"
     -- end
 
-    if Util.env_is_set("DISPLAY") then
-        if vim.fn.executable("xsel") == 1 then
-            return "xsel"
+    if Util.env_is_set('DISPLAY') then
+        if vim.fn.executable('xsel') == 1 then
+            return 'xsel'
         end
-        if vim.fn.executable("xclip") == 1 then
-            return "xclip"
+        if vim.fn.executable('xclip') == 1 then
+            return 'xclip'
         end
     end
 
     -- Inside tmux the tmux provider is better than OSC 52 because tmux
     -- forwards the selection to the outer terminal itself.
-    if Util.env_is_set("TMUX") and vim.fn.executable("tmux") == 1 then
-        return "tmux"
+    if Util.env_is_set('TMUX') and vim.fn.executable('tmux') == 1 then
+        return 'tmux'
     end
 
     -- Last resort for remote/headless sessions. Setting g:clipboard explicitly
     -- is what opts us into this; Neovim will not choose it while 'clipboard' is
     -- set.
-    return "osc52"
+    return 'osc52'
 end
 
 function M._clipboard()
@@ -87,7 +85,7 @@ function M._clipboard()
 
     vim.g.clipboard = provider
 
-    Log.debug("Using " .. provider .. " for the system clipboard")
+    Log.debug('Using ' .. provider .. ' for the system clipboard')
 end
 
 function M.init()

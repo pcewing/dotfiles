@@ -1,4 +1,4 @@
-local wezterm = require 'wezterm'
+local wezterm = require('wezterm')
 
 local act = wezterm.action
 
@@ -11,17 +11,17 @@ local launcher_replace_pane_id = nil
 function get_shell(tab_info)
     local shell = ''
     local domain_name = tab_info.active_pane.domain_name
-    if domain_name == "local" then
+    if domain_name == 'local' then
         -- Distinguish between Git Bash, Powershell, and other local shells
         local process = tab_info.active_pane.foreground_process_name
         if process then
-            if process:find("bash") then
+            if process:find('bash') then
                 shell = '(git) '
-            elseif process:find("powershell") or process:find("pwsh") then
+            elseif process:find('powershell') or process:find('pwsh') then
                 shell = '(pwsh) '
             end
         end
-    elseif domain_name:sub(1, 4) == "WSL:" then
+    elseif domain_name:sub(1, 4) == 'WSL:' then
         -- Match any WSL domain (WSL:Ubuntu, WSL:Debian, etc.)
         shell = '(wsl) '
     end
@@ -65,10 +65,7 @@ wezterm.on('gui-startup', function(cmd)
     -- Save the initial pane ID so we can auto-close it if user picks something else
     initial_startup_pane_id = pane:pane_id()
 
-    window:gui_window():perform_action(
-        wezterm.action.ShowLauncherArgs { flags = 'LAUNCH_MENU_ITEMS' },
-        pane
-    )
+    window:gui_window():perform_action(wezterm.action.ShowLauncherArgs({ flags = 'LAUNCH_MENU_ITEMS' }), pane)
 end)
 
 -- Auto-close a tab when user selects something from the launcher
@@ -97,10 +94,7 @@ wezterm.on('update-status', function(window, pane)
                 launcher_replace_pane_id = nil
                 -- Activate the tab to close, then close it
                 tab:activate()
-                window:perform_action(
-                    wezterm.action.CloseCurrentTab { confirm = false },
-                    p
-                )
+                window:perform_action(wezterm.action.CloseCurrentTab({ confirm = false }), p)
                 return
             end
         end
@@ -108,8 +102,8 @@ wezterm.on('update-status', function(window, pane)
 end)
 
 -- Use Powershell as default for fast startup (launcher lets user choose)
-config.default_prog = {"powershell"}
-config.default_domain = "local"
+config.default_prog = { 'powershell' }
+config.default_domain = 'local'
 
 -- Build launch menu dynamically to include all WSL distributions
 local function build_launch_menu()
@@ -125,13 +119,13 @@ local function build_launch_menu()
 
     -- Add Windows shells
     table.insert(menu, {
-        label = "Powershell",
-        args = {"powershell"},
+        label = 'Powershell',
+        args = { 'powershell' },
         domain = { DomainName = 'local' },
     })
     table.insert(menu, {
-        label = "Git Bash",
-        args = {"C:\\Program Files\\Git\\bin\\bash.exe", "-i", "-l"},
+        label = 'Git Bash',
+        args = { 'C:\\Program Files\\Git\\bin\\bash.exe', '-i', '-l' },
         domain = { DomainName = 'local' },
     })
 
@@ -148,16 +142,16 @@ config.leader = { key = ' ', mods = 'CTRL' }
 local spawn_tab_like_current = function(window, pane)
     local domain_name = pane:get_domain_name()
 
-    if domain_name == "local" then
+    if domain_name == 'local' then
         -- In local domain, check if current pane is running Git Bash
         local process = pane:get_foreground_process_name()
-        if process and (process:find("bash") or process:find("bash.exe")) then
+        if process and (process:find('bash') or process:find('bash.exe')) then
             -- Spawn Git Bash
             window:perform_action(
-                act.SpawnCommandInNewTab {
-                    args = { "C:\\Program Files\\Git\\bin\\bash.exe", "-i", "-l" },
+                act.SpawnCommandInNewTab({
+                    args = { 'C:\\Program Files\\Git\\bin\\bash.exe', '-i', '-l' },
                     domain = { DomainName = 'local' },
-                },
+                }),
                 pane
             )
             return
@@ -165,86 +159,83 @@ local spawn_tab_like_current = function(window, pane)
     end
 
     -- For WSL domains or other local processes, use CurrentPaneDomain
-    window:perform_action(act.SpawnTab 'CurrentPaneDomain', pane)
+    window:perform_action(act.SpawnTab('CurrentPaneDomain'), pane)
 end
 
 local switch_to_git_bash = function(window, pane)
-  -- Save a reference to the current tab so we can close it after
-  -- creating the new tab
-  local existing_tab = window:active_tab()
+    -- Save a reference to the current tab so we can close it after
+    -- creating the new tab
+    local existing_tab = window:active_tab()
 
-  -- Launch Git Bash in a new tab
-  window:perform_action(
-    act.SpawnCommandInNewTab {
-      args = { "C:\\Program Files\\Git\\bin\\bash.exe", "-i", "-l" },
-      domain = { DomainName = 'local' },
-    },
-    pane
-  )
+    -- Launch Git Bash in a new tab
+    window:perform_action(
+        act.SpawnCommandInNewTab({
+            args = { 'C:\\Program Files\\Git\\bin\\bash.exe', '-i', '-l' },
+            domain = { DomainName = 'local' },
+        }),
+        pane
+    )
 
-  -- The new tab is automatically focused, save a reference it is as well
-  local new_tab = window:active_tab()
+    -- The new tab is automatically focused, save a reference it is as well
+    local new_tab = window:active_tab()
 
-  -- Set the active tab's title to "Git Bash"
-  new_tab:set_title("Git Bash")
+    -- Set the active tab's title to "Git Bash"
+    new_tab:set_title('Git Bash')
 
-  -- Gross but it seems like there's only an action to close the current
-  -- tab and I can't find a way from lua to close a specific tab. So,
-  -- activate the old tab, close it, and then re-activate the new tab
-  existing_tab:activate()
-  window:perform_action(
-      wezterm.action.CloseCurrentTab { confirm = false },
-      pane
-  )
+    -- Gross but it seems like there's only an action to close the current
+    -- tab and I can't find a way from lua to close a specific tab. So,
+    -- activate the old tab, close it, and then re-activate the new tab
+    existing_tab:activate()
+    window:perform_action(wezterm.action.CloseCurrentTab({ confirm = false }), pane)
 end
 
 -- Key bindings
 config.keys = {
-  { key = '\\', mods = 'LEADER', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' }, },
-  { key = '-',  mods = 'LEADER', action = act.SplitVertical { domain = 'CurrentPaneDomain' }, },
+    { key = '\\', mods = 'LEADER', action = act.SplitHorizontal({ domain = 'CurrentPaneDomain' }) },
+    { key = '-', mods = 'LEADER', action = act.SplitVertical({ domain = 'CurrentPaneDomain' }) },
 
-  -- Tab management and navigation
-  { key = 'c', mods = 'LEADER', action = wezterm.action_callback(spawn_tab_like_current), },
-  { key = 'n', mods = 'LEADER', action = act.ActivateTabRelative(1) },
-  { key = 'p', mods = 'LEADER', action = act.ActivateTabRelative(-1) },
-  { key = '1', mods = 'LEADER', action = act.ActivateTab(0), },
-  { key = '2', mods = 'LEADER', action = act.ActivateTab(1), },
-  { key = '3', mods = 'LEADER', action = act.ActivateTab(2), },
-  { key = '4', mods = 'LEADER', action = act.ActivateTab(3), },
-  { key = '5', mods = 'LEADER', action = act.ActivateTab(4), },
-  { key = '6', mods = 'LEADER', action = act.ActivateTab(5), },
-  { key = '7', mods = 'LEADER', action = act.ActivateTab(6), },
-  { key = '8', mods = 'LEADER', action = act.ActivateTab(7), },
-  { key = '9', mods = 'LEADER', action = act.ActivateTab(8), },
-  { key = '0', mods = 'LEADER', action = act.ActivateTab(9), },
-  { key = 't', mods = 'LEADER', action = act.ShowTabNavigator },
-  { key = 'LeftArrow',  mods = 'LEADER', action = act.ActivatePaneDirection 'Left', },
-  { key = 'h',          mods = 'LEADER', action = act.ActivatePaneDirection 'Left', },
-  { key = 'RightArrow', mods = 'LEADER', action = act.ActivatePaneDirection 'Right', },
-  { key = 'l',          mods = 'LEADER', action = act.ActivatePaneDirection 'Right', },
-  { key = 'UpArrow',    mods = 'LEADER', action = act.ActivatePaneDirection 'Up', },
-  { key = 'k',          mods = 'LEADER', action = act.ActivatePaneDirection 'Up', },
-  { key = 'DownArrow',  mods = 'LEADER', action = act.ActivatePaneDirection 'Down', },
-  { key = 'j',          mods = 'LEADER', action = act.ActivatePaneDirection 'Down', },
+    -- Tab management and navigation
+    { key = 'c', mods = 'LEADER', action = wezterm.action_callback(spawn_tab_like_current) },
+    { key = 'n', mods = 'LEADER', action = act.ActivateTabRelative(1) },
+    { key = 'p', mods = 'LEADER', action = act.ActivateTabRelative(-1) },
+    { key = '1', mods = 'LEADER', action = act.ActivateTab(0) },
+    { key = '2', mods = 'LEADER', action = act.ActivateTab(1) },
+    { key = '3', mods = 'LEADER', action = act.ActivateTab(2) },
+    { key = '4', mods = 'LEADER', action = act.ActivateTab(3) },
+    { key = '5', mods = 'LEADER', action = act.ActivateTab(4) },
+    { key = '6', mods = 'LEADER', action = act.ActivateTab(5) },
+    { key = '7', mods = 'LEADER', action = act.ActivateTab(6) },
+    { key = '8', mods = 'LEADER', action = act.ActivateTab(7) },
+    { key = '9', mods = 'LEADER', action = act.ActivateTab(8) },
+    { key = '0', mods = 'LEADER', action = act.ActivateTab(9) },
+    { key = 't', mods = 'LEADER', action = act.ShowTabNavigator },
+    { key = 'LeftArrow', mods = 'LEADER', action = act.ActivatePaneDirection('Left') },
+    { key = 'h', mods = 'LEADER', action = act.ActivatePaneDirection('Left') },
+    { key = 'RightArrow', mods = 'LEADER', action = act.ActivatePaneDirection('Right') },
+    { key = 'l', mods = 'LEADER', action = act.ActivatePaneDirection('Right') },
+    { key = 'UpArrow', mods = 'LEADER', action = act.ActivatePaneDirection('Up') },
+    { key = 'k', mods = 'LEADER', action = act.ActivatePaneDirection('Up') },
+    { key = 'DownArrow', mods = 'LEADER', action = act.ActivatePaneDirection('Down') },
+    { key = 'j', mods = 'LEADER', action = act.ActivatePaneDirection('Down') },
 
-  { key = 'g', mods = 'LEADER', action = wezterm.action_callback(switch_to_git_bash), },
+    { key = 'g', mods = 'LEADER', action = wezterm.action_callback(switch_to_git_bash) },
 
-  -- Launch menu
-  { key = 'o', mods = 'LEADER', action = act.ShowLauncherArgs { flags = 'LAUNCH_MENU_ITEMS' }, },
+    -- Launch menu
+    { key = 'o', mods = 'LEADER', action = act.ShowLauncherArgs({ flags = 'LAUNCH_MENU_ITEMS' }) },
 
-  -- Rename the current tab
-  {
-    key = ',',
-    mods = 'LEADER',
-    action = act.PromptInputLine {
-      description = 'Set tab title',
-      action = wezterm.action_callback(function(window, pane, line)
-        if line then
-          window:active_tab():set_title(line)
-        end
-      end),
+    -- Rename the current tab
+    {
+        key = ',',
+        mods = 'LEADER',
+        action = act.PromptInputLine({
+            description = 'Set tab title',
+            action = wezterm.action_callback(function(window, pane, line)
+                if line then
+                    window:active_tab():set_title(line)
+                end
+            end),
+        }),
     },
-  },
 }
 
 -- This is super annoying to me so disable it
@@ -283,4 +274,3 @@ config.colors = {
 -- End flavours - wezterm
 
 return config
-

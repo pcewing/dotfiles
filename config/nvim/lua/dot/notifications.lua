@@ -12,7 +12,7 @@ function M.add(text)
         filename = location['file'],
         lnum = location['line'],
         col = location['column'],
-        text = text
+        text = text,
     })
 end
 
@@ -25,11 +25,11 @@ function M.display()
 end
 
 function M._get_location()
-    local info = debug.getinfo(3, "Sl")
+    local info = debug.getinfo(3, 'Sl')
     return {
         file = info.short_src,
         line = info.currentline,
-        column = 1
+        column = 1,
     }
 end
 

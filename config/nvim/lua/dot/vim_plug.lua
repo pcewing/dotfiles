@@ -4,7 +4,7 @@ local Log = require('dot.log')
 
 local M = {
     path = vim.fs.joinpath(vim.fn.stdpath('data'), 'site', 'autoload', 'plug.vim'),
-    url = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    url = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim',
 }
 
 -- curl writes a multi-line progress meter before any error, so pull out the

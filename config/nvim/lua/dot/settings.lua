@@ -8,13 +8,13 @@ local M = {}
 -- (switch away from modified buffers without saving them), 'belloff' (silences
 -- all bells), 'backspace', 'showcmd', 'autoread', 'ruler', and 'history'.
 function M._base()
-    vim.opt.number = true                             -- Show line numbers
-    vim.opt.guicursor = 'a:blinkon0'                  -- Disable cursor blink
-    vim.opt.autowrite = true                          -- Write the file on :make
-    vim.opt.splitright = true                         -- When splitting vertically, the new pane should be on the right
-    vim.opt.splitbelow = true                         -- When splitting horizontally, the new pane should be on the bottom
-    vim.opt.clipboard = "unnamed,unnamedplus"         -- Use system clipboard if possible
-    vim.opt.cursorline = true                         -- Add a visual indicator to the line the cursor is on
+    vim.opt.number = true -- Show line numbers
+    vim.opt.guicursor = 'a:blinkon0' -- Disable cursor blink
+    vim.opt.autowrite = true -- Write the file on :make
+    vim.opt.splitright = true -- When splitting vertically, the new pane should be on the right
+    vim.opt.splitbelow = true -- When splitting horizontally, the new pane should be on the bottom
+    vim.opt.clipboard = 'unnamed,unnamedplus' -- Use system clipboard if possible
+    vim.opt.cursorline = true -- Add a visual indicator to the line the cursor is on
 
     -- Show the completion menu even for a single match, don't select (and
     -- insert) the first match automatically, and show item documentation in a
@@ -29,17 +29,17 @@ end
 -- Indentation settings
 function M._indentation()
     vim.opt.smartindent = true
-    vim.opt.shiftwidth  = 4
+    vim.opt.shiftwidth = 4
     vim.opt.softtabstop = 4
-    vim.opt.tabstop     = 4
-    vim.opt.expandtab   = true
+    vim.opt.tabstop = 4
+    vim.opt.expandtab = true
 
     -- Disable smart indent in markdown files
-    vim.api.nvim_create_autocmd("FileType", {
-        pattern = "markdown",
+    vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'markdown',
         callback = function()
             vim.opt_local.smartindent = false
-        end
+        end,
     })
 end
 
@@ -47,13 +47,13 @@ function M._directories()
     -- Add a double slash on the path which instructs Neovim to create a unique
     -- directory for each editing session. This works on Windows too; Neovim
     -- accepts and recommends "//" over "\\" on Win32 (see 'backupdir').
-    local dir = Util.tmp_dir() .. "//"
+    local dir = Util.tmp_dir() .. '//'
 
     Log.debug('Setting backup dir to ' .. dir)
 
     -- Backup and swap directories; the double slashes are important here
-    vim.opt.backupdir = { dir, "." }
-    vim.opt.directory = { dir, "." }
+    vim.opt.backupdir = { dir, '.' }
+    vim.opt.directory = { dir, '.' }
 end
 
 -- The shortest a file name in the tabline is cut down to, not counting the "…"
@@ -126,7 +126,11 @@ function M._generate_tabline()
         -- %nT makes a mouse click select the tab; "%" in a file name must be
         -- doubled so it isn't read as a tabline item
         labels[i] = (i == current and '%#TabLineSel#' or '%#TabLine#')
-            .. '%' .. i .. 'T' .. tab.prefix .. (name:gsub('%%', '%%%%'))
+            .. '%'
+            .. i
+            .. 'T'
+            .. tab.prefix
+            .. (name:gsub('%%', '%%%%'))
     end
 
     return table.concat(labels, '%#TabLineFill# ') .. '%#TabLineFill#%T%<'

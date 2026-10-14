@@ -1,9 +1,9 @@
 local vim = vim
-local Plug = vim.fn["plug#"]
+local Plug = vim.fn['plug#']
 
-local Log           = require('dot.log')
+local Log = require('dot.log')
 local Notifications = require('dot.notifications')
-local VimPlug       = require('dot.vim_plug')
+local VimPlug = require('dot.vim_plug')
 
 -- Function to list snippets and allow FZF selection
 -- Not currently that useful because it shows all snippets and the list is
@@ -11,48 +11,48 @@ local VimPlug       = require('dot.vim_plug')
 -- snippets. Maybe find a way to make this better. A simple solution could be
 -- to make a regex filter to remove the ones we don't care about.
 local function show_snippets()
-  local snippets = vim.fn["UltiSnips#SnippetsInCurrentScope"](1)  -- Get available snippets
+    local snippets = vim.fn['UltiSnips#SnippetsInCurrentScope'](1) -- Get available snippets
 
-  -- If no snippets available, notify the user
-  if vim.tbl_isempty(snippets) then
-    print("No snippets available for this filetype.")
-    return
-  end
-
-  -- Prepare snippets for FZF display
-  local fzf_snippets = {}
-  for trigger, info in pairs(snippets) do
-    local description = info.description or ""
-    table.insert(fzf_snippets, trigger .. " - " .. description)
-  end
-
-  -- Use FZF to select a snippet
-  vim.fn["fzf#run"]({
-    source = fzf_snippets,
-    sink = function(choice)
-      if not choice then
+    -- If no snippets available, notify the user
+    if vim.tbl_isempty(snippets) then
+        print('No snippets available for this filetype.')
         return
-      end
-
-      local snippet_trigger = choice:match("^(%S+)")
-      if not snippet_trigger then
-        return
-      end
-
-      -- UltiSnips expands the snippet whose trigger sits immediately before
-      -- the cursor, so the trigger has to be in the buffer *before* we ask it
-      -- to expand. Defer until the FZF window has closed, then insert the
-      -- trigger, leave the cursor right after it, and expand.
-      vim.schedule(function()
-        vim.cmd("startinsert")
-        local cursor = vim.api.nvim_win_get_cursor(0)
-        local row, col = cursor[1], cursor[2]
-        vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, { snippet_trigger })
-        vim.api.nvim_win_set_cursor(0, { row, col + #snippet_trigger })
-        vim.cmd("call UltiSnips#ExpandSnippetOrJump()")
-      end)
     end
-  })
+
+    -- Prepare snippets for FZF display
+    local fzf_snippets = {}
+    for trigger, info in pairs(snippets) do
+        local description = info.description or ''
+        table.insert(fzf_snippets, trigger .. ' - ' .. description)
+    end
+
+    -- Use FZF to select a snippet
+    vim.fn['fzf#run']({
+        source = fzf_snippets,
+        sink = function(choice)
+            if not choice then
+                return
+            end
+
+            local snippet_trigger = choice:match('^(%S+)')
+            if not snippet_trigger then
+                return
+            end
+
+            -- UltiSnips expands the snippet whose trigger sits immediately before
+            -- the cursor, so the trigger has to be in the buffer *before* we ask it
+            -- to expand. Defer until the FZF window has closed, then insert the
+            -- trigger, leave the cursor right after it, and expand.
+            vim.schedule(function()
+                vim.cmd('startinsert')
+                local cursor = vim.api.nvim_win_get_cursor(0)
+                local row, col = cursor[1], cursor[2]
+                vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, { snippet_trigger })
+                vim.api.nvim_win_set_cursor(0, { row, col + #snippet_trigger })
+                vim.cmd('call UltiSnips#ExpandSnippetOrJump()')
+            end)
+        end,
+    })
 end
 
 local M = {}
@@ -69,7 +69,7 @@ local plugins = {
     {
         name = 'copilot',
         is_enabled = function()
-            return os.getenv("NVIM_COPILOT_ENABLED") == "1"
+            return os.getenv('NVIM_COPILOT_ENABLED') == '1'
         end,
         init = function()
             Plug('github/copilot.vim')
@@ -81,16 +81,16 @@ local plugins = {
             -- https://github.com/github/copilot.vim/blob/53d3091be388ff1edacdb84421ccfa19a446a84d/doc/copilot.txt#L119-L132
             vim.keymap.set('i', '<C-J>', 'copilot#Accept("\\<CR>")', {
                 expr = true,
-                replace_keycodes = false
+                replace_keycodes = false,
             })
             vim.g.copilot_no_tab_map = true
 
             vim.g.copilot_filetypes = {
                 -- Don't enable copilot in markdown files; it generally makes
                 -- bad predictions
-                markdown = false
+                markdown = false,
             }
-        end
+        end,
     },
 
     {
@@ -112,7 +112,7 @@ local plugins = {
             vim.keymap.set('n', '<leader>fb', '<cmd>Buffers<CR>', { desc = 'Find buffer (fzf)' })
             vim.keymap.set('n', '<leader>fh', '<cmd>Helptags<CR>', { desc = 'Find help tag (fzf)' })
             vim.keymap.set('n', '<leader>fs', show_snippets, { desc = 'Find and expand snippet (fzf)' })
-        end
+        end,
     },
 
     {
@@ -121,12 +121,12 @@ local plugins = {
             -- Sometimes the automatic :TSUpdate won't run successfully and then it
             -- won't rerun. If cryptic treesitter errors show up after running
             -- :PlugUpdate, try running :TSUpdate manually
-            Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate'})
+            Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate' })
         end,
         configure = function()
             local Treesitter = require('dot.treesitter')
             Treesitter.configure()
-        end
+        end,
     },
 
     {
@@ -136,12 +136,12 @@ local plugins = {
             Plug('honza/vim-snippets')
         end,
         configure = function()
-            vim.g.UltiSnipsExpandTrigger = "<tab>"
-            vim.g.UltiSnipsJumpForwardTrigger = "<c-j>"
-            vim.g.UltiSnipsJumpBackwardTrigger = "<c-k>"
+            vim.g.UltiSnipsExpandTrigger = '<tab>'
+            vim.g.UltiSnipsJumpForwardTrigger = '<c-j>'
+            vim.g.UltiSnipsJumpBackwardTrigger = '<c-k>'
 
             vim.keymap.set('n', '<leader>ue', '<cmd>UltiSnipsEdit<CR>', { desc = 'Edit snippets for this filetype' })
-        end
+        end,
     },
 
     {
@@ -167,7 +167,7 @@ local plugins = {
                     })
                 end,
             })
-        end
+        end,
     },
 
     {
@@ -180,7 +180,7 @@ local plugins = {
             Lsp.configure()
 
             vim.keymap.set('n', '<leader>ls', '<cmd>LspStop<CR>', { desc = 'Stop LSP clients' })
-        end
+        end,
     },
 
     {
@@ -199,13 +199,13 @@ local plugins = {
             Plug('elubow/cql-vim')
             Plug('tpope/vim-fugitive')
             Plug('igankevich/mesonic')
-        end
+        end,
     },
 }
 
 function M.init()
     if not VimPlug.is_installed() then
-        Notifications.add("vim-plug is not installed; install it via `:InstallVimPlug`")
+        Notifications.add('vim-plug is not installed; install it via `:InstallVimPlug`')
         return
     end
 

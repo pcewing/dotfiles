@@ -11,8 +11,7 @@ local address, query = arg[1], arg[2] or ''
 
 local ok, lines = pcall(function()
     local chan = vim.fn.sockconnect('pipe', address, { rpc = true })
-    return vim.rpcrequest(chan, 'nvim_exec_lua',
-        "return require('dot.lsp_symbols').query(...)", { query })
+    return vim.rpcrequest(chan, 'nvim_exec_lua', "return require('dot.lsp_symbols').query(...)", { query })
 end)
 
 if ok and #lines > 0 then

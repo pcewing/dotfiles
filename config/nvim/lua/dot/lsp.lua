@@ -45,7 +45,7 @@ local M = {}
 -- Mappings installed in every buffer an enabled server attaches to. Values are
 -- vim.lsp.buf function names.
 local common_keys = {
-    gd        = 'definition',
+    gd = 'definition',
     ['<C-k>'] = 'signature_help',
 }
 
@@ -110,7 +110,7 @@ function M.configure()
     -- This log file isn't rotated so it will grow infinitely. Keep logging off
     -- unless debugging issues with the language server, in which case, set this to
     -- "trace" or "debug" instead of "off".
-    vim.lsp.log.set_level("off")
+    vim.lsp.log.set_level('off')
 
     -- clear = true keeps a re-run of this function (e.g. on config reload) from
     -- stacking duplicate autocmds

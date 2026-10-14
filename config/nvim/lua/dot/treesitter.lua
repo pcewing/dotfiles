@@ -17,49 +17,49 @@ function M.configure()
     -- downloads a ton of parsers I don't care about and that were occasionally
     -- causing errors.
     local ensure_installed = {
-        "bash",
-        "c",
-        "c_sharp",
-        "cmake",
-        "commonlisp",
-        "cpp",
-        "css",
-        "csv",
-        "disassembly",
-        "dockerfile",
-        "elixir",
-        "erlang",
-        "gdscript",
-        "git_rebase",
-        "gitattributes",
-        "gitcommit",
-        "git_config",
-        "gitignore",
-        "go",
-        "godot_resource",
-        "gomod",
-        "gosum",
-        "gowork",
-        "groovy",
-        "hcl",
-        "html",
-        "ini",
-        "java",
-        "javascript",
-        "json",
-        "latex",
-        "lua",
-        "make",
-        "markdown",
-        "markdown_inline",
-        "meson",
-        "proto",
-        "puppet",
-        "python",
-        "toml",
-        "vim",
-        "xml",
-        "yaml",
+        'bash',
+        'c',
+        'c_sharp',
+        'cmake',
+        'commonlisp',
+        'cpp',
+        'css',
+        'csv',
+        'disassembly',
+        'dockerfile',
+        'elixir',
+        'erlang',
+        'gdscript',
+        'git_rebase',
+        'gitattributes',
+        'gitcommit',
+        'git_config',
+        'gitignore',
+        'go',
+        'godot_resource',
+        'gomod',
+        'gosum',
+        'gowork',
+        'groovy',
+        'hcl',
+        'html',
+        'ini',
+        'java',
+        'javascript',
+        'json',
+        'latex',
+        'lua',
+        'make',
+        'markdown',
+        'markdown_inline',
+        'meson',
+        'proto',
+        'puppet',
+        'python',
+        'toml',
+        'vim',
+        'xml',
+        'yaml',
     }
 
     -- Lookup set of parsers we actually expect to be present
@@ -73,15 +73,15 @@ function M.configure()
 
     -- Filetypes that never get treesitter highlighting
     local ignored_filetypes = {
-        fzf   = true,
+        fzf = true,
         netrw = true,
         -- NOTE: `.txt` files are detected as filetype `text`, not `txt`
-        text  = true,
+        text = true,
     }
 
     -- Enable Native Tree-sitter Highlighting via FileType autocommand
-    local treesitter_group = vim.api.nvim_create_augroup("UserTreesitterConfig", { clear = true })
-    vim.api.nvim_create_autocmd("FileType", {
+    local treesitter_group = vim.api.nvim_create_augroup('UserTreesitterConfig', { clear = true })
+    vim.api.nvim_create_autocmd('FileType', {
         group = treesitter_group,
         callback = function(args)
             local buf = args.buf
@@ -107,15 +107,22 @@ function M.configure()
 
             if not has_parser then
                 if expected then
-                    print(string.format(
-                        'ERROR: Treesitter parser "%s" for filetype "%s" was expected but could not be loaded. Try `:TSInstall %s`.',
-                        lang, ft, lang
-                    ))
+                    print(
+                        string.format(
+                            'ERROR: Treesitter parser "%s" for filetype "%s" was expected but could not be loaded. Try `:TSInstall %s`.',
+                            lang,
+                            ft,
+                            lang
+                        )
+                    )
                 else
-                    Log.debug(string.format(
-                        'No treesitter parser for filetype "%s" (language "%s"); skipping highlighting',
-                        ft, lang
-                    ))
+                    Log.debug(
+                        string.format(
+                            'No treesitter parser for filetype "%s" (language "%s"); skipping highlighting',
+                            ft,
+                            lang
+                        )
+                    )
                 end
 
                 return
@@ -126,19 +133,13 @@ function M.configure()
 
             if not success then
                 if expected then
-                    print(string.format(
-                        'ERROR: Failed to run treesitter autocmd on filetype "%s": %s',
-                        ft, err
-                    ))
+                    print(string.format('ERROR: Failed to run treesitter autocmd on filetype "%s": %s', ft, err))
                 else
-                    Log.debug(string.format(
-                        'Failed to run treesitter autocmd on filetype "%s": %s',
-                        ft, err
-                    ))
+                    Log.debug(string.format('Failed to run treesitter autocmd on filetype "%s": %s', ft, err))
                 end
             end
         end,
     })
-  end
+end
 
 return M
