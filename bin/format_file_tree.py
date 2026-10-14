@@ -24,18 +24,21 @@
 
 import os
 import sys
+from typing import TypeAlias
 
 DOTFILES_DIR = os.getenv("DOTFILES")
 if DOTFILES_DIR is None:
     raise Exception("DOTFILES environment variable not specified")
 sys.path.append(os.path.join(DOTFILES_DIR, "src"))
 
-from dot.lib.common.file_walker import FileWalker
+from dot.lib.common.file_walker import FileWalker  # noqa: E402
+
+Tree: TypeAlias = dict[str, "Tree"]
 
 
-def build_tree(paths):
+def build_tree(paths: list[str]) -> Tree:
     """Builds a nested dictionary from a list of file paths."""
-    tree = {}
+    tree: Tree = {}
     for path in paths:
         path = path.strip()
         if not path:
@@ -49,7 +52,7 @@ def build_tree(paths):
     return tree
 
 
-def print_tree(tree, depth=0):
+def print_tree(tree: Tree, depth: int = 0) -> None:
     """Recursively prints the tree matching the user's specific format constraints.
 
     Directories and files are sorted alphabetically, but all directories are
@@ -75,10 +78,7 @@ def print_tree(tree, depth=0):
 
     for name in sorted_items:
         # Create the custom visual nesting prefix
-        if depth == 0:
-            prefix = ""
-        else:
-            prefix = "|  " * (depth - 1) + "|_ "
+        prefix = "" if depth == 0 else "|  " * (depth - 1) + "|_ "
 
         if tree[name]:
             print(f"{prefix}{name}/")

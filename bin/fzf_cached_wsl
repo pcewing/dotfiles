@@ -25,6 +25,7 @@
 # flag.
 
 import argparse
+import contextlib
 import glob
 import hashlib
 import os
@@ -33,19 +34,20 @@ import re
 import string
 import sys
 import time
+from collections.abc import Callable
 
 DOTFILES_DIR = os.getenv("DOTFILES")
 if DOTFILES_DIR is None:
     raise Exception("DOTFILES environment variable not specified")
 sys.path.append(os.path.join(DOTFILES_DIR, "src"))
 
-from dot.lib.common.dir import Dir
-from dot.lib.common.file_walker import FileWalker
-from dot.lib.common.log import Log
-from dot.lib.common.util import Util
+from dot.lib.common.dir import Dir  # noqa: E402
+from dot.lib.common.file_walker import FileWalker  # noqa: E402
+from dot.lib.common.log import Log  # noqa: E402
+from dot.lib.common.util import Util  # noqa: E402
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Fuzzy File Finder that caches results for performance"
     )
@@ -83,7 +85,7 @@ def parse_args():
 
 class FuzzyFileFinder:
     @staticmethod
-    def find_files(directory, on_file):
+    def find_files(directory: str, on_file: Callable[[str], None]) -> None:
         # TODO: It would be cool to support .fzfignore files in sub-directories
         # but that gets a little more complicated because we'd need to layer
         # them on top of each other while recursively descending and then
@@ -97,8 +99,8 @@ class FuzzyFileFinder:
         # right now. It is kind of nice in the .fzfignore file to see which
         # patterns are expected to match against directories though. Anyways,
         # leaving them separate for now but can revisit later.
-        file_ignore_patterns = []
-        dir_ignore_patterns = []
+        file_ignore_patterns: list[str] = []
+        dir_ignore_patterns: list[str] = []
         ignore_file = os.path.join(directory, ".fzfignore")
         if os.path.isfile(ignore_file):
             ignore_file_content = None
@@ -131,11 +133,11 @@ class FuzzyFileFinder:
                     # Keep this commented out for performance except when debugging
                     # Log.debug("ignoring directory", {"ignore_pattern": ignore_pattern, "dir": path_rel})
                     return FileWalker.DirectoryHandlerResult(skip=True)
+            return None
 
         def handle_file(
             file: FileWalker.File,
         ) -> FileWalker.FileHandlerResult | None:
-            name = file.get_name()
             for ignore_pattern in file_ignore_patterns:
                 path_rel = file.get_relative_path()
                 try:
@@ -143,12 +145,13 @@ class FuzzyFileFinder:
                     if m is not None:
                         # Keep this commented out for performance except when debugging
                         # Log.debug("ignoring file", {"ignore_pattern": ignore_pattern, "file": path_rel})
-                        return
+                        return None
                 except:
                     print(f"ignore_pattern = {ignore_pattern}, path_rel = {path_rel}")
                     raise
 
             on_file(file.get_relative_path())
+            return None
 
         FileWalker.walk(
             directory,
@@ -180,7 +183,7 @@ class Cache:
             },
         )
 
-        self._cached_files = set()
+        self._cached_files: set[str] = set()
 
     def update(self) -> None:
         self._cached_files = self._load()
@@ -193,7 +196,7 @@ class Cache:
         Log.info("enumerating and printing files")
         FuzzyFileFinder.find_files(self._directory, self._on_file)
 
-    def _on_file(self, relative_path):
+    def _on_file(self, relative_path: str) -> None:
         # Only add/print files we don't already know about
         if relative_path not in self._cached_files:
             print(relative_path)
@@ -216,10 +219,8 @@ class Cache:
     def _tidy(self) -> None:
         for cache_file in self._existing_cache_files:
             Log.info("removing old cache file", {"cache_file": cache_file})
-            try:
+            with contextlib.suppress(FileNotFoundError):
                 os.remove(cache_file)
-            except FileNotFoundError:
-                pass
 
     # If caching is enabled and the cache file exists, load the cache from that
     # file, print its contents to stdout, and return the files in the cache. If
@@ -263,11 +264,11 @@ class Cache:
 
     @staticmethod
     def _parse_cached_files(cache_file_content: str) -> set[str]:
-        lines = [l.strip() for l in cache_file_content.split("\n")]
-        return set([l for l in lines if l != ""])
+        lines = [line.strip() for line in cache_file_content.split("\n")]
+        return set([line for line in lines if line != ""])
 
 
-def clean(tmp_dir: str):
+def clean(tmp_dir: str) -> None:
     try:
         Log.info("removing existing tmp directory", {"tmp_dir": tmp_dir})
         Util.rmdir(tmp_dir)
@@ -275,7 +276,7 @@ def clean(tmp_dir: str):
         pass
 
 
-def main():
+def main() -> None:
     args = parse_args()
     log_level = Log.parse_level(args.log_level)
 

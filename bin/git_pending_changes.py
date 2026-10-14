@@ -13,8 +13,8 @@ if DOTFILES_DIR is None:
     raise Exception("DOTFILES environment variable not specified")
 sys.path.append(os.path.join(DOTFILES_DIR, "src"))
 
-from dot.lib.common.file_walker import FileWalker
-from dot.lib.common.log import Log
+from dot.lib.common.file_walker import FileWalker  # noqa: E402
+from dot.lib.common.log import Log  # noqa: E402
 
 
 def run_command(cmd: list[str]) -> list[str]:
@@ -81,11 +81,7 @@ def is_git_repository(dir: str) -> bool:
 
 
 def has_uncommitted_changes(status: GitRepoStatus) -> bool:
-    if len(status.modified_files) > 0:
-        return True
-    if len(status.untracked_files) > 0:
-        return True
-    return False
+    return len(status.modified_files) > 0 or len(status.untracked_files) > 0
 
 
 def get_status(dir: str) -> GitRepoStatus:
