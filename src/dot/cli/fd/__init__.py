@@ -4,20 +4,22 @@ import argparse
 import json
 import os
 import subprocess
+from typing import Any
 
 from dot.lib.common.file_walker import FileWalker
 from dot.lib.common.util import home, sh
 
 
 class Config:
-    _PATH = None
+    _PATH: str | None = None
 
     @staticmethod
-    def load() -> dict[str, str]:
+    def load() -> dict[str, Any]:
         if not os.path.exists(Config._path()):
             Config._init()
         with open(Config._path()) as f:
-            return json.loads(f.read())
+            config: dict[str, Any] = json.loads(f.read())
+        return config
 
     @staticmethod
     def _init() -> None:
@@ -26,13 +28,13 @@ class Config:
             f.write(json.dumps(Config._default(), indent="    "))
 
     @staticmethod
-    def _path():
+    def _path() -> str:
         if Config._PATH is None:
             Config._PATH = f"{home()}/.config/fd/config.json"
         return Config._PATH
 
     @staticmethod
-    def _default() -> dict[str, any]:
+    def _default() -> dict[str, Any]:
         return {"update": {"git_search_paths": ["~/src"]}}
 
 
@@ -41,24 +43,25 @@ RegistryEntries = dict[str, RegistryEntry]
 
 
 class Registry:
-    _PATH = None
+    _PATH: str | None = None
 
     @staticmethod
     def load() -> RegistryEntries:
         try:
             with open(Registry.path()) as f:
-                return json.loads(f.read())
+                entries: RegistryEntries = json.loads(f.read())
+            return entries
         except FileNotFoundError:
             return {}
 
     @staticmethod
-    def store(entries: RegistryEntries):
+    def store(entries: RegistryEntries) -> None:
         os.makedirs(os.path.dirname(Registry.path()), exist_ok=True)
         with open(Registry.path(), "w") as f:
             f.write(json.dumps(entries, indent="    "))
 
     @staticmethod
-    def path():
+    def path() -> str:
         if Registry._PATH is None:
             Registry._PATH = f"{home()}/.local/share/fd/registry.json"
         return Registry._PATH
@@ -71,7 +74,7 @@ def normalize_path(path: str) -> str:
     return os.path.realpath(path)
 
 
-def add_fd_parser(parent: argparse.ArgumentParser) -> None:
+def add_fd_parser(parent: argparse._SubParsersAction) -> None:
     parser = parent.add_parser("fd", help="TODO")
 
     subparsers = parser.add_subparsers(help="commands")
@@ -221,7 +224,7 @@ def cmd_update(args: argparse.Namespace) -> None:
         for key in keys_to_delete:
             del entries[key]
 
-        git_repositories = []
+        git_repositories: list[str] = []
         for path in config["update"]["git_search_paths"]:
             git_repositories += locate_git_repositories(path)
 
@@ -233,13 +236,13 @@ def cmd_update(args: argparse.Namespace) -> None:
     Registry.store(entries)
 
 
-def locate_git_repositories(path) -> None:
+def locate_git_repositories(path: str) -> list[str]:
     if path.startswith("~/"):
         path = f"{home()}/{path[2:]}"
     if "$HOME" in path:
         path = path.replace("$HOME", home())
 
-    git_repositories = []
+    git_repositories: list[str] = []
 
     def handle_dir(
         dir: FileWalker.Directory,
@@ -247,6 +250,7 @@ def locate_git_repositories(path) -> None:
         if os.path.isdir(f"{dir.get_absolute_path()}/.git"):
             git_repositories.append(dir.get_absolute_path())
             return FileWalker.DirectoryHandlerResult(skip=True)
+        return None
 
     FileWalker.walk(
         os.path.realpath(path),
