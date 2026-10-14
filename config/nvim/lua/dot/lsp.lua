@@ -38,6 +38,7 @@ See :help lsp-defaults and :help lsp-completion
 
 local vim = vim
 
+local LspStatus = require('dot.lsp_status')
 local LspSymbols = require('dot.lsp_symbols')
 
 local M = {}
@@ -118,6 +119,11 @@ function M.configure()
         group = vim.api.nvim_create_augroup('dot_lsp', { clear = true }),
         callback = on_lsp_attach,
     })
+
+    -- Before vim.lsp.enable(), as it adds to each server's config. Servers
+    -- whose executable is missing are still passed so the statusline can
+    -- report them.
+    LspStatus.setup(servers, { hover = true })
 
     for name, server in pairs(servers) do
         if vim.fn.executable(server.executable) == 1 then

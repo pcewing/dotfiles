@@ -43,6 +43,10 @@ function M.init()
     -- Force theme loading to execute after Neovim and Neovide UI channels
     -- fully initialize
     vim.api.nvim_create_autocmd('UIEnter', {
+        -- nested lets the colorscheme's ColorScheme autocmds run, which they
+        -- otherwise wouldn't from inside this one (e.g. lsp_status.lua re-deriving
+        -- its statusline colors)
+        nested = true,
         callback = function()
             M._color_scheme()
             M._background()
