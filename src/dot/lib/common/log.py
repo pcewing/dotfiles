@@ -3,10 +3,10 @@
 import logging
 import sys
 from logging import LogRecord
-from typing import Any, Union
+from typing import Any
 
 LogLevel = int
-LogHandler = Union[logging.StreamHandler, logging.FileHandler]
+LogHandler = logging.StreamHandler | logging.FileHandler
 LogHandlers = list[LogHandler]
 
 LogData = dict[str, Any]
@@ -89,30 +89,30 @@ class Log:
         Log._logger = logger
 
     @staticmethod
-    def debug(msg: str, data: LogData = {}) -> None:
+    def debug(msg: str, data: LogData | None = None) -> None:
         Log._log(logging.DEBUG, msg, data)
 
     @staticmethod
-    def info(msg: str, data: LogData = {}) -> None:
+    def info(msg: str, data: LogData | None = None) -> None:
         Log._log(logging.INFO, msg, data)
 
     @staticmethod
-    def warn(msg: str, data: LogData = {}) -> None:
+    def warn(msg: str, data: LogData | None = None) -> None:
         Log._log(logging.WARNING, msg, data)
 
     @staticmethod
-    def error(msg: str, data: LogData = {}) -> None:
+    def error(msg: str, data: LogData | None = None) -> None:
         Log._log(logging.ERROR, msg, data)
 
     @staticmethod
-    def fatal(msg: str, data: LogData = {}) -> None:
+    def fatal(msg: str, data: LogData | None = None) -> None:
         Log._log(logging.FATAL, msg, data)
 
     @staticmethod
-    def _log(level: LogLevel, msg: str, data: LogData = {}) -> None:
+    def _log(level: LogLevel, msg: str, data: LogData | None = None) -> None:
         if Log._logger is None:
             return
-        Log._logger.log(level, Log._format_msg(msg, data))
+        Log._logger.log(level, Log._format_msg(msg, data or {}))
 
     @staticmethod
     def _format_msg(msg: str, data: LogData) -> str:

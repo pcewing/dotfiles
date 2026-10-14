@@ -65,7 +65,7 @@ def download_file(url: str, path: str, sudo: bool, force: bool, dry_run: bool) -
 
     if os.path.isfile(path) and not force:
         Log.info(
-            "skipping download", [("path", path), ("reason", "file already exists")]
+            "skipping download", {"path": path, "reason": "file already exists"}
         )
         return
 
