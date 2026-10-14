@@ -1,0 +1,6 @@
+# Lua formatting for config/nvim and config/wezterm.lua. Checked by
+# .github/scripts/dotfiles_lint.sh; format with `make fmt-lua`.
+column_width = 120
+indent_type = "Spaces"
+indent_width = 4
+quote_style = "AutoPreferSingle"

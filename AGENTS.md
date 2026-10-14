@@ -63,12 +63,19 @@ into this repository. See `provision_analysis.md` for the migration analysis.
 
 ```bash
 make mypy      # type-check all Python files
+make fmt-lua   # format all Lua files with stylua
 make bootstrap # run ./bootstrap.sh
 make provision # run .venv/bin/dot provision
+.github/scripts/dotfiles_lint.sh # check Lua formatting (no make needed)
 ```
 
 Python uses black, isort, and autoflake — run `dot tidy` before committing
 Python changes. Type hints are encouraged; validate with `make mypy`.
+
+Lua (`config/nvim/`, `config/wezterm.lua`) is formatted with stylua using
+`.stylua.toml` (4 spaces, 120 columns, single quotes preferred) — run
+`make fmt-lua` before committing Lua changes. Hand-aligned columns are not
+preserved, so don't align code by hand.
 
 ## Architecture
 
@@ -88,9 +95,9 @@ Keep this list small; everything else belongs in a provisioner. Options:
 
 `dot provision` runs components in registry order, so dependencies are honored:
 `apt` first (installs packages other components need), then `pip`, `pipx`, development
-toolchains, version-tracked tools, `links`, `dot` completion, `wsl`, `system`
-(sets `update-alternatives` for the `neovim`/`kitty` binaries), `docker`, and
-`win32yank`.
+toolchains, version-tracked tools (including `stylua`), `links`, `dot` completion,
+`wsl`, `system` (sets `update-alternatives` for the `neovim`/`kitty` binaries),
+`docker`, and `win32yank`.
 
 Components use the shared helpers in `src/dot/lib/common/` (`apt.py`,
 `pip.py`, `pipx.py`, `github.py`, `archive.py`, `shell.py`, `alternatives.py`,

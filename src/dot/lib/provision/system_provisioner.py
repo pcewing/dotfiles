@@ -21,6 +21,7 @@ from dot.lib.provision.provisioner_pip import PipProvisioner
 from dot.lib.provision.provisioner_pipx import PipxProvisioner
 from dot.lib.provision.provisioner_ripgrep import RipgrepProvisioner
 from dot.lib.provision.provisioner_rust import RustProvisioner
+from dot.lib.provision.provisioner_stylua import StyluaProvisioner
 from dot.lib.provision.provisioner_system import SystemConfigProvisioner
 from dot.lib.provision.provisioner_treesitter import TreeSitterProvisioner
 from dot.lib.provision.provisioner_win32yank import Win32YankProvisioner
@@ -46,6 +47,7 @@ _COMPONENT_PROVISIONERS: dict[str, type[IComponentProvisioner]] = {
     "kitty":        KittyProvisioner,
     "flavours":     FlavoursProvisioner,
     "ripgrep":      RipgrepProvisioner,
+    "stylua":       StyluaProvisioner,
     "tree-sitter":  TreeSitterProvisioner,
     "wpr":          WprProvisioner,
     "links":        LinksProvisioner,
