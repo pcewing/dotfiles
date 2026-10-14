@@ -2,43 +2,33 @@
 
 from __future__ import annotations
 
+import contextlib
 import os
 import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 from dot.lib.common.log import Log
-
-# Prefer a real JSON5 parser if available. We'll fall back to strict JSON.
-try:
-    import json5 as _json_reader  # type: ignore
-except Exception:
-    _json_reader = None
-
-import json as _json_fallback
 
 
 class VersionCache:
     """
     A small TTL-based cache for "latest version" lookups.
 
-    File schema (JSON5-compatible):
-    {
-      versions: {
-        foo: {
-          version: "v1.2.3",
-          source: "github:owner/repo",
-          update_time: "2025-12-14T17:42:10Z",
-          last_attempt: "2025-12-14T17:42:10Z",
-          last_error: "optional string",
-        },
-        ...
-      }
-    }
+    File schema (YAML):
+    versions:
+      foo:
+        version: "v1.2.3"
+        source: "github:owner/repo"
+        update_time: "2025-12-14T17:42:10Z"
+        last_attempt: "2025-12-14T17:42:10Z"
+        last_error: "optional string"
     """
 
-    CACHE_PATH = Path("./version_cache.json5")
+    CACHE_PATH = Path("./version_cache.yaml")
     MAX_AGE_DAYS = 7
     ENABLED = True
 
@@ -215,20 +205,23 @@ class VersionCache:
 
     @staticmethod
     def _parse_iso_utc(value: Any) -> datetime | None:
-        if not isinstance(value, str) or not value:
+        if isinstance(value, datetime):
+            dt = value
+        elif isinstance(value, str) and value:
+            try:
+                s = value.strip()
+                # Accept "...Z" and "+00:00"
+                if s.endswith("Z"):
+                    s = s[:-1] + "+00:00"
+                dt = datetime.fromisoformat(s)
+            except Exception:
+                return None
+        else:
             return None
-        try:
-            s = value.strip()
-            # Accept "...Z" and "+00:00"
-            if s.endswith("Z"):
-                s = s[:-1] + "+00:00"
-            dt = datetime.fromisoformat(s)
-            if dt.tzinfo is None:
-                # Assume UTC if timezone omitted (best-effort)
-                dt = dt.replace(tzinfo=UTC)
-            return dt.astimezone(UTC)
-        except Exception:
-            return None
+        if dt.tzinfo is None:
+            # Assume UTC if timezone omitted (best-effort)
+            dt = dt.replace(tzinfo=UTC)
+        return dt.astimezone(UTC)
 
     @staticmethod
     def _load() -> dict[str, Any]:
@@ -236,38 +229,24 @@ class VersionCache:
         if not path.exists():
             return {"versions": {}}
 
-        text = path.read_text(encoding="utf-8")
-
-        # Try JSON5 if available; else fall back to strict JSON.
-        if _json_reader is not None:
-            try:
-                data = _json_reader.loads(text)
-                if isinstance(data, dict):
-                    data.setdefault("versions", {})
-                    return data
-            except Exception:
-                pass
-
-        # Strict JSON fallback (will fail if you truly use JSON5 features like comments/trailing commas)
         try:
-            data = _json_fallback.loads(text)
-            if isinstance(data, dict):
-                data.setdefault("versions", {})
-                return data
+            data = yaml.safe_load(path.read_text(encoding="utf-8"))
         except Exception:
             # If unreadable, don't clobber the file automatically; just act like empty.
             Log.warn(f"[VersionCache] failed to parse cache file: {path}")
             return {"versions": {}}
 
-        return {"versions": {}}
+        if not isinstance(data, dict):
+            return {"versions": {}}
+        data.setdefault("versions", {})
+        return data
 
     @staticmethod
     def _save(data: dict[str, Any]) -> None:
         path = VersionCache.CACHE_PATH
         path.parent.mkdir(parents=True, exist_ok=True)
 
-        # Write JSON that is also valid JSON5 (quotes, etc.). Pretty for humans.
-        serialized = _json_fallback.dumps(data, indent=2, sort_keys=True) + "\n"
+        serialized = yaml.safe_dump(data, sort_keys=True, default_flow_style=False)
 
         # Atomic write: temp file in same directory, then replace.
         tmp_fd = None
@@ -289,7 +268,5 @@ class VersionCache:
             os.replace(tmp_path, path)
         finally:
             if tmp_path and os.path.exists(tmp_path):
-                try:
+                with contextlib.suppress(Exception):
                     os.remove(tmp_path)
-                except Exception:
-                    pass

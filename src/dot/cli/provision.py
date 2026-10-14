@@ -131,7 +131,7 @@ def cmd_provision(args: argparse.Namespace) -> None:
 
     VersionCache.init(
         args.version_cache,
-        Path(os.path.join(Dir.dot(), "version_cache.json5")),
+        Path(os.path.join(Dir.dot(), "version_cache.yaml")),
         args.version_cache_max_age_days,
     )
 

@@ -104,7 +104,7 @@ toolchains, version-tracked tools (including `stylua`), `links`, `dot` completio
 Components use the shared helpers in `src/dot/lib/common/` (`apt.py`,
 `pip.py`, `pipx.py`, `github.py`, `archive.py`, `shell.py`, `alternatives.py`,
 `version_cache.py`, etc.). The version-tracked components cache the latest
-release in `version_cache.json5` (gitignored) so GitHub lookups are not
+release in `version_cache.yaml` (gitignored) so GitHub lookups are not
 repeated on every run.
 
 To add a component: create `provisioner_<name>.py` implementing

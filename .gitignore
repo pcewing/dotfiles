@@ -6,6 +6,8 @@ gitconfig_local
 *.pyc
 __pycache__/
 *.egg-info/
+version_cache.yaml
+# Legacy cache format (replaced by version_cache.yaml)
 version_cache.json5
 .venv/
 /diff.patch
