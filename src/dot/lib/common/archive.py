@@ -2,7 +2,6 @@
 
 
 from enum import Enum
-from typing import Tuple
 
 from dot.lib.common.log import Log
 from dot.lib.common.util import sh
@@ -90,14 +89,12 @@ class Archive:
             sh(cmd)
 
     @staticmethod
-    def _infer_type_from_name(name: str) -> Tuple[ArchiveType, CompressionType]:
+    def _infer_type_from_name(name: str) -> tuple[ArchiveType, CompressionType]:
         if name.lower().endswith(".tar.gz"):
             return ArchiveType.TAR, CompressionType.GZIP
         elif name.lower().endswith(".gz"):
             return ArchiveType.NONE, CompressionType.GZIP
-        elif name.lower().endswith(".tar.xz"):
-            return ArchiveType.TAR, CompressionType.XZ
-        elif name.lower().endswith(".txz"):
+        elif name.lower().endswith(".tar.xz") or name.lower().endswith(".txz"):
             return ArchiveType.TAR, CompressionType.XZ
         elif name.lower().endswith(".zip"):
             return ArchiveType.ZIP, CompressionType.NONE

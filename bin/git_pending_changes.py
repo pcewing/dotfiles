@@ -7,7 +7,6 @@ import argparse
 import os
 import subprocess
 import sys
-from typing import Optional
 
 DOTFILES_DIR = os.getenv("DOTFILES")
 if DOTFILES_DIR is None:
@@ -98,14 +97,16 @@ def handle_git_repository(dir: str) -> None:
     if not has_uncommitted_changes(status):
         return
 
-    print("\n================================================================================")
+    print(
+        "\n================================================================================"
+    )
     print("Repository: " + dir + "\n")
     status.print_full_status()
 
 
 def handle_dir(
     dir: FileWalker.Directory,
-) -> Optional[FileWalker.DirectoryHandlerResult]:
+) -> FileWalker.DirectoryHandlerResult | None:
     dir_path = dir.get_absolute_path()
     if not is_git_repository(dir_path):
         return None

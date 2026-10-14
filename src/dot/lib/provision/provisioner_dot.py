@@ -3,7 +3,6 @@
 import os
 import subprocess
 import sys
-from typing import Optional
 
 from dot.lib.common.dir import Dir
 from dot.lib.common.log import Log
@@ -32,7 +31,7 @@ class DotProvisioner(IComponentProvisioner):
             f.write(content)
         Log.info("wrote dot CLI completion", {"path": completion_path})
 
-    def _generate_completion_script(self) -> Optional[str]:
+    def _generate_completion_script(self) -> str | None:
         # Prefer the register-python-argcomplete that lives next to the Python
         # interpreter running this CLI (i.e. in the dotfiles virtualenv).
         venv_script = os.path.join(

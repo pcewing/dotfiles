@@ -3,7 +3,7 @@
 import logging
 import sys
 from logging import LogRecord
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 LogLevel = int
 LogHandler = Union[logging.StreamHandler, logging.FileHandler]
@@ -37,19 +37,19 @@ def is_string_list(var: Any) -> bool:
 
 def _log_level_abbrev(level: int) -> str:
     if level not in _LOG_LEVEL_ABBREVIATIONS:
-        raise Exception("Invalid log level '{}'".format(level))
+        raise Exception(f"Invalid log level '{level}'")
     return _LOG_LEVEL_ABBREVIATIONS[level]
 
 
 class Formatter(logging.Formatter):
-    def formatTime(self, record: LogRecord, datefmt: Optional[str] = None) -> str:
-        time = super(Formatter, self).formatTime(record, datefmt)
+    def formatTime(self, record: LogRecord, datefmt: str | None = None) -> str:
+        time = super().formatTime(record, datefmt)
         return time.replace(",", ".")[11:]
 
     def format(self, record: LogRecord) -> str:
         level_abbrev = _log_level_abbrev(record.levelno)
         record.level_abbrev = level_abbrev
-        return super(Formatter, self).format(record)
+        return super().format(record)
 
 
 # Lightweight structured logging wrapper around Python's standard logging
@@ -61,12 +61,12 @@ class Log:
     def parse_level(level_str: str) -> LogLevel:
         key = level_str.lower()
         if key not in _LOG_LEVEL_STRINGS:
-            raise Exception("Invalid log level '{}'".format(key))
+            raise Exception(f"Invalid log level '{key}'")
         return _LOG_LEVEL_STRINGS[key]
 
     @staticmethod
     def init(
-        name: str, level: LogLevel, stdout: bool = True, file: Optional[str] = None
+        name: str, level: LogLevel, stdout: bool = True, file: str | None = None
     ) -> None:
         handlers: LogHandlers = []
         if stdout:
@@ -131,4 +131,4 @@ class Log:
         elif is_string_list(kvp[1]):
             return kvp[0] + " = [" + ", ".join(kvp[1]) + "]"
         else:
-            return "{} = {}".format(kvp[0], kvp[1])
+            return f"{kvp[0]} = {kvp[1]}"

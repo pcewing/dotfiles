@@ -11,9 +11,9 @@
 # |_ baz/
 # |  |_ qux/
 # |  |  |_ qux.txt
-# 
+#
 # But it should look like this:
-# 
+#
 # foo/
 # |_ bar/
 # |  |_ bar.txt
@@ -102,7 +102,6 @@ if __name__ == "__main__":
     file_paths_fixed = []
     for f in file_paths:
         file_paths_fixed.append(f[2:])
-
 
     file_tree = build_tree(file_paths_fixed)
     print_tree(file_tree)

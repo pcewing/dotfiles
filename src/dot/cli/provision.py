@@ -91,7 +91,7 @@ def load_host_tags(host: str) -> list[str]:
     if not os.path.isfile(path):
         raise Exception(f"hosts.json not found at {path}")
 
-    with open(path, "r") as f:
+    with open(path) as f:
         data = json.load(f)
 
     hosts = data.get("hosts", {})

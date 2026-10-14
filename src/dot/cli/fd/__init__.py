@@ -4,7 +4,6 @@ import argparse
 import json
 import os
 import subprocess
-from typing import Optional
 
 from dot.lib.common.file_walker import FileWalker
 from dot.lib.common.util import home, sh
@@ -17,7 +16,7 @@ class Config:
     def load() -> dict[str, str]:
         if not os.path.exists(Config._path()):
             Config._init()
-        with open(Config._path(), "r") as f:
+        with open(Config._path()) as f:
             return json.loads(f.read())
 
     @staticmethod
@@ -47,7 +46,7 @@ class Registry:
     @staticmethod
     def load() -> RegistryEntries:
         try:
-            with open(Registry.path(), "r") as f:
+            with open(Registry.path()) as f:
                 return json.loads(f.read())
         except FileNotFoundError:
             return {}
@@ -162,9 +161,7 @@ def cmd_remove(args: argparse.Namespace) -> None:
 
     entries = Registry.load()
     keys_to_remove = [
-        key
-        for key, entry in entries.items()
-        if normalize_path(entry["path"]) == target
+        key for key, entry in entries.items() if normalize_path(entry["path"]) == target
     ]
 
     if not keys_to_remove:
@@ -246,7 +243,7 @@ def locate_git_repositories(path) -> None:
 
     def handle_dir(
         dir: FileWalker.Directory,
-    ) -> Optional[FileWalker.DirectoryHandlerResult]:
+    ) -> FileWalker.DirectoryHandlerResult | None:
         if os.path.isdir(f"{dir.get_absolute_path()}/.git"):
             git_repositories.append(dir.get_absolute_path())
             return FileWalker.DirectoryHandlerResult(skip=True)

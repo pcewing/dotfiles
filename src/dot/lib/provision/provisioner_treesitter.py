@@ -3,7 +3,6 @@
 import os
 import re
 import subprocess
-from typing import Optional, Tuple
 
 from dot.lib.common.dir import Dir
 from dot.lib.common.github import Github
@@ -91,7 +90,7 @@ class TreeSitterProvisioner(IComponentProvisioner):
                 raise Exception("Failed to gunzip tree-sitter executable")
 
     @staticmethod
-    def _get_current_version() -> Optional[Semver]:
+    def _get_current_version() -> Semver | None:
         try:
             p = subprocess.Popen(
                 ["tree-sitter", "--version"],
@@ -110,7 +109,7 @@ class TreeSitterProvisioner(IComponentProvisioner):
             return None
 
     @staticmethod
-    def _get_target_version() -> Tuple[str, Semver]:
+    def _get_target_version() -> tuple[str, Semver]:
         Log.info(
             "using pinned tree-sitter version",
             {"version": TREE_SITTER_VERSION},

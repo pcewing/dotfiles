@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
-from typing import Sequence
+from collections.abc import Sequence
 
 import argcomplete
 

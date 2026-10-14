@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import subprocess
-from typing import List
 
 from dot.lib.common.log import Log
 
@@ -9,7 +8,7 @@ from dot.lib.common.log import Log
 class Pipx:
     @staticmethod
     def install(
-        packages: List[str],
+        packages: list[str],
         upgrade: bool = False,
         dry_run: bool = False,
     ) -> None:

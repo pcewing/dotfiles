@@ -5,7 +5,6 @@ import difflib
 import os
 import sys
 from datetime import datetime
-from typing import List, Tuple
 
 from dot.lib.common.links import Link, Links
 from dot.lib.common.log import Log
@@ -79,7 +78,7 @@ def _fmt_time(timestamp: float) -> str:
     return datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
 
 
-def _link_pairs(link: Link) -> List[Tuple[str, str]]:
+def _link_pairs(link: Link) -> list[tuple[str, str]]:
     """Expand a link into the (repository, copy) file pairs that it manages.
 
     A file link is a single pair. A directory link is expanded into one pair per
@@ -98,7 +97,7 @@ def _link_pairs(link: Link) -> List[Tuple[str, str]]:
     return pairs
 
 
-def _unmanaged_copy_files(link: Link) -> List[str]:
+def _unmanaged_copy_files(link: Link) -> list[str]:
     """Return files in a directory link's copy that the repository does not manage."""
     if not link.is_dir() or not os.path.exists(link.dst):
         return []
@@ -125,8 +124,7 @@ def _newer_suggestion(src: str, dst: str) -> str:
             f"({_fmt_time(src_mtime)} vs {_fmt_time(dst_mtime)})"
         )
     return (
-        "  suggest: copy is newer "
-        f"({_fmt_time(dst_mtime)} vs {_fmt_time(src_mtime)})"
+        f"  suggest: copy is newer ({_fmt_time(dst_mtime)} vs {_fmt_time(src_mtime)})"
     )
 
 
@@ -149,9 +147,9 @@ def cmd_diff(args: argparse.Namespace) -> None:
                 missing.append(dst)
                 continue
 
-            with open(src, "r") as f:
+            with open(src) as f:
                 src_lines = f.readlines()
-            with open(dst, "r") as f:
+            with open(dst) as f:
                 dst_lines = f.readlines()
 
             if src_lines == dst_lines:
@@ -190,9 +188,9 @@ def cmd_diff(args: argparse.Namespace) -> None:
 
 
 def _contents_differ(src: str, dst: str) -> bool:
-    with open(src, "r") as f:
+    with open(src) as f:
         src_contents = f.read()
-    with open(dst, "r") as f:
+    with open(dst) as f:
         dst_contents = f.read()
     return src_contents != dst_contents
 
@@ -235,10 +233,10 @@ def cmd_backport(args: argparse.Namespace) -> None:
     unmanaged = 0
 
     for src, dst in pairs:
-        with open(dst, "r") as f:
+        with open(dst) as f:
             contents = f.read()
 
-        with open(src, "r") as f:
+        with open(src) as f:
             current = f.read()
 
         if contents == current:
