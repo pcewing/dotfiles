@@ -1,136 +1,119 @@
 #!/usr/bin/env python
 
-import hashlib
 import os
-import re
 import shutil
 
 from dot.lib.common.dir import Dir
-from dot.lib.common.file_walker import FileWalker
 from dot.lib.common.log import Log
-from dot.lib.common.util import Util, sh
+from dot.lib.common.python_files import PythonFiles
+from dot.lib.common.util import sh
+
+
+class LinterError(Exception):
+    """Raised for user-facing setup problems (e.g. a required tool is missing)."""
 
 
 class Linter:
-    class Error:
-        def __init__(self, file, msg):
-            self.file = file
-            self.msg = msg
-
-        @staticmethod
-        def untidy(file):
-            return Linter.Error(file, "file is not tidy")
-
-        @staticmethod
-        def incorrect_type_hints(file):
-            return Linter.Error(file, "incorrect static type hints")
-
-        def __str__(self) -> str:
-            return f"{self.file}: {self.msg}"
+    _tools: dict[str, str] = {}
 
     @staticmethod
-    def lint(files: list[str]) -> None:
-        if len(files) == 0:
-            files = Linter._get_python_files()
+    def lint(paths: list[str]) -> bool:
+        files = PythonFiles.resolve(paths)
+        if not files:
+            Log.warn("no Python files found", {"paths": paths})
+            return True
 
-        Util.rmdir(Linter._tmp_dir())
-        os.makedirs(Linter._tmp_dir())
+        ruff = Linter._tool("ruff")
+        mypy = Linter._tool("mypy")
+        ini = os.path.join(Dir.dot(), "mypy.ini")
 
-        errors = []
-        for file in files:
-            errors += Linter._lint(file)
+        args = [Linter._display_path(f) for f in files]
+        py_files = [f for f in args if f.endswith(".py")]
+        script_files = [f for f in args if not f.endswith(".py")]
 
-        if len(errors) == 0:
+        checks: list[tuple[str, list[str], int]] = [
+            ("ruff format", [ruff, "format", "--check", *args], len(args)),
+            (
+                "ruff check",
+                [ruff, "check", "--output-format", "concise", *args],
+                len(args),
+            ),
+        ]
+        if py_files:
+            checks.append(
+                ("mypy", [mypy, "--config-file", ini, *py_files], len(py_files))
+            )
+        for script in script_files:
+            # Each extensionless script is module __main__, so check them separately.
+            checks.append((f"mypy {script}", [mypy, "--config-file", ini, script], 1))
+
+        results: list[tuple[str, bool]] = []
+        for name, cmd, count in checks:
+            Log.info("running check", {"check": name, "files": count})
+            results.append((name, sh(cmd, cwd=Dir.dot()) == 0))
+
+        width = max(len(name) for name, _ in results)
+        print("lint summary:")
+        for name, ok in results:
+            print(f"  {name.ljust(width)}  {'passed' if ok else 'FAILED'}")
+        return all(ok for _, ok in results)
+
+    @staticmethod
+    def tidy(paths: list[str], dry_run: bool) -> None:
+        files = PythonFiles.resolve(paths)
+        if not files:
+            Log.warn("no Python files found", {"paths": paths})
             return
 
-        for error in errors:
-            print(error)
-
-        raise Exception("Linter errors encountered")
-
-    @staticmethod
-    def tidy(files: list[str], dry_run: bool) -> None:
-        if len(files) == 0:
-            files = Linter._get_python_files()
-
-        for file in files:
-            Linter._tidy(file, dry_run)
-
-    @staticmethod
-    def _lint(file: str) -> list["Linter.Error"]:
-        errors = []
-        if not Linter._ensure_tidy(file):
-            errors.append(Linter.Error.untidy(file))
-        if not Linter._ensure_static_typing(file):
-            errors.append(Linter.Error.incorrect_type_hints(file))
-        return errors
-
-    @staticmethod
-    def _tidy(file: str, dry_run: bool) -> None:
-        Linter._remove_unused_imports(file, dry_run)
-        Linter._sort_imports(file, dry_run)
-        Linter._format_file(file, dry_run)
-
-    @staticmethod
-    def _get_python_files() -> list[str]:
-        python_file_patterns = [
-            "^.*\.py$",
-            "^fzf_cached_wsl$",
-            "^textpack$",
+        ruff = Linter._tool("ruff")
+        args = [Linter._display_path(f) for f in files]
+        steps = [
+            (
+                "fixing imports",
+                [ruff, "check", "--fix", "--exit-zero", "--select", "I,F401", *args],
+            ),
+            ("formatting", [ruff, "format", *args]),
         ]
-
-        def is_python_file(file_name: str) -> bool:
-            for pattern in python_file_patterns:
-                if re.match(pattern, file_name) is not None:
-                    return True
-            return False
-
-        python_files = []
-        for file in FileWalker.enumerate(Dir.dot()).get_files():
-            if is_python_file(file.get_name()):
-                python_files.append(file.get_absolute_path())
-        return python_files
+        for name, cmd in steps:
+            Log.info(name, {"files": len(args)})
+            if dry_run:
+                Log.info("skipping due to --dry-run", {"command": " ".join(cmd)})
+                continue
+            sh(cmd, check=True, cwd=Dir.dot())
 
     @staticmethod
-    def _remove_unused_imports(file: str, dry_run: bool) -> None:
-        Log.info("removing unused imports", {"file": file})
-        if not dry_run:
-            sh(
-                ["autoflake", "--in-place", "--remove-all-unused-imports", file],
-                check=True,
+    def _display_path(path: str) -> str:
+        rel = os.path.relpath(path, Dir.dot())
+        if rel == ".." or rel.startswith(".." + os.sep):
+            return path
+        return rel
+
+    @staticmethod
+    def _tool(name: str) -> str:
+        cached = Linter._tools.get(name)
+        if cached is not None:
+            return cached
+
+        if os.name == "nt":
+            venv_path = os.path.join(Dir.dot(), ".venv", "Scripts", name + ".exe")
+        else:
+            venv_path = os.path.join(Dir.dot(), ".venv", "bin", name)
+
+        if os.path.isfile(venv_path) and os.access(venv_path, os.X_OK):
+            path = venv_path
+        else:
+            found = shutil.which(name)
+            if found is None:
+                repo = Dir.dot()
+                raise LinterError(
+                    f"{name} not found; install the dev extras: "
+                    f"{repo}/.venv/bin/pip install -e '{repo}[dev]'"
+                )
+            Log.warn(
+                "using tool from PATH; results may differ from the dotfiles virtualenv",
+                {"tool": name, "path": found},
             )
+            path = found
 
-    @staticmethod
-    def _sort_imports(file: str, dry_run: bool) -> None:
-        Log.info("sorting imports", {"file": file})
-        if not dry_run:
-            sh(["isort", file], check=True)
-
-    @staticmethod
-    def _format_file(file: str, dry_run: bool) -> None:
-        Log.info("formatting file", {"file": file})
-        if not dry_run:
-            sh(["black", file], check=True)
-
-    @staticmethod
-    def _ensure_tidy(file: str) -> bool:
-        dst = os.path.join(Linter._tmp_dir(), os.path.basename(file))
-        shutil.copyfile(file, dst)
-        Linter.tidy([dst], False)
-        return Linter._file_md5(file) == Linter._file_md5(dst)
-
-    @staticmethod
-    def _ensure_static_typing(file: str) -> bool:
-        mypy_cmd = ["mypy", "--config-file", os.path.join(Dir.dot(), "mypy.ini"), file]
-        return sh(mypy_cmd) == 0
-
-    @staticmethod
-    def _tmp_dir() -> str:
-        return os.path.join(Dir.tmp(), "linter")
-
-    @staticmethod
-    def _file_md5(file: str) -> str:
-        md5 = hashlib.md5()
-        with open(file, "rb") as f:
-            md5.update(f.read())
-        return md5.hexdigest()
+        Linter._tools[name] = path
+        return path
