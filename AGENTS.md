@@ -66,8 +66,11 @@ make mypy      # type-check all Python files
 make fmt-lua   # format all Lua files with stylua
 make bootstrap # run ./bootstrap.sh
 make provision # run .venv/bin/dot provision
-.github/scripts/dotfiles_lint.sh # check Lua formatting (no make needed)
+.github/scripts/dotfiles_lint.sh # check Lua formatting and run `dot lint` (no make needed)
 ```
+
+The whole repo is expected to be `dot lint`-clean, and
+`.github/scripts/dotfiles_lint.sh` enforces it.
 
 Python is formatted and linted with ruff; its configuration lives in
 `[tool.ruff]` in `pyproject.toml`. Run `dot lint` as the pre-commit check for

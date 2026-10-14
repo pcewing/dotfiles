@@ -17,7 +17,7 @@ mypy:
 	mypy --config-file ./mypy.ini ./bin/fzf_cached_wsl
 
 # Format every tracked Lua file with stylua (settings in .stylua.toml). To only
-# check formatting, run .github/scripts/dotfiles_lint.sh
+# check formatting (and lint Python), run .github/scripts/dotfiles_lint.sh
 .PHONY: fmt-lua
 fmt-lua:
 	git ls-files -z '*.lua' | xargs -0 stylua
