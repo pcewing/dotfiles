@@ -97,12 +97,10 @@ function M.pick()
         },
     }
     spec = vim.fn['fzf#vim#with_preview'](spec)
-    spec = vim.fn['fzf#wrap']('lsp-workspace-symbols', spec)
-
-    -- Set the sink after fzf#wrap, which only installs its own file-opening
-    -- sink when the spec has none.
-    spec['sink*'] = nil
+    -- Set the sink before fzf#wrap, which only installs its own file-opening
+    -- sink (and --expect keys for it) when the spec has none.
     spec.sink = jump
+    spec = vim.fn['fzf#wrap']('lsp-workspace-symbols', spec)
 
     vim.fn['fzf#run'](spec)
 end
