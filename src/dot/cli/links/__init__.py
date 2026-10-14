@@ -11,7 +11,7 @@ from dot.lib.common.log import Log
 from dot.lib.common.os import OperatingSystem
 
 
-def add_links_parser(parent: argparse.ArgumentParser) -> None:
+def add_links_parser(parent: argparse._SubParsersAction) -> None:
     parser = parent.add_parser(
         "links",
         help="Manage dotfile links",
