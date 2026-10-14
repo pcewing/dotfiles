@@ -7,9 +7,18 @@ from dot.lib.provision.provisioner import IComponentProvisioner, ProvisionerArgs
 # virtualenv, for example language servers started by Neovim. pipx gives each
 # one its own virtualenv and links its executables into ~/.local/bin.
 #
+# The Python formatters and linters are also listed in the "dev" extras in
+# pyproject.toml so they are available inside the dotfiles virtualenv too.
+#
 # fmt: off
 PIPX_PACKAGES = [
     "jedi-language-server",
+    "autoflake",
+    "black",
+    "flake8",
+    "isort",
+    "mypy",
+    "ruff",
 ]
 # fmt: on
 
