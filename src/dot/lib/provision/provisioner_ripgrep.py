@@ -21,12 +21,12 @@ class RipgrepProvisioner(IComponentProvisioner):
         super().__init__(args)
 
     def provision(self) -> None:
-        latest_release, _ = RipgrepProvisioner._get_target_version()
+        latest_release, latest_version = RipgrepProvisioner._get_target_version()
 
         current_version = RipgrepProvisioner._get_current_version()
         if current_version is None:
             Log.info("ripgrep is not installed")
-        elif current_version < Semver.parse(latest_release):
+        elif current_version < latest_version:
             Log.info(
                 f"ripgrep {current_version} is installed but {latest_release} is available"
             )

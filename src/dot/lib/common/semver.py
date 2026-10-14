@@ -5,15 +5,15 @@ from typing import Union
 
 
 class Semver:
-    def __init__(self, major, minor, patch):
+    def __init__(self, major: int, minor: int, patch: int) -> None:
         self.major = major
         self.minor = minor
         self.patch = patch
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"v{self.major}.{self.minor}.{self.patch}"
 
-    def __lt__(self, rhs):
+    def __lt__(self, rhs: "Semver") -> bool:
         if self.major != rhs.major:
             return self.major < rhs.major
         elif self.minor != rhs.minor:
@@ -21,7 +21,7 @@ class Semver:
         else:
             return self.patch < rhs.patch
 
-    def __le__(self, rhs):
+    def __le__(self, rhs: "Semver") -> bool:
         if self.major != rhs.major:
             return self.major < rhs.major
         elif self.minor != rhs.minor:
@@ -31,7 +31,7 @@ class Semver:
         else:
             return True
 
-    def __gt__(self, rhs):
+    def __gt__(self, rhs: "Semver") -> bool:
         if self.major != rhs.major:
             return self.major > rhs.major
         elif self.minor != rhs.minor:
@@ -39,7 +39,7 @@ class Semver:
         else:
             return self.patch > rhs.patch
 
-    def __ge__(self, rhs):
+    def __ge__(self, rhs: "Semver") -> bool:
         if self.major != rhs.major:
             return self.major > rhs.major
         elif self.minor != rhs.minor:
@@ -49,14 +49,18 @@ class Semver:
         else:
             return True
 
-    def __eq__(self, rhs):
+    def __eq__(self, rhs: object) -> bool:
+        if not isinstance(rhs, Semver):
+            return NotImplemented
         return (
             self.major == rhs.major
             and self.minor == rhs.minor
             and self.patch == rhs.patch
         )
 
-    def __ne__(self, rhs):
+    def __ne__(self, rhs: object) -> bool:
+        if not isinstance(rhs, Semver):
+            return NotImplemented
         return (
             self.major != rhs.major
             or self.minor != rhs.minor

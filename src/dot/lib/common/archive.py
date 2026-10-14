@@ -33,6 +33,7 @@ class Archive:
 
         extraction_funcs[archive_type](path, compression_type, dst_dir, dry_run)
 
+    @staticmethod
     def _extract_tar(
         path: str, compression_type: CompressionType, dst_dir: str, dry_run: bool
     ) -> None:
@@ -55,6 +56,7 @@ class Archive:
         else:
             sh(cmd)
 
+    @staticmethod
     def _unzip(
         path: str, compression_type: CompressionType, dst_dir: str, dry_run: bool
     ) -> None:
@@ -69,10 +71,11 @@ class Archive:
         else:
             sh(cmd)
 
+    @staticmethod
     def _decompress(
-        path, compression_type: CompressionType, dst_dir: str, dry_run: bool
+        path: str, compression_type: CompressionType, dst_dir: str, dry_run: bool
     ) -> None:
-        cmd = []
+        cmd: list[str] = []
         if compression_type == CompressionType.GZIP:
             cmd.append("gunzip")
 

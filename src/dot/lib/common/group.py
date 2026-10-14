@@ -22,7 +22,7 @@ class Group:
                 raise Exception("failed to add user to group")
 
     @staticmethod
-    def _is_user_in_group(group: str, user: str):
+    def _is_user_in_group(group: str, user: str) -> bool:
         try:
             groups_output = subprocess.check_output(["groups", user])
             groups = groups_output.decode("utf-8").strip().split(":")[-1].split()
