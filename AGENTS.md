@@ -52,8 +52,8 @@ into this repository. See `provision_analysis.md` for the migration analysis.
 
 - `dot provision [components]` — run provisioners (`--dry-run`, `--host`, `-t/--tags`, `--upgrade`, `--no-update`, `--no-version-cache`)
 - `dot links <init|clean|diff|backport>` — manage dotfile links from `links.json`; `diff`/`backport` are Windows-only
-- `dot tidy [FILES]` — format Python (black + isort + autoflake); `-d/--dry-run`
-- `dot lint [FILES]` — lint Python
+- `dot tidy [PATH...]` — format Python (ruff: import sorting, unused-import removal, formatting); `-d/--dry-run`
+- `dot lint [PATH...]` — lint Python (ruff format check, ruff check, mypy); accepts files or directories; exits non-zero on findings
 - `dot git-sync` — sync the current repo with a remote (`-d/--dry-run`, `-v`)
 - `dot status` — print dotfile repo status
 - `dot fd <choose|add|edit|update|remove|prune>` — fzf directory registry
@@ -69,8 +69,10 @@ make provision # run .venv/bin/dot provision
 .github/scripts/dotfiles_lint.sh # check Lua formatting (no make needed)
 ```
 
-Python uses black, isort, and autoflake — run `dot tidy` before committing
-Python changes. Type hints are encouraged; validate with `make mypy`.
+Python is formatted and linted with ruff; its configuration lives in
+`[tool.ruff]` in `pyproject.toml`. Run `dot lint` as the pre-commit check for
+Python changes (and `dot tidy` to fix imports and formatting). Type hints are
+encouraged; validate with `make mypy`.
 
 Lua (`config/nvim/`, `config/wezterm.lua`) is formatted with stylua using
 `.stylua.toml` (4 spaces, 120 columns, single quotes preferred) — run
